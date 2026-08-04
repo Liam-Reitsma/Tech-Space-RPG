@@ -50,4 +50,14 @@ public class Main
 
         scanner.close();
     }
+    
+    public void MainMenu()
+    {
+    
+    }
+    
+    public void Introduction()
+    {
+    
+    }
 }
