@@ -1,44 +1,59 @@
 package game;
 
+import static game.Errors.*;
+
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class SaveFile
 {
-    private boolean fileExists;
-    
     private File saveFile;
     private final File saveFileLocation;
     private File[] saveFiles;
     
     public SaveFile()
     {
-        saveFileLocation = new File("/resources/saves");
+        saveFileLocation = new File("resources/saves");
     }
     
-    public void createNewSave(String name)
+    public Errors createNewSave(String name)
     {
+        if(!checkFileNameValidity(name)) return INVALID_FILE_NAME;
+        
         for(String saveName : getSaveNames())
         {
-            if(Objects.equals(saveName, name + ".save"))
-            {
-                fileExists = true;
-                break;
-            }
-            else
-            {
-                fileExists = false;
-            }
+            if(Objects.equals(saveName, name + ".save")) return FILE_ALREADY_EXISTS;
         }
-        if(!fileExists)
-        {
-            saveFile = new File(saveFileLocation + "/" + name + ".save");
-        }
+        
+        saveFile = new File(saveFileLocation + "/" + name + ".save");
+        return SUCCESS;
     }
     
-    public void findSave(int number)
+    private boolean checkFileNameValidity(String name)
     {
+        if(name == null || name.isEmpty() || name.length() >= 255) return false;
+        
+        try
+        {
+            Paths.get(name);
+        } catch (Exception e)
+        {
+            return false;
+        }
+        
+        String windowsReserved = name.split("\\.")[0].toUpperCase();
+        if(windowsReserved.equals("CON") || windowsReserved.equals("PRN")) return false;
+        if(windowsReserved.equals("AUX") || windowsReserved.equals("NUL")) return false;
+        
+        return true;
+    }
+    
+    public Errors selectSave(int number)
+    {
+        if(number - 1 <= 0 || number - 1 >= saveFiles.length) return NUMBER_OUT_OF_BOUNDS;
         saveFile = saveFiles[number - 1];
+        return SUCCESS;
     }
     
     @Override
@@ -66,11 +81,6 @@ public class SaveFile
         }
         
         return saveNames;
-    }
-    
-    public boolean doesFileExist()
-    {
-        return fileExists;
     }
     
     public File getSaveFile()
