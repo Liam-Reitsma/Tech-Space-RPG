@@ -8,13 +8,14 @@ public enum MainMenuStates implements Menu
                 public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
                 {
                     consoleH.printLine("What would you like to call the save file?");
-                    saveFH.createNewSave(consoleH.nextLine());
                     
-                    while(!saveFH.doesFileExist())
+                    do
                     {
-                        consoleH.printLine("Sorry that file already exists. Try another name.");
-                        saveFH.createNewSave(consoleH.nextLine());
-                    }
+                        Errors result = saveFH.createNewSave(consoleH.nextLine());
+                        
+                        if(result == Errors.SUCCESS) break;
+                        consoleH.printLine(result.toString());
+                    } while(true);
                 }
             },
     LOAD_GAME("Load a Saved Game.")
@@ -23,8 +24,14 @@ public enum MainMenuStates implements Menu
                 public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
                 {
                     consoleH.printLine("Which save would you like to use?");
-                    consoleH.printLine(saveFH.toString());
-                    saveFH.findSave(consoleH.nextInt());
+                    consoleH.printLine(saveFH.listAllSaves());
+                    do
+                    {
+                        Errors result = saveFH.selectSave(consoleH.nextInt());
+                        
+                        if(result == Errors.SUCCESS) break;
+                        consoleH.printLine(result.toString());
+                    } while(true);
                 }
             },
     EXIT("Exit the Game")
