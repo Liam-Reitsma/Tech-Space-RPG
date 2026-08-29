@@ -11,30 +11,31 @@ public class GameController
     SaveFileHandler saveFH;
     Player player;
     
-    public GameController(ConsoleHandler ch, SaveFileHandler sfh)
+    public GameController(ConsoleHandler cH, SaveFileHandler sFH)
     {
-        consoleH = ch;
-        saveFH = sfh;
+        consoleH = cH;
+        saveFH = sFH;
     }
     
     public void run()
     {
-        MainMenu();
         Introduction();
+        MainMenu();
         
-        
-        System.out.println("Your name is: " + player.getName());
-        System.out.println("Your chosen class is: " + player.getClassType());
-        System.out.println("Your stats are: " + player.getStatsToString());
+        consoleH.printLine("Your name is: " + player.getName());
+        consoleH.printLine("Your chosen class is: " + player.getClassType());
+        consoleH.printLine("Your stats are: " + player.getStatsToString());
     }
     
     public void MainMenu()
     {
-        System.out.println("Welcome to Tech Space");
-        System.out.println("Select an Option:");
+        boolean invalidOption = true;
+        
+        consoleH.printLine("Welcome to Tech Space");
+        consoleH.printLine("Select an Option:");
         for(MainMenuStates state : MainMenuStates.values())
         {
-            System.out.println((state.ordinal() + 1) + ". "+ state);
+            consoleH.printLine((state.ordinal() + 1) + ". "+ state);
         }
         
         do
@@ -43,13 +44,14 @@ public class GameController
             
             for(MainMenuStates state : MainMenuStates.values())
             {
-                if(response == state.ordinal())
+                if(response == state.ordinal() + 1)
                 {
                     state.execute(consoleH, saveFH);
+                    invalidOption = false;
                     break;
                 }
             }
-        } while(true);
+        } while(invalidOption);
     }
     
     public void Introduction()
@@ -61,16 +63,16 @@ public class GameController
         
         do
         {
-            System.out.println("What is your character's name?");
+            consoleH.printLine("What is your character's name?");
             charName = consoleH.nextLine();
-            System.out.println("Are you sure you want this name?");
-            confirmation = consoleH.nextChar();
+            consoleH.printLine("Are you sure you want this name?");
+            confirmation = consoleH.nextCharToLowerCase();
         } while(!confirmation.equals('y'));
         
         do
         {
             charClass = consoleH.nextLine();
-            System.out.println("What class do you want? Warrior, Rogue, or Mage?");
+            consoleH.printLine("What class do you want? Warrior, Rogue, or Mage?");
             if(charClass.equalsIgnoreCase("warrior")) {classType = WARRIOR; break; }
             else if(charClass.equalsIgnoreCase("rogue")) { classType = ROGUE; break; }
             else if(charClass.equalsIgnoreCase("mage")) {classType = MAGE; break; }
