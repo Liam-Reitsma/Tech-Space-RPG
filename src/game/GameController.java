@@ -26,8 +26,8 @@ public class GameController
     
     public void run()
     {
-        Introduction();
         MainMenu();
+        Introduction();
         
         consoleH.printLine("Your name is: " + player.getName());
         consoleH.printLine("Your chosen class is: " + player.getClassType());
