@@ -24,6 +24,8 @@ public interface Saveable
             current = current.getSuperclass();
         }
         
+        saveInfo.delete(saveInfo.length() - 2, saveInfo.length());
+        
         return saveInfo.toString();
     }
     
