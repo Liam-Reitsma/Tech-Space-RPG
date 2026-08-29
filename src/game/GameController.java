@@ -4,17 +4,24 @@ import static game.entities.ClassType.*;
 
 import game.entities.ClassType;
 import game.entities.Player;
+import game.entities.Saveable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameController
 {
-    ConsoleHandler consoleH;
-    SaveFileHandler saveFH;
-    Player player;
+    private final ConsoleHandler consoleH;
+    private final SaveFileHandler saveFH;
+    private final List<Saveable> saveableList;
+    
+    private Player player;
     
     public GameController(ConsoleHandler cH, SaveFileHandler sFH)
     {
         consoleH = cH;
         saveFH = sFH;
+        saveableList = new ArrayList<>();
     }
     
     public void run()
@@ -79,5 +86,9 @@ public class GameController
         } while(true);
         
         player = new Player(charName, classType);
+        
+        saveableList.add(player);
+        
+        saveFH.saveData(saveableList);
     }
 }
