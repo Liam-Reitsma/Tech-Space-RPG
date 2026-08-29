@@ -1,9 +1,12 @@
 package game;
 
+import game.entities.Saveable;
+
 import static game.Errors.*;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
 
 public class SaveFile
@@ -15,6 +18,33 @@ public class SaveFile
     public SaveFile()
     {
         saveFileLocation = new File("resources/saves");
+    }
+    
+    public Errors write(List<Saveable> saveables)
+    {
+        for(int i = 0; i < 2; i++)
+        {
+            try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
+            {
+                for(Saveable saveable : saveables)
+                {
+                    writer.write(saveable.getSaveInfo());
+                    writer.newLine();
+                }
+            } catch(FileNotFoundException e)
+            {
+                if(saveFileLocation.mkdir()) { return write(saveables); }
+                return WRITE_ERROR;
+            } catch(IOException e)
+            {
+                return WRITE_ERROR;
+            } catch(IllegalAccessException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        return WRITE_ERROR;
     }
     
     public Errors createNewSave(String name)
@@ -51,7 +81,7 @@ public class SaveFile
     
     public Errors selectSave(int number)
     {
-        if(number - 1 <= 0 || number - 1 >= saveFiles.length) return NUMBER_OUT_OF_BOUNDS;
+        if(number - 1 < 0 || number - 1 >= saveFiles.length) return NUMBER_OUT_OF_BOUNDS;
         saveFile = saveFiles[number - 1];
         return SUCCESS;
     }
