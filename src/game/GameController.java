@@ -53,6 +53,7 @@ public class GameController
             {
                 if(response == state.ordinal() + 1)
                 {
+                    consoleH.nextLine();
                     state.execute(consoleH, saveFH);
                     invalidOption = false;
                     break;
