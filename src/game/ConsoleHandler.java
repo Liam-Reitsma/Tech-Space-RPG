@@ -23,7 +23,12 @@ public class ConsoleHandler
     
     public char nextChar()
     {
-        return scanner.nextLine().charAt(0);
+        return scanner.next().charAt(0);
+    }
+    
+    public char nextCharToLowerCase()
+    {
+        return scanner.next().toLowerCase().charAt(0);
     }
     
     public int nextInt()
