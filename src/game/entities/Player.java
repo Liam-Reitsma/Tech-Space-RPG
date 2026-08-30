@@ -1,7 +1,14 @@
 package game.entities;
 
-public class Player extends Entities
+import game.SaveExclude;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+public class Player extends Entities implements Saveable
 {
+    private int xp;
+    private int gold;
     private int statStr;
     private int statDex;
     private int statInt;
@@ -10,6 +17,8 @@ public class Player extends Entities
     
     public Player(String playerName, ClassType type)
     {
+        xp = 0;
+        gold = 0;
         name = playerName;
         classType = type;
         statStr = type.getStatStrength();
@@ -39,6 +48,12 @@ public class Player extends Entities
     {
     
     }
+    
+    public int getLevel() { return level; }
+    
+    public int getXP() { return xp; }
+    
+    public int getGold() { return gold; }
     
     public String getName()
     {

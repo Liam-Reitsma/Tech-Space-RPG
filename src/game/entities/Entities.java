@@ -1,13 +1,17 @@
 package game.entities;
 
+import game.SaveExclude;
+
 public abstract class Entities
 {
-    protected String name;
+    @SaveExclude
+    protected  String name;
     protected int level;
     protected float health;
-    protected float mana;
-    protected float damage;
-    protected float armor;
+    
+    protected float baseMana;
+    protected float baseDamage;
+    protected float baseArmor;
     
     abstract void attack();
     abstract void useAbility();
