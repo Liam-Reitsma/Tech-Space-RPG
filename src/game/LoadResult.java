@@ -39,4 +39,12 @@ public class LoadResult
     {
         return result.size();
     }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder stringToReturn = new StringBuilder();
+        for(String line : result) stringToReturn.append(line).append('\n');
+        return stringToReturn.toString();
+    }
 }
