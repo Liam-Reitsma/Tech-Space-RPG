@@ -32,6 +32,10 @@ public enum MainMenuStates implements Menu
                         if(result == Errors.SUCCESS) break;
                         consoleH.printLine(result.toString());
                     } while(true);
+                    
+                    LoadResult loadResult = saveFH.loadData();
+                    if(loadResult.getError() == Errors.SUCCESS) { consoleH.printLine(loadResult.getPlayerData()); }
+                    else { consoleH.printLine(loadResult.getError().toString()); }
                 }
             },
     EXIT("Exit the Game")
