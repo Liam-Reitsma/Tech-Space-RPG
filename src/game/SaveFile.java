@@ -47,6 +47,29 @@ public class SaveFile
         return WRITE_ERROR;
     }
     
+    public LoadResult read()
+    {
+        LoadResult lResult= new LoadResult();
+        try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
+        {
+            List<String> result = reader.readAllLines();
+            for(String line : result)
+            {
+                lResult.addData(line);
+            }
+            
+            return lResult;
+        } catch(FileNotFoundException e)
+        {
+            lResult.setError(SAVE_FILE_MISSING);
+            return lResult;
+        } catch(IOException e)
+        {
+            lResult.setError(LOAD_ERROR);
+            return lResult;
+        }
+    }
+    
     public Errors createNewSave(String name)
     {
         if(!checkFileNameValidity(name)) return INVALID_FILE_NAME;

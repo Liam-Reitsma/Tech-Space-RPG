@@ -18,6 +18,11 @@ public class SaveFileHandler
         return saveF.write(saveables);
     }
     
+    public LoadResult loadData()
+    {
+        return saveF.read();
+    }
+    
     public Errors createNewSave(String name)
     {
         return saveF.createNewSave(name);
