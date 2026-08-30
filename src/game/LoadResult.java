@@ -5,13 +5,18 @@ import java.util.List;
 
 public class LoadResult
 {
-    private final Errors error;
+    private Errors error;
     private final List<String> result;
     
-    public LoadResult(Errors e)
+    public LoadResult()
+    {
+        error = Errors.SUCCESS;
+        result = new ArrayList<>();
+    }
+    
+    public void setError(Errors e)
     {
         error = e;
-        result = new ArrayList<>();
     }
     
     public void addData(String string)
