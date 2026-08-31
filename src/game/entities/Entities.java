@@ -1,6 +1,6 @@
 package game.entities;
 
-import game.SaveExclude;
+import game.saves.SaveExclude;
 
 public abstract class Entities
 {

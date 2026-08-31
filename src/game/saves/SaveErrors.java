@@ -1,4 +1,4 @@
-package game;
+package game.saves;
 
 public enum SaveErrors
 {

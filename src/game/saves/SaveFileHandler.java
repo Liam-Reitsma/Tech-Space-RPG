@@ -1,4 +1,4 @@
-package game;
+package game.saves;
 
 import game.entities.Saveable;
 

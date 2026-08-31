@@ -1,10 +1,5 @@
 package game.entities;
 
-import game.SaveExclude;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 public class Player extends Entities implements Saveable
 {
     private int xp;

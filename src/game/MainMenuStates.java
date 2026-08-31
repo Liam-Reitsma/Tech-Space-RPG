@@ -1,5 +1,9 @@
 package game;
 
+import game.saves.LoadResult;
+import game.saves.SaveErrors;
+import game.saves.SaveFileHandler;
+
 public enum MainMenuStates implements Menu
 {
     NEW_GAME("Start a New Game.")
