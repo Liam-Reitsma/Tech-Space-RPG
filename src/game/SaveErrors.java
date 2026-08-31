@@ -1,6 +1,6 @@
 package game;
 
-public enum Errors
+public enum SaveErrors
 {
     INVALID_FILE_NAME("Creating Save Failed! The file given is an invalid name. Please try again"),
     FILE_ALREADY_EXISTS("Creating Save Failed! The file given already exists and could not be created."),
@@ -14,7 +14,7 @@ public enum Errors
     
     private final String errorMessage;
     
-    Errors(String message)
+    SaveErrors(String message)
     {
         errorMessage = message;
     }

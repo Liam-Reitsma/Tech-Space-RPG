@@ -5,16 +5,16 @@ import java.util.List;
 
 public class LoadResult
 {
-    private Errors error;
+    private SaveErrors error;
     private final List<String> result;
     
     public LoadResult()
     {
-        error = Errors.SUCCESS;
+        error = SaveErrors.SUCCESS;
         result = new ArrayList<>();
     }
     
-    public void setError(Errors e)
+    public void setError(SaveErrors e)
     {
         error = e;
     }
@@ -35,7 +35,7 @@ public class LoadResult
         return result.getFirst();
     }
     
-    public Errors getError()
+    public SaveErrors getError()
     {
         return error;
     }

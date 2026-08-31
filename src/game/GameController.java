@@ -90,7 +90,7 @@ public class GameController
         
         saveableList.add(player);
         
-        Errors result = saveFH.saveData(saveableList);
-        if(result != Errors.SUCCESS) consoleH.printLine(result.toString());
+        SaveErrors result = saveFH.saveData(saveableList);
+        if(result != SaveErrors.SUCCESS) consoleH.printLine(result.toString());
     }
 }

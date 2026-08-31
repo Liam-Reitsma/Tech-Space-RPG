@@ -13,7 +13,7 @@ public class SaveFileHandler
         saveF = saveFile;
     }
     
-    public Errors saveData(List<Saveable> saveables)
+    public SaveErrors saveData(List<Saveable> saveables)
     {
         return saveF.write(saveables);
     }
@@ -23,7 +23,7 @@ public class SaveFileHandler
         return saveF.read();
     }
     
-    public Errors createNewSave(String name)
+    public SaveErrors createNewSave(String name)
     {
         return saveF.createNewSave(name);
     }
@@ -33,7 +33,7 @@ public class SaveFileHandler
         return saveF.toString();
     }
     
-    public Errors selectSave(int num)
+    public SaveErrors selectSave(int num)
     {
         return saveF.selectSave(num);
     }

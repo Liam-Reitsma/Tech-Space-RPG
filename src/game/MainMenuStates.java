@@ -11,9 +11,9 @@ public enum MainMenuStates implements Menu
                     
                     do
                     {
-                        Errors result = saveFH.createNewSave(consoleH.nextLine());
+                        SaveErrors result = saveFH.createNewSave(consoleH.nextLine());
                         
-                        if(result == Errors.SUCCESS) break;
+                        if(result == SaveErrors.SUCCESS) break;
                         consoleH.printLine(result.toString());
                     } while(true);
                 }
@@ -27,14 +27,14 @@ public enum MainMenuStates implements Menu
                     consoleH.printLine(saveFH.listAllSaves());
                     do
                     {
-                        Errors result = saveFH.selectSave(consoleH.nextInt());
+                        SaveErrors result = saveFH.selectSave(consoleH.nextInt());
                         
-                        if(result == Errors.SUCCESS) break;
+                        if(result == SaveErrors.SUCCESS) break;
                         consoleH.printLine(result.toString());
                     } while(true);
                     
                     LoadResult loadResult = saveFH.loadData();
-                    if(loadResult.getError() == Errors.SUCCESS) { consoleH.printLine(loadResult.getPlayerData()); }
+                    if(loadResult.getError() == SaveErrors.SUCCESS) { consoleH.printLine(loadResult.getPlayerData()); }
                     else { consoleH.printLine(loadResult.getError().toString()); }
                 }
             },

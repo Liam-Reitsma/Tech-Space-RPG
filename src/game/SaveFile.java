@@ -2,7 +2,7 @@ package game;
 
 import game.entities.Saveable;
 
-import static game.Errors.*;
+import static game.SaveErrors.*;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -20,7 +20,7 @@ public class SaveFile
         saveFileLocation = new File("resources/saves");
     }
     
-    public Errors write(List<Saveable> saveables)
+    public SaveErrors write(List<Saveable> saveables)
     {
         for(int i = 0; i < 2; i++)
         {
@@ -70,7 +70,7 @@ public class SaveFile
         }
     }
     
-    public Errors createNewSave(String name)
+    public SaveErrors createNewSave(String name)
     {
         if(!checkFileNameValidity(name)) return INVALID_FILE_NAME;
         
@@ -102,7 +102,7 @@ public class SaveFile
         return true;
     }
     
-    public Errors selectSave(int number)
+    public SaveErrors selectSave(int number)
     {
         if(number - 1 < 0 || number - 1 >= saveFiles.length) return NUMBER_OUT_OF_BOUNDS;
         saveFile = saveFiles[number - 1];
