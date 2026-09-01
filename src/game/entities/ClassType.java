@@ -39,4 +39,14 @@ public enum ClassType
     {
         return name;
     }
+    
+    public static ClassType parseType(String typeToCheck)
+    {
+        for(ClassType type : ClassType.values())
+        {
+            if(type.toString().equals(typeToCheck)) return type;
+        }
+        
+        return null;
+    }
 }
