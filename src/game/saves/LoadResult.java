@@ -30,11 +30,6 @@ public class LoadResult
         return result.get(index);
     }
     
-    public String getPlayerData()
-    {
-        return result.getFirst();
-    }
-    
     public SaveErrors getError()
     {
         return error;
