@@ -9,7 +9,7 @@ public interface Saveable
     default String getSaveInfo() throws IllegalAccessException
     {
         StringBuilder saveInfo = new StringBuilder();
-        saveInfo.append(this.getName()).append(": ");
+        saveInfo.append(this.getClassName()).append(" ").append(this.getName()).append(": ");
         Class<?> current = this.getClass();
         
         while(current != null && current != Object.class)
@@ -30,4 +30,9 @@ public interface Saveable
     }
     
     String getName();
+    
+    default String getClassName()
+    {
+        return this.getClass().getSimpleName();
+    }
 }
