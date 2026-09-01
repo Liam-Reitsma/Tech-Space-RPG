@@ -4,7 +4,6 @@ import game.saves.SaveExclude;
 
 public abstract class Entities
 {
-    @SaveExclude
     protected  String name;
     protected int level;
     protected float health;
