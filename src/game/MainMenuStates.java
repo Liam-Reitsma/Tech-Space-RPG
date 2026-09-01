@@ -1,5 +1,6 @@
 package game;
 
+import game.entities.Saveable;
 import game.saves.LoadResult;
 import game.saves.SaveErrors;
 import game.saves.SaveFileHandler;
@@ -27,19 +28,41 @@ public enum MainMenuStates implements Menu
                 @Override
                 public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
                 {
+                    LoadResult loadResult;
+                    Saveable objectToAdd;
+                    LoadFactory loadFactory = new LoadFactory();
+                    
                     consoleH.printLine("Which save would you like to use?");
                     consoleH.printLine(saveFH.listAllSaves());
                     do
                     {
-                        SaveErrors result = saveFH.selectSave(consoleH.nextInt());
+                        do
+                        {
+                            SaveErrors result = saveFH.selectSave(consoleH.nextInt());
+                            
+                            if(result == SaveErrors.SUCCESS) break;
+                            consoleH.printLine(result.toString());
+                            
+                        } while(true);
                         
-                        if(result == SaveErrors.SUCCESS) break;
-                        consoleH.printLine(result.toString());
+                        loadResult = saveFH.loadData();
+                        if(loadResult.getError() != SaveErrors.SUCCESS) { consoleH.printLine(loadResult.getError().toString()); }
+                        else break;
+                        
                     } while(true);
                     
-                    LoadResult loadResult = saveFH.loadData();
-                    if(loadResult.getError() == SaveErrors.SUCCESS) { consoleH.printLine(loadResult.getPlayerData()); }
-                    else { consoleH.printLine(loadResult.getError().toString()); }
+                    for(int i = 0; i < loadResult.size(); i++)
+                    {
+                        try
+                        {
+                            objectToAdd = (Saveable)loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i));
+                            consoleH.printLine(objectToAdd.getSaveInfo());
+                        } catch(IllegalAccessException e)
+                        {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    
                 }
             },
     EXIT("Exit the Game")
