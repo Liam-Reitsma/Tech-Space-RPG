@@ -55,8 +55,6 @@ public class Player extends Entities implements Saveable
         return name;
     }
     
-    public String getClassName() { return this.getClass().getSimpleName(); }
-    
     public String getClassType()
     {
         return classType.toString();
