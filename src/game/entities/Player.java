@@ -1,5 +1,9 @@
 package game.entities;
 
+import game.saves.SaveExclude;
+
+import java.lang.reflect.Field;
+
 public class Player extends Entities implements Saveable
 {
     private int xp;
@@ -8,7 +12,7 @@ public class Player extends Entities implements Saveable
     private int statDex;
     private int statInt;
     
-    private final ClassType classType;
+    private ClassType classType;
     
     public Player(String playerName, ClassType type)
     {
@@ -19,6 +23,11 @@ public class Player extends Entities implements Saveable
         statStr = type.getStatStrength();
         statDex = type.getStatDexterity();
         statInt = type.getStatIntelligence();
+    }
+    
+    public Player(String[] data)
+    {
+        loadSaveInfo(data);
     }
     
     @Override
