@@ -1,6 +1,6 @@
 package game;
 
-import game.entities.Saveable;
+import game.entities.Persistable;
 import game.saves.LoadFactory;
 import game.saves.LoadResult;
 import game.saves.SaveErrors;
@@ -30,7 +30,7 @@ public enum MainMenuStates implements Menu
                 public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
                 {
                     LoadResult loadResult;
-                    Saveable objectToAdd;
+                    Persistable objectToAdd;
                     LoadFactory loadFactory = new LoadFactory();
                     
                     consoleH.printLine("Which save would you like to use?");
@@ -56,7 +56,7 @@ public enum MainMenuStates implements Menu
                     {
                         try
                         {
-                            objectToAdd = (Saveable)loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i));
+                            objectToAdd = (Persistable)loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i));
                             consoleH.printLine(objectToAdd.getSaveInfo());
                         } catch(IllegalAccessException e)
                         {

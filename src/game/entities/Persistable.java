@@ -4,7 +4,7 @@ import game.saves.SaveExclude;
 
 import java.lang.reflect.Field;
 
-public interface Saveable
+public interface Persistable
 {
     default String getSaveInfo() throws IllegalAccessException
     {

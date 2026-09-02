@@ -1,6 +1,6 @@
 package game.saves;
 
-import game.entities.Saveable;
+import game.entities.Persistable;
 
 import static game.saves.SaveErrors.*;
 
@@ -20,13 +20,13 @@ public class SaveFile
         saveFileLocation = new File("resources/saves");
     }
     
-    public SaveErrors write(List<Saveable> saveables)
+    public SaveErrors write(List<Persistable> saveables)
     {
         for(int i = 0; i < 2; i++)
         {
             try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
             {
-                for(Saveable saveable : saveables)
+                for(Persistable saveable : saveables)
                 {
                     writer.write(saveable.getSaveInfo());
                     writer.newLine();

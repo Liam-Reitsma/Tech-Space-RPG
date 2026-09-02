@@ -1,10 +1,6 @@
 package game.entities;
 
-import game.saves.SaveExclude;
-
-import java.lang.reflect.Field;
-
-public class Player extends Entities implements Saveable
+public class Player extends Entities implements Persistable
 {
     private int xp;
     private int gold;

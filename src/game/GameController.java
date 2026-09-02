@@ -4,7 +4,7 @@ import static game.entities.ClassType.*;
 
 import game.entities.ClassType;
 import game.entities.Player;
-import game.entities.Saveable;
+import game.entities.Persistable;
 import game.saves.SaveErrors;
 import game.saves.SaveFileHandler;
 
@@ -15,7 +15,7 @@ public class GameController
 {
     private final ConsoleHandler consoleH;
     private final SaveFileHandler saveFH;
-    private final List<Saveable> saveableList;
+    private final List<Persistable> saveableList;
     
     private Player player;
     

@@ -1,6 +1,6 @@
 package game.saves;
 
-import game.entities.Saveable;
+import game.entities.Persistable;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class SaveFileHandler
         saveF = saveFile;
     }
     
-    public SaveErrors saveData(List<Saveable> saveables)
+    public SaveErrors saveData(List<Persistable> saveables)
     {
         return saveF.write(saveables);
     }
