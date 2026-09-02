@@ -20,20 +20,20 @@ public class SaveFile
         saveFileLocation = new File("resources/saves");
     }
     
-    public SaveErrors write(List<Persistable> saveables)
+    public SaveErrors write(List<Persistable> persistables)
     {
         for(int i = 0; i < 2; i++)
         {
             try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
             {
-                for(Persistable saveable : saveables)
+                for(Persistable persistable : persistables)
                 {
-                    writer.write(saveable.getSaveInfo());
+                    writer.write(persistable.getSaveInfo());
                     writer.newLine();
                 }
             } catch(FileNotFoundException e)
             {
-                if(saveFileLocation.mkdir()) { return write(saveables); }
+                if(saveFileLocation.mkdir()) { return write(persistables); }
                 return WRITE_ERROR;
             } catch(IOException e)
             {

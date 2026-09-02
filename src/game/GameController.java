@@ -15,7 +15,7 @@ public class GameController
 {
     private final ConsoleHandler consoleH;
     private final SaveFileHandler saveFH;
-    private final List<Persistable> saveableList;
+    private final List<Persistable> persistableList;
     
     private Player player;
     
@@ -23,7 +23,7 @@ public class GameController
     {
         consoleH = cH;
         saveFH = sFH;
-        saveableList = new ArrayList<>();
+        persistableList = new ArrayList<>();
     }
     
     public void run()
@@ -90,9 +90,9 @@ public class GameController
         
         player = new Player(charName, classType);
         
-        saveableList.add(player);
+        persistableList.add(player);
         
-        SaveErrors result = saveFH.saveData(saveableList);
+        SaveErrors result = saveFH.saveData(persistableList);
         if(result != SaveErrors.SUCCESS) consoleH.printLine(result.toString());
     }
 }

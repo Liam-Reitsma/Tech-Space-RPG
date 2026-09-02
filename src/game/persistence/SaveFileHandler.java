@@ -13,9 +13,9 @@ public class SaveFileHandler
         saveF = saveFile;
     }
     
-    public SaveErrors saveData(List<Persistable> saveables)
+    public SaveErrors saveData(List<Persistable> persistables)
     {
-        return saveF.write(saveables);
+        return saveF.write(persistables);
     }
     
     public LoadResult loadData()
