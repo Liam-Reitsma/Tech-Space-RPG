@@ -31,6 +31,8 @@ public class SaveFile
                     writer.write(persistable.getSaveInfo());
                     writer.newLine();
                 }
+                
+                return SUCCESS;
             } catch(FileNotFoundException e)
             {
                 if(saveFileLocation.mkdir()) { return write(persistables); }
