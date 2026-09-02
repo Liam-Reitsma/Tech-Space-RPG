@@ -22,31 +22,23 @@ public class SaveFile
     
     public SaveErrors write(List<Persistable> persistables)
     {
-        for(int i = 0; i < 2; i++)
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
-            try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
+            for(Persistable persistable : persistables)
             {
-                for(Persistable persistable : persistables)
-                {
-                    writer.write(persistable.getSaveInfo());
-                    writer.newLine();
-                }
-                
-                return SUCCESS;
-            } catch(FileNotFoundException e)
-            {
-                if(saveFileLocation.mkdir()) { return write(persistables); }
-                return WRITE_ERROR;
-            } catch(IOException e)
-            {
-                return WRITE_ERROR;
-            } catch(IllegalAccessException e)
-            {
-                throw new RuntimeException(e);
+                writer.write(persistable.getSaveInfo());
+                writer.newLine();
             }
+            
+            return SUCCESS;
+        } catch(FileNotFoundException e)
+        {
+            if(saveFileLocation.mkdir()) { return write(persistables); }
+            return WRITE_ERROR;
+        } catch(IOException | IllegalAccessException e)
+        {
+            return WRITE_ERROR;
         }
-        
-        return WRITE_ERROR;
     }
     
     public LoadResult read()
