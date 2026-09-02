@@ -1,10 +1,10 @@
 package game;
 
 import game.entities.Persistable;
-import game.saves.LoadFactory;
-import game.saves.LoadResult;
-import game.saves.SaveErrors;
-import game.saves.SaveFileHandler;
+import game.persistence.LoadFactory;
+import game.persistence.LoadResult;
+import game.persistence.SaveErrors;
+import game.persistence.SaveFileHandler;
 
 public enum MainMenuStates implements Menu
 {

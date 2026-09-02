@@ -1,7 +1,5 @@
 package game.entities;
 
-import game.saves.SaveExclude;
-
 public abstract class Entities
 {
     protected  String name;

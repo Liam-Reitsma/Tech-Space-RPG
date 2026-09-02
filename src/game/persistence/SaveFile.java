@@ -1,8 +1,8 @@
-package game.saves;
+package game.persistence;
 
 import game.entities.Persistable;
 
-import static game.saves.SaveErrors.*;
+import static game.persistence.SaveErrors.*;
 
 import java.io.*;
 import java.nio.file.Paths;

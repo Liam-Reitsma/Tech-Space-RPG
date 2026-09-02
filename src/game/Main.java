@@ -1,7 +1,7 @@
 package game;
 
-import game.saves.SaveFile;
-import game.saves.SaveFileHandler;
+import game.persistence.SaveFile;
+import game.persistence.SaveFileHandler;
 
 import java.util.Scanner;
 

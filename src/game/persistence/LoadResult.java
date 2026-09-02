@@ -1,4 +1,4 @@
-package game.saves;
+package game.persistence;
 
 import java.util.ArrayList;
 import java.util.List;

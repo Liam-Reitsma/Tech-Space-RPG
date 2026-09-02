@@ -1,6 +1,6 @@
 package game.entities;
 
-import game.saves.SaveExclude;
+import game.persistence.SaveExclude;
 
 import java.lang.reflect.Field;
 

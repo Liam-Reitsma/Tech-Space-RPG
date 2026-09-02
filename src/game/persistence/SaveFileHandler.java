@@ -1,4 +1,4 @@
-package game.saves;
+package game.persistence;
 
 import game.entities.Persistable;
 

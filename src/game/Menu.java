@@ -1,6 +1,6 @@
 package game;
 
-import game.saves.SaveFileHandler;
+import game.persistence.SaveFileHandler;
 
 public interface Menu
 {

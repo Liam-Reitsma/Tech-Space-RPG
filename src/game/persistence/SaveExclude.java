@@ -1,4 +1,4 @@
-package game.saves;
+package game.persistence;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

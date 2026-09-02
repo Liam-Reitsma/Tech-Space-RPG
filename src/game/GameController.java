@@ -5,8 +5,8 @@ import static game.entities.ClassType.*;
 import game.entities.ClassType;
 import game.entities.Player;
 import game.entities.Persistable;
-import game.saves.SaveErrors;
-import game.saves.SaveFileHandler;
+import game.persistence.SaveErrors;
+import game.persistence.SaveFileHandler;
 
 import java.util.ArrayList;
 import java.util.List;
