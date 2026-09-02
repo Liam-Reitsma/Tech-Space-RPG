@@ -1,6 +1,7 @@
 package game;
 
 import game.entities.Saveable;
+import game.saves.LoadFactory;
 import game.saves.LoadResult;
 import game.saves.SaveErrors;
 import game.saves.SaveFileHandler;
