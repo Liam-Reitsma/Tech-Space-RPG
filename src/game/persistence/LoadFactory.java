@@ -16,7 +16,7 @@ public class LoadFactory
             case("Player"):
                 return new Player(data);
             default:
-                return null;
+                throw new IllegalArgumentException("Failed to create: " + name);
         }
     }
 }

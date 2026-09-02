@@ -61,6 +61,10 @@ public enum MainMenuStates implements Menu
                         } catch(IllegalAccessException e)
                         {
                             throw new RuntimeException(e);
+                        } catch(IllegalArgumentException e)
+                        {
+                            consoleH.printLine(e.getMessage() + "\nLoad aborted");
+                            return;
                         }
                     }
                     
