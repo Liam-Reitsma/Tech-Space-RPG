@@ -64,6 +64,13 @@ public class SaveFile
         }
     }
     
+    public SaveErrors selectSave(int number)
+    {
+        if(number - 1 < 0 || number - 1 >= saveFiles.length) return NUMBER_OUT_OF_BOUNDS;
+        saveFile = saveFiles[number - 1];
+        return SUCCESS;
+    }
+    
     public SaveErrors createNewSave(String name)
     {
         if(!checkFileNameValidity(name)) return INVALID_FILE_NAME;
@@ -94,13 +101,6 @@ public class SaveFile
         if(windowsReserved.equals("AUX") || windowsReserved.equals("NUL")) return false;
         
         return true;
-    }
-    
-    public SaveErrors selectSave(int number)
-    {
-        if(number - 1 < 0 || number - 1 >= saveFiles.length) return NUMBER_OUT_OF_BOUNDS;
-        saveFile = saveFiles[number - 1];
-        return SUCCESS;
     }
     
     @Override
