@@ -9,14 +9,14 @@ public abstract class DataResult
     
     void setError(SaveErrors e) { error = e; }
     
-    public void addData(String string)
+    void addData(String string)
     {
         result.add(string);
     }
     
-    SaveErrors getError() { return error; }
+    public SaveErrors getError() { return error; }
     
-    int size()
+    public int size()
     {
         return result.size();
     }
