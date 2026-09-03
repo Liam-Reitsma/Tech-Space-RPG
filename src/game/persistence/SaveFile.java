@@ -75,7 +75,9 @@ public class SaveFile
     {
         if(!checkFileNameValidity(name)) return INVALID_FILE_NAME;
         
-        for(String saveName : getSaveNames())
+        SaveFileResult sfResult = getSaveFileNames();
+        
+        for(String saveName : sfResult.getSaveFiles())
         {
             if(Objects.equals(saveName, name + ".save")) return FILE_ALREADY_EXISTS;
         }
@@ -108,7 +110,10 @@ public class SaveFile
     {
         StringBuilder saves = new StringBuilder();
         int i = 0;
-        for(String saveLine : getSaveNames())
+        
+        SaveFileResult SaveFiles = getSaveFileNames();
+        
+        for(String saveLine : SaveFiles.getSaveFiles())
         {
             i++;
             saves.append("\n").append(i).append(". ").append(saveLine);
@@ -117,17 +122,27 @@ public class SaveFile
         return saves.toString();
     }
     
-    private String[] getSaveNames()
+    private SaveFileResult getSaveFileNames()
     {
-        saveFiles = Objects.requireNonNull(saveFileLocation.listFiles());
-        String[] saveNames = new String[saveFiles.length];
-        int i = 0;
-        for(File save : saveFiles)
+        try
         {
-            saveNames[i++] = save.getName();
+            saveFiles = Objects.requireNonNull(saveFileLocation.listFiles());
+        } catch(NullPointerException e)
+        {
+            if(!saveFileLocation.mkdir()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING);
+            saveFiles = Objects.requireNonNull(saveFileLocation.listFiles());
         }
         
-        return saveNames;
+        if(saveFiles.length == 0) return new SaveFileResult(SAVE_FOLDER_EMPTY);
+        
+        SaveFileResult sfResult = new SaveFileResult(SUCCESS);
+        
+        for(File save : saveFiles)
+        {
+            sfResult.addData(save.getName());
+        }
+        
+        return sfResult;
     }
     
     public File getSaveFile()
