@@ -9,7 +9,9 @@ public enum SaveErrors
     LOAD_ERROR("Loading Failed! An unknown error occurred while loading your game."),
     MISSING_DATA("Loading Failed! Some data was lost during loading."),
     SAVE_FILE_MISSING("Loading Failed! Save file is missing."),
-    SAVE_FILE_CORRUPTED("Loading Failed! Save file data is corrupted"),
+    SAVE_FILE_CORRUPTED("Loading Failed! Save file data is corrupted."),
+    SAVE_FOLDER_LOCATION_MISSING("Getting Saves Failed! Cannot find save file location."),
+    SAVE_FOLDER_EMPTY("No save files found."),
     SUCCESS("");
     
     private final String errorMessage;
