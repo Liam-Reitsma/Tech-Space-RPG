@@ -2,6 +2,7 @@ package game.persistence;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SaveFileResult extends DataResult<File>
@@ -20,5 +21,10 @@ public class SaveFileResult extends DataResult<File>
     public File getSelectedSaveFile(int index)
     {
         return result.get(index);
+    }
+    
+    public void addArray(File[] fileArray)
+    {
+        Collections.addAll(result, fileArray);
     }
 }

@@ -13,7 +13,6 @@ public class SaveFile
 {
     private File saveFile;
     private final File saveFileLocation;
-    private File[] saveFiles;
     
     public SaveFile()
     {
@@ -66,8 +65,10 @@ public class SaveFile
     
     public SaveErrors selectSave(int number)
     {
-        if(number - 1 < 0 || number - 1 >= saveFiles.length) return NUMBER_OUT_OF_BOUNDS;
-        saveFile = saveFiles[number - 1];
+        int saveFileIndex = number - 1;
+        SaveFileResult sfResult = getSaveFileNames();
+        if(saveFileIndex < 0 || saveFileIndex >= sfResult.size()) return NUMBER_OUT_OF_BOUNDS;
+        saveFile = sfResult.getSelectedSaveFile(saveFileIndex);
         return SUCCESS;
     }
     
@@ -77,9 +78,9 @@ public class SaveFile
         
         SaveFileResult sfResult = getSaveFileNames();
         
-        for(String saveName : sfResult.getSaveFiles())
+        for(File saveFile : sfResult.getSaveFiles())
         {
-            if(Objects.equals(saveName, name + ".save")) return FILE_ALREADY_EXISTS;
+            if(Objects.equals(saveFile.getName(), name + ".save")) return FILE_ALREADY_EXISTS;
         }
         
         saveFile = new File(saveFileLocation + "/" + name + ".save");
@@ -111,12 +112,12 @@ public class SaveFile
         StringBuilder saves = new StringBuilder();
         int i = 0;
         
-        SaveFileResult SaveFiles = getSaveFileNames();
+        SaveFileResult saveFiles = getSaveFileNames();
         
-        for(String saveLine : SaveFiles.getSaveFiles())
+        for(File saveFile : saveFiles.getSaveFiles())
         {
             i++;
-            saves.append("\n").append(i).append(". ").append(saveLine);
+            saves.append("\n").append(i).append(". ").append(saveFile.getName());
         }
         
         return saves.toString();
@@ -124,22 +125,22 @@ public class SaveFile
     
     private SaveFileResult getSaveFileNames()
     {
+        SaveFileResult sfResult = new SaveFileResult(SUCCESS);
+        
         try
         {
-            saveFiles = Objects.requireNonNull(saveFileLocation.listFiles());
+            sfResult.addArray(Objects.requireNonNull(saveFileLocation.listFiles()));
         } catch(NullPointerException e)
         {
             if(!saveFileLocation.mkdir()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING);
-            saveFiles = Objects.requireNonNull(saveFileLocation.listFiles());
+            sfResult.addArray(Objects.requireNonNull(saveFileLocation.listFiles()));
         }
         
-        if(saveFiles.length == 0) return new SaveFileResult(SAVE_FOLDER_EMPTY);
+        if(sfResult.size() == 0) return new SaveFileResult(SAVE_FOLDER_EMPTY);
         
-        SaveFileResult sfResult = new SaveFileResult(SUCCESS);
-        
-        for(File save : saveFiles)
+        for(File save : sfResult.getSaveFiles())
         {
-            sfResult.addData(save.getName());
+            sfResult.addData(save);
         }
         
         return sfResult;
