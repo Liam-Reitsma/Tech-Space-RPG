@@ -2,16 +2,16 @@ package game.persistence;
 
 import java.util.List;
 
-public abstract class DataResult
+public abstract class DataResult<T>
 {
     protected SaveErrors error;
-    protected List<String> result;
+    protected List<T> result;
     
     void setError(SaveErrors e) { error = e; }
     
-    void addData(String string)
+    void addData(T data)
     {
-        result.add(string);
+        result.add(data);
     }
     
     public SaveErrors getError() { return error; }
@@ -25,7 +25,7 @@ public abstract class DataResult
     public String toString()
     {
         StringBuilder stringToReturn = new StringBuilder();
-        for(String line : result) stringToReturn.append(line).append('\n');
+        for(T line : result) stringToReturn.append(line).append('\n');
         return stringToReturn.toString();
     }
 }
