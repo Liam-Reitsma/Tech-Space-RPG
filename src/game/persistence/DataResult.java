@@ -1,24 +1,17 @@
 package game.persistence;
 
-import java.util.List;
-
 public abstract class DataResult<T>
 {
     protected SaveErrors error;
-    protected List<T> result;
+    protected T[] result;
     
     void setError(SaveErrors e) { error = e; }
-    
-    void addData(T data)
-    {
-        result.add(data);
-    }
     
     public SaveErrors getError() { return error; }
     
     public int size()
     {
-        return result.size();
+        return result.length;
     }
     
     @Override

@@ -1,20 +1,17 @@
 package game.persistence;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class LoadResult extends DataResult
+public class LoadResult extends DataResult<String>
 {
-    public LoadResult()
+    public LoadResult(SaveErrors e, String[] array)
     {
         error = SaveErrors.SUCCESS;
-        result = new ArrayList<>();
+        result = array;
     }
     
     public String getClassName(int index)
     {
-        if(0 > index || index >= result.size()) return null;
-        String data = result.get(index);
+        if(0 > index || index >= result.length) return null;
+        String data = result[index];
         int spaceIndex = data.indexOf(": ");
         
         if(spaceIndex == -1) return null;
@@ -24,8 +21,8 @@ public class LoadResult extends DataResult
     
     public String[] getClassData(int index)
     {
-        if(0 > index || index >= result.size()) return null;
-        String data = result.get(index);
+        if(0 > index || index >= result.length) return null;
+        String data = result[index];
         int spaceIndex = data.indexOf(": ");
         
         if(spaceIndex == -1) return null;

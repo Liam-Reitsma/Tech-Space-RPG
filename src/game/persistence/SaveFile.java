@@ -23,6 +23,8 @@ public class SaveFile
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
+            writer.write("Lines = " + persistables.size());
+            writer.newLine();
             for(Persistable persistable : persistables)
             {
                 writer.write(persistable.getSaveInfo());
@@ -42,24 +44,20 @@ public class SaveFile
     
     public LoadResult read()
     {
-        LoadResult lResult= new LoadResult();
         try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
         {
-            List<String> result = reader.readAllLines();
-            for(String line : result)
-            {
-                lResult.addData(line);
-            }
+            String metadata = reader.readLine();
+            String[] data = new String[Integer.parseInt(metadata.substring(metadata.indexOf("= ") + "= ".length()))];
+            int i = 0;
+            for(String line : reader.readAllLines()) data[i++] = line;
             
-            return lResult;
+            return new LoadResult(SUCCESS, data);
         } catch(FileNotFoundException e)
         {
-            lResult.setError(SAVE_FILE_MISSING);
-            return lResult;
+            return new LoadResult(SAVE_FILE_MISSING, new String[0]);
         } catch(IOException e)
         {
-            lResult.setError(LOAD_ERROR);
-            return lResult;
+            return new LoadResult(LOAD_ERROR, new String[0]);
         }
     }
     
@@ -125,24 +123,19 @@ public class SaveFile
     
     private SaveFileResult getSaveFileNames()
     {
-        SaveFileResult sfResult = new SaveFileResult(SUCCESS);
+        SaveFileResult sfResult;
         
         try
         {
-            sfResult.addArray(Objects.requireNonNull(saveFileLocation.listFiles()));
+            sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         } catch(NullPointerException e)
         {
-            if(!saveFileLocation.mkdir()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING);
-            sfResult.addArray(Objects.requireNonNull(saveFileLocation.listFiles()));
+            if(!saveFileLocation.mkdir()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING, new File[0]);
+            sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         }
         
-        if(sfResult.size() == 0) return new SaveFileResult(SAVE_FOLDER_EMPTY);
-        
-        for(File save : sfResult.getSaveFiles())
-        {
-            sfResult.addData(save);
-        }
-        
+        if(sfResult.size() == 0) return new SaveFileResult(SAVE_FOLDER_EMPTY, new File[0]);
+
         return sfResult;
     }
     
