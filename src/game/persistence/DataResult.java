@@ -5,8 +5,6 @@ public abstract class DataResult<T>
     protected SaveErrors error;
     protected T[] result;
     
-    void setError(SaveErrors e) { error = e; }
-    
     public SaveErrors getError() { return error; }
     
     public int size()
