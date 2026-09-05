@@ -1,6 +1,6 @@
 package game.items;
 
-public class Potion extends Item
+public class Potion extends Item implements Usable
 {
     private final PotionType potionType;
 
@@ -12,4 +12,10 @@ public class Potion extends Item
     }
 
     public PotionType getPotionType() { return potionType; }
+
+    @Override
+    public int use()
+    {
+        return potionType.getHealAmount();
+    }
 }
