@@ -4,8 +4,9 @@ import java.lang.reflect.Field;
 
 public interface Persistable
 {
-    static final char DATA_SEPARATOR  = '\u001F';
     static final char CLASS_SEPARATOR = '\u001E';
+    static final char DATA_SEPARATOR  = '\u001F';
+    static final char FIELD_SEPARATOR = '\u0005';
     
     default String getSaveInfo() throws IllegalAccessException
     {
@@ -21,14 +22,14 @@ public interface Persistable
                 if(field.isAnnotationPresent(SaveExclude.class)) continue;
                 field.setAccessible(true);
                 //Creates: "Type-Name=Value, "
-                saveInfo.append(field.getName()).append("=").append(field.get(this)).append(DATA_SEPARATOR);
+                saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this)).append(DATA_SEPARATOR);
             }
             
             current = current.getSuperclass();
         }
         
         //Removes: ", " from end
-        saveInfo.delete(saveInfo.length() - 2, saveInfo.length());
+        saveInfo.delete(saveInfo.length() - String.valueOf(DATA_SEPARATOR).length(), saveInfo.length());
         
         return saveInfo.toString();
     }
@@ -43,8 +44,8 @@ public interface Persistable
         {
             for(String datum : data)
             {
-                name = datum.split("=")[0];
-                value = datum.split("=")[1];
+                name = datum.split(String.valueOf(FIELD_SEPARATOR))[0];
+                value = datum.split(String.valueOf(FIELD_SEPARATOR))[1];
                 
                 for(Field field : current.getDeclaredFields())
                 {
