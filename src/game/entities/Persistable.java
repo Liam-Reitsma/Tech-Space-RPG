@@ -1,16 +1,17 @@
 package game.entities;
 
-import game.persistence.SaveExclude;
-
 import java.lang.reflect.Field;
 
 public interface Persistable
 {
+    static final char DATA_SEPARATOR  = '\u001F';
+    static final char CLASS_SEPARATOR = '\u001E';
+    
     default String getSaveInfo() throws IllegalAccessException
     {
         StringBuilder saveInfo = new StringBuilder();
         //Creates: "ClassName: "
-        saveInfo.append(this.getClassName()).append(": ");
+        saveInfo.append(this.getClassName()).append(CLASS_SEPARATOR);
         Class<?> current = this.getClass();
         
         while(current != null && current != Object.class)
@@ -20,7 +21,7 @@ public interface Persistable
                 if(field.isAnnotationPresent(SaveExclude.class)) continue;
                 field.setAccessible(true);
                 //Creates: "Type-Name=Value, "
-                saveInfo.append(field.getName()).append("=").append(field.get(this)).append(", ");
+                saveInfo.append(field.getName()).append("=").append(field.get(this)).append(DATA_SEPARATOR);
             }
             
             current = current.getSuperclass();
