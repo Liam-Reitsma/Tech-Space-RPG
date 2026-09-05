@@ -1,6 +1,7 @@
 package game;
 
 import java.util.InputMismatchException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class ConsoleHandler
@@ -58,6 +59,26 @@ public class ConsoleHandler
         }
         
         return result.toLowerCase().charAt(0);
+    }
+    
+    public String confirmInput(String questionToAsk)
+    {
+        String result;
+        String question;
+        char confirmation;
+        if(questionToAsk.contains(String.valueOf('?'))) question = questionToAsk.substring(0, questionToAsk.length() - 1);
+        else question = questionToAsk;
+        printLine(question + "?");
+        
+        do
+        {
+            result = nextLine();
+            printLine("Are you sure? ");
+            if(nextCharToLowerCase() == 'y') break;
+            printLine("Alright, " + question.toLowerCase() + " then?");
+        } while(true);
+        
+        return result;
     }
     
     public int nextInt()
