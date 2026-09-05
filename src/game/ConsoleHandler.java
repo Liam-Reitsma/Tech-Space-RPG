@@ -50,7 +50,14 @@ public class ConsoleHandler
     
     public char nextCharToLowerCase()
     {
-        return nextLine().toLowerCase().charAt(0);
+        String result = nextLine();
+        while(result.isEmpty())
+        {
+            printLine("Please input something!");
+            result = nextLine();
+        }
+        
+        return result.toLowerCase().charAt(0);
     }
     
     public int nextInt()
