@@ -1,6 +1,6 @@
 package game.items;
 
-public abstract class Items
+public abstract class Item
 {
     protected String title;
     protected String description;
