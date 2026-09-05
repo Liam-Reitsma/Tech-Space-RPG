@@ -1,19 +1,25 @@
 package game;
 
+import game.entities.Persistable;
+import game.persistence.LoadFactory;
+import game.persistence.LoadResult;
+import game.persistence.SaveErrors;
+import game.persistence.SaveFileHandler;
+
 public enum MainMenuStates implements Menu
 {
     NEW_GAME("Start a New Game.")
             {
                 @Override
-                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH, GameController gameC)
                 {
                     consoleH.printLine("What would you like to call the save file?");
                     
                     do
                     {
-                        Errors result = saveFH.createNewSave(consoleH.nextLine());
+                        SaveErrors result = saveFH.createNewSave(consoleH.nextLine());
                         
-                        if(result == Errors.SUCCESS) break;
+                        if(result == SaveErrors.SUCCESS) break;
                         consoleH.printLine(result.toString());
                     } while(true);
                 }
@@ -21,27 +27,47 @@ public enum MainMenuStates implements Menu
     LOAD_GAME("Load a Saved Game.")
             {
                 @Override
-                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH, GameController gameC)
                 {
+                    LoadResult loadResult;
+                    LoadFactory loadFactory = new LoadFactory();
+                    
                     consoleH.printLine("Which save would you like to use?");
                     consoleH.printLine(saveFH.listAllSaves());
                     do
                     {
-                        Errors result = saveFH.selectSave(consoleH.nextInt());
+                        do
+                        {
+                            SaveErrors result = saveFH.selectSave(consoleH.nextInt());
+                            
+                            if(result == SaveErrors.SUCCESS) break;
+                            consoleH.printLine(result.toString());
+                        } while(true);
                         
-                        if(result == Errors.SUCCESS) break;
-                        consoleH.printLine(result.toString());
+                        loadResult = saveFH.loadData();
+                        if(loadResult.getError() != SaveErrors.SUCCESS) { consoleH.printLine(loadResult.getError().toString()); }
+                        else break;
+                        
                     } while(true);
                     
-                    LoadResult loadResult = saveFH.loadData();
-                    if(loadResult.getError() == Errors.SUCCESS) { consoleH.printLine(loadResult.getPlayerData()); }
-                    else { consoleH.printLine(loadResult.getError().toString()); }
+                    for(int i = 0; i < loadResult.size(); i++)
+                    {
+                        try
+                        {
+                            gameC.addObject((Persistable)loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i)));
+                        } catch(IllegalArgumentException e)
+                        {
+                            consoleH.printLine(e.getMessage() + "\nLoad aborted");
+                            return;
+                        }
+                    }
+                    
                 }
             },
     EXIT("Exit the Game")
             {
                 @Override
-                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH, GameController gameC)
                 {
                     consoleH.printLine("Exiting the game now...");
                 }

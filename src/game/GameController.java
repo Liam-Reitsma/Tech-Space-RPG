@@ -4,7 +4,9 @@ import static game.entities.ClassType.*;
 
 import game.entities.ClassType;
 import game.entities.Player;
-import game.entities.Saveable;
+import game.entities.Persistable;
+import game.persistence.SaveErrors;
+import game.persistence.SaveFileHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ public class GameController
 {
     private final ConsoleHandler consoleH;
     private final SaveFileHandler saveFH;
-    private final List<Saveable> saveableList;
+    private final List<Persistable> persistableList;
     
     private Player player;
     
@@ -21,7 +23,7 @@ public class GameController
     {
         consoleH = cH;
         saveFH = sFH;
-        saveableList = new ArrayList<>();
+        persistableList = new ArrayList<>();
     }
     
     public void run()
@@ -54,7 +56,7 @@ public class GameController
                 if(response == state.ordinal() + 1)
                 {
                     consoleH.nextLine();
-                    state.execute(consoleH, saveFH);
+                    state.execute(consoleH, saveFH, this);
                     invalidOption = false;
                     break;
                 }
@@ -88,9 +90,14 @@ public class GameController
         
         player = new Player(charName, classType);
         
-        saveableList.add(player);
+        persistableList.add(player);
         
-        Errors result = saveFH.saveData(saveableList);
-        if(result != Errors.SUCCESS) consoleH.printLine(result.toString());
+        SaveErrors result = saveFH.saveData(persistableList);
+        if(result != SaveErrors.SUCCESS) consoleH.printLine(result.toString());
+    }
+    
+    public void addObject(Persistable object)
+    {
+        persistableList.add(object);
     }
 }

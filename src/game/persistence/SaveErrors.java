@@ -1,6 +1,6 @@
-package game;
+package game.persistence;
 
-public enum Errors
+public enum SaveErrors
 {
     INVALID_FILE_NAME("Creating Save Failed! The file given is an invalid name. Please try again"),
     FILE_ALREADY_EXISTS("Creating Save Failed! The file given already exists and could not be created."),
@@ -9,12 +9,15 @@ public enum Errors
     LOAD_ERROR("Loading Failed! An unknown error occurred while loading your game."),
     MISSING_DATA("Loading Failed! Some data was lost during loading."),
     SAVE_FILE_MISSING("Loading Failed! Save file is missing."),
-    SAVE_FILE_CORRUPTED("Loading Failed! Save file data is corrupted"),
+    SAVE_FILE_CORRUPTED("Loading Failed! Save file data is corrupted."),
+    SAVE_FOLDER_LOCATION_MISSING("Getting Saves Failed! Cannot find save file location."),
+    SAVE_FOLDER_EMPTY("No save files found."),
+    SAVE_FILE_EMPTY("Loading Failed! Save file is empty."),
     SUCCESS("");
     
     private final String errorMessage;
     
-    Errors(String message)
+    SaveErrors(String message)
     {
         errorMessage = message;
     }
