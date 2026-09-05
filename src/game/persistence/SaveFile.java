@@ -147,7 +147,7 @@ public class SaveFile
             sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         } catch(NullPointerException e)
         {
-            if(!saveFileLocation.mkdir()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING, new File[0]);
+            if(!saveFileLocation.mkdirs()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING, new File[0]);
             sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         }
         
