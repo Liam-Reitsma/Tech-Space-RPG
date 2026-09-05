@@ -54,7 +54,7 @@ public enum MainMenuStates implements Menu
                     {
                         try
                         {
-                            gameC.addObject((Persistable)loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i)));
+                            gameC.addObject(loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i)));
                         } catch(IllegalArgumentException e)
                         {
                             consoleH.printLine(e.getMessage() + "\nLoad aborted");

@@ -1,5 +1,6 @@
 package game.persistence;
 
+import game.entities.Persistable;
 import game.entities.Player;
 
 public class LoadFactory
@@ -9,7 +10,7 @@ public class LoadFactory
     
     }
     
-    public Object create(String name, String[] data)
+    public Persistable create(String name, String[] data)
     {
         switch(name)
         {
