@@ -11,7 +11,7 @@ public enum MainMenuStates implements Menu
     NEW_GAME("Start a New Game.")
             {
                 @Override
-                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH, GameController gameC)
                 {
                     consoleH.printLine("What would you like to call the save file?");
                     
@@ -27,10 +27,9 @@ public enum MainMenuStates implements Menu
     LOAD_GAME("Load a Saved Game.")
             {
                 @Override
-                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH, GameController gameC)
                 {
                     LoadResult loadResult;
-                    Persistable objectToAdd;
                     LoadFactory loadFactory = new LoadFactory();
                     
                     consoleH.printLine("Which save would you like to use?");
@@ -43,7 +42,6 @@ public enum MainMenuStates implements Menu
                             
                             if(result == SaveErrors.SUCCESS) break;
                             consoleH.printLine(result.toString());
-                            
                         } while(true);
                         
                         loadResult = saveFH.loadData();
@@ -56,11 +54,7 @@ public enum MainMenuStates implements Menu
                     {
                         try
                         {
-                            objectToAdd = (Persistable)loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i));
-                            consoleH.printLine(objectToAdd.getSaveInfo());
-                        } catch(IllegalAccessException e)
-                        {
-                            throw new RuntimeException(e);
+                            gameC.addObject((Persistable)loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i)));
                         } catch(IllegalArgumentException e)
                         {
                             consoleH.printLine(e.getMessage() + "\nLoad aborted");
@@ -73,7 +67,7 @@ public enum MainMenuStates implements Menu
     EXIT("Exit the Game")
             {
                 @Override
-                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public void execute(ConsoleHandler consoleH, SaveFileHandler saveFH, GameController gameC)
                 {
                     consoleH.printLine("Exiting the game now...");
                 }

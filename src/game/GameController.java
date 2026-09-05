@@ -56,7 +56,7 @@ public class GameController
                 if(response == state.ordinal() + 1)
                 {
                     consoleH.nextLine();
-                    state.execute(consoleH, saveFH);
+                    state.execute(consoleH, saveFH, this);
                     invalidOption = false;
                     break;
                 }
@@ -94,5 +94,10 @@ public class GameController
         
         SaveErrors result = saveFH.saveData(persistableList);
         if(result != SaveErrors.SUCCESS) consoleH.printLine(result.toString());
+    }
+    
+    public void addObject(Persistable object)
+    {
+        persistableList.add(object);
     }
 }
