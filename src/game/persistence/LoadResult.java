@@ -1,9 +1,9 @@
 package game.persistence;
 
+import static game.entities.Persistable.*;
+
 public class LoadResult extends DataResult<String>
 {
-    private static final String CLASS_NAME_DELIMITER = ": ";
-    
     public LoadResult(SaveErrors e, String[] array)
     {
         error = e;
@@ -14,7 +14,7 @@ public class LoadResult extends DataResult<String>
     {
         if(0 > index || index >= result.length) return null;
         String data = result[index];
-        int spaceIndex = data.indexOf(CLASS_NAME_DELIMITER);
+        int spaceIndex = data.indexOf(CLASS_SEPARATOR);
         
         if(spaceIndex == -1) return null;
         
@@ -25,13 +25,12 @@ public class LoadResult extends DataResult<String>
     {
         if(0 > index || index >= result.length) return null;
         String data = result[index];
-        String classFieldDelimiter = ", ";
-        int spaceIndex = data.indexOf(CLASS_NAME_DELIMITER);
+        int spaceIndex = data.indexOf(CLASS_SEPARATOR);
         
         if(spaceIndex == -1) return null;
         
-        data = data.substring(spaceIndex + CLASS_NAME_DELIMITER.length());
+        data = data.substring(spaceIndex + String.valueOf(CLASS_SEPARATOR).length());
         
-        return data.split(classFieldDelimiter);
+        return data.split(String.valueOf(DATA_SEPARATOR));
     }
 }
