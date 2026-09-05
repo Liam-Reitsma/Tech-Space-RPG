@@ -8,6 +8,9 @@ public class ConsoleHandler
     Scanner scanner;
     
     private boolean splitNumber;
+    private boolean hasMoreWords;
+    private int wordIndex;
+    private String[] line;
     
     public ConsoleHandler(Scanner scanner)
     {
@@ -24,14 +27,30 @@ public class ConsoleHandler
         return scanner.nextLine();
     }
     
+    public String next()
+    {
+        if(hasMoreWords)
+        {
+            if(wordIndex < line.length) hasMoreWords = false;
+        }
+        else
+        {
+            line = scanner.nextLine().split(" ");
+            if(line.length > 1) hasMoreWords = true;
+            wordIndex = 0;
+        }
+       
+        return line[wordIndex++];
+    }
+    
     public char nextChar()
     {
-        return scanner.next().charAt(0);
+        return next().charAt(0);
     }
     
     public char nextCharToLowerCase()
     {
-        return scanner.next().toLowerCase().charAt(0);
+        return nextLine().toLowerCase().charAt(0);
     }
     
     public int nextInt()
