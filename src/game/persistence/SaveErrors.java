@@ -12,6 +12,7 @@ public enum SaveErrors
     SAVE_FILE_CORRUPTED("Loading Failed! Save file data is corrupted."),
     SAVE_FOLDER_LOCATION_MISSING("Getting Saves Failed! Cannot find save file location."),
     SAVE_FOLDER_EMPTY("No save files found."),
+    SAVE_FILE_EMPTY("Loading Failed! Save file is empty."),
     SUCCESS("");
     
     private final String errorMessage;

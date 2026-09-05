@@ -48,10 +48,23 @@ public class SaveFile
         {
             String metadata = reader.readLine();
             String[] data = new String[Integer.parseInt(metadata.substring(metadata.indexOf("= ") + "= ".length()))];
+            List<String> dataString= reader.readAllLines();
             int i = 0;
-            for(String line : reader.readAllLines()) data[i++] = line;
+            for(String line : dataString)
+            {
+                if(i >= data.length) return new LoadResult(LOAD_ERROR, new String[0]);
+                data[i++] = line;
+            }
+            
+            if(dataString.size() < data.length) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
             
             return new LoadResult(SUCCESS, data);
+        }  catch(NullPointerException e)
+        {
+            return new LoadResult(SAVE_FILE_EMPTY, new String[0]);
+        } catch(NumberFormatException e)
+        {
+            return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
         } catch(FileNotFoundException e)
         {
             return new LoadResult(SAVE_FILE_MISSING, new String[0]);
