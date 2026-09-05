@@ -102,6 +102,10 @@ public class SaveFile
     {
         if(name == null || name.isEmpty() || name.length() >= 255) return false;
         
+        if(name.contains("\\") || name.contains("/") || name.contains(":")) return false;
+        if(name.contains("*") || name.contains("?") || name.contains("\"")) return false;
+        if(name.contains("<") || name.contains(">") || name.contains("|"))  return false;
+        
         try
         {
             Paths.get(name);
