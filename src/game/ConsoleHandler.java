@@ -88,6 +88,47 @@ public class ConsoleHandler
         return new InputResult<>(result);
     }
     
+    public InputResult<Integer> confirmInput(String questionToAsk, String options, String splitter)
+    {
+        int result;
+        String question;
+        if(questionToAsk.contains(String.valueOf('?'))) question = questionToAsk.substring(0, questionToAsk.length() - 1);
+        else question = questionToAsk;
+        printLine(question + "?");
+        printLine("The options are:\n" + options);
+        
+        do
+        {
+            Optional<Integer> iResultInt;
+            Optional<Character> iResultChar;
+            iResultInt = nextInt().getInput();
+            if(iResultInt.isEmpty()) return new InputResult<>();
+            result = iResultInt.get();
+            
+            if(result > options.split(splitter).length) result = 0;
+
+            if(result <= 0)
+            {
+                printLine("Sorry, that is not a valid input. Please try again.");
+                printLine("The options are:\n" + options);
+            }
+            else
+            {
+                printLine("Are you sure?");
+                iResultChar = nextCharToLowerCase().getInput();
+                if(iResultChar.isEmpty()) return new InputResult<>();
+                if(iResultChar.get() != 'y')
+                {
+                    result = 0;
+                    printLine("Alright, " + question.toLowerCase() + " then?");
+                    printLine(options + "?");
+                }
+            }
+        } while(result <= 0);
+        
+        return new InputResult<>(result);
+    }
+    
     public <T extends Enum<T>> InputResult<T> confirmInput(String questionToAsk, String options, Class<T> type)
     {
         T result = null;
