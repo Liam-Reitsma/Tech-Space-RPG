@@ -1,11 +1,10 @@
 package game.persistence;
 
-public abstract class DataResult<T>
+import game.Result;
+
+public abstract class DataResult<T> extends Result<SaveErrors>
 {
-    protected SaveErrors error;
     protected T[] result;
-    
-    public SaveErrors getError() { return error; }
     
     public int size()
     {

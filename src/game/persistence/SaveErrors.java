@@ -1,6 +1,8 @@
 package game.persistence;
 
-public enum SaveErrors
+import game.Errors;
+
+public enum SaveErrors implements Errors
 {
     INVALID_FILE_NAME("Creating Save Failed! The file given is an invalid name. Please try again"),
     FILE_ALREADY_EXISTS("Creating Save Failed! The file given already exists and could not be created."),
