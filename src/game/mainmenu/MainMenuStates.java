@@ -49,7 +49,7 @@ public enum MainMenuStates implements Menu
                     saveFH.createNewSave(fileName);
                     innerList.add(new Player(charName, classType));
                     list.add(innerList);
-                    
+                    saveFH.saveData(list.getFirst());
                     return new MainMenuResult(MainMenuErrors.SUCCESS, list, this);
                 }
             },
