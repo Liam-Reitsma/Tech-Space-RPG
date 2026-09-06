@@ -7,10 +7,10 @@ import java.util.List;
 
 public class MainMenuResult extends Result<MainMenuErrors>
 {
-    protected List<Persistable> result;
+    protected List<List<Persistable>> result;
     protected MainMenuStates stateUsed;
     
-    public MainMenuResult(MainMenuErrors e, List<Persistable> list, MainMenuStates state)
+    public MainMenuResult(MainMenuErrors e, List<List<Persistable>> list, MainMenuStates state)
     {
         error = e;
         result = list;
@@ -19,13 +19,16 @@ public class MainMenuResult extends Result<MainMenuErrors>
     
     public int size() { return result.size(); }
     
-    public List<Persistable> getList() { return result;}
+    public List<List<Persistable>> getList() { return result;}
     
     @Override
     public String toString()
     {
         StringBuilder stringToReturn = new StringBuilder();
-        for(Persistable line : result) stringToReturn.append(line).append('\n');
+        for(List<Persistable> list : result)
+        {
+            for(Persistable line : list) stringToReturn.append(line).append('\n');
+        }
         return stringToReturn.toString();
     }
 }

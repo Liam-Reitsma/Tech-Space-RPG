@@ -22,7 +22,8 @@ public enum MainMenuStates implements Menu
                 @Override
                 public MainMenuResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
                 {
-                    List<Persistable> list = new ArrayList<>();
+                    List<List<Persistable>> list = new ArrayList<>(new ArrayList<>());
+                    List<Persistable> innerList = new ArrayList<>();
                     do
                     {
                         Optional<String> userInput = consoleH.confirmInput("What would you like to call the save file?").getInput();
@@ -33,7 +34,8 @@ public enum MainMenuStates implements Menu
                         consoleH.printLine(result.toString());
                     } while(true);
                     
-                    list.add(Introduction(consoleH));
+                    innerList.add(Introduction(consoleH));
+                    list.add(innerList);
                     
                     return new MainMenuResult(MainMenuErrors.SUCCESS, list, this);
                 }
@@ -43,7 +45,8 @@ public enum MainMenuStates implements Menu
                 @Override
                 public MainMenuResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
                 {
-                    List<Persistable> list = new ArrayList<>();
+                    List<List<Persistable>> list = new ArrayList<>();
+                    List<Persistable> innerList = new ArrayList<>();
                     LoadResult loadResult;
                     LoadFactory loadFactory = new LoadFactory();
                     
@@ -70,13 +73,15 @@ public enum MainMenuStates implements Menu
                     {
                         try
                         {
-                            list.add(loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i)));
+                            innerList.add(loadFactory.create(loadResult.getClassName(i), loadResult.getClassData(i)));
                         } catch(IllegalArgumentException e)
                         {
                             consoleH.printLine(e.getMessage() + "\nLoad aborted");
                             return new MainMenuResult(MainMenuErrors.LOADING_LIST_FAILED, list, this);
                         }
                     }
+                    
+                    list.add(innerList);
                     
                     return new MainMenuResult(MainMenuErrors.SUCCESS, list, this);
                 }

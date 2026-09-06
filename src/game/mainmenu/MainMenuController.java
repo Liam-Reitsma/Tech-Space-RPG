@@ -20,7 +20,7 @@ public class MainMenuController
         saveFH = sFH;
     }
     
-    public List<Persistable> run()
+    public List<List<Persistable>> run()
     {
         boolean validOption;
         boolean success;
