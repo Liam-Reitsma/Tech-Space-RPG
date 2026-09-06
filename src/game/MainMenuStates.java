@@ -1,6 +1,5 @@
 package game;
 
-import game.entities.Persistable;
 import game.persistence.LoadFactory;
 import game.persistence.LoadResult;
 import game.persistence.SaveErrors;
