@@ -107,7 +107,7 @@ public class ConsoleHandler
             response = iResultString.get();
             for(T constant : type.getEnumConstants())
             {
-                if(constant.name().toLowerCase().equals(response))
+                if(constant.name().equalsIgnoreCase(response))
                 {
                     result = constant;
                     break;
