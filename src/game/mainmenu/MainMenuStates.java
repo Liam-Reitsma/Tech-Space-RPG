@@ -60,27 +60,13 @@ public enum MainMenuStates implements Menu
                 {
                     List<List<Persistable>> list = new ArrayList<>();
                     List<Persistable> innerList = new ArrayList<>();
-                    LoadResult loadResult;
                     LoadFactory loadFactory = new LoadFactory();
+                    LoadResult loadResult;
                     
                     consoleH.printLine("Which save would you like to use?");
                     consoleH.printLine(saveFH.listAllSaves());
-                    do
-                    {
-                        do
-                        {
-                            Optional<Integer> userInput = consoleH.nextInt().getInput();
-                            if(userInput.isEmpty()) break;
-                            SaveErrors result = saveFH.selectSave(userInput.get());
-                            
-                            if(result == SUCCESS) break;
-                            consoleH.printLine(result.toString());
-                        } while(true);
-                        
-                        loadResult = saveFH.loadData();
-                        if(loadResult.getError() == SUCCESS) { break; }
-                        consoleH.printLine(loadResult.getError().toString());
-                    } while(true);
+                    
+                    loadResult = askFileToLoad(consoleH, saveFH);
                     
                     for(int i = 0; i < loadResult.size(); i++)
                     {
@@ -145,6 +131,29 @@ public enum MainMenuStates implements Menu
     {
         Optional<ClassType> userInputClass = consoleH.confirmInput("What class do you want?", "Warrior, Rogue, or Mage", ClassType.class).getInput();
         return userInputClass.orElse(ClassType.UNSELECTED);
+    }
+    
+    private static LoadResult askFileToLoad(ConsoleHandler consoleH, SaveFileHandler saveFH)
+    {
+        LoadResult loadResult;
+        do
+        {
+            do
+            {
+                Optional<Integer> userInput = consoleH.nextInt().getInput();
+                if(userInput.isEmpty()) break;
+                SaveErrors result = saveFH.selectSave(userInput.get());
+                
+                if(result == SUCCESS) break;
+                consoleH.printLine(result.toString());
+            } while(true);
+            
+            loadResult = saveFH.loadData();
+            if(loadResult.getError() == SUCCESS) { break; }
+            consoleH.printLine(loadResult.getError().toString());
+        } while(true);
+        
+        return loadResult;
     }
     
     @Override
