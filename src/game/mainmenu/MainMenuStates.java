@@ -26,6 +26,7 @@ public enum MainMenuStates implements Menu
                     List<Persistable> innerList = new ArrayList<>();
                     String fileName;
                     String charName;
+                    ClassType classType;
                     for(int i = 0; i < 4; i++)
                     {
                         switch(i)
@@ -38,7 +39,10 @@ public enum MainMenuStates implements Menu
                                 charName = askCharName(consoleH);
                                 if(charName == null) i--;
                                 break;
-                                
+                            case 2:
+                                classType = askClassType(consoleH);
+                                if(classType == null) i--;
+                                break;
                         }
                     }
                     
@@ -110,7 +114,7 @@ public enum MainMenuStates implements Menu
         message = s;
     }
     
-    public String askFileName(SaveFileHandler saveFH, ConsoleHandler consoleH)
+    private static String askFileName(SaveFileHandler saveFH, ConsoleHandler consoleH)
     {
         String result = "";
         
@@ -130,24 +134,23 @@ public enum MainMenuStates implements Menu
         return result;
     }
     
-    public String askCharName(ConsoleHandler consoleH)
+    private static String askCharName(ConsoleHandler consoleH)
     {
         Optional<String> userInputName = consoleH.confirmInput("What would you like to name your character?").getInput();
         return userInputName.orElse(null);
     }
     
+    private static ClassType askClassType(ConsoleHandler consoleH)
+    {
+        Optional<ClassType> userInputClass = consoleH.confirmInput("What class do you want?", "Warrior, Rogue, or Mage", ClassType.class).getInput();
+        return userInputClass.orElse(null);
+    }
+    
     public Persistable Introduction(ConsoleHandler consoleH)
     {
         Player player;
-        String charName;
-        ClassType classType;
         
-        
-        Optional<ClassType> userInputClass = consoleH.confirmInput("What class do you want?", "Warrior, Rogue, or Mage", ClassType.class).getInput();
-        if(userInputClass.isEmpty()) return null;
-        classType = userInputClass.get();
-        
-        player = new Player(null, classType);
+        player = new Player(null, null);
         
         return player;
     }
