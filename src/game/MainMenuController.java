@@ -23,7 +23,7 @@ public class MainMenuController
         boolean validOption;
         boolean success;
         
-        UserResult result = null;
+        MainMenuResult result = null;
         
         consoleH.printLine("Welcome to Tech Space");
         consoleH.printLine("Select an Option:");

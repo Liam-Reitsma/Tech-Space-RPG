@@ -4,12 +4,12 @@ import game.entities.Persistable;
 
 import java.util.List;
 
-public class UserResult extends Result<MainMenuErrors>
+public class MainMenuResult extends Result<MainMenuErrors>
 {
     protected List<Persistable> result;
     protected MainMenuStates stateUsed;
     
-    public UserResult(MainMenuErrors e, List<Persistable> list, MainMenuStates state)
+    public MainMenuResult(MainMenuErrors e, List<Persistable> list, MainMenuStates state)
     {
         error = e;
         result = list;

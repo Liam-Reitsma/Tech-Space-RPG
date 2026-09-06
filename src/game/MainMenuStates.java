@@ -18,7 +18,7 @@ public enum MainMenuStates implements Menu
     NEW_GAME("Start a New Game.")
             {
                 @Override
-                public UserResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public MainMenuResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
                 {
                     List<Persistable> list = new ArrayList<>();
                     do
@@ -31,13 +31,13 @@ public enum MainMenuStates implements Menu
                     
                     list.add(Introduction(consoleH));
                     
-                    return new UserResult(MainMenuErrors.SUCCESS, list, this);
+                    return new MainMenuResult(MainMenuErrors.SUCCESS, list, this);
                 }
             },
     LOAD_GAME("Load a Saved Game.")
             {
                 @Override
-                public UserResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public MainMenuResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
                 {
                     List<Persistable> list = new ArrayList<>();
                     LoadResult loadResult;
@@ -68,19 +68,19 @@ public enum MainMenuStates implements Menu
                         } catch(IllegalArgumentException e)
                         {
                             consoleH.printLine(e.getMessage() + "\nLoad aborted");
-                            return new UserResult(MainMenuErrors.LOADING_LIST_FAILED, list, this);
+                            return new MainMenuResult(MainMenuErrors.LOADING_LIST_FAILED, list, this);
                         }
                     }
                     
-                    return new UserResult(MainMenuErrors.SUCCESS, list, this);
+                    return new MainMenuResult(MainMenuErrors.SUCCESS, list, this);
                 }
             },
     EXIT("Exit the Game")
             {
                 @Override
-                public UserResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public MainMenuResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
                 {
-                    return new UserResult(MainMenuErrors.SUCCESS, new ArrayList<>(), this);
+                    return new MainMenuResult(MainMenuErrors.SUCCESS, new ArrayList<>(), this);
                 }
             };
     
