@@ -61,12 +61,7 @@ public enum MainMenuStates implements Menu
                     List<List<Persistable>> list = new ArrayList<>();
                     List<Persistable> innerList = new ArrayList<>();
                     LoadFactory loadFactory = new LoadFactory();
-                    LoadResult loadResult;
-                    
-                    consoleH.printLine("Which save would you like to use?");
-                    consoleH.printLine(saveFH.listAllSaves());
-                    
-                    loadResult = askFileToLoad(consoleH, saveFH);
+                    LoadResult loadResult = askFileToLoad(consoleH, saveFH);
                     
                     for(int i = 0; i < loadResult.size(); i++)
                     {
@@ -136,11 +131,13 @@ public enum MainMenuStates implements Menu
     private static LoadResult askFileToLoad(ConsoleHandler consoleH, SaveFileHandler saveFH)
     {
         LoadResult loadResult;
+        String question = "Which save would you like to use?";
+        String options = saveFH.listAllSaves();
         do
         {
             do
             {
-                Optional<Integer> userInput = consoleH.nextInt().getInput();
+                Optional<Integer> userInput = consoleH.confirmInput(question, options, "\n").getInput();
                 if(userInput.isEmpty()) break;
                 SaveErrors result = saveFH.selectSave(userInput.get());
                 

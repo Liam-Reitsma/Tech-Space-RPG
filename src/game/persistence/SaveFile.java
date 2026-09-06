@@ -144,8 +144,10 @@ public class SaveFile
         for(File saveFile : saveFiles.getSaveFiles())
         {
             i++;
-            saves.append("\n").append(i).append(". ").append(saveFile.getName());
+            saves.append(i).append(". ").append(saveFile.getName()).append("\n");
         }
+        
+        saves.deleteCharAt(saves.length() - 1);
         
         return saves.toString();
     }
