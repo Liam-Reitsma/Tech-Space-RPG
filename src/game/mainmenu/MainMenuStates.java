@@ -24,15 +24,18 @@ public enum MainMenuStates implements Menu
                 {
                     List<List<Persistable>> list = new ArrayList<>(new ArrayList<>());
                     List<Persistable> innerList = new ArrayList<>();
-                    do
+                    String fileName;
+                    for(int i = 0; i < 4; i++)
                     {
-                        Optional<String> userInput = consoleH.confirmInput("What would you like to call the save file?").getInput();
-                        if(userInput.isEmpty()) break;
-                        SaveErrors result = saveFH.createNewSave(userInput.get());
-                        
-                        if(result == SUCCESS) break;
-                        consoleH.printLine(result.toString());
-                    } while(true);
+                        switch(i)
+                        {
+                            case 0:
+                                fileName = askFileName(saveFH, consoleH);
+                                if(fileName == null) break;
+                                return null;
+                                
+                        }
+                    }
                     
                     innerList.add(Introduction(consoleH));
                     list.add(innerList);
@@ -100,6 +103,26 @@ public enum MainMenuStates implements Menu
     MainMenuStates(String s)
     {
         message = s;
+    }
+    
+    public String askFileName(SaveFileHandler saveFH, ConsoleHandler consoleH)
+    {
+        String result = "";
+        
+        do
+        {
+            Optional<String> userInput = consoleH.confirmInput("What would you like to call the save file?").getInput();
+            if(userInput.isEmpty()) return null;
+            if(saveFH.canCreateNewSave(userInput.get()))
+            {
+                result = userInput.get();
+                break;
+            }
+            
+            consoleH.printLine(saveFH.createNewSave(userInput.get()).toString());
+        } while(true);
+        
+        return result;
     }
     
     public Persistable Introduction(ConsoleHandler consoleH)
