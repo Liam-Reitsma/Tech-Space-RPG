@@ -4,8 +4,8 @@ import java.util.Optional;
 
 public class InputResult<T> extends Result<Errors>
 {
-    protected T input;
-    protected boolean goBack;
+    private T input;
+    private boolean goBack;
     
     public InputResult(T result)
     {
