@@ -1,6 +1,8 @@
 package game.items;
 
-public abstract class Item
+import game.entities.Persistable;
+
+public abstract class Item implements Persistable
 {
     protected String title;
     protected String description;
