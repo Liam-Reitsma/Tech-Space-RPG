@@ -25,14 +25,19 @@ public enum MainMenuStates implements Menu
                     List<List<Persistable>> list = new ArrayList<>(new ArrayList<>());
                     List<Persistable> innerList = new ArrayList<>();
                     String fileName;
+                    String charName;
                     for(int i = 0; i < 4; i++)
                     {
                         switch(i)
                         {
                             case 0:
                                 fileName = askFileName(saveFH, consoleH);
-                                if(fileName == null) break;
-                                return null;
+                                if(fileName == null) return null;
+                                break;
+                            case 1:
+                                charName = askCharName(consoleH);
+                                if(charName == null) i--;
+                                break;
                                 
                         }
                     }
@@ -125,20 +130,24 @@ public enum MainMenuStates implements Menu
         return result;
     }
     
+    public String askCharName(ConsoleHandler consoleH)
+    {
+        Optional<String> userInputName = consoleH.confirmInput("What would you like to name your character?").getInput();
+        return userInputName.orElse(null);
+    }
+    
     public Persistable Introduction(ConsoleHandler consoleH)
     {
         Player player;
         String charName;
         ClassType classType;
         
-        Optional<String> userInputName = consoleH.confirmInput("What would you like to name your character?").getInput();
-        if(userInputName.isEmpty()) return null;
-        charName = userInputName.get();
+        
         Optional<ClassType> userInputClass = consoleH.confirmInput("What class do you want?", "Warrior, Rogue, or Mage", ClassType.class).getInput();
         if(userInputClass.isEmpty()) return null;
         classType = userInputClass.get();
         
-        player = new Player(charName, classType);
+        player = new Player(null, classType);
         
         return player;
     }
