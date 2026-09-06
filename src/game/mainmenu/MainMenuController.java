@@ -7,6 +7,7 @@ import game.entities.Persistable;
 import game.persistence.SaveFileHandler;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MainMenuController
 {
@@ -37,7 +38,9 @@ public class MainMenuController
         {
             validOption = false;
             success = false;
-            int response = consoleH.nextInt();
+            Optional<Integer> userInput = consoleH.nextInt().getInput();
+            if(userInput.isEmpty()) break;
+            int response = userInput.get();
             
             for(MainMenuStates state : MainMenuStates.values())
             {

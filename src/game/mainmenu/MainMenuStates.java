@@ -13,6 +13,7 @@ import game.persistence.SaveFileHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public enum MainMenuStates implements Menu
 {
@@ -24,7 +25,9 @@ public enum MainMenuStates implements Menu
                     List<Persistable> list = new ArrayList<>();
                     do
                     {
-                        SaveErrors result = saveFH.createNewSave(consoleH.confirmInput("What would you like to call the save file?"));
+                        Optional<String> userInput = consoleH.confirmInput("What would you like to call the save file?").getInput();
+                        if(userInput.isEmpty()) break;
+                        SaveErrors result = saveFH.createNewSave(userInput.get());
                         
                         if(result == SUCCESS) break;
                         consoleH.printLine(result.toString());
@@ -50,7 +53,9 @@ public enum MainMenuStates implements Menu
                     {
                         do
                         {
-                            SaveErrors result = saveFH.selectSave(consoleH.nextInt());
+                            Optional<Integer> userInput = consoleH.nextInt().getInput();
+                            if(userInput.isEmpty()) break;
+                            SaveErrors result = saveFH.selectSave(userInput.get());
                             
                             if(result == SUCCESS) break;
                             consoleH.printLine(result.toString());
@@ -98,8 +103,12 @@ public enum MainMenuStates implements Menu
         String charName;
         ClassType classType;
         
-        charName = consoleH.confirmInput("What would you like to name your character?");
-        classType = consoleH.confirmInput("What class do you want?", "Warrior, Rogue, or Mage", ClassType.class);
+        Optional<String> userInputName = consoleH.confirmInput("What would you like to name your character?").getInput();
+        if(userInputName.isEmpty()) return null;
+        charName = userInputName.get();
+        Optional<ClassType> userInputClass = consoleH.confirmInput("What class do you want?", "Warrior, Rogue, or Mage", ClassType.class).getInput();
+        if(userInputClass.isEmpty()) return null;
+        classType = userInputClass.get();
         
         player = new Player(charName, classType);
         
