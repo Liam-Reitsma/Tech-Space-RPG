@@ -1,7 +1,8 @@
-package game;
+package game.mainmenu;
 
-import static game.MainMenuErrors.*;
+import static game.mainmenu.MainMenuErrors.*;
 
+import game.ConsoleHandler;
 import game.entities.Persistable;
 import game.persistence.SaveFileHandler;
 

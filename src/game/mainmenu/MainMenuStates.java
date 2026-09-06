@@ -1,7 +1,8 @@
-package game;
+package game.mainmenu;
 
 import static game.persistence.SaveErrors.*;
 
+import game.ConsoleHandler;
 import game.entities.ClassType;
 import game.entities.Persistable;
 import game.entities.Player;

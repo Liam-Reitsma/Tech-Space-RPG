@@ -1,5 +1,6 @@
-package game;
+package game.mainmenu;
 
+import game.ConsoleHandler;
 import game.persistence.SaveFileHandler;
 
 public interface Menu

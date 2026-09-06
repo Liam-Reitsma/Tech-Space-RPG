@@ -1,4 +1,6 @@
-package game;
+package game.mainmenu;
+
+import game.Errors;
 
 public enum MainMenuErrors implements Errors
 {

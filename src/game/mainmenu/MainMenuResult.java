@@ -1,5 +1,6 @@
-package game;
+package game.mainmenu;
 
+import game.Result;
 import game.entities.Persistable;
 
 import java.util.List;
