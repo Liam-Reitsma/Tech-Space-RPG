@@ -46,7 +46,6 @@ public class MainMenuController
             {
                 if(response == state.ordinal() + 1)
                 {
-                    consoleH.nextLine();
                     result = state.execute(consoleH, saveFH);
                     validOption = true;
                     if(result.getError() == SUCCESS) success = true;
