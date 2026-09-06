@@ -65,7 +65,6 @@ public class ConsoleHandler
     {
         String result;
         String question;
-        char confirmation;
         if(questionToAsk.contains(String.valueOf('?'))) question = questionToAsk.substring(0, questionToAsk.length() - 1);
         else question = questionToAsk;
         printLine(question + "?");
@@ -73,10 +72,52 @@ public class ConsoleHandler
         do
         {
             result = nextLine();
-            printLine("Are you sure? ");
+            printLine("Are you sure?");
             if(nextCharToLowerCase() == 'y') break;
             printLine("Alright, " + question.toLowerCase() + " then?");
         } while(true);
+        
+        return result;
+    }
+    
+    public <T extends Enum<T>> T confirmInput(String questionToAsk, String options, Class<T> type)
+    {
+        T result = null;
+        String response;
+        String question;
+        if(questionToAsk.contains(String.valueOf('?'))) question = questionToAsk.substring(0, questionToAsk.length() - 1);
+        else question = questionToAsk;
+        printLine(question + "?");
+        printLine("The options are: " + options + ".");
+        
+        do
+        {
+            response = nextLine().toLowerCase();
+            for(T constant : type.getEnumConstants())
+            {
+                if(constant.name().toLowerCase().equals(response))
+                {
+                    result = constant;
+                    break;
+                }
+            }
+            
+            if(result == null)
+            {
+                printLine("Sorry, that is not a valid input. Please try again.");
+                printLine("The options are: " + options + ".");
+            }
+            else
+            {
+                printLine("Are you sure?");
+                if(nextCharToLowerCase() != 'y')
+                {
+                    result = null;
+                    printLine("Alright, " + question.toLowerCase() + " then?");
+                    printLine(options + "?");
+                }
+            }
+        } while(result == null);
         
         return result;
     }
