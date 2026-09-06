@@ -24,29 +24,30 @@ public enum MainMenuStates implements Menu
                 {
                     List<List<Persistable>> list = new ArrayList<>(new ArrayList<>());
                     List<Persistable> innerList = new ArrayList<>();
-                    String fileName;
-                    String charName;
-                    ClassType classType;
-                    for(int i = 0; i < 4; i++)
+                    String fileName = "";
+                    String charName = "";
+                    ClassType classType = ClassType.UNSELECTED;
+                    for(int i = 0; i < 3; i++)
                     {
                         switch(i)
                         {
                             case 0:
                                 fileName = askFileName(saveFH, consoleH);
-                                if(fileName == null) return null;
+                                if(fileName == null) return new MainMenuResult(MainMenuErrors.USER_WENT_BACK, list, this);
                                 break;
                             case 1:
                                 charName = askCharName(consoleH);
-                                if(charName == null) i--;
+                                if(charName == null) i -= 2;
                                 break;
                             case 2:
                                 classType = askClassType(consoleH);
-                                if(classType == null) i--;
+                                if(classType == ClassType.UNSELECTED) i -= 2;
                                 break;
                         }
                     }
                     
-                    innerList.add(Introduction(consoleH));
+                    saveFH.createNewSave(fileName);
+                    innerList.add(new Player(charName, classType));
                     list.add(innerList);
                     
                     return new MainMenuResult(MainMenuErrors.SUCCESS, list, this);
@@ -116,7 +117,7 @@ public enum MainMenuStates implements Menu
     
     private static String askFileName(SaveFileHandler saveFH, ConsoleHandler consoleH)
     {
-        String result = "";
+        String result;
         
         do
         {
@@ -143,16 +144,7 @@ public enum MainMenuStates implements Menu
     private static ClassType askClassType(ConsoleHandler consoleH)
     {
         Optional<ClassType> userInputClass = consoleH.confirmInput("What class do you want?", "Warrior, Rogue, or Mage", ClassType.class).getInput();
-        return userInputClass.orElse(null);
-    }
-    
-    public Persistable Introduction(ConsoleHandler consoleH)
-    {
-        Player player;
-        
-        player = new Player(null, null);
-        
-        return player;
+        return userInputClass.orElse(ClassType.UNSELECTED);
     }
     
     @Override
