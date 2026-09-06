@@ -13,7 +13,7 @@ public class Main
         ConsoleHandler consoleH = new ConsoleHandler(scanner);
         SaveFile saveFile = new SaveFile();
         SaveFileHandler saveFH = new SaveFileHandler(saveFile);
-        GameController gameC = new GameController(consoleH, saveFH);
+        MainMenuController gameC = new MainMenuController(consoleH, saveFH);
         
         gameC.run();
 
