@@ -1,6 +1,6 @@
 package game.items;
 
-public class Weapon extends Item implements Usable
+public class Weapon extends EquippableItem<WeaponType> implements Usable
 {
     WeaponType weaponType;
 
@@ -17,5 +17,16 @@ public class Weapon extends Item implements Usable
     public int use()
     {
         return weaponType.getBaseDamage();
+    }
+
+    @Override
+    public void equip()
+    {
+        isEquipped = true;
+    }
+    @Override
+    public void unequip()
+    {
+        isEquipped = false;
     }
 }
