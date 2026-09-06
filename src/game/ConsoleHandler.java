@@ -35,11 +35,13 @@ public class ConsoleHandler
     {
         if(hasMoreWords)
         {
-            if(wordIndex < line.length) hasMoreWords = false;
+            if(wordIndex >= line.length - 1) hasMoreWords = false;
         }
         else
         {
-            line = scanner.nextLine().split(" ");
+            Optional<String> iResult = nextLine().getInput();
+            if(iResult.isEmpty()) return new InputResult<>();
+            line = iResult.get().split(" ");
             if(line.length > 1) hasMoreWords = true;
             wordIndex = 0;
         }
@@ -78,7 +80,8 @@ public class ConsoleHandler
             else result = iResultString.get();
             printLine("Are you sure?");
             iResultChar = nextCharToLowerCase().getInput();
-            if(iResultChar.isPresent() && iResultChar.get() == 'y') break;
+            if(iResultChar.isEmpty()) return new InputResult<>();
+            if(iResultChar.get() == 'y') break;
             printLine("Alright, " + question.toLowerCase() + " then?");
         } while(true);
         
