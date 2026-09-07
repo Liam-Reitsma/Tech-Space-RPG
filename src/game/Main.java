@@ -14,11 +14,13 @@ public class Main
         ConsoleHandler consoleH = new ConsoleHandler(scanner);
         SaveFile saveFile = new SaveFile();
         SaveFileHandler saveFH = new SaveFileHandler(saveFile);
-        MainMenuController gameC = new MainMenuController(consoleH, saveFH);
+        MainMenuController mmController = new MainMenuController(consoleH, saveFH);
         
-        gameC.start();
+        GameController gameController = new GameController(mmController);
+        
+        int exitValue = gameController.start();
 
         scanner.close();
-        System.exit(0);
+        System.exit(exitValue);
     }
 }

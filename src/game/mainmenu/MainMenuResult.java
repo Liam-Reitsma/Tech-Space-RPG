@@ -7,8 +7,8 @@ import java.util.List;
 
 public class MainMenuResult extends Result<MainMenuErrors>
 {
-    protected List<List<Persistable>> result;
-    protected MainMenuStates stateUsed;
+    private List<List<Persistable>> result;
+    private MainMenuStates stateUsed;
     
     public MainMenuResult(MainMenuErrors e, List<List<Persistable>> list, MainMenuStates state)
     {
@@ -20,6 +20,8 @@ public class MainMenuResult extends Result<MainMenuErrors>
     public int size() { return result.size(); }
     
     public List<List<Persistable>> getList() { return result;}
+    
+    public MainMenuStates getStateUsed() { return stateUsed; }
     
     @Override
     public String toString()

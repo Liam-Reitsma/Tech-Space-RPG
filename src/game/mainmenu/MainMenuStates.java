@@ -49,6 +49,8 @@ public enum MainMenuStates implements Menu
                     saveFH.createNewSave(fileName);
                     innerList.add(new Player(charName, classType));
                     list.add(innerList);
+                    list.add(new ArrayList<Persistable>()); //TODO Add Weapon Based on Class
+                    list.add(new ArrayList<Persistable>());
                     saveFH.saveData(list.getFirst());
                     return new MainMenuResult(MainMenuErrors.SUCCESS, list, this);
                 }
