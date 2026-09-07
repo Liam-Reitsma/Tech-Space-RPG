@@ -80,9 +80,14 @@ public class ConsoleHandler
             else result = iResultString.get();
             printLine("Are you sure?");
             iResultChar = nextCharToLowerCase().getInput();
-            if(iResultChar.isEmpty()) return new InputResult<>();
+            if(iResultChar.isEmpty())
+            {
+                printLine("Alright, " + question.toLowerCase() + " then?");
+                continue;
+            }
             if(iResultChar.get() == 'y') break;
-            printLine("Alright, " + question.toLowerCase() + " then?");
+            if(iResultChar.get() == 'n') printLine("Alright, " + question.toLowerCase() + " then?");
+            else printLine(question + "?");
         } while(true);
         
         return new InputResult<>(result);
@@ -116,7 +121,7 @@ public class ConsoleHandler
             {
                 printLine("Are you sure?");
                 iResultChar = nextCharToLowerCase().getInput();
-                if(iResultChar.isEmpty()) return new InputResult<>();
+                if(iResultChar.isEmpty()) continue;
                 if(iResultChar.get() != 'y')
                 {
                     result = 0;
@@ -164,7 +169,7 @@ public class ConsoleHandler
             {
                 printLine("Are you sure?");
                 iResultChar = nextCharToLowerCase().getInput();
-                if(iResultChar.isEmpty()) return new InputResult<>();
+                if(iResultChar.isEmpty()) continue;
                 if(iResultChar.get() != 'y')
                 {
                     result = null;
