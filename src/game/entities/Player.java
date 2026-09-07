@@ -1,5 +1,9 @@
 package game.entities;
 
+import game.items.*;
+
+import java.util.*;
+
 public class Player extends Entities implements Persistable
 {
     private int xp;
@@ -7,6 +11,12 @@ public class Player extends Entities implements Persistable
     private int statStr;
     private int statDex;
     private int statInt;
+    @SaveExclude
+    private List<Item> inventory;
+    @SaveExclude
+    private List<Item> equipped;
+    @SaveExclude
+    private static final int MAXIMUM_INVENTORY_SIZE = 10;
     
     private ClassType classType;
     
@@ -19,6 +29,8 @@ public class Player extends Entities implements Persistable
         statStr = type.getStatStrength();
         statDex = type.getStatDexterity();
         statInt = type.getStatIntelligence();
+        inventory = new ArrayList<>();
+        equipped = new ArrayList<>();
     }
     
     public Player(String[] data)
@@ -94,5 +106,101 @@ public class Player extends Entities implements Persistable
                     break;
             }
         }
+    }
+
+    public boolean equipWeapon(Weapon weapon)
+    {
+        if (!inventory.contains(weapon))
+        {
+            System.out.println("The weapon is not in inventory");
+            return false;
+        }
+        else
+        {
+            for (int  i = 0; i < equipped.size(); i++)
+            {
+                if (equipped.get(i) instanceof Weapon)
+                {
+                    Weapon replacedWeapon = (Weapon) equipped.get(i);
+                    replacedWeapon.unequip();
+                    inventory.add(replacedWeapon);
+                    equipped.set(i, weapon);
+                    inventory.remove(weapon);
+                    weapon.equip();
+                    return true;
+                }
+            }
+            equipped.add(weapon);
+            weapon.equip();
+            return true;
+        }
+    }
+
+    public boolean equipArmour(Armour armour)
+    {
+        if (!inventory.contains(armour))
+        {
+            System.out.println("The armour is not in inventory");
+            return false;
+        }
+        else
+        {
+            for (int  i = 0; i < equipped.size(); i++)
+            {
+                if (equipped.get(i) instanceof Armour && ((Armour) equipped.get(i)).getArmourType() == armour.getArmourType())
+                {
+                    Armour replacedArmour = (Armour) equipped.get(i);
+                    replacedArmour.unequip();
+                    inventory.add(replacedArmour);
+                    equipped.set(i, armour);
+                    inventory.remove(armour);
+                    armour.equip();
+                    return true;
+                }
+            }
+            equipped.add(armour);
+            armour.equip();
+            return true;
+        }
+    }
+
+    public boolean addToInventory(Item item)
+    {
+        if (item == null)
+        {
+            System.out.println("Add an Item");
+            return false;
+        }
+        else if (inventory.size() >= MAXIMUM_INVENTORY_SIZE)
+        {
+            System.out.println("Maximum Inventory Size has been reached");
+            return false;
+        }
+        inventory.add(item);
+        return true;
+    }
+
+    public boolean unequipItem(EquippableItem<?> item)
+    {
+        if (!equipped.contains(item))
+        {
+            System.out.println("Item is not equipped");
+            return false;
+        }
+        equipped.remove(item);
+        item.unequip();
+        inventory.add(item);
+        return true;
+    }
+
+    public boolean removeFromInventory(Item item)
+    {
+        if (!inventory.contains(item))
+        {
+            System.out.println("Item is not in inventory");
+            return false;
+        }
+        inventory.remove(item);
+        return true;
     }
 }
