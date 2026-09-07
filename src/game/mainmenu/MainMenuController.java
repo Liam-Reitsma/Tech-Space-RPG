@@ -3,10 +3,8 @@ package game.mainmenu;
 import static game.mainmenu.MainMenuErrors.*;
 
 import game.ConsoleHandler;
-import game.entities.Persistable;
 import game.persistence.SaveFileHandler;
 
-import java.util.List;
 import java.util.Optional;
 
 public class MainMenuController
