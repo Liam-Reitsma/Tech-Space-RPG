@@ -16,7 +16,7 @@ public class Main
         SaveFileHandler saveFH = new SaveFileHandler(saveFile);
         MainMenuController gameC = new MainMenuController(consoleH, saveFH);
         
-        gameC.run();
+        gameC.start();
 
         scanner.close();
         System.exit(0);

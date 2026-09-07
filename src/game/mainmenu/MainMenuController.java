@@ -20,22 +20,22 @@ public class MainMenuController
         saveFH = sFH;
     }
     
-    public List<List<Persistable>> run()
+    public List<List<Persistable>> start()
     {
         boolean validOption;
         boolean success;
         
         MainMenuResult result = null;
         
-        consoleH.printLine("Welcome to Tech Space");
-        consoleH.printLine("Select an Option:");
-        for(MainMenuStates state : MainMenuStates.values())
-        {
-            consoleH.printLine((state.ordinal() + 1) + ". "+ state);
-        }
-        
         do
         {
+            consoleH.printLine("Welcome to Tech Space");
+            consoleH.printLine("Select an Option:");
+            for(MainMenuStates state : MainMenuStates.values())
+            {
+                consoleH.printLine((state.ordinal() + 1) + ". "+ state);
+            }
+            
             validOption = false;
             success = false;
             Optional<Integer> userInput = consoleH.nextInt().getInput();
