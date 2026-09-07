@@ -14,6 +14,8 @@ public class SaveFileHandler
     
     public LoadResult loadData() { return saveF.read(); }
     
+    public boolean canCreateNewSave(String name) { return saveF.canCreateNewSave(name); }
+    
     public SaveErrors createNewSave(String name) { return saveF.createNewSave(name); }
     
     public String listAllSaves() { return saveF.toString(); }

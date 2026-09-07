@@ -85,6 +85,19 @@ public class SaveFile
     
     public SaveErrors createNewSave(String name)
     {
+        SaveErrors check = checkCreateNewSave(name);
+        if(check != SUCCESS) return check;
+        saveFile = new File(saveFileLocation + "/" + name + ".save");
+        return SUCCESS;
+    }
+    
+    public boolean canCreateNewSave(String name)
+    {
+        return (checkCreateNewSave(name) == SUCCESS);
+    }
+    
+    private SaveErrors checkCreateNewSave(String name)
+    {
         if(!checkFileNameValidity(name)) return INVALID_FILE_NAME;
         
         SaveFileResult sfResult = getSaveFileNames();
@@ -94,13 +107,16 @@ public class SaveFile
             if(Objects.equals(saveFile.getName(), name + ".save")) return FILE_ALREADY_EXISTS;
         }
         
-        saveFile = new File(saveFileLocation + "/" + name + ".save");
         return SUCCESS;
     }
     
     private boolean checkFileNameValidity(String name)
     {
         if(name == null || name.isEmpty() || name.length() >= 255) return false;
+        
+        if(name.contains("\\") || name.contains("/") || name.contains(":")) return false;
+        if(name.contains("*") || name.contains("?") || name.contains("\"")) return false;
+        if(name.contains("<") || name.contains(">") || name.contains("|"))  return false;
         
         try
         {
@@ -128,8 +144,10 @@ public class SaveFile
         for(File saveFile : saveFiles.getSaveFiles())
         {
             i++;
-            saves.append("\n").append(i).append(". ").append(saveFile.getName());
+            saves.append(i).append(". ").append(saveFile.getName()).append("\n");
         }
+        
+        saves.deleteCharAt(saves.length() - 1);
         
         return saves.toString();
     }
@@ -143,7 +161,7 @@ public class SaveFile
             sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         } catch(NullPointerException e)
         {
-            if(!saveFileLocation.mkdir()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING, new File[0]);
+            if(!saveFileLocation.mkdirs()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING, new File[0]);
             sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         }
         

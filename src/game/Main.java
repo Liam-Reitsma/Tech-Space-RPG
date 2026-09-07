@@ -1,5 +1,6 @@
 package game;
 
+import game.mainmenu.MainMenuController;
 import game.persistence.SaveFile;
 import game.persistence.SaveFileHandler;
 
@@ -13,9 +14,9 @@ public class Main
         ConsoleHandler consoleH = new ConsoleHandler(scanner);
         SaveFile saveFile = new SaveFile();
         SaveFileHandler saveFH = new SaveFileHandler(saveFile);
-        GameController gameC = new GameController(consoleH, saveFH);
+        MainMenuController gameC = new MainMenuController(consoleH, saveFH);
         
-        gameC.run();
+        gameC.start();
 
         scanner.close();
         System.exit(0);
