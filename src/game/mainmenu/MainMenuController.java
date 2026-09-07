@@ -3,11 +3,12 @@ package game.mainmenu;
 import static game.mainmenu.MainMenuErrors.*;
 
 import game.ConsoleHandler;
+import game.Startable;
 import game.persistence.SaveFileHandler;
 
 import java.util.Optional;
 
-public class MainMenuController
+public class MainMenuController implements Startable<MainMenuResult>
 {
     private final ConsoleHandler consoleH;
     private final SaveFileHandler saveFH;
@@ -18,6 +19,7 @@ public class MainMenuController
         saveFH = sFH;
     }
     
+    @Override
     public MainMenuResult start()
     {
         boolean validOption;
