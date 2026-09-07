@@ -4,7 +4,8 @@ public enum WeaponType
 {
     SWORD(10),
     AXE(14),
-    BOW(8);
+    BOW(8),
+    STAFF(10);
 
     private final int baseDamage;
 
