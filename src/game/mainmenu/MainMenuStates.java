@@ -24,19 +24,32 @@ public enum MainMenuStates implements Menu
                 {
                     List<List<Persistable>> list = new ArrayList<>(new ArrayList<>());
                     List<Persistable> innerList = new ArrayList<>();
-                    do
+                    String fileName = "";
+                    String charName = "";
+                    ClassType classType = ClassType.UNSELECTED;
+                    for(int i = 0; i < 3; i++)
                     {
-                        Optional<String> userInput = consoleH.confirmInput("What would you like to call the save file?").getInput();
-                        if(userInput.isEmpty()) break;
-                        SaveErrors result = saveFH.createNewSave(userInput.get());
-                        
-                        if(result == SUCCESS) break;
-                        consoleH.printLine(result.toString());
-                    } while(true);
+                        switch(i)
+                        {
+                            case 0:
+                                fileName = askFileName(saveFH, consoleH);
+                                if(fileName == null) return new MainMenuResult(MainMenuErrors.USER_WENT_BACK, list, this);
+                                break;
+                            case 1:
+                                charName = askCharName(consoleH);
+                                if(charName == null) i -= 2;
+                                break;
+                            case 2:
+                                classType = askClassType(consoleH);
+                                if(classType == ClassType.UNSELECTED) i -= 2;
+                                break;
+                        }
+                    }
                     
-                    innerList.add(Introduction(consoleH));
+                    saveFH.createNewSave(fileName);
+                    innerList.add(new Player(charName, classType));
                     list.add(innerList);
-                    
+                    saveFH.saveData(list.getFirst());
                     return new MainMenuResult(MainMenuErrors.SUCCESS, list, this);
                 }
             },
@@ -47,27 +60,10 @@ public enum MainMenuStates implements Menu
                 {
                     List<List<Persistable>> list = new ArrayList<>();
                     List<Persistable> innerList = new ArrayList<>();
-                    LoadResult loadResult;
                     LoadFactory loadFactory = new LoadFactory();
+                    LoadResult loadResult = askFileToLoad(consoleH, saveFH);
                     
-                    consoleH.printLine("Which save would you like to use?");
-                    consoleH.printLine(saveFH.listAllSaves());
-                    do
-                    {
-                        do
-                        {
-                            Optional<Integer> userInput = consoleH.nextInt().getInput();
-                            if(userInput.isEmpty()) break;
-                            SaveErrors result = saveFH.selectSave(userInput.get());
-                            
-                            if(result == SUCCESS) break;
-                            consoleH.printLine(result.toString());
-                        } while(true);
-                        
-                        loadResult = saveFH.loadData();
-                        if(loadResult.getError() == SUCCESS) { break; }
-                        consoleH.printLine(loadResult.getError().toString());
-                    } while(true);
+                    if(loadResult == null) return new MainMenuResult(MainMenuErrors.USER_WENT_BACK, list, this);
                     
                     for(int i = 0; i < loadResult.size(); i++)
                     {
@@ -102,22 +98,61 @@ public enum MainMenuStates implements Menu
         message = s;
     }
     
-    public Persistable Introduction(ConsoleHandler consoleH)
+    private static String askFileName(SaveFileHandler saveFH, ConsoleHandler consoleH)
     {
-        Player player;
-        String charName;
-        ClassType classType;
+        String result;
         
+        do
+        {
+            Optional<String> userInput = consoleH.confirmInput("What would you like to call the save file?").getInput();
+            if(userInput.isEmpty()) return null;
+            if(saveFH.canCreateNewSave(userInput.get()))
+            {
+                result = userInput.get();
+                break;
+            }
+            
+            consoleH.printLine(saveFH.createNewSave(userInput.get()).toString());
+        } while(true);
+        
+        return result;
+    }
+    
+    private static String askCharName(ConsoleHandler consoleH)
+    {
         Optional<String> userInputName = consoleH.confirmInput("What would you like to name your character?").getInput();
-        if(userInputName.isEmpty()) return null;
-        charName = userInputName.get();
+        return userInputName.orElse(null);
+    }
+    
+    private static ClassType askClassType(ConsoleHandler consoleH)
+    {
         Optional<ClassType> userInputClass = consoleH.confirmInput("What class do you want?", "Warrior, Rogue, or Mage", ClassType.class).getInput();
-        if(userInputClass.isEmpty()) return null;
-        classType = userInputClass.get();
+        return userInputClass.orElse(ClassType.UNSELECTED);
+    }
+    
+    private static LoadResult askFileToLoad(ConsoleHandler consoleH, SaveFileHandler saveFH)
+    {
+        LoadResult loadResult;
+        String question = "Which save would you like to use?";
+        String options = saveFH.listAllSaves();
+        do
+        {
+            do
+            {
+                Optional<Integer> userInput = consoleH.confirmInput(question, options, "\n").getInput();
+                if(userInput.isEmpty()) return null;
+                SaveErrors result = saveFH.selectSave(userInput.get());
+                
+                if(result == SUCCESS) break;
+                consoleH.printLine(result.toString());
+            } while(true);
+            
+            loadResult = saveFH.loadData();
+            if(loadResult.getError() == SUCCESS) { break; }
+            consoleH.printLine(loadResult.getError().toString());
+        } while(true);
         
-        player = new Player(charName, classType);
-        
-        return player;
+        return loadResult;
     }
     
     @Override

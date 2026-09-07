@@ -39,11 +39,12 @@ public class ConsoleHandler
         }
         else
         {
+            wordIndex = 0;
             Optional<String> iResult = nextLine().getInput();
             if(iResult.isEmpty()) return new InputResult<>();
             line = iResult.get().split(" ");
+            if(line.length == 0 || line[wordIndex].isEmpty()) return new InputResult<>(" ");
             if(line.length > 1) hasMoreWords = true;
-            wordIndex = 0;
         }
         
         return new InputResult<>(line[wordIndex++]);
@@ -52,14 +53,12 @@ public class ConsoleHandler
     public InputResult<Character> nextChar()
     {
         Optional<String> iResult = next().getInput();
-        
         return iResult.isPresent() ? new InputResult<>(iResult.get().charAt(0)) : new InputResult<>();
     }
     
     public InputResult<Character> nextCharToLowerCase()
     {
         Optional<String> iResult = next().getInput();
-        
         return iResult.isPresent() ? new InputResult<>(iResult.get().toLowerCase().charAt(0)) : new InputResult<>();
     }
     
@@ -79,11 +78,70 @@ public class ConsoleHandler
             if(iResultString.isEmpty()) return new InputResult<>();
             else result = iResultString.get();
             printLine("Are you sure?");
-            iResultChar = nextCharToLowerCase().getInput();
-            if(iResultChar.isEmpty()) return new InputResult<>();
-            if(iResultChar.get() == 'y') break;
-            printLine("Alright, " + question.toLowerCase() + " then?");
+            
+            do
+            {
+                iResultChar = nextCharToLowerCase().getInput();
+                if(iResultChar.isEmpty() || iResultChar.get() == 'n')
+                {
+                    printLine("Alright, " + question.toLowerCase() + " then?");
+                    break;
+                }
+                if(iResultChar.get() == 'y') break;
+                printLine("Please enter \"Yes\" or \"No\"");
+                
+            } while(true);
+            
+            if(iResultChar.isPresent() && iResultChar.get() == 'y') break;
         } while(true);
+        
+        return new InputResult<>(result);
+    }
+    
+    public InputResult<Integer> confirmInput(String questionToAsk, String options, String splitter)
+    {
+        int result;
+        String question;
+        if(questionToAsk.contains(String.valueOf('?'))) question = questionToAsk.substring(0, questionToAsk.length() - 1);
+        else question = questionToAsk;
+        printLine(question + "?");
+        printLine("The options are:\n" + options);
+        
+        do
+        {
+            Optional<Integer> iResultInt;
+            Optional<Character> iResultChar;
+            iResultInt = nextInt().getInput();
+            if(iResultInt.isEmpty()) return new InputResult<>();
+            result = iResultInt.get();
+            
+            if(result > options.split(splitter).length) result = 0;
+
+            if(result <= 0)
+            {
+                printLine("Sorry, that is not a valid input. Please try again.");
+                printLine("The options are:\n" + options);
+            }
+            else
+            {
+                printLine("Are you sure?");
+                
+                do
+                {
+                    iResultChar = nextCharToLowerCase().getInput();
+                    if(iResultChar.isEmpty() || iResultChar.get() == 'n')
+                    {
+                        printLine("Alright, " + question.toLowerCase() + " then?");
+                        break;
+                    }
+                    if(iResultChar.get() == 'y') break;
+                    printLine("Please enter \"Yes\" or \"No\"");
+                    
+                } while(true);
+                
+                if(iResultChar.isPresent() && iResultChar.get() == 'y') break;
+            }
+        } while(result <= 0);
         
         return new InputResult<>(result);
     }
@@ -107,7 +165,7 @@ public class ConsoleHandler
             response = iResultString.get();
             for(T constant : type.getEnumConstants())
             {
-                if(constant.name().toLowerCase().equals(response))
+                if(constant.name().equalsIgnoreCase(response))
                 {
                     result = constant;
                     break;
@@ -122,14 +180,22 @@ public class ConsoleHandler
             else
             {
                 printLine("Are you sure?");
-                iResultChar = nextCharToLowerCase().getInput();
-                if(iResultChar.isEmpty()) return new InputResult<>();
-                if(iResultChar.get() != 'y')
+                
+                do
                 {
-                    result = null;
-                    printLine("Alright, " + question.toLowerCase() + " then?");
-                    printLine(options + "?");
-                }
+                    iResultChar = nextCharToLowerCase().getInput();
+                    if(iResultChar.isEmpty() || iResultChar.get() == 'n')
+                    {
+                        printLine("Alright, " + question.toLowerCase() + " then?");
+                        printLine("The options are: " + options);
+                        break;
+                    }
+                    if(iResultChar.get() == 'y') break;
+                    printLine("Please enter \"Yes\" or \"No\"");
+                    
+                } while(true);
+                
+                if(iResultChar.isEmpty() || iResultChar.get() != 'y') result = null;
             }
         } while(result == null);
         

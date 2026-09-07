@@ -4,7 +4,8 @@ public enum ClassType
 {
     WARRIOR(5, 3, 3, "warrior"),
     ROGUE(3, 5, 3, "rogue"),
-    MAGE(3, 3, 5, "mage");
+    MAGE(3, 3, 5, "mage"),
+    UNSELECTED(0, 0 ,0, "");
     
     private final int statStrength;
     private final int statDexterity;

@@ -3,10 +3,8 @@ package game.mainmenu;
 import static game.mainmenu.MainMenuErrors.*;
 
 import game.ConsoleHandler;
-import game.entities.Persistable;
 import game.persistence.SaveFileHandler;
 
-import java.util.List;
 import java.util.Optional;
 
 public class MainMenuController
@@ -20,22 +18,22 @@ public class MainMenuController
         saveFH = sFH;
     }
     
-    public List<List<Persistable>> run()
+    public MainMenuResult start()
     {
         boolean validOption;
         boolean success;
         
-        MainMenuResult result = null;
-        
-        consoleH.printLine("Welcome to Tech Space");
-        consoleH.printLine("Select an Option:");
-        for(MainMenuStates state : MainMenuStates.values())
-        {
-            consoleH.printLine((state.ordinal() + 1) + ". "+ state);
-        }
+        MainMenuResult result = new MainMenuResult(USER_WENT_BACK, null, MainMenuStates.EXIT);
         
         do
         {
+            consoleH.printLine("Welcome to Tech Space.\nUse '~' whenever you wish to go back.");
+            consoleH.printLine("Select an Option:");
+            for(MainMenuStates state : MainMenuStates.values())
+            {
+                consoleH.printLine((state.ordinal() + 1) + ". "+ state);
+            }
+            
             validOption = false;
             success = false;
             Optional<Integer> userInput = consoleH.nextInt().getInput();
@@ -46,7 +44,6 @@ public class MainMenuController
             {
                 if(response == state.ordinal() + 1)
                 {
-                    consoleH.nextLine();
                     result = state.execute(consoleH, saveFH);
                     validOption = true;
                     if(result.getError() == SUCCESS) success = true;
@@ -54,8 +51,8 @@ public class MainMenuController
                     break;
                 }
             }
-        } while(!validOption || !success);
+        } while((!validOption || !success));
         
-        return result.getList();
+        return result;
     }
 }
