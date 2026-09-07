@@ -63,6 +63,8 @@ public enum MainMenuStates implements Menu
                     LoadFactory loadFactory = new LoadFactory();
                     LoadResult loadResult = askFileToLoad(consoleH, saveFH);
                     
+                    if(loadResult == null) return new MainMenuResult(MainMenuErrors.USER_WENT_BACK, list, this);
+                    
                     for(int i = 0; i < loadResult.size(); i++)
                     {
                         try
@@ -138,7 +140,7 @@ public enum MainMenuStates implements Menu
             do
             {
                 Optional<Integer> userInput = consoleH.confirmInput(question, options, "\n").getInput();
-                if(userInput.isEmpty()) break;
+                if(userInput.isEmpty()) return null;
                 SaveErrors result = saveFH.selectSave(userInput.get());
                 
                 if(result == SUCCESS) break;
