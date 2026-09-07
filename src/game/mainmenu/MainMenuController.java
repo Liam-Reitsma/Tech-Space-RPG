@@ -20,16 +20,16 @@ public class MainMenuController
         saveFH = sFH;
     }
     
-    public List<List<Persistable>> start()
+    public MainMenuResult start()
     {
         boolean validOption;
         boolean success;
         
-        MainMenuResult result = null;
+        MainMenuResult result = new MainMenuResult(USER_WENT_BACK, null, MainMenuStates.EXIT);
         
         do
         {
-            consoleH.printLine("Welcome to Tech Space");
+            consoleH.printLine("Welcome to Tech Space.\nUse '~' whenever you wish to go back.");
             consoleH.printLine("Select an Option:");
             for(MainMenuStates state : MainMenuStates.values())
             {
@@ -53,8 +53,8 @@ public class MainMenuController
                     break;
                 }
             }
-        } while(!validOption || !success);
+        } while((!validOption || !success));
         
-        return result.getList();
+        return result;
     }
 }
