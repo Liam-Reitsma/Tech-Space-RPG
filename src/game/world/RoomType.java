@@ -58,4 +58,17 @@ public enum RoomType
     {
         return messages[random.nextInt(5)];
     }
+    
+    @Override
+    public String toString()
+    {
+        return switch(this)
+        {
+            case COMBAT ->   "Combat";
+            case CHEST ->    "Chest";
+            case MINIBOSS -> "Miniboss";
+            case BOSS ->     "Boss";
+            case EMPTY ->    "Empty";
+        };
+    }
 }
