@@ -9,9 +9,9 @@ public class GenerationRoom
     private final int branch;
     
     private final Point point;
-    private final Direction currentDir;
+    private final Direction direction;
     
-    public GenerationRoom(GenerationRoom parentRoom, int depthCount, int streakCount, int branchCount, Direction childDirection)
+    public GenerationRoom(GenerationRoom parentRoom, int depthCount, int streakCount, int branchCount, Point pointNew, Direction directionNew)
     {
         parent = parentRoom;
         
@@ -19,15 +19,8 @@ public class GenerationRoom
         streak = streakCount;
         branch = branchCount;
         
-        point = switch(childDirection)
-        {
-            case NORTH -> new Point(parent.point.getX(), (parent.point.getY() + 1));
-            case SOUTH -> new Point(parent.point.getX(), (parent.point.getY() - 1));
-            case EAST  -> new Point((parent.point.getX() + 1), parent.point.getY());
-            case WEST  -> new Point((parent.point.getX() - 1), parent.point.getY());
-        };
-        
-        currentDir = childDirection;
+        point = pointNew;
+        direction = directionNew;
     }
     
     public GenerationRoom()
@@ -39,7 +32,7 @@ public class GenerationRoom
         branch = 2;
         
         point = new Point(0, 0);
-        currentDir = null;
+        direction = null;
     }
     
     public GenerationRoom getParent() { return parent; }
@@ -52,6 +45,6 @@ public class GenerationRoom
     
     public Point getPoint() { return point; }
     
-    public Direction getDirection() { return currentDir; }
+    public Direction getDirection() { return direction; }
     
 }
