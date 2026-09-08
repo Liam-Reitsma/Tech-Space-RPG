@@ -8,10 +8,10 @@ public class GenerationRoom
     private final int streak;
     private final int branch;
     
-    private final Point point;
     private final Direction direction;
+    private final Point point;
     
-    public GenerationRoom(GenerationRoom parentRoom, int depthCount, int streakCount, int branchCount, Point pointNew, Direction directionNew)
+    public GenerationRoom(GenerationRoom parentRoom, int depthCount, int streakCount, int branchCount, Direction directionNew, Point pointNew)
     {
         parent = parentRoom;
         
@@ -19,8 +19,8 @@ public class GenerationRoom
         streak = streakCount;
         branch = branchCount;
         
-        point = pointNew;
         direction = directionNew;
+        point = pointNew;
     }
     
     public GenerationRoom()
@@ -46,5 +46,4 @@ public class GenerationRoom
     public Point getPoint() { return point; }
     
     public Direction getDirection() { return direction; }
-    
 }
