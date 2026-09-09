@@ -4,29 +4,22 @@ import static game.mainmenu.MainMenuErrors.*;
 
 import game.ConsoleHandler;
 import game.Startable;
-import game.persistence.PersistenceController;
 
 import java.util.Optional;
 
 public class MainMenuController implements Startable<MainMenuResult>
 {
     private final ConsoleHandler consoleH;
-    private final PersistenceController saveFH;
     
-    public MainMenuController(ConsoleHandler cH, PersistenceController sFH)
+    public MainMenuController(ConsoleHandler cH)
     {
         consoleH = cH;
-        saveFH = sFH;
     }
     
     @Override
     public MainMenuResult start()
     {
-        boolean validOption;
-        boolean success;
-        
-        MainMenuResult result = new MainMenuResult(USER_WENT_BACK, null, MainMenuStates.EXIT);
-        
+        Optional<Integer> userInput;
         do
         {
             consoleH.printLine("Welcome to Tech Space.\nUse '~' whenever you wish to go back.");
@@ -36,9 +29,7 @@ public class MainMenuController implements Startable<MainMenuResult>
                 consoleH.printLine((state.ordinal() + 1) + ". "+ state);
             }
             
-            validOption = false;
-            success = false;
-            Optional<Integer> userInput = consoleH.nextInt().getInput();
+            userInput = consoleH.nextInt().getInput();
             if(userInput.isEmpty()) break;
             int response = userInput.get();
             
@@ -46,15 +37,11 @@ public class MainMenuController implements Startable<MainMenuResult>
             {
                 if(response == state.ordinal() + 1)
                 {
-                    result = state.execute(consoleH, saveFH);
-                    validOption = true;
-                    if(result.getError() == SUCCESS) success = true;
-                    else consoleH.printLine(result.getError().toString());
-                    break;
+                    return state.execute();
                 }
             }
-        } while((!validOption || !success));
+        } while(true);
         
-        return result;
+        return new MainMenuResult(USER_WENT_BACK, MainMenuStates.EXIT);
     }
 }

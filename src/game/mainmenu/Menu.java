@@ -1,9 +1,10 @@
 package game.mainmenu;
 
 import game.ConsoleHandler;
-import game.persistence.PersistenceController;
+
+import java.io.File;
 
 public interface Menu
 {
-    public MainMenuResult execute(ConsoleHandler consoleH, PersistenceController saveFH);
+    public MainMenuResult execute();
 }
