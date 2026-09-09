@@ -2,10 +2,10 @@ package game.items;
 
 public enum WeaponType
 {
-    SWORD(10),
-    AXE(14),
-    BOW(8),
-    STAFF(10);
+    LIGHTSABER(10),
+    DARKSABER(14),
+    LASERGUN(8),
+    FORCE(10);
 
     private final int baseDamage;
 
