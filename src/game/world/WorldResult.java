@@ -4,7 +4,7 @@ import game.Result;
 
 import java.util.Map;
 
-public class WorldResult<Point, RuntimeRoom> extends Result<WorldErrors>
+public class WorldResult extends Result<WorldErrors>
 {
     private final Map<Point, RuntimeRoom> world;
     
