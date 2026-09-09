@@ -44,6 +44,7 @@ public class SaveFile
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
             writer.write(listName + ":");
+            writer.newLine();
             writer.write("Lines"+ Persistable.FIELD_SEPARATOR + persistables.size() + Persistable.CLASS_SEPARATOR);
             writer.newLine();
             for(Persistable persistable : persistables)
@@ -55,7 +56,7 @@ public class SaveFile
             return SUCCESS;
         } catch(FileNotFoundException e)
         {
-            if(saveFileLocation.mkdir()) { return writeList(persistables, listName); }
+            if(saveFileLocation.mkdirs()) { return writeList(persistables, listName); }
             return WRITE_ERROR;
         } catch(IOException | IllegalAccessException e)
         {
