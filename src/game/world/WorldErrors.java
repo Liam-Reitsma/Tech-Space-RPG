@@ -4,7 +4,8 @@ import game.Errors;
 
 public enum WorldErrors implements Errors
 {
-    GENERATING_ERROR("World Generation Failed! An unknown error occurred while loading your game."),
+    LOADING_WORLD_ERROR("World Loading Failed! An unknown error occurred while loading the world."),
+    GENERATING_ERROR("World Generation Failed! An unknown error occurred while generating the world."),
     SUCCESS("");
     
     private final String message;
