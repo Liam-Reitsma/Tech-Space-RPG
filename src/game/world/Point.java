@@ -1,5 +1,7 @@
 package game.world;
 
+import game.entities.Persistable;
+
 import java.util.Objects;
 
 public class Point
@@ -34,6 +36,20 @@ public class Point
     @Override
     public String toString()
     {
-        return "Point(" + x + ", " + y+ ")";
+        return "point" + Persistable.FIELD_SEPARATOR + x + "&" + y;
+    }
+    
+    public static Point parsePoint(String data)
+    {
+        try
+        {
+            int dx = Integer.parseInt(data.substring(6).split("&")[0]);
+            int dy = Integer.parseInt(data.substring(6).split("&")[1]);
+            
+            return new Point(dx, dy);
+        } catch(RuntimeException e)
+        {
+            return null;
+        }
     }
 }
