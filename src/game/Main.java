@@ -14,11 +14,11 @@ public class Main
         Scanner scanner = new Scanner(System.in);
         ConsoleHandler consoleH = new ConsoleHandler(scanner);
         SaveFile saveFile = new SaveFile();
-        PersistenceController saveFH = new PersistenceController(saveFile);
-        MainMenuController mmController = new MainMenuController(consoleH, saveFH);
-        WorldController worldController = new WorldController(consoleH);
+        MainMenuController mainMenuC = new MainMenuController(consoleH);
+        PersistenceController persistenceC = new PersistenceController(consoleH, saveFile);
+        WorldController worldC = new WorldController(consoleH);
         
-        GameController gameController = new GameController(mmController, worldController);
+        GameController gameController = new GameController(mainMenuC, persistenceC, worldC);
         
         int exitValue = gameController.start();
 
