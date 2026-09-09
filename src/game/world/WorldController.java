@@ -5,6 +5,8 @@ import static game.world.RoomType.*;
 import game.ConsoleHandler;
 import game.Loopable;
 import game.Startable;
+import game.world.generation.GenerationRoom;
+import game.world.generation.WorldGenerator;
 
 import java.util.HashMap;
 import java.util.Map;

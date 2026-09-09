@@ -1,7 +1,10 @@
-package game.world;
+package game.world.generation;
+
+import game.world.Direction;
+import game.world.Point;
 
 import static game.world.Direction.*;
-import static game.world.WorldGenConfig.*;
+import static game.world.generation.WorldGenConfig.*;
 
 import java.util.HashMap;
 import java.util.Map;
