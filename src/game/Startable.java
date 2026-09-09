@@ -1,6 +1,6 @@
 package game;
 
-public interface Startable<R extends Result<? extends Errors>>
+public interface Startable<T, R extends Result<? extends Errors>>
 {
-    public R start();
+    public R start(T input);
 }
