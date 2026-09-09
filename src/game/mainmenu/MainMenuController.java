@@ -4,16 +4,16 @@ import static game.mainmenu.MainMenuErrors.*;
 
 import game.ConsoleHandler;
 import game.Startable;
-import game.persistence.SaveFileHandler;
+import game.persistence.PersistenceController;
 
 import java.util.Optional;
 
 public class MainMenuController implements Startable<MainMenuResult>
 {
     private final ConsoleHandler consoleH;
-    private final SaveFileHandler saveFH;
+    private final PersistenceController saveFH;
     
-    public MainMenuController(ConsoleHandler cH, SaveFileHandler sFH)
+    public MainMenuController(ConsoleHandler cH, PersistenceController sFH)
     {
         consoleH = cH;
         saveFH = sFH;

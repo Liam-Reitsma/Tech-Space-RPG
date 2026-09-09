@@ -4,11 +4,11 @@ import game.entities.Persistable;
 
 import java.util.List;
 
-public class SaveFileHandler
+public class PersistenceController
 {
     private final SaveFile saveF;
     
-    public SaveFileHandler(SaveFile saveFile) { saveF = saveFile; }
+    public PersistenceController(SaveFile saveFile) { saveF = saveFile; }
     
     public PersistenceErrors saveData(List<Persistable> persistables) { return saveF.write(persistables); }
     

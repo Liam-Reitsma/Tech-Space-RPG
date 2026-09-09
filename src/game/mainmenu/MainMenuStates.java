@@ -9,7 +9,7 @@ import game.entities.Player;
 import game.persistence.LoadFactory;
 import game.persistence.LoadResult;
 import game.persistence.PersistenceErrors;
-import game.persistence.SaveFileHandler;
+import game.persistence.PersistenceController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public enum MainMenuStates implements Menu
     NEW_GAME("Start a New Game.")
             {
                 @Override
-                public MainMenuResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public MainMenuResult execute(ConsoleHandler consoleH, PersistenceController saveFH)
                 {
                     List<List<Persistable>> list = new ArrayList<>(new ArrayList<>());
                     List<Persistable> innerList = new ArrayList<>();
@@ -58,7 +58,7 @@ public enum MainMenuStates implements Menu
     LOAD_GAME("Load a Saved Game.")
             {
                 @Override
-                public MainMenuResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public MainMenuResult execute(ConsoleHandler consoleH, PersistenceController saveFH)
                 {
                     List<List<Persistable>> list = new ArrayList<>();
                     List<Persistable> innerList = new ArrayList<>();
@@ -87,7 +87,7 @@ public enum MainMenuStates implements Menu
     EXIT("Exit the Game")
             {
                 @Override
-                public MainMenuResult execute(ConsoleHandler consoleH, SaveFileHandler saveFH)
+                public MainMenuResult execute(ConsoleHandler consoleH, PersistenceController saveFH)
                 {
                     return new MainMenuResult(MainMenuErrors.SUCCESS, new ArrayList<>(), this);
                 }
@@ -100,7 +100,7 @@ public enum MainMenuStates implements Menu
         message = s;
     }
     
-    private static String askFileName(SaveFileHandler saveFH, ConsoleHandler consoleH)
+    private static String askFileName(PersistenceController saveFH, ConsoleHandler consoleH)
     {
         String result;
         
@@ -132,7 +132,7 @@ public enum MainMenuStates implements Menu
         return userInputClass.orElse(ClassType.UNSELECTED);
     }
     
-    private static LoadResult askFileToLoad(ConsoleHandler consoleH, SaveFileHandler saveFH)
+    private static LoadResult askFileToLoad(ConsoleHandler consoleH, PersistenceController saveFH)
     {
         LoadResult loadResult;
         String question = "Which save would you like to use?";
