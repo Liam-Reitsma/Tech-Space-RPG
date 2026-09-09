@@ -13,6 +13,7 @@ public class CombatController implements Loopable<CombatResult>
     private final Player player;
     private final Enemy opponent;
     private boolean inCombat = true;
+    private CombatOutcome outcome;
 
     public CombatController(ConsoleHandler cH, Player p, Enemy opp)
     {
@@ -30,11 +31,11 @@ public class CombatController implements Loopable<CombatResult>
             // check if combat should end
             if (player.getHealth() <= 0)
             {
-                return new CombatResult(CombatErrors.LOSE);
+                return new CombatResult(CombatErrors.SUCCESS, CombatOutcome.LOSE);
             }
             else if (opponent.getHealth() <= 0)
             {
-                return new CombatResult(CombatErrors.WIN);
+                return new CombatResult(CombatErrors.SUCCESS, CombatOutcome.WIN);
             }
             // checking if users turn or enemies turn
             else {
@@ -47,7 +48,7 @@ public class CombatController implements Loopable<CombatResult>
                 }
             }
         }
-        return new CombatResult(CombatErrors.FLEE);
+        return new CombatResult(CombatErrors.SUCCESS, outcome);
     }
 
     public void playerTurn()
@@ -75,6 +76,7 @@ public class CombatController implements Loopable<CombatResult>
         if (result.endReason().isPresent())
         {
             inCombat = false;
+            outcome = result.endReason().get();
         }
     }
 
@@ -82,6 +84,6 @@ public class CombatController implements Loopable<CombatResult>
     {
         int oppDamage = opponent.getStats()[0];
         player.takeDamage(oppDamage);
-        consoleH.printLine("Enemy Dealt: " + oppDamage);
+        consoleH.printLine("Enemy has attacked.\nRemaining health: " + player.getHealth());
     }
 }
