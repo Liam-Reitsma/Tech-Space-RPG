@@ -2,9 +2,9 @@ package game.persistence;
 
 import java.io.File;
 
-public class SaveFileResult extends DataResult<File>
+public class SaveResult extends DataResult<File>
 {
-    public SaveFileResult(PersistenceErrors e, File[] array)
+    public SaveResult(PersistenceErrors e, File[] array)
     {
         error = e;
         result = array;

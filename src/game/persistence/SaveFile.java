@@ -77,7 +77,7 @@ public class SaveFile
     public PersistenceErrors selectSave(int number)
     {
         int saveFileIndex = number - 1;
-        SaveFileResult sfResult = getSaveFileNames();
+        SaveResult sfResult = getSaveFileNames();
         if(saveFileIndex < 0 || saveFileIndex >= sfResult.size()) return NUMBER_OUT_OF_BOUNDS;
         saveFile = sfResult.getSelectedSaveFile(saveFileIndex);
         return SUCCESS;
@@ -100,7 +100,7 @@ public class SaveFile
     {
         if(!checkFileNameValidity(name)) return INVALID_FILE_NAME;
         
-        SaveFileResult sfResult = getSaveFileNames();
+        SaveResult sfResult = getSaveFileNames();
         
         for(File saveFile : sfResult.getSaveFiles())
         {
@@ -139,7 +139,7 @@ public class SaveFile
         StringBuilder saves = new StringBuilder();
         int i = 0;
         
-        SaveFileResult saveFiles = getSaveFileNames();
+        SaveResult saveFiles = getSaveFileNames();
         
         for(File saveFile : saveFiles.getSaveFiles())
         {
@@ -152,20 +152,20 @@ public class SaveFile
         return saves.toString();
     }
     
-    private SaveFileResult getSaveFileNames()
+    private SaveResult getSaveFileNames()
     {
-        SaveFileResult sfResult;
+        SaveResult sfResult;
         
         try
         {
-            sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
+            sfResult = new SaveResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         } catch(NullPointerException e)
         {
-            if(!saveFileLocation.mkdirs()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING, new File[0]);
-            sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
+            if(!saveFileLocation.mkdirs()) return new SaveResult(SAVE_FOLDER_LOCATION_MISSING, new File[0]);
+            sfResult = new SaveResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         }
         
-        if(sfResult.size() == 0) return new SaveFileResult(SAVE_FOLDER_EMPTY, new File[0]);
+        if(sfResult.size() == 0) return new SaveResult(SAVE_FOLDER_EMPTY, new File[0]);
 
         return sfResult;
     }
