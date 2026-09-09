@@ -52,4 +52,16 @@ public class Point
             return null;
         }
     }
+    
+    public static Point[] getOrthogonalPoints(Point playerPoint)
+    {
+        Point[] orthogonalPoints = new Point[4];
+        
+        orthogonalPoints[0] = new Point(playerPoint.x, playerPoint.y + 1);
+        orthogonalPoints[1] = new Point(playerPoint.x + 1, playerPoint.y);
+        orthogonalPoints[2] = new Point(playerPoint.x, playerPoint.y - 1);
+        orthogonalPoints[3] = new Point(playerPoint.x - 1, playerPoint.y);
+        
+        return orthogonalPoints;
+    }
 }
