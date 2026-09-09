@@ -63,9 +63,10 @@ public interface Persistable
                             {
                                 field.set(this, value);
                             }
-                            else if(field.getType().equals(ClassType.class))
+                            // check for PlayerType or EnemyType
+                            else if(field.getType().isEnum())
                             {
-                                field.set(this, ClassType.parseType(value));
+                                field.set(this, parseEnum(field.getType(), value));
                             }
                             else if(field.getType().equals(float.class))
                             {
@@ -86,5 +87,10 @@ public interface Persistable
     default String getClassName()
     {
         return this.getClass().getSimpleName();
+    }
+
+    private <T extends Enum<T>> T parseEnum(Class<?> type, String value)
+    {
+        return Enum.valueOf((Class<T>) type, value);
     }
 }
