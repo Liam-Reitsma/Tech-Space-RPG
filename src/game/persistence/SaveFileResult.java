@@ -4,7 +4,7 @@ import java.io.File;
 
 public class SaveFileResult extends DataResult<File>
 {
-    public SaveFileResult(SaveErrors e, File[] array)
+    public SaveFileResult(PersistenceErrors e, File[] array)
     {
         error = e;
         result = array;

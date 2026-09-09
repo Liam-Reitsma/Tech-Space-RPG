@@ -10,15 +10,15 @@ public class SaveFileHandler
     
     public SaveFileHandler(SaveFile saveFile) { saveF = saveFile; }
     
-    public SaveErrors saveData(List<Persistable> persistables) { return saveF.write(persistables); }
+    public PersistenceErrors saveData(List<Persistable> persistables) { return saveF.write(persistables); }
     
     public LoadResult loadData() { return saveF.read(); }
     
     public boolean canCreateNewSave(String name) { return saveF.canCreateNewSave(name); }
     
-    public SaveErrors createNewSave(String name) { return saveF.createNewSave(name); }
+    public PersistenceErrors createNewSave(String name) { return saveF.createNewSave(name); }
     
     public String listAllSaves() { return saveF.toString(); }
     
-    public SaveErrors selectSave(int num) { return saveF.selectSave(num); }
+    public PersistenceErrors selectSave(int num) { return saveF.selectSave(num); }
 }

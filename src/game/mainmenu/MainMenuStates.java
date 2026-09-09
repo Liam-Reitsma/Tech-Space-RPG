@@ -1,6 +1,6 @@
 package game.mainmenu;
 
-import static game.persistence.SaveErrors.*;
+import static game.persistence.PersistenceErrors.*;
 
 import game.ConsoleHandler;
 import game.entities.ClassType;
@@ -8,7 +8,7 @@ import game.entities.Persistable;
 import game.entities.Player;
 import game.persistence.LoadFactory;
 import game.persistence.LoadResult;
-import game.persistence.SaveErrors;
+import game.persistence.PersistenceErrors;
 import game.persistence.SaveFileHandler;
 
 import java.util.ArrayList;
@@ -143,7 +143,7 @@ public enum MainMenuStates implements Menu
             {
                 Optional<Integer> userInput = consoleH.confirmInput(question, options, "\n").getInput();
                 if(userInput.isEmpty()) return null;
-                SaveErrors result = saveFH.selectSave(userInput.get());
+                PersistenceErrors result = saveFH.selectSave(userInput.get());
                 
                 if(result == SUCCESS) break;
                 consoleH.printLine(result.toString());

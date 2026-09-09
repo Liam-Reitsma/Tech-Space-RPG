@@ -2,7 +2,7 @@ package game.persistence;
 
 import game.Result;
 
-public abstract class DataResult<T> extends Result<SaveErrors>
+public abstract class DataResult<T> extends Result<PersistenceErrors>
 {
     protected T[] result;
     

@@ -2,7 +2,7 @@ package game.persistence;
 
 import game.entities.Persistable;
 
-import static game.persistence.SaveErrors.*;
+import static game.persistence.PersistenceErrors.*;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -19,7 +19,7 @@ public class SaveFile
         saveFileLocation = new File("resources/saves");
     }
     
-    public SaveErrors write(List<Persistable> persistables)
+    public PersistenceErrors write(List<Persistable> persistables)
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
@@ -74,7 +74,7 @@ public class SaveFile
         }
     }
     
-    public SaveErrors selectSave(int number)
+    public PersistenceErrors selectSave(int number)
     {
         int saveFileIndex = number - 1;
         SaveFileResult sfResult = getSaveFileNames();
@@ -83,9 +83,9 @@ public class SaveFile
         return SUCCESS;
     }
     
-    public SaveErrors createNewSave(String name)
+    public PersistenceErrors createNewSave(String name)
     {
-        SaveErrors check = checkCreateNewSave(name);
+        PersistenceErrors check = checkCreateNewSave(name);
         if(check != SUCCESS) return check;
         saveFile = new File(saveFileLocation + "/" + name + ".save");
         return SUCCESS;
@@ -96,7 +96,7 @@ public class SaveFile
         return (checkCreateNewSave(name) == SUCCESS);
     }
     
-    private SaveErrors checkCreateNewSave(String name)
+    private PersistenceErrors checkCreateNewSave(String name)
     {
         if(!checkFileNameValidity(name)) return INVALID_FILE_NAME;
         

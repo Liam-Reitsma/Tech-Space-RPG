@@ -4,7 +4,7 @@ import static game.entities.Persistable.*;
 
 public class LoadResult extends DataResult<String>
 {
-    public LoadResult(SaveErrors e, String[] array)
+    public LoadResult(PersistenceErrors e, String[] array)
     {
         error = e;
         result = array;
