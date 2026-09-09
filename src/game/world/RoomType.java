@@ -71,4 +71,16 @@ public enum RoomType
             case EMPTY ->    "Empty";
         };
     }
+    
+    public static RoomType parseRoom(String data)
+    {
+        return switch(data)
+        {
+            case "Combat" -> COMBAT;
+            case "Chest" -> CHEST;
+            case "Miniboss" -> MINIBOSS;
+            case "Boss" -> BOSS;
+            default -> EMPTY;
+        };
+    }
 }
