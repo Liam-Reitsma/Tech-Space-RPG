@@ -64,7 +64,15 @@ public class Player extends Entities implements Persistable
     @Override
     public void takeDamage(int ouch)
     {
-        health -= ouch;
+        double damageRecieved = ouch;
+        for (Item item : equipped)
+        {
+            if (item instanceof Armour)
+            {
+                damageRecieved *= (1.0 - ((Armour) item).getArmourType().getProtectionValue());
+            }
+        }
+        health -= Math.round(damageRecieved);
     }
     
     public int getLevel() { return level; }
@@ -201,15 +209,13 @@ public class Player extends Entities implements Persistable
         return true;
     }
 
-    public boolean removeFromInventory(Item item)
+    public void removeFromInventory(Item item)
     {
         if (!inventory.contains(item))
         {
             System.out.println("Item is not in inventory");
-            return false;
         }
         inventory.remove(item);
-        return true;
     }
 
     public Optional<Weapon> getEquippedWeapon()
