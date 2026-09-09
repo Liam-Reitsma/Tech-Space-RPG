@@ -10,11 +10,6 @@ public class SaveResult extends DataResult<File>
         result = array;
     }
     
-    public File[] getSaveFiles()
-    {
-        return result;
-    }
-    
     public File getSelectedSaveFile(int index)
     {
         return result[index];

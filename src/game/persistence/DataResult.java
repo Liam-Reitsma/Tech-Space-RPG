@@ -11,6 +11,8 @@ public abstract class DataResult<T> extends Result<PersistenceErrors>
         return result.length;
     }
     
+    public T[] getResult() { return result; }
+    
     @Override
     public String toString()
     {
