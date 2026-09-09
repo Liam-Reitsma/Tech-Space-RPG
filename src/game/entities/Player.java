@@ -22,6 +22,7 @@ public class Player extends Entities implements Persistable
     
     public Player(String playerName, ClassType type)
     {
+        health = 100;
         xp = 0;
         gold = 0;
         name = playerName;
@@ -49,19 +50,26 @@ public class Player extends Entities implements Persistable
     {
     
     }
-    
-    @Override
-    public void dealDamage()
+
+    public void healing(int healAmount)
     {
-    
+        if (healAmount + health > 100) {
+            health = 100;
+        }
+        else{
+            health -= healAmount;
+        }
     }
+
     @Override
-    public void takeDamage()
+    public void takeDamage(int ouch)
     {
-    
+        health -= ouch;
     }
     
     public int getLevel() { return level; }
+
+    public float getHealth() { return health; }
     
     public int getXP() { return xp; }
     
@@ -202,5 +210,20 @@ public class Player extends Entities implements Persistable
         }
         inventory.remove(item);
         return true;
+    }
+
+    public Optional<Weapon> getEquippedWeapon()
+    {
+        for (Item item : equipped) {
+            if (item instanceof Weapon) {
+                return Optional.of((Weapon) item);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public List<Item> getInventory()
+    {
+        return inventory;
     }
 }
