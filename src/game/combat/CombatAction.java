@@ -29,7 +29,7 @@ public enum CombatAction
             @Override
             public ActionDecider execute(ConsoleHandler consoleH, Player player, Enemy opponent)
             {
-                return new ActionDecider("You ran Away.", Optional.of(CombatErrors.FLEE));
+                return new ActionDecider("You ran Away.", Optional.of(CombatOutcome.FLEE));
             }
         }
     , USE_ITEM("Use Item")
