@@ -19,11 +19,32 @@ public class SaveFile
         saveFileLocation = new File("resources/saves");
     }
     
-    public PersistenceErrors write(List<Persistable> persistables)
+    public PersistenceErrors writePlayer(Persistable player)
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
-            writer.write("Lines = " + persistables.size());
+            writer.write("Player Data:");
+            writer.newLine();
+            writer.write(player.getSaveInfo());
+            writer.newLine();
+            
+            return SUCCESS;
+        } catch(FileNotFoundException e)
+        {
+            if(saveFileLocation.mkdirs()) { return writePlayer(player); }
+            return WRITE_ERROR;
+        } catch(IOException | IllegalAccessException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    
+    public PersistenceErrors writeList(List<Persistable> persistables, String listName)
+    {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
+        {
+            writer.write(listName + ":");
+            writer.write("Lines"+ Persistable.FIELD_SEPARATOR + persistables.size() + Persistable.CLASS_SEPARATOR);
             writer.newLine();
             for(Persistable persistable : persistables)
             {
@@ -34,7 +55,7 @@ public class SaveFile
             return SUCCESS;
         } catch(FileNotFoundException e)
         {
-            if(saveFileLocation.mkdir()) { return write(persistables); }
+            if(saveFileLocation.mkdir()) { return writeList(persistables, listName); }
             return WRITE_ERROR;
         } catch(IOException | IllegalAccessException e)
         {
@@ -42,24 +63,71 @@ public class SaveFile
         }
     }
     
-    public LoadResult read()
+    public LoadResult readPlayer()
     {
         try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
         {
-            String metadata = reader.readLine();
-            String[] data = new String[Integer.parseInt(metadata.substring(metadata.indexOf("= ") + "= ".length()))];
-            List<String> dataString= reader.readAllLines();
-            int i = 0;
-            for(String line : dataString)
+            String[] player = new String[1];
+            String metadata;
+            do
             {
-                if(i >= data.length) return new LoadResult(LOAD_ERROR, new String[0]);
-                data[i++] = line;
+                metadata = reader.readLine();
+                if(metadata == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                else if(metadata.toLowerCase().startsWith("player data")) break;
+            } while(true);
+            
+            String line = reader.readLine();
+            if(line != null)
+            {
+                player[0] = line;
+                return new LoadResult(SUCCESS, player);
             }
             
-            if(dataString.size() < data.length) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+            return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+        } catch(NullPointerException e)
+        {
+            return new LoadResult(SAVE_FILE_EMPTY, new String[0]);
+        } catch(NumberFormatException e)
+        {
+            return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+        } catch(FileNotFoundException e)
+        {
+            return new LoadResult(SAVE_FILE_MISSING, new String[0]);
+        } catch(IOException e)
+        {
+            return new LoadResult(LOAD_ERROR, new String[0]);
+        }
+    }
+    
+    public LoadResult readList(String listName)
+    {
+        try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
+        {
+            String[] data;
+            String metadataLineOne;
+            String metadataLineTwo;
+            String length;
+            do
+            {
+                metadataLineOne = reader.readLine();
+                if(metadataLineOne == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                else if(metadataLineOne.toLowerCase().startsWith(listName.toLowerCase())) break;
+            } while(true);
+            
+            metadataLineTwo = reader.readLine();
+            if(metadataLineTwo == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+            length = metadataLineTwo.substring((metadataLineTwo.indexOf(Persistable.FIELD_SEPARATOR) + 1), metadataLineTwo.indexOf(Persistable.CLASS_SEPARATOR));
+            data = new String[Integer.parseInt(length)];
+            
+            for(int i = 0; i < data.length; i++)
+            {
+                String datum = reader.readLine();
+                if(datum == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                data[i] = datum;
+            }
             
             return new LoadResult(SUCCESS, data);
-        }  catch(NullPointerException e)
+        } catch(NullPointerException e)
         {
             return new LoadResult(SAVE_FILE_EMPTY, new String[0]);
         } catch(NumberFormatException e)
@@ -102,7 +170,7 @@ public class SaveFile
         
         SaveResult sfResult = getSaveFileNames();
         
-        for(File saveFile : sfResult.getSaveFiles())
+        for(File saveFile : sfResult.getResult())
         {
             if(Objects.equals(saveFile.getName(), name + ".save")) return FILE_ALREADY_EXISTS;
         }
@@ -141,7 +209,7 @@ public class SaveFile
         
         SaveResult saveFiles = getSaveFileNames();
         
-        for(File saveFile : saveFiles.getSaveFiles())
+        for(File saveFile : saveFiles.getResult())
         {
             i++;
             saves.append(i).append(". ").append(saveFile.getName()).append("\n");
@@ -168,10 +236,5 @@ public class SaveFile
         if(sfResult.size() == 0) return new SaveResult(SAVE_FOLDER_EMPTY, new File[0]);
 
         return sfResult;
-    }
-    
-    public File getSaveFile()
-    {
-        return saveFile;
     }
 }
