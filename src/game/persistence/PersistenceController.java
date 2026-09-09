@@ -4,7 +4,10 @@ import static game.persistence.PersistenceErrors.*;
 
 import game.*;
 import game.entities.ClassType;
+import game.entities.Persistable;
 import game.entities.Player;
+import game.world.Point;
+import game.world.RuntimeRoom;
 
 import java.util.*;
 
@@ -57,7 +60,7 @@ public class PersistenceController implements Startable<PersistenceResult>, Loop
             else  break;
         } while(true);
         
-        //TODO Add WritePlayer();
+        saveF.writePlayer(player);
         return new PersistenceResult(PersistenceErrors.SUCCESS, player, null, null, null);
     }
     
@@ -82,11 +85,36 @@ public class PersistenceController implements Startable<PersistenceResult>, Loop
     public PersistenceResult loadSaveGame()
     {
         PersistenceErrors result = setFileToLoad(consoleH);
+        
         if(result != SUCCESS) return new PersistenceResult(PersistenceErrors.USER_WENT_BACK, null, null, null, null);
         
-        //TODO add readPlayer() and readList()
+        LoadResult playerResult = saveF.readPlayer();
+        Player player = (Player)loadF.create(playerResult.getClassName(0), playerResult.getClassData(0));
         
-        return new PersistenceResult(PersistenceErrors.SUCCESS, null, null, null, null);
+        LoadResult inventoryResult = saveF.readList("inventory");
+        List<Persistable> inventory = new ArrayList<>();
+        for(int i = 0; i < inventoryResult.size(); i++)
+        {
+            inventory.add(loadF.create(inventoryResult.getClassName(i), inventoryResult.getClassData(i)));
+        }
+        
+        LoadResult equippedResult = saveF.readList("equipped");
+        List<Persistable> equipped = new ArrayList<>();
+        for(int i = 0; i < equippedResult.size(); i++)
+        {
+            equipped.add(loadF.create(equippedResult.getClassName(i), equippedResult.getClassData(i)));
+        }
+        
+        LoadResult mapResult = saveF.readList("world");
+        Map<Point, RuntimeRoom> world = new HashMap<>();
+        for(int i = 0; i < mapResult.size(); i++)
+        {
+            Point point = (Point)loadF.create(mapResult.getClassName(i), mapResult.getClassData(i));
+            RuntimeRoom room = (RuntimeRoom)loadF.create(mapResult.getClassName(i), mapResult.getClassData(i));
+            world.put(point, room);
+        }
+        
+        return new PersistenceResult(PersistenceErrors.SUCCESS, player, inventory, equipped, world);
     }
     
     private PersistenceErrors setFileToLoad(ConsoleHandler consoleH)
