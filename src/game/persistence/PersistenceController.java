@@ -6,12 +6,13 @@ import game.*;
 import game.entities.ClassType;
 import game.entities.Persistable;
 import game.entities.Player;
+import game.mainmenu.MainMenuStates;
 import game.world.Point;
 import game.world.RuntimeRoom;
 
 import java.util.*;
 
-public class PersistenceController implements Startable<PersistenceResult>, Loopable<PersistenceResult>
+public class PersistenceController implements Startable<MainMenuStates, PersistenceResult>, Loopable<PersistenceResult>
 {
     private final SaveFile saveF;
     private final ConsoleHandler consoleH;
@@ -22,6 +23,13 @@ public class PersistenceController implements Startable<PersistenceResult>, Loop
         saveF = saveFile;
         consoleH = consoleHandler;
         loadF = new LoadFactory();
+    }
+    
+    @Override
+    public PersistenceResult start(MainMenuStates state)
+    {
+        if(state == MainMenuStates.NEW_GAME) return createNewGame();
+        else return loadSaveGame();
     }
     
     public PersistenceResult createNewGame()
@@ -135,12 +143,6 @@ public class PersistenceController implements Startable<PersistenceResult>, Loop
         } while(true);
         
         return error;
-    }
-    
-    @Override
-    public PersistenceResult start()
-    {
-        return null;
     }
     
     @Override
