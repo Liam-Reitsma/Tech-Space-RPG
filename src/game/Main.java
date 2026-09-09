@@ -3,6 +3,7 @@ package game;
 import game.mainmenu.MainMenuController;
 import game.persistence.SaveFile;
 import game.persistence.SaveFileHandler;
+import game.world.WorldController;
 
 import java.util.Scanner;
 
@@ -15,8 +16,9 @@ public class Main
         SaveFile saveFile = new SaveFile();
         SaveFileHandler saveFH = new SaveFileHandler(saveFile);
         MainMenuController mmController = new MainMenuController(consoleH, saveFH);
+        WorldController worldController = new WorldController(consoleH);
         
-        GameController gameController = new GameController(mmController);
+        GameController gameController = new GameController(mmController, worldController);
         
         int exitValue = gameController.start();
 
