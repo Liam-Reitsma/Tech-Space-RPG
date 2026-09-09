@@ -2,17 +2,15 @@ package game.world;
 
 import game.Result;
 
-import java.util.Map;
-
 public class WorldResult extends Result<WorldErrors>
 {
-    private final Map<Point, RuntimeRoom> world;
+    private final RuntimeRoom room;
     
-    public WorldResult(WorldErrors e, Map<Point, RuntimeRoom> worldMap)
+    public WorldResult(WorldErrors e, RuntimeRoom rRoom)
     {
         error = e;
-        world = worldMap;
+        room = rRoom;
     }
     
-    public Map<Point, RuntimeRoom> getMap() {return world; }
+    public RuntimeRoom getRoom() { return room; }
 }
