@@ -4,9 +4,7 @@ import game.Errors;
 
 public enum CombatErrors implements Errors
 {
-    WIN("You Win."),
-    LOSE("You Lose."),
-    FLEE("You Ran Away."),;
+    SUCCESS("");
 
     private final String message;
 
