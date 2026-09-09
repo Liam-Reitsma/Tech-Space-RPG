@@ -33,7 +33,7 @@ public class RuntimeRoom implements Persistable
     {
         for(String datum : data)
         {
-            if(datum.startsWith("Point"))
+            if(datum.toLowerCase().startsWith("point"))
             {
                 point = Point.parsePoint(datum);
             }
