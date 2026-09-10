@@ -16,7 +16,7 @@ public class LoadFactory
     {
         try
         {
-            return Optional.of((Persistable)Class.forName(name).getConstructor(String[].class).newInstance(data));
+            return Optional.of((Persistable)Class.forName(name).getConstructor(String[].class).newInstance((Object)data));
         } catch(ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException |
                 NoSuchMethodException e)
         {
