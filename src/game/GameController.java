@@ -34,7 +34,7 @@ public class GameController
             switch(i)
             {
                 case 0:
-                     mmResult = mainMenuC.start(null);
+                     mmResult = mainMenuC.start();
                     if(mmResult.getStateUsed() == MainMenuStates.EXIT) return 0;
                     break;
                 case 1:
@@ -48,16 +48,18 @@ public class GameController
         
         if(mmResult.getStateUsed() == MainMenuStates.NEW_GAME)
         {
-            //TODO WorldResult worldResult = worldC.start(mmResult.getStateUsed());
-            //if(worldResult.getError() != WorldErrors.SUCCESS) return 1;
-            //TODO persistenceC.save(worldC.getMap());
-            //TODO Get Inventory & Get Equipped
+            WorldResult worldResult = worldC.start(mmResult.getStateUsed());
+            if(worldResult.getError() != WorldErrors.SUCCESS) return 1;
+            player.setInventory(null);
+            player.setEquipped(null);
+            persistenceC.fullSave(player, player.getInventory(), player.getEquipped(), worldC.getWorld());
         }
         else if(mmResult.getStateUsed() == MainMenuStates.LOAD_GAME)
         {
-            WorldResult worldResult = worldC.loadMapFromSave(pResult.getWorld());
+            WorldResult worldResult = worldC.start(MainMenuStates.LOAD_GAME,pResult.getWorld());
             if(worldResult.getError() != WorldErrors.SUCCESS) return 2;
-            //TODO Set Inventory & Set Equipped
+            player.setInventory(pResult.getInventory());
+            player.setEquipped(pResult.getEquipped());
         }
         
         return loop();
