@@ -209,6 +209,49 @@ public class SaveFile
         }
     }
     
+    public LoadResult readAndRemove(String nameHeader, Persistable item)
+    {
+        try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
+        {
+            String line;
+            String[] result;
+            List<String> list = new ArrayList<>();
+            boolean rightLocation = false;
+            boolean removed = false;
+            
+            do
+            {
+                line = reader.readLine();
+                if(line == null && !removed) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                else if (line == null) break;
+                if(line.toLowerCase().startsWith(nameHeader.toLowerCase()) && !rightLocation) rightLocation = true;
+                if(rightLocation && line.toLowerCase().startsWith("lines"))
+                {
+                    int number = Integer.parseInt(line.substring(line.indexOf(Persistable.FIELD_SEPARATOR) + 1, line.indexOf(Persistable.CLASS_SEPARATOR))) - 1;
+                    list.add("Lines" + Persistable.FIELD_SEPARATOR + number + Persistable.CLASS_SEPARATOR);
+                }
+                else if(rightLocation && line.equals(item.getSaveInfo())) { rightLocation = false; removed = true; }
+                else list.add(line);
+            } while(true);
+            
+            result = list.toArray(new String[0]);
+            
+            return new LoadResult(SUCCESS, result);
+        } catch(NullPointerException e)
+        {
+            return new LoadResult(SAVE_FILE_EMPTY, new String[0]);
+        } catch(NumberFormatException e)
+        {
+            return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+        } catch(FileNotFoundException e)
+        {
+            return new LoadResult(SAVE_FILE_MISSING, new String[0]);
+        } catch(IOException | IllegalAccessException e)
+        {
+            return new LoadResult(LOAD_ERROR, new String[0]);
+        }
+    }
+    
     public PersistenceErrors selectSave(int number)
     {
         int saveFileIndex = number - 1;
