@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-public class WorldController implements Startable<MainMenuStates, Map<Point, RuntimeRoom>, WorldResult>, Loopable<WorldResult>
+public class WorldController implements Startable<MainMenuStates, Map<Point, RuntimeRoom>, WorldResult>, Loopable<Void, Void, WorldResult>
 {
     private final Random random;
     private final WorldGenerator worldGenerator;
@@ -93,7 +93,7 @@ public class WorldController implements Startable<MainMenuStates, Map<Point, Run
     }
     
     @Override
-    public WorldResult loop()
+    public WorldResult loop(Void input1, Void input2)
     {
         consoleH.printLine(movementOptions());
         Optional<Integer> result;
