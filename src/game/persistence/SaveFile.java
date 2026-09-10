@@ -48,7 +48,7 @@ public class SaveFile
     
     public PersistenceErrors writeItemList(List<? extends Item> items, String listName)
     {
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile, true)))
         {
             writer.newLine();
             writer.write(listName + ":");
@@ -73,7 +73,7 @@ public class SaveFile
     }
     public PersistenceErrors writeWorld(List<RuntimeRoom> world, String listName)
     {
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile, true)))
         {
             writer.newLine();
             writer.write(listName + ":");
