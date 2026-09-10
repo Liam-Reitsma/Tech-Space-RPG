@@ -4,6 +4,7 @@ import game.Errors;
 
 public enum PersistenceErrors implements Errors
 {
+        UNABLE_TO_SAVE("Saving Player Failed! The updated player data size is too big."),
     INVALID_FILE_NAME("Creating Save Failed! The file given is an invalid name. Please try again"),
     FILE_ALREADY_EXISTS("Creating Save Failed! The file given already exists and could not be created."),
     NUMBER_OUT_OF_BOUNDS("Loading Failed! The number selected is not a save game."),
