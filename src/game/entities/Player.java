@@ -30,14 +30,23 @@ public class Player extends Entities implements Persistable
         statStr = type.getStatStrength();
         statDex = type.getStatDexterity();
         statInt = type.getStatIntelligence();
-        inventory = new ArrayList<>();
-        equipped = new ArrayList<>();
     }
     
     public Player(String[] data)
     {
         loadSaveInfo(data);
     }
+
+    public void setInventory()
+    {
+        inventory = new ArrayList<>();
+    }
+
+    public void setEquipped()
+    {
+        equipped = new ArrayList<>();
+    }
+
     
     @Override
     public void attack()
