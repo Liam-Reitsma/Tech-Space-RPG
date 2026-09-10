@@ -1,11 +1,9 @@
 package game.persistence;
 
 import game.entities.Persistable;
-import game.entities.Player;
-import game.items.Armour;
-import game.items.Potion;
-import game.items.Weapon;
-import game.world.RuntimeRoom;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 public class LoadFactory
 {
@@ -14,16 +12,15 @@ public class LoadFactory
     
     }
     
-    public Persistable create(String name, String[] data)
+    public Optional<Persistable> create(String name, String[] data)
     {
-        return switch(name)
+        try
         {
-            case ("Player")      -> new Player(data);
-            case ("Weapon")      -> new Weapon(data);
-            case ("Armour")      -> new Armour(data);
-            case ("Potion")      -> new Potion(data);
-            case ("RuntimeRoom") -> new RuntimeRoom(data);
-            default -> null;
-        };
+            return Optional.of((Persistable)Class.forName(name).getConstructor(String[].class).newInstance(data));
+        } catch(ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException |
+                NoSuchMethodException e)
+        {
+            return Optional.empty();
+        }
     }
 }
