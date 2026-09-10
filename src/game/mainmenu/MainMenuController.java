@@ -7,7 +7,7 @@ import game.Startable;
 
 import java.util.Optional;
 
-public class MainMenuController implements Startable<Void, MainMenuResult>
+public class MainMenuController implements Startable<Void, Void, MainMenuResult>
 {
     private final ConsoleHandler consoleH;
     
@@ -17,7 +17,7 @@ public class MainMenuController implements Startable<Void, MainMenuResult>
     }
     
     @Override
-    public MainMenuResult start(Void v)
+    public MainMenuResult start(Void input1, Void input2)
     {
         Optional<Integer> userInput;
         do
@@ -43,5 +43,10 @@ public class MainMenuController implements Startable<Void, MainMenuResult>
         } while(true);
         
         return new MainMenuResult(USER_WENT_BACK, MainMenuStates.EXIT);
+    }
+    
+    public MainMenuResult start()
+    {
+        return start(null, null);
     }
 }
