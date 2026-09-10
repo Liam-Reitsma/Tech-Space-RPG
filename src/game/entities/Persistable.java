@@ -11,7 +11,6 @@ public interface Persistable
     default String getSaveInfo() throws IllegalAccessException
     {
         StringBuilder saveInfo = new StringBuilder();
-        //Creates: "ClassName: "
         saveInfo.append(this.getClassName()).append(CLASS_SEPARATOR);
         Class<?> current = this.getClass();
         
@@ -21,14 +20,13 @@ public interface Persistable
             {
                 if(field.isAnnotationPresent(SaveExclude.class)) continue;
                 field.setAccessible(true);
-                //Creates: "Type-Name=Value, "
-                saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this)).append(DATA_SEPARATOR);
+                if(field.getType() == float.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(Math.round((float)field.get(this))).append(DATA_SEPARATOR);
+                else saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this)).append(DATA_SEPARATOR);
             }
             
             current = current.getSuperclass();
         }
         
-        //Removes: ", " from end
         saveInfo.delete(saveInfo.length() - String.valueOf(DATA_SEPARATOR).length(), saveInfo.length());
         
         return saveInfo.toString();

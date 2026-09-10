@@ -1,6 +1,6 @@
 package game.items;
 
-public class Armour extends EquippableItem<ArmourType>
+public class Armour extends EquippableItem
 {
     private final ArmourType armourType;
 

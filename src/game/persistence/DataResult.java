@@ -2,7 +2,7 @@ package game.persistence;
 
 import game.Result;
 
-public abstract class DataResult<T> extends Result<SaveErrors>
+public abstract class DataResult<T> extends Result<PersistenceErrors>
 {
     protected T[] result;
     
@@ -10,6 +10,8 @@ public abstract class DataResult<T> extends Result<SaveErrors>
     {
         return result.length;
     }
+    
+    public T[] getResult() { return result; }
     
     @Override
     public String toString()

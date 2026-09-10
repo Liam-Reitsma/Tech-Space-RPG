@@ -2,7 +2,7 @@ package game;
 
 import game.mainmenu.MainMenuController;
 import game.persistence.SaveFile;
-import game.persistence.SaveFileHandler;
+import game.persistence.PersistenceController;
 import game.world.WorldController;
 
 import java.util.Scanner;
@@ -14,11 +14,11 @@ public class Main
         Scanner scanner = new Scanner(System.in);
         ConsoleHandler consoleH = new ConsoleHandler(scanner);
         SaveFile saveFile = new SaveFile();
-        SaveFileHandler saveFH = new SaveFileHandler(saveFile);
-        MainMenuController mmController = new MainMenuController(consoleH, saveFH);
-        WorldController worldController = new WorldController(consoleH);
+        MainMenuController mainMenuC = new MainMenuController(consoleH);
+        PersistenceController persistenceC = new PersistenceController(consoleH, saveFile);
+        WorldController worldC = new WorldController(consoleH);
         
-        GameController gameController = new GameController(mmController, worldController);
+        GameController gameController = new GameController(mainMenuC, persistenceC, worldC);
         
         int exitValue = gameController.start();
 
