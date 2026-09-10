@@ -150,4 +150,49 @@ public class PersistenceController implements Startable<MainMenuStates, Persiste
     {
         return null;
     }
+    
+    public PersistenceResult fullSave(Player player, List<Persistable> inventory, List<Persistable> equipped, Map<Point, RuntimeRoom> map)
+    {
+        PersistenceErrors error;
+        error = saveF.writePlayer(player);
+        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        
+        error = saveF.writeList(inventory, "inventory");
+        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        
+        error = saveF.writeList(equipped, "equipped");
+        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        
+        
+        error = saveF.writeList(new ArrayList<>(map.values()), "world");
+        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        
+        return new PersistenceResult(SUCCESS, null, null, null, null);
+    }
+    
+    public PersistenceResult saveItem(String listName, Persistable item)
+    {
+        LoadResult result = saveF.readAndInsert(listName, item);
+        return result.getError() == SUCCESS ?
+                new PersistenceResult(saveF.writeAll(result.getResult()), null, null, null, null) :
+                new PersistenceResult(result.getError(), null, null, null, null);
+    }
+    
+    public PersistenceResult removeItem(String listName, Persistable item)
+    {
+        LoadResult result = saveF.readAndRemove(listName, item);
+        return result.getError() == SUCCESS ?
+                new PersistenceResult(saveF.writeAll(result.getResult()), null, null, null, null) :
+                new PersistenceResult(result.getError(), null, null, null, null);
+    }
+    
+    public PersistenceResult updatePlayerStatus(Player player)
+    {
+        return new PersistenceResult(saveF.writeDeltaPlayer(player), null, null, null, null);
+    }
+    
+    public PersistenceResult updateRoomStatus(RuntimeRoom room)
+    {
+        return new PersistenceResult(saveF.writeDeltaRoom(room), null, null, null, null);
+    }
 }

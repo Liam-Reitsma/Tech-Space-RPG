@@ -1,16 +1,20 @@
 package game.persistence;
 
 import game.entities.Persistable;
+import game.world.RuntimeRoom;
 
 import static game.persistence.PersistenceErrors.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class SaveFile
 {
+    private static final String INITIAL_PADDING = "               ";
     private File saveFile;
     private final File saveFileLocation;
     
@@ -26,6 +30,7 @@ public class SaveFile
             writer.write("Player Data:");
             writer.newLine();
             writer.write(player.getSaveInfo());
+            writer.write(INITIAL_PADDING);
             writer.newLine();
             
             return SUCCESS;
@@ -43,6 +48,7 @@ public class SaveFile
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
+            writer.newLine();
             writer.write(listName + ":");
             writer.newLine();
             writer.write("Lines"+ Persistable.FIELD_SEPARATOR + persistables.size() + Persistable.CLASS_SEPARATOR);
@@ -59,6 +65,82 @@ public class SaveFile
             if(saveFileLocation.mkdirs()) { return writeList(persistables, listName); }
             return WRITE_ERROR;
         } catch(IOException | IllegalAccessException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    
+    public PersistenceErrors writeAll(String[] list)
+    {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
+        {
+            for(String line : list)
+            {
+                writer.write(line);
+                writer.newLine();
+            }
+            
+            return SUCCESS;
+        } catch(FileNotFoundException e)
+        {
+            if(saveFileLocation.mkdirs()) { return writeAll(list); }
+            return WRITE_ERROR;
+        } catch(IOException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    
+    public PersistenceErrors writeDeltaPlayer(Persistable player)
+    {
+        try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
+        {
+            String line;
+            String info = player.getSaveInfo();
+            
+            do
+            {
+                line = fileEditor.readLine();
+                if(line == null) return SAVE_FILE_CORRUPTED;
+            } while(!line.toLowerCase().startsWith("player"));
+            
+            long startLine = fileEditor.getFilePointer();
+            String padding = " ".repeat(fileEditor.readLine().length() - info.length());
+            fileEditor.seek(startLine);
+            fileEditor.write((info + padding).getBytes(StandardCharsets.UTF_8));
+            
+            return SUCCESS;
+        } catch(IllegalArgumentException e)
+        {
+            return UNABLE_TO_SAVE;
+        } catch(IOException | IllegalAccessException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    
+    public PersistenceErrors writeDeltaRoom(RuntimeRoom room)
+    {
+        try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
+        {
+            String line;
+            String info = room.getSaveInfo();
+            int dsOne = info.indexOf(Persistable.DATA_SEPARATOR) + 1;
+            int dsTwo = info.indexOf(Persistable.DATA_SEPARATOR, dsOne);
+            long startLine;
+            
+            do
+            {
+                startLine = fileEditor.getFilePointer();
+                line = fileEditor.readLine();
+                if(line == null) return SAVE_FILE_CORRUPTED;
+            } while(!line.toLowerCase().contains(info.substring(dsOne, dsTwo)));
+            
+            fileEditor.seek(startLine);
+            fileEditor.write(info.getBytes(StandardCharsets.UTF_8));
+            
+            return SUCCESS;
+        } catch(IOException e)
         {
             return WRITE_ERROR;
         }
@@ -138,6 +220,92 @@ public class SaveFile
         {
             return new LoadResult(SAVE_FILE_MISSING, new String[0]);
         } catch(IOException e)
+        {
+            return new LoadResult(LOAD_ERROR, new String[0]);
+        }
+    }
+    
+    public LoadResult readAndInsert(String nameHeader, Persistable item)
+    {
+        try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
+        {
+            String line;
+            String[] result;
+            List<String> list = new ArrayList<>();
+            boolean rightLocation = false;
+            boolean inserted = false;
+            
+            do
+            {
+                line = reader.readLine();
+                if(line == null && !inserted) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                else if (line == null) break;
+                if(line.toLowerCase().startsWith(nameHeader.toLowerCase()) && !rightLocation) rightLocation = true;
+                if(rightLocation && line.toLowerCase().startsWith("lines"))
+                {
+                    int number = Integer.parseInt(line.substring(line.indexOf(Persistable.FIELD_SEPARATOR) + 1, line.indexOf(Persistable.CLASS_SEPARATOR))) + 1;
+                    list.add("Lines" + Persistable.FIELD_SEPARATOR + number + Persistable.CLASS_SEPARATOR);
+                }
+                else if(rightLocation && line.isEmpty()) { rightLocation = false; inserted = true; list.add(item.getSaveInfo()); list.add("\n"); }
+                else list.add(line);
+            } while(true);
+            
+            result = list.toArray(new String[0]);
+            
+            return new LoadResult(SUCCESS, result);
+        } catch(NullPointerException e)
+        {
+            return new LoadResult(SAVE_FILE_EMPTY, new String[0]);
+        } catch(NumberFormatException e)
+        {
+            return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+        } catch(FileNotFoundException e)
+        {
+            return new LoadResult(SAVE_FILE_MISSING, new String[0]);
+        } catch(IOException | IllegalAccessException e)
+        {
+            return new LoadResult(LOAD_ERROR, new String[0]);
+        }
+    }
+    
+    public LoadResult readAndRemove(String nameHeader, Persistable item)
+    {
+        try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
+        {
+            String line;
+            String[] result;
+            List<String> list = new ArrayList<>();
+            boolean rightLocation = false;
+            boolean removed = false;
+            
+            do
+            {
+                line = reader.readLine();
+                if(line == null && !removed) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                else if (line == null) break;
+                if(line.toLowerCase().startsWith(nameHeader.toLowerCase()) && !rightLocation) rightLocation = true;
+                if(rightLocation && line.toLowerCase().startsWith("lines"))
+                {
+                    int number = Integer.parseInt(line.substring(line.indexOf(Persistable.FIELD_SEPARATOR) + 1, line.indexOf(Persistable.CLASS_SEPARATOR))) - 1;
+                    list.add("Lines" + Persistable.FIELD_SEPARATOR + number + Persistable.CLASS_SEPARATOR);
+                }
+                else if(rightLocation && line.equals(item.getSaveInfo())) { rightLocation = false; removed = true; }
+                else list.add(line);
+            } while(true);
+            
+            result = list.toArray(new String[0]);
+            
+            return new LoadResult(SUCCESS, result);
+        } catch(NullPointerException e)
+        {
+            return new LoadResult(SAVE_FILE_EMPTY, new String[0]);
+        } catch(NumberFormatException e)
+        {
+            return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+        } catch(FileNotFoundException e)
+        {
+            return new LoadResult(SAVE_FILE_MISSING, new String[0]);
+        } catch(IOException | IllegalAccessException e)
         {
             return new LoadResult(LOAD_ERROR, new String[0]);
         }
