@@ -12,6 +12,9 @@ import game.mainmenu.MainMenuStates;
 import game.persistence.PersistenceController;
 import game.persistence.PersistenceErrors;
 import game.persistence.PersistenceResult;
+import game.reward.RewardController;
+import game.reward.RewardErrors;
+import game.reward.RewardResult;
 import game.world.*;
 
 public class GameController
@@ -24,10 +27,11 @@ public class GameController
     private final CombatController combatC;
     private final MainMenuController mainMenuC;
     private final PersistenceController persistenceC;
+    private final RewardController rewardC;
     private final RoomController roomC;
     private final WorldController worldC;
     
-    public GameController(CombatController cc, MainMenuController mmc, PersistenceController pc, RoomController rc, WorldController wc)
+    public GameController(CombatController cc, MainMenuController mmc, PersistenceController pc, RewardController rec, RoomController roc, WorldController wc)
     {
         isAlive = true;
         isRunning = true;
@@ -35,7 +39,8 @@ public class GameController
         combatC = cc;
         mainMenuC = mmc;
         persistenceC = pc;
-        roomC = rc;
+        rewardC = rec;
+        roomC = roc;
         worldC = wc;
     }
     
@@ -96,11 +101,19 @@ public class GameController
                 case EMPTY -> cr = new CombatResult(CombatErrors.SUCCESS, CombatOutcome.FLEE);
                 default -> cr = null;
             }
-            
+
+            RewardResult rer = null;
             if(cr == null || cr.getError() != CombatErrors.SUCCESS) return 5;
             if(cr.getCombatOutcome() == CombatOutcome.LOSE) isAlive = false;
-            else roomC.loop();
-            
+            else
+            {
+                switch(rr.getRoomType())
+                {
+                    case COMBAT, MINIBOSS, BOSS -> rer = rewardC.loop(player, (Enemy) rr.getPersistable());
+                }
+                roomC.loop();
+            }
+            if(rer == null || rer.getError() != RewardErrors.SUCCESS) return 6;
             PersistenceResult pr = persistenceC.loop(player, wr.getRoom());
             if(pr.getError() != PersistenceErrors.SUCCESS) return 6;
         }
