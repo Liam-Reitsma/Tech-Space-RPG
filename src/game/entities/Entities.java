@@ -2,7 +2,7 @@ package game.entities;
 
 public abstract class Entities
 {
-    protected  String name;
+    protected String name;
     protected int level;
     protected float health;
     
@@ -12,6 +12,5 @@ public abstract class Entities
     
     abstract void attack();
     abstract void useAbility();
-    abstract void dealDamage();
-    abstract void takeDamage();
+    abstract void takeDamage(int ouch);
 }

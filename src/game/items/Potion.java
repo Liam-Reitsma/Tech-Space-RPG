@@ -2,13 +2,18 @@ package game.items;
 
 public class Potion extends Item implements Usable
 {
-    private final PotionType potionType;
+    private PotionType potionType;
 
     public Potion(String name, String desc, PotionType type)
     {
         title = name;
         description = desc;
         potionType = type;
+    }
+
+    public Potion(String[] data)
+    {
+        loadSaveInfo(data);
     }
 
     public PotionType getPotionType() { return potionType; }

@@ -22,6 +22,7 @@ public class Player extends Entities implements Persistable
     
     public Player(String playerName, ClassType type)
     {
+        health = 100;
         xp = 0;
         gold = 0;
         name = playerName;
@@ -29,14 +30,23 @@ public class Player extends Entities implements Persistable
         statStr = type.getStatStrength();
         statDex = type.getStatDexterity();
         statInt = type.getStatIntelligence();
-        inventory = new ArrayList<>();
-        equipped = new ArrayList<>();
     }
     
     public Player(String[] data)
     {
         loadSaveInfo(data);
     }
+
+    public void setInventory()
+    {
+        inventory = new ArrayList<>();
+    }
+
+    public void setEquipped()
+    {
+        equipped = new ArrayList<>();
+    }
+
     
     @Override
     public void attack()
@@ -49,19 +59,34 @@ public class Player extends Entities implements Persistable
     {
     
     }
-    
-    @Override
-    public void dealDamage()
+
+    public void healing(int healAmount)
     {
-    
+        if (healAmount + health > 100) {
+            health = 100;
+        }
+        else{
+            health -= healAmount;
+        }
     }
+
     @Override
-    public void takeDamage()
+    public void takeDamage(int ouch)
     {
-    
+        double damageRecieved = ouch;
+        for (Item item : equipped)
+        {
+            if (item instanceof Armour)
+            {
+                damageRecieved *= (1.0 - ((Armour) item).getArmourType().getProtectionValue());
+            }
+        }
+        health -= Math.round(damageRecieved);
     }
     
     public int getLevel() { return level; }
+
+    public float getHealth() { return health; }
     
     public int getXP() { return xp; }
     
@@ -193,14 +218,27 @@ public class Player extends Entities implements Persistable
         return true;
     }
 
-    public boolean removeFromInventory(Item item)
+    public void removeFromInventory(Item item)
     {
         if (!inventory.contains(item))
         {
             System.out.println("Item is not in inventory");
-            return false;
         }
         inventory.remove(item);
-        return true;
+    }
+
+    public Optional<Weapon> getEquippedWeapon()
+    {
+        for (Item item : equipped) {
+            if (item instanceof Weapon) {
+                return Optional.of((Weapon) item);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public List<Item> getInventory()
+    {
+        return inventory;
     }
 }

@@ -2,18 +2,18 @@ package game.items;
 
 public enum ArmourType
 {
-    CHEST(50),
-    HELMET(10),
-    BOOTS(30);
+    CHEST(0.15),
+    HELMET(0.10),
+    BOOTS(0.08);
 
-    public final int protectionValue;
+    public final double protectionValue;
 
-    ArmourType(int value)
+    ArmourType(double value)
     {
         protectionValue = value;
     }
 
-    public int getProtectionValue()
+    public double getProtectionValue()
     {
         return protectionValue;
     }

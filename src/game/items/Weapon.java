@@ -11,6 +11,11 @@ public class Weapon extends EquippableItem<WeaponType> implements Usable
         weaponType = type;
     }
 
+    public Weapon(String[] data)
+    {
+        loadSaveInfo(data);
+    }
+
     public WeaponType getWeaponType() { return weaponType; }
 
     @Override
