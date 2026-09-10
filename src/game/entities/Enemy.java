@@ -42,9 +42,9 @@ public class Enemy extends Entities implements Persistable
 
     public float getHealth() { return health; }
 
-    public String getEnemyType()
+    public EnemyType getEnemyType()
     {
-        return enemyType.toString();
+        return enemyType;
     }
 
     public int[] getStats()
