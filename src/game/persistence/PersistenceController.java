@@ -12,7 +12,7 @@ import game.world.RuntimeRoom;
 
 import java.util.*;
 
-public class PersistenceController implements Startable<MainMenuStates, PersistenceResult>, Loopable<PersistenceResult>
+public class PersistenceController implements Startable<MainMenuStates, Void, PersistenceResult>, Loopable<PersistenceResult>
 {
     private final SaveFile saveF;
     private final ConsoleHandler consoleH;
@@ -26,7 +26,7 @@ public class PersistenceController implements Startable<MainMenuStates, Persiste
     }
     
     @Override
-    public PersistenceResult start(MainMenuStates state)
+    public PersistenceResult start(MainMenuStates state, Void input2)
     {
         if(state == MainMenuStates.NEW_GAME) return createNewGame();
         else return loadSaveGame();
@@ -194,5 +194,10 @@ public class PersistenceController implements Startable<MainMenuStates, Persiste
     public PersistenceResult updateRoomStatus(RuntimeRoom room)
     {
         return new PersistenceResult(saveF.writeDeltaRoom(room), null, null, null, null);
+    }
+    
+    public PersistenceResult start(MainMenuStates state)
+    {
+        return start(state, null);
     }
 }
