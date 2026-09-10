@@ -4,6 +4,7 @@ import game.combat.CombatController;
 import game.mainmenu.MainMenuController;
 import game.persistence.SaveFile;
 import game.persistence.PersistenceController;
+import game.reward.RewardController;
 import game.world.RoomController;
 import game.world.WorldController;
 
@@ -19,6 +20,7 @@ public class Main
         CombatController combatC = new CombatController(consoleH);
         MainMenuController mainMenuC = new MainMenuController(consoleH);
         PersistenceController persistenceC = new PersistenceController(consoleH, saveFile);
+        RewardController rewardC = new RewardController(consoleH);
         RoomController roomC = new RoomController(consoleH);
         WorldController worldC = new WorldController(consoleH);
         
