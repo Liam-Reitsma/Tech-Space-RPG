@@ -1,6 +1,6 @@
 package game.items;
 
-public class Weapon extends EquippableItem<WeaponType> implements Usable
+public class Weapon extends EquippableItem implements Usable
 {
     WeaponType weaponType;
 

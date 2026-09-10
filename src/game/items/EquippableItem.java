@@ -1,6 +1,6 @@
 package game.items;
 
-public abstract class EquippableItem<T> extends Item implements  Equippable<T>
+public abstract class EquippableItem extends Item implements Equippable
 {
     protected boolean isEquipped;
 }
