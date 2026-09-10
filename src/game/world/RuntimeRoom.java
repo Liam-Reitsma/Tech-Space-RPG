@@ -26,7 +26,11 @@ public class RuntimeRoom implements Persistable
     
     public RoomType getRoomType() { return roomType; }
     
-    public void setCompleted() { completed = true; }
+    public void setCompleted()
+    {
+        completed = true;
+        roomType = RoomType.EMPTY;
+    }
     
     public void setRoomType(RoomType newType) { roomType = newType; }
     
