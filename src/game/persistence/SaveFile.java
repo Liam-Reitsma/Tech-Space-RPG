@@ -1,6 +1,7 @@
 package game.persistence;
 
 import game.entities.Persistable;
+import game.world.RuntimeRoom;
 
 import static game.persistence.PersistenceErrors.*;
 
@@ -95,6 +96,7 @@ public class SaveFile
         try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
         {
             String line;
+            String info = player.getSaveInfo();
             
             do
             {
@@ -103,7 +105,6 @@ public class SaveFile
             } while(!line.toLowerCase().startsWith("player"));
             
             long startLine = fileEditor.getFilePointer();
-            String info = player.getSaveInfo();
             String padding = " ".repeat(fileEditor.readLine().length() - info.length());
             fileEditor.seek(startLine);
             fileEditor.write((info + padding).getBytes(StandardCharsets.UTF_8));
@@ -113,6 +114,33 @@ public class SaveFile
         {
             return UNABLE_TO_SAVE;
         } catch(IOException | IllegalAccessException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    
+    public PersistenceErrors writeDeltaMap(RuntimeRoom room)
+    {
+        try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
+        {
+            String line;
+            String info = room.getSaveInfo();
+            int dsOne = info.indexOf(Persistable.DATA_SEPARATOR) + 1;
+            int dsTwo = info.indexOf(Persistable.DATA_SEPARATOR, dsOne);
+            long startLine;
+            
+            do
+            {
+                startLine = fileEditor.getFilePointer();
+                line = fileEditor.readLine();
+                if(line == null) return SAVE_FILE_CORRUPTED;
+            } while(!line.toLowerCase().contains(info.substring(dsOne, dsTwo)));
+            
+            fileEditor.seek(startLine);
+            fileEditor.write(info.getBytes(StandardCharsets.UTF_8));
+            
+            return SUCCESS;
+        } catch(IOException e)
         {
             return WRITE_ERROR;
         }
