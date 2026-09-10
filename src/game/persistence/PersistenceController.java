@@ -150,4 +150,23 @@ public class PersistenceController implements Startable<MainMenuStates, Persiste
     {
         return null;
     }
+    
+    public PersistenceResult fullSave(Player player, List<Persistable> inventory, List<Persistable> equipped, Map<Point, RuntimeRoom> map)
+    {
+        PersistenceErrors error;
+        error = saveF.writePlayer(player);
+        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        
+        error = saveF.writeList(inventory, "inventory");
+        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        
+        error = saveF.writeList(equipped, "equipped");
+        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        
+        
+        error = saveF.writeList(new ArrayList<>(map.values()), "world");
+        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        
+        return new PersistenceResult(SUCCESS, null, null, null, null);
+    }
 }
