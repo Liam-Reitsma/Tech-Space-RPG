@@ -1,6 +1,8 @@
 package game.persistence;
 
 import game.entities.Persistable;
+import game.entities.Player;
+import game.items.Item;
 import game.world.RuntimeRoom;
 
 import static game.persistence.PersistenceErrors.*;
@@ -23,7 +25,7 @@ public class SaveFile
         saveFileLocation = new File("resources/saves");
     }
     
-    public PersistenceErrors writePlayer(Persistable player)
+    public PersistenceErrors writePlayer(Player player)
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
@@ -44,27 +46,52 @@ public class SaveFile
         }
     }
     
-    public PersistenceErrors writeList(List<Persistable> persistables, String listName)
+    public PersistenceErrors writeItemList(List<? extends Item> items, String listName)
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
             writer.newLine();
             writer.write(listName + ":");
             writer.newLine();
-            writer.write("Lines"+ Persistable.FIELD_SEPARATOR + persistables.size() + Persistable.CLASS_SEPARATOR);
+            writer.write("Lines"+ Persistable.FIELD_SEPARATOR + items.size() + Persistable.CLASS_SEPARATOR);
             writer.newLine();
-            for(Persistable persistable : persistables)
+            for(Item item : items)
             {
-                writer.write(persistable.getSaveInfo());
+                writer.write(item.getSaveInfo());
                 writer.newLine();
             }
             
             return SUCCESS;
         } catch(FileNotFoundException e)
         {
-            if(saveFileLocation.mkdirs()) { return writeList(persistables, listName); }
+            if(saveFileLocation.mkdirs()) { return writeItemList(items, listName); }
             return WRITE_ERROR;
         } catch(IOException | IllegalAccessException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    public PersistenceErrors writeWorld(List<RuntimeRoom> world, String listName)
+    {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
+        {
+            writer.newLine();
+            writer.write(listName + ":");
+            writer.newLine();
+            writer.write("Lines"+ Persistable.FIELD_SEPARATOR + world.size() + Persistable.CLASS_SEPARATOR);
+            writer.newLine();
+            for(RuntimeRoom room : world)
+            {
+                writer.write(room.getSaveInfo());
+                writer.newLine();
+            }
+            
+            return SUCCESS;
+        } catch(FileNotFoundException e)
+        {
+            if(saveFileLocation.mkdirs()) { return writeWorld(world, listName); }
+            return WRITE_ERROR;
+        } catch(IOException e)
         {
             return WRITE_ERROR;
         }
@@ -91,7 +118,7 @@ public class SaveFile
         }
     }
     
-    public PersistenceErrors writeDeltaPlayer(Persistable player)
+    public PersistenceErrors writeDeltaPlayer(Player player)
     {
         try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
         {
@@ -225,7 +252,7 @@ public class SaveFile
         }
     }
     
-    public LoadResult readAndInsert(String nameHeader, Persistable item)
+    public LoadResult readAndInsert(String nameHeader, Item item)
     {
         try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
         {
@@ -268,7 +295,7 @@ public class SaveFile
         }
     }
     
-    public LoadResult readAndRemove(String nameHeader, Persistable item)
+    public LoadResult readAndRemove(String nameHeader, Item item)
     {
         try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
         {

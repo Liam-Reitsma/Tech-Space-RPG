@@ -1,8 +1,9 @@
 package game.persistence;
 
 import game.Result;
-import game.entities.Persistable;
 import game.entities.Player;
+import game.items.EquippableItem;
+import game.items.Item;
 import game.world.Point;
 import game.world.RuntimeRoom;
 
@@ -12,11 +13,11 @@ import java.util.Map;
 public class PersistenceResult extends Result<PersistenceErrors>
 {
     private final Player player;
-    private final List<Persistable> inventory;
-    private final List<Persistable> equipped;
+    private final List<Item> inventory;
+    private final List<EquippableItem> equipped;
     private final Map<Point, RuntimeRoom> world;
     
-    public PersistenceResult(PersistenceErrors e, Player loadedPlayer, List<Persistable> inventoryList, List<Persistable> equippedList, Map<Point, RuntimeRoom> worldMap)
+    public PersistenceResult(PersistenceErrors e, Player loadedPlayer, List<Item> inventoryList, List<EquippableItem> equippedList, Map<Point, RuntimeRoom> worldMap)
     {
         error = e;
         player = loadedPlayer;
@@ -27,9 +28,9 @@ public class PersistenceResult extends Result<PersistenceErrors>
     
     public Player getPlayer() { return player; }
     
-    public List<Persistable> getInventory() { return inventory; }
+    public List<Item> getInventory() { return inventory; }
     
-    public List<Persistable> getEquipped() { return equipped; }
+    public List<EquippableItem> getEquipped() { return equipped; }
     
     public Map<Point, RuntimeRoom> getWorld() { return world; }
 }

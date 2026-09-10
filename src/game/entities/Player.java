@@ -14,7 +14,7 @@ public class Player extends Entities implements Persistable
     @SaveExclude
     private List<Item> inventory;
     @SaveExclude
-    private List<Item> equipped;
+    private List<EquippableItem> equipped;
     @SaveExclude
     private static final int MAXIMUM_INVENTORY_SIZE = 10;
     
@@ -37,14 +37,16 @@ public class Player extends Entities implements Persistable
         loadSaveInfo(data);
     }
 
-    public void setInventory()
+    public void setInventory(List<Item> newInventory)
     {
-        inventory = new ArrayList<>();
+        if(newInventory == null) inventory = new ArrayList<>();
+        else inventory = newInventory;
     }
 
-    public void setEquipped()
+    public void setEquipped(List<EquippableItem> newEquipped)
     {
-        equipped = new ArrayList<>();
+        if(newEquipped == null) equipped = new ArrayList<>();
+        else equipped = newEquipped;
     }
 
     
@@ -73,15 +75,15 @@ public class Player extends Entities implements Persistable
     @Override
     public void takeDamage(int ouch)
     {
-        double damageRecieved = ouch;
+        double damageReceived = ouch;
         for (Item item : equipped)
         {
             if (item instanceof Armour)
             {
-                damageRecieved *= (1.0 - ((Armour) item).getArmourType().getProtectionValue());
+                damageReceived *= (1.0 - ((Armour) item).getArmourType().getProtectionValue());
             }
         }
-        health -= Math.round(damageRecieved);
+        health -= Math.round(damageReceived);
     }
     
     public int getLevel() { return level; }
@@ -205,7 +207,7 @@ public class Player extends Entities implements Persistable
         return true;
     }
 
-    public boolean unequipItem(EquippableItem<?> item)
+    public boolean unequipItem(EquippableItem item)
     {
         if (!equipped.contains(item))
         {
@@ -240,5 +242,10 @@ public class Player extends Entities implements Persistable
     public List<Item> getInventory()
     {
         return inventory;
+    }
+    
+    public List<EquippableItem> getEquipped()
+    {
+        return equipped;
     }
 }
