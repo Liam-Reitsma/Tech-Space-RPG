@@ -5,6 +5,7 @@ import game.entities.Persistable;
 import static game.persistence.PersistenceErrors.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 public class SaveFile
 {
+    private static final String INITIAL_PADDING = "               ";
     private File saveFile;
     private final File saveFileLocation;
     
@@ -27,6 +29,7 @@ public class SaveFile
             writer.write("Player Data:");
             writer.newLine();
             writer.write(player.getSaveInfo());
+            writer.write(INITIAL_PADDING);
             writer.newLine();
             
             return SUCCESS;
@@ -82,6 +85,34 @@ public class SaveFile
             if(saveFileLocation.mkdirs()) { return writeAll(list); }
             return WRITE_ERROR;
         } catch(IOException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    
+    public PersistenceErrors writeDeltaPlayer(Persistable player)
+    {
+        try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
+        {
+            String line;
+            
+            do
+            {
+                line = fileEditor.readLine();
+                if(line == null) return SAVE_FILE_CORRUPTED;
+            } while(!line.toLowerCase().startsWith("player"));
+            
+            long startLine = fileEditor.getFilePointer();
+            String info = player.getSaveInfo();
+            String padding = " ".repeat(fileEditor.readLine().length() - info.length());
+            fileEditor.seek(startLine);
+            fileEditor.write((info + padding).getBytes(StandardCharsets.UTF_8));
+            
+            return SUCCESS;
+        } catch(IllegalArgumentException e)
+        {
+            return UNABLE_TO_SAVE;
+        } catch(IOException | IllegalAccessException e)
         {
             return WRITE_ERROR;
         }
