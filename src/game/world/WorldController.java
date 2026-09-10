@@ -171,4 +171,6 @@ public class WorldController implements Startable<MainMenuStates, Map<Point, Run
             default -> "West";
         };
     }
+    
+    public Map<Point, RuntimeRoom> getWorld() { return world; }
 }
