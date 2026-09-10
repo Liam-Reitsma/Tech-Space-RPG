@@ -39,7 +39,7 @@ public class RuntimeRoom implements Persistable
         if(completed) saveInfo.append(" ");
         saveInfo.append(DATA_SEPARATOR);
         saveInfo.append(point.toString()).append(DATA_SEPARATOR);
-        saveInfo.append(roomType.toString()).repeat(" ", 8 - roomType.toString().length());
+        saveInfo.append(roomType.toString()).repeat(" ", RoomType.maxToStringLength() - roomType.toString().length());
         return saveInfo.toString();
     }
     
