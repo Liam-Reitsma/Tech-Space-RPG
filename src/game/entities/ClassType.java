@@ -2,22 +2,22 @@ package game.entities;
 
 public enum ClassType
 {
-    WARRIOR(5, 3, 3, "warrior"),
-    ROGUE(3, 5, 3, "rogue"),
-    MAGE(3, 3, 5, "mage"),
-    UNSELECTED(0, 0 ,0, "");
+    JUGGERNAUT(5, 3, 3, "Juggernaut"),
+    MERCENARY(3, 5, 3, "Mercenary"),
+    SAGE(3, 3, 5, "Sage"),
+    UNSELECTED(0, 0 ,0, "Unselected");
     
     private final int statStrength;
     private final int statDexterity;
     private final int statIntelligence;
     private final String name;
     
-    ClassType(int _str, int _dex, int _int, String _name)
+    ClassType(int sStr, int sDex, int sInt, String n)
     {
-        statStrength = _str;
-        statDexterity = _dex;
-        statIntelligence = _int;
-        name = _name;
+        statStrength = sStr;
+        statDexterity = sDex;
+        statIntelligence = sInt;
+        name = n;
     }
     
     public int getStatStrength()
@@ -34,7 +34,7 @@ public enum ClassType
     {
         return statIntelligence;
     }
-    
+
     @Override
     public String toString()
     {
