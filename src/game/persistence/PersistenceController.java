@@ -13,7 +13,7 @@ import game.world.RuntimeRoom;
 
 import java.util.*;
 
-public class PersistenceController implements Startable<MainMenuStates, Void, PersistenceResult>, Loopable<PersistenceResult>
+public class PersistenceController implements Startable<MainMenuStates, Void, PersistenceResult>, Loopable<Player, RuntimeRoom, PersistenceResult>
 {
     private final SaveFile saveF;
     private final ConsoleHandler consoleH;
@@ -180,9 +180,16 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
     }
     
     @Override
-    public PersistenceResult loop()
+    public PersistenceResult loop(Player player, RuntimeRoom room)
     {
-        return null;
+        PersistenceResult result;
+        result = updatePlayerStatus(player);
+        if(result.getError() != SUCCESS) consoleH.printLine(result.getError().toString());
+        
+        result = updateRoomStatus(room);
+        if(result.getError() != SUCCESS) consoleH.printLine(result.getError().toString());
+        
+        return new PersistenceResult(SUCCESS, null, null, null, null);
     }
     
     public PersistenceResult fullSave(Player player, List<Item> inventory, List<EquippableItem> equipped, Map<Point, RuntimeRoom> map)
