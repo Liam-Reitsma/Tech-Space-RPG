@@ -15,12 +15,14 @@ public class GameController
     
     private final MainMenuController mainMenuC;
     private final PersistenceController persistenceC;
+    private final RoomController roomC;
     private final WorldController worldC;
     
-    public GameController(MainMenuController mmc, PersistenceController pc, WorldController wc)
+    public GameController(MainMenuController mmc, PersistenceController pc, RoomController rc, WorldController wc)
     {
         mainMenuC = mmc;
         persistenceC = pc;
+        roomC = rc;
         worldC = wc;
     }
     

@@ -20,7 +20,7 @@ public class Main
         RoomController roomC = new RoomController(consoleH);
         WorldController worldC = new WorldController(consoleH);
         
-        GameController gameController = new GameController(mainMenuC, persistenceC, worldC);
+        GameController gameController = new GameController(mainMenuC, persistenceC, roomC, worldC);
         
         int exitValue = gameController.start();
 
