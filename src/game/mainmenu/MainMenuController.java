@@ -7,7 +7,7 @@ import game.Startable;
 
 import java.util.Optional;
 
-public class MainMenuController implements Startable<MainMenuResult>
+public class MainMenuController implements Startable<Void, MainMenuResult>
 {
     private final ConsoleHandler consoleH;
     
@@ -17,7 +17,7 @@ public class MainMenuController implements Startable<MainMenuResult>
     }
     
     @Override
-    public MainMenuResult start()
+    public MainMenuResult start(Void v)
     {
         Optional<Integer> userInput;
         do
