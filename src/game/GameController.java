@@ -93,6 +93,7 @@ public class GameController
             switch(rr.getRoomType())
             {
                 case COMBAT, MINIBOSS, BOSS -> cr = combatC.loop(player, (Enemy)rr.getPersistable());
+                case EMPTY -> cr = new CombatResult(CombatErrors.SUCCESS, CombatOutcome.FLEE);
                 default -> cr = null;
             }
             
