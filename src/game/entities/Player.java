@@ -6,6 +6,10 @@ import java.util.*;
 
 public class Player extends Entities implements Persistable
 {
+    @SaveExclude
+    private static final int MAXIMUM_INVENTORY_SIZE = 10;
+    @SaveExclude
+    private int xpToLevelUp;
     private int xp;
     private int gold;
     private int statStr;
@@ -15,14 +19,13 @@ public class Player extends Entities implements Persistable
     private List<Item> inventory;
     @SaveExclude
     private List<EquippableItem> equipped;
-    @SaveExclude
-    private static final int MAXIMUM_INVENTORY_SIZE = 10;
 
     private ClassType classType;
 
     public Player(String playerName, ClassType type)
     {
         health = 100;
+        level = 1;
         xp = 0;
         gold = 0;
         name = playerName;
@@ -30,6 +33,8 @@ public class Player extends Entities implements Persistable
         statStr = type.getStatStrength();
         statDex = type.getStatDexterity();
         statInt = type.getStatIntelligence();
+
+        xpToLevelUp = 15 * level;
     }
 
     public Player(String[] data)
@@ -92,16 +97,33 @@ public class Player extends Entities implements Persistable
 
     public int getXP() { return xp; }
 
+    public void applyXP(int xp)
+    {
+        this.xp += xp;
+        while (this.xp >= xpToLevelUp)
+        {
+            level++;
+            xp -= xpToLevelUp;
+            xpToLevelUp *= level;
+        }
+    }
+
+
     public int getGold() { return gold; }
+
+    public void addGold(int gold)
+    {
+        this.gold += gold;
+    }
 
     public String getName()
     {
         return name;
     }
 
-    public String getClassType()
+    public ClassType getClassType()
     {
-        return classType.toString();
+        return classType;
     }
 
     public int[] getStats()
@@ -114,24 +136,13 @@ public class Player extends Entities implements Persistable
         return "STR: " + statStr + " | DEX: " + statDex + " | INT: " + statInt;
     }
 
-    public void addStat(StatChange[] stats)
+    public void addStat(StatType stat)
     {
-        for(StatChange stat : stats)
+        switch(stat)
         {
-            switch(stat.statType)
-            {
-                case STR:
-                    statStr += stat.change;
-                    break;
-                case DEX:
-                    statDex += stat.change;
-                    break;
-                case INT:
-                    statInt += stat.change;
-                    break;
-                default:
-                    break;
-            }
+            case STR -> statStr++;
+            case DEX -> statDex++;
+            case INT -> statInt++;
         }
     }
 
