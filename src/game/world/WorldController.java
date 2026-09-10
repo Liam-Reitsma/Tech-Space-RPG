@@ -5,6 +5,7 @@ import static game.world.RoomType.*;
 import game.ConsoleHandler;
 import game.Loopable;
 import game.Startable;
+import game.mainmenu.MainMenuStates;
 import game.world.generation.GenerationRoom;
 import game.world.generation.WorldGenerator;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
-public class WorldController implements Startable<WorldResult>, Loopable<WorldResult>
+public class WorldController implements Startable<MainMenuStates, Map<Point, RuntimeRoom>, WorldResult>, Loopable<WorldResult>
 {
     private final Random random;
     private final WorldGenerator worldGenerator;
@@ -32,19 +33,14 @@ public class WorldController implements Startable<WorldResult>, Loopable<WorldRe
         playerLocation = new Point(0, 0);
     }
     
-    public WorldResult loadMapFromSave(Map<Point, RuntimeRoom> loadedWorld)
+    @Override
+    public WorldResult start(MainMenuStates state, Map<Point, RuntimeRoom> loadedWorld)
     {
-        for(Map.Entry<Point, RuntimeRoom> room : loadedWorld.entrySet())
-        {
-            if(room.getKey() == null) return new WorldResult(WorldErrors.LOADING_WORLD_ERROR, null);
-            world.put(room.getKey(), room.getValue());
-        }
-        
-        return new WorldResult(WorldErrors.SUCCESS, null);
+        if(state == MainMenuStates.NEW_GAME) return newMap();
+        else return loadMapFromSave(loadedWorld);
     }
     
-    @Override
-    public WorldResult start()
+    private WorldResult newMap()
     {
         Map<Point, GenerationRoom> generatedMap = worldGenerator.generate();
         
@@ -57,6 +53,17 @@ public class WorldController implements Startable<WorldResult>, Loopable<WorldRe
             else if(chance < 25 && checkRoomToBuild(point, CHEST)) world.put(point, new RuntimeRoom(point, CHEST));
             else if(chance < 40 && checkRoomToBuild(point, EMPTY)) world.put(point, new RuntimeRoom(point, EMPTY));
             else world.put(point, new RuntimeRoom(point, COMBAT));
+        }
+        
+        return new WorldResult(WorldErrors.SUCCESS, null);
+    }
+    
+    private WorldResult loadMapFromSave(Map<Point, RuntimeRoom> loadedWorld)
+    {
+        for(Map.Entry<Point, RuntimeRoom> room : loadedWorld.entrySet())
+        {
+            if(room.getKey() == null) return new WorldResult(WorldErrors.LOADING_WORLD_ERROR, null);
+            world.put(room.getKey(), room.getValue());
         }
         
         return new WorldResult(WorldErrors.SUCCESS, null);
