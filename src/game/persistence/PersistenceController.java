@@ -169,4 +169,12 @@ public class PersistenceController implements Startable<MainMenuStates, Persiste
         
         return new PersistenceResult(SUCCESS, null, null, null, null);
     }
+    
+    public PersistenceResult saveItem(String listName, Persistable item)
+    {
+        LoadResult result = saveF.readAndInsert(listName, item);
+        return result.getError() == SUCCESS ?
+                new PersistenceResult(saveF.writeAll(result.getResult()), null, null, null, null) :
+                new PersistenceResult(result.getError(), null, null, null, null);
+    }
 }
