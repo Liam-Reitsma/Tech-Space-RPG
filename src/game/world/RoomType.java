@@ -1,5 +1,7 @@
 package game.world;
 
+import game.entities.Persistable;
+
 import java.util.Random;
 
 public enum RoomType
@@ -64,11 +66,11 @@ public enum RoomType
     {
         return switch(this)
         {
-            case COMBAT ->   "Combat";
-            case CHEST ->    "Chest";
-            case MINIBOSS -> "Miniboss";
-            case BOSS ->     "Boss";
-            case EMPTY ->    "Empty";
+            case COMBAT ->   "roomType" + Persistable.FIELD_SEPARATOR + "Combat";
+            case CHEST ->    "roomType" + Persistable.FIELD_SEPARATOR +"Chest";
+            case MINIBOSS -> "roomType" + Persistable.FIELD_SEPARATOR +"Miniboss";
+            case BOSS ->     "roomType" + Persistable.FIELD_SEPARATOR +"Boss";
+            case EMPTY ->    "roomType" + Persistable.FIELD_SEPARATOR +"Empty";
         };
     }
     
