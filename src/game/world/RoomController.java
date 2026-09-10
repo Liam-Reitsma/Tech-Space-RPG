@@ -14,6 +14,8 @@ import java.util.Random;
 
 public class RoomController implements Loopable<RuntimeRoom, Void, RoomResult>
 {
+    private static RuntimeRoom currentRoom;
+    
     private final Random random;
     private final ConsoleHandler consoleH;
     
@@ -26,6 +28,8 @@ public class RoomController implements Loopable<RuntimeRoom, Void, RoomResult>
     @Override
     public RoomResult loop(RuntimeRoom room, Void input2)
     {
+        currentRoom = room;
+        
         return switch(room.getRoomType())
         {
             case EMPTY    -> new RoomResult(SUCCESS, null, EMPTY);
@@ -65,5 +69,12 @@ public class RoomController implements Loopable<RuntimeRoom, Void, RoomResult>
     public RoomResult loop(RuntimeRoom room)
     {
         return loop(room, null);
+    }
+    
+    public RoomResult loop()
+    {
+        currentRoom.setCompleted();
+        
+        return new RoomResult(SUCCESS, null, null);
     }
 }
