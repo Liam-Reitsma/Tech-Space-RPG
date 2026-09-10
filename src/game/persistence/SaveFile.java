@@ -66,6 +66,27 @@ public class SaveFile
         }
     }
     
+    public PersistenceErrors writeAll(String[] list)
+    {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
+        {
+            for(String line : list)
+            {
+                writer.write(line);
+                writer.newLine();
+            }
+            
+            return SUCCESS;
+        } catch(FileNotFoundException e)
+        {
+            if(saveFileLocation.mkdirs()) { return writeAll(list); }
+            return WRITE_ERROR;
+        } catch(IOException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    
     public LoadResult readPlayer()
     {
         try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
