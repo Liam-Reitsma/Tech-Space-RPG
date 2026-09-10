@@ -34,7 +34,7 @@ public class RuntimeRoom implements Persistable
     public String getSaveInfo()
     {
         StringBuilder saveInfo = new StringBuilder();
-        saveInfo.append(this.getClass().getSimpleName()).append(CLASS_SEPARATOR);
+        saveInfo.append(this.getClass().getName()).append(CLASS_SEPARATOR);
         saveInfo.append("completed").append(FIELD_SEPARATOR).append(completed);
         if(completed) saveInfo.append(" ");
         saveInfo.append(DATA_SEPARATOR);
