@@ -1,6 +1,8 @@
 package game;
 
-public interface Startable<T, R extends Result<? extends Errors>>
+public interface Startable<I, J, R extends Result<? extends Errors>>
 {
-    public R start(T input);
+    default public R start() { return start(null, null); }
+    default public R start(I input) { return start(input, null); }
+    public R start(I input1, J input2);
 }
