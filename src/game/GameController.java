@@ -1,5 +1,6 @@
 package game;
 
+import game.combat.CombatController;
 import game.entities.Player;
 import game.mainmenu.MainMenuController;
 import game.mainmenu.MainMenuResult;
@@ -13,13 +14,15 @@ public class GameController
 {
     private Player player;
     
+    private final CombatController combatC;
     private final MainMenuController mainMenuC;
     private final PersistenceController persistenceC;
     private final RoomController roomC;
     private final WorldController worldC;
     
-    public GameController(MainMenuController mmc, PersistenceController pc, RoomController rc, WorldController wc)
+    public GameController(CombatController cc, MainMenuController mmc, PersistenceController pc, RoomController rc, WorldController wc)
     {
+        combatC = cc;
         mainMenuC = mmc;
         persistenceC = pc;
         roomC = rc;
