@@ -69,7 +69,6 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
             else  break;
         } while(true);
         
-        saveF.writePlayer(player);
         return new PersistenceResult(PersistenceErrors.SUCCESS, player, null, null, null);
     }
     
@@ -86,6 +85,7 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
                 result = userInput.get();
                 break;
             }
+            else consoleH.printLine(saveF.createNewSave(userInput.get()).toString());
         } while(true);
         
         return result;
@@ -196,7 +196,6 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
         
         error = saveF.writeItemList(equipped, "equipped");
         if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
-        
         
         error = saveF.writeWorld(new ArrayList<>(map.values()), "world");
         if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
