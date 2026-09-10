@@ -1,47 +1,69 @@
 package game.world;
 
 import static game.world.WorldErrors.*;
+import static game.world.RoomType.*;
 
 import game.ConsoleHandler;
 import game.Loopable;
+import game.entities.Enemy;
+import game.entities.EnemyType;
+import game.entities.Persistable;
+import game.items.*;
 
-import java.util.Optional;
+import java.util.Random;
 
-public class RoomController implements Loopable<RuntimeRoom, RuntimeRoom[], WorldResult>
+public class RoomController implements Loopable<RuntimeRoom, Void, RoomResult>
 {
+    private final Random random;
     private final ConsoleHandler consoleH;
     
     public RoomController(ConsoleHandler consoleHandler)
     {
+        random = new Random();
         consoleH = consoleHandler;
     }
     
     @Override
-    public WorldResult loop(RuntimeRoom room, RuntimeRoom[] adjacentRooms)
+    public RoomResult loop(RuntimeRoom room, Void input2)
     {
-        if(room.isCompleted()) return determineNextRoom(room, adjacentRooms);
-        
-        return new WorldResult(SUCCESS, null);
+        return switch(room.getRoomType())
+        {
+            case EMPTY    -> new RoomResult(SUCCESS, null, EMPTY);
+            case COMBAT   -> new RoomResult(SUCCESS, createEnemy(COMBAT), COMBAT);
+            case CHEST    -> new RoomResult(SUCCESS, createChest(), CHEST);
+            case MINIBOSS -> new RoomResult(SUCCESS, createEnemy(MINIBOSS), MINIBOSS);
+            case BOSS     -> new RoomResult(SUCCESS, createEnemy(BOSS), BOSS);
+        };
     }
     
-    private WorldResult determineNextRoom(RuntimeRoom room, RuntimeRoom[] adjacentRooms)
+    private Persistable createChest()
     {
-        Direction[] directions = new Direction[adjacentRooms.length];
-        int index = 0;
-        for(RuntimeRoom adjRoom : adjacentRooms)
+        return switch(random.nextInt(10))
         {
-            directions[index++] = room.getPoint().returnRelativeDirection(adjRoom.getPoint());
-        }
-        
-        consoleH.printLine("You have " + directions.length + " options to travel to. Where would you like to go?");
-        for(int i = 0; i < directions.length; i++)
+            case 0 -> new Armour("Combat Visor", "A reinforced helmet fitted with basic targeting and environmental systems.", ArmourType.HELMET);
+            case 1 -> new Armour("Armour", "A protective chest piece designed to reduce damage from weapons and impacts.", ArmourType.CHEST);
+            case 2 -> new Armour("Tactical Boots", "Reinforced boots built for stability, protection, and movement across harsh terrain.", ArmourType.BOOTS);
+            case 3 -> new Weapon("Energy Blade", "A compact weapon that projects a concentrated blade of energy capable of cutting through most materials.", WeaponType.LIGHTSABER);
+            case 4 -> new Weapon("Void Blade", "A rare energy weapon that produces a dense, darkened blade with unusually high destructive power.", WeaponType.DARKSABER);
+            case 5 -> new Weapon("Pulse Pistol", "A ranged weapon that fires concentrated bursts of energy at hostile targets.", WeaponType.LASERGUN);
+            case 6 -> new Weapon("Psionic Power", "A mysterious energy that allows certain individuals to influence matter, movement, and living beings through thought.", WeaponType.FORCE);
+            default -> new Weapon("Energy Blade", "A compact weapon that projects a concentrated blade of energy capable of cutting through most materials.", WeaponType.LIGHTSABER);
+        };
+    }
+    
+    private Persistable createEnemy(RoomType roomType)
+    {
+        return switch(roomType)
         {
-            if(adjacentRooms[i].isCompleted()) consoleH.printLine((i + 1) + ". " + directions[i] + " (Empty).");
-            else consoleH.printLine((i + 1) + ". " + directions[i] + ".");
-        }
-        
-        Optional<Integer> result = consoleH.nextInt().getInput();
-        if(result.isEmpty()) return new WorldResult(USER_WENT_BACK, null);
-        else return new WorldResult(SUCCESS, adjacentRooms[result.get()]);
+            case COMBAT -> new Enemy("Timeweaver", EnemyType.CHRONOMANCER);
+            case MINIBOSS -> new Enemy("Carapace", EnemyType.CHITIN);
+            case BOSS -> new Enemy("Warborn", EnemyType.KRORK);
+            default -> new Enemy("Failure", EnemyType.ATOM);
+        };
+    }
+    
+    public RoomResult loop(RuntimeRoom room)
+    {
+        return loop(room, null);
     }
 }
