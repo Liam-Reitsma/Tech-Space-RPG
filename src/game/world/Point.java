@@ -19,6 +19,16 @@ public class Point
     
     public int getY() { return y; }
     
+    public Direction returnRelativeDirection(Point otherPoint)
+    {
+        if(this.x == otherPoint.x && this.y < otherPoint.y) return Direction.NORTH;
+        if(this.x == otherPoint.x && this.y > otherPoint.y) return Direction.SOUTH;
+        if(this.x < otherPoint.x && this.y == otherPoint.y) return Direction.EAST;
+        if(this.x > otherPoint.x && this.y == otherPoint.y) return Direction.WEST;
+        
+        return null;
+    }
+    
     @Override
     public int hashCode()
     {
