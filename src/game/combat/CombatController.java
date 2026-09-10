@@ -6,24 +6,20 @@ import game.entities.*;
 
 import java.util.Optional;
 
-public class CombatController implements Loopable<CombatResult>
+public class CombatController implements Loopable<Player, Enemy, CombatResult>
 {
     private final ConsoleHandler consoleH;
 
-    private final Player player;
-    private final Enemy opponent;
     private boolean inCombat = true;
     private CombatOutcome outcome;
 
-    public CombatController(ConsoleHandler cH, Player p, Enemy opp)
+    public CombatController(ConsoleHandler cH)
     {
         consoleH = cH;
-        player = p;
-        opponent = opp;
     }
 
     @Override
-    public CombatResult loop()
+    public CombatResult loop(Player player, Enemy enemy)
     {
         boolean userTurn = true;
         while (inCombat)
@@ -33,17 +29,17 @@ public class CombatController implements Loopable<CombatResult>
             {
                 return new CombatResult(CombatErrors.SUCCESS, CombatOutcome.LOSE);
             }
-            else if (opponent.getHealth() <= 0)
+            else if (enemy.getHealth() <= 0)
             {
                 return new CombatResult(CombatErrors.SUCCESS, CombatOutcome.WIN);
             }
             // checking if users turn or enemies turn
             else {
                 if (userTurn) {
-                    playerTurn();
+                    playerTurn(player, enemy);
                     userTurn = false;
                 } else {
-                    enemyTurn();
+                    enemyTurn(player, enemy);
                     userTurn = true;
                 }
             }
@@ -51,7 +47,7 @@ public class CombatController implements Loopable<CombatResult>
         return new CombatResult(CombatErrors.SUCCESS, outcome);
     }
 
-    public void playerTurn()
+    public void playerTurn(Player player, Enemy enemy)
     {
         int response = -1;
         // printing options and checking user input
@@ -71,7 +67,7 @@ public class CombatController implements Loopable<CombatResult>
         CombatAction action = CombatAction.values()[response - 1];
 
         // Functions of what the player is going to do and execute it
-        ActionDecider result = action.execute(consoleH, player, opponent);
+        ActionDecider result = action.execute(consoleH, player, enemy);
         consoleH.printLine(result.message());
         if (result.endReason().isPresent())
         {
@@ -80,9 +76,9 @@ public class CombatController implements Loopable<CombatResult>
         }
     }
 
-    public void enemyTurn()
+    public void enemyTurn(Player player, Enemy enemy)
     {
-        int oppDamage = opponent.getStats()[0];
+        int oppDamage = enemy.getStats()[0];
         player.takeDamage(oppDamage);
         consoleH.printLine("Enemy has attacked.\nRemaining health: " + player.getHealth());
     }

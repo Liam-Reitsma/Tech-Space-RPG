@@ -11,7 +11,7 @@ public interface Persistable
     default String getSaveInfo() throws IllegalAccessException
     {
         StringBuilder saveInfo = new StringBuilder();
-        saveInfo.append(this.getClassName()).append(CLASS_SEPARATOR);
+        saveInfo.append(this.getClass().getName()).append(CLASS_SEPARATOR);
         Class<?> current = this.getClass();
         
         while(current != null && current != Object.class)
