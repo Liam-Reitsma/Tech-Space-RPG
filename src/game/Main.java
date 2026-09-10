@@ -1,5 +1,6 @@
 package game;
 
+import game.combat.CombatController;
 import game.mainmenu.MainMenuController;
 import game.persistence.SaveFile;
 import game.persistence.PersistenceController;
@@ -15,6 +16,7 @@ public class Main
         Scanner scanner = new Scanner(System.in);
         ConsoleHandler consoleH = new ConsoleHandler(scanner);
         SaveFile saveFile = new SaveFile();
+        CombatController combatC = new CombatController(consoleH);
         MainMenuController mainMenuC = new MainMenuController(consoleH);
         PersistenceController persistenceC = new PersistenceController(consoleH, saveFile);
         RoomController roomC = new RoomController(consoleH);
