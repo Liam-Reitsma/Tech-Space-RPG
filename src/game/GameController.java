@@ -1,47 +1,65 @@
 package game;
 
-import game.entities.Persistable;
+import game.entities.Player;
 import game.mainmenu.MainMenuController;
 import game.mainmenu.MainMenuResult;
 import game.mainmenu.MainMenuStates;
+import game.persistence.PersistenceController;
+import game.persistence.PersistenceErrors;
+import game.persistence.PersistenceResult;
 import game.world.*;
-
-import java.util.List;
-import java.util.Map;
 
 public class GameController
 {
-    private List<Persistable> entities;
-    private List<Persistable> equippedItems;
-    private List<Persistable> inventoryItems;
-    private Map<Point, RuntimeRoom> worldMap;
+    private Player player;
     
-    private final MainMenuController mmController;
-    private final WorldController worldController;
+    private final MainMenuController mainMenuC;
+    private final PersistenceController persistenceC;
+    private final WorldController worldC;
     
-    public GameController(MainMenuController mm, WorldController w)
+    public GameController(MainMenuController mmc, PersistenceController pc, WorldController wc)
     {
-        mmController = mm;
-        worldController = w;
+        mainMenuC = mmc;
+        persistenceC = pc;
+        worldC = wc;
     }
     
     public int start()
     {
-        MainMenuResult mmResult = mmController.start();
-        if(mmResult.getStateUsed() == MainMenuStates.EXIT) return 0;
-        entities = mmResult.getList().getFirst();
-        equippedItems = mmResult.getList().get(1);
-        inventoryItems = mmResult.getList().get(2);
+        MainMenuResult mmResult = new MainMenuResult(null, null);
+        PersistenceResult pResult = new PersistenceResult(null, null, null, null, null);
+        
+        for(int i = 0; i < 2; i++)
+        {
+            switch(i)
+            {
+                case 0:
+                     mmResult = mainMenuC.start();
+                    if(mmResult.getStateUsed() == MainMenuStates.EXIT) return 0;
+                    break;
+                case 1:
+                    pResult = persistenceC.start(mmResult.getStateUsed());
+                    if(pResult.getError() == PersistenceErrors.USER_WENT_BACK) i -= 2;
+                    break;
+            }
+        }
+        
+        player = pResult.getPlayer();
         
         if(mmResult.getStateUsed() == MainMenuStates.NEW_GAME)
         {
-            WorldResult worldResult = worldController.start();
+            WorldResult worldResult = worldC.start(mmResult.getStateUsed());
             if(worldResult.getError() != WorldErrors.SUCCESS) return 1;
+            player.setInventory(null);
+            player.setEquipped(null);
+            persistenceC.fullSave(player, player.getInventory(), player.getEquipped(), worldC.getWorld());
         }
         else if(mmResult.getStateUsed() == MainMenuStates.LOAD_GAME)
         {
-            WorldResult worldResult = worldController.loadMapFromSave(worldMap);
+            WorldResult worldResult = worldC.start(MainMenuStates.LOAD_GAME,pResult.getWorld());
             if(worldResult.getError() != WorldErrors.SUCCESS) return 2;
+            player.setInventory(pResult.getInventory());
+            player.setEquipped(pResult.getEquipped());
         }
         
         return loop();
