@@ -2,7 +2,7 @@ package game.items;
 
 public class Armour extends EquippableItem
 {
-    private final ArmourType armourType;
+    private ArmourType armourType;
 
     public Armour(String name, String desc, ArmourType type)
     {
@@ -10,6 +10,11 @@ public class Armour extends EquippableItem
         description = desc;
         armourType = type;
         isEquipped = false;
+    }
+
+    public Armour(String[] data)
+    {
+        loadSaveInfo(data);
     }
 
     public ArmourType getArmourType()
