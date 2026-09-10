@@ -17,9 +17,9 @@ public class Player extends Entities implements Persistable
     private List<EquippableItem> equipped;
     @SaveExclude
     private static final int MAXIMUM_INVENTORY_SIZE = 10;
-    
+
     private ClassType classType;
-    
+
     public Player(String playerName, ClassType type)
     {
         health = 100;
@@ -31,7 +31,7 @@ public class Player extends Entities implements Persistable
         statDex = type.getStatDexterity();
         statInt = type.getStatIntelligence();
     }
-    
+
     public Player(String[] data)
     {
         loadSaveInfo(data);
@@ -49,17 +49,17 @@ public class Player extends Entities implements Persistable
         else equipped = newEquipped;
     }
 
-    
+
     @Override
     public void attack()
     {
-    
+
     }
-    
+
     @Override
     public void useAbility()
     {
-    
+
     }
 
     public void healing(int healAmount)
@@ -68,7 +68,7 @@ public class Player extends Entities implements Persistable
             health = 100;
         }
         else{
-            health -= healAmount;
+            health += healAmount;
         }
     }
 
@@ -85,35 +85,35 @@ public class Player extends Entities implements Persistable
         }
         health -= Math.round(damageReceived);
     }
-    
+
     public int getLevel() { return level; }
 
     public float getHealth() { return health; }
-    
+
     public int getXP() { return xp; }
-    
+
     public int getGold() { return gold; }
-    
+
     public String getName()
     {
         return name;
     }
-    
+
     public String getClassType()
     {
         return classType.toString();
     }
-    
+
     public int[] getStats()
     {
         return new int[]{statStr, statDex, statInt};
     }
-    
+
     public String getStatsToString()
     {
         return "STR: " + statStr + " | DEX: " + statDex + " | INT: " + statInt;
     }
-    
+
     public void addStat(StatChange[] stats)
     {
         for(StatChange stat : stats)
@@ -243,7 +243,7 @@ public class Player extends Entities implements Persistable
     {
         return inventory;
     }
-    
+
     public List<EquippableItem> getEquipped()
     {
         return equipped;
