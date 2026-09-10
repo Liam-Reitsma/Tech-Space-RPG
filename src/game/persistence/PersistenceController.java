@@ -193,6 +193,6 @@ public class PersistenceController implements Startable<MainMenuStates, Persiste
     
     public PersistenceResult updateRoomStatus(RuntimeRoom room)
     {
-        return new PersistenceResult(saveF.writeDeltaMap(room), null, null, null, null);
+        return new PersistenceResult(saveF.writeDeltaRoom(room), null, null, null, null);
     }
 }

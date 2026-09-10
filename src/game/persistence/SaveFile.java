@@ -119,7 +119,7 @@ public class SaveFile
         }
     }
     
-    public PersistenceErrors writeDeltaMap(RuntimeRoom room)
+    public PersistenceErrors writeDeltaRoom(RuntimeRoom room)
     {
         try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
         {
