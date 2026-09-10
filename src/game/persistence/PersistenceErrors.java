@@ -2,7 +2,7 @@ package game.persistence;
 
 import game.Errors;
 
-public enum SaveErrors implements Errors
+public enum PersistenceErrors implements Errors
 {
     INVALID_FILE_NAME("Creating Save Failed! The file given is an invalid name. Please try again"),
     FILE_ALREADY_EXISTS("Creating Save Failed! The file given already exists and could not be created."),
@@ -15,11 +15,12 @@ public enum SaveErrors implements Errors
     SAVE_FOLDER_LOCATION_MISSING("Getting Saves Failed! Cannot find save file location."),
     SAVE_FOLDER_EMPTY("No save files found."),
     SAVE_FILE_EMPTY("Loading Failed! Save file is empty."),
+    USER_WENT_BACK(""),
     SUCCESS("");
     
     private final String errorMessage;
     
-    SaveErrors(String message)
+    PersistenceErrors(String message)
     {
         errorMessage = message;
     }

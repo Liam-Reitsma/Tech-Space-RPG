@@ -2,7 +2,7 @@ package game.persistence;
 
 import game.entities.Persistable;
 
-import static game.persistence.SaveErrors.*;
+import static game.persistence.PersistenceErrors.*;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -19,11 +19,33 @@ public class SaveFile
         saveFileLocation = new File("resources/saves");
     }
     
-    public SaveErrors write(List<Persistable> persistables)
+    public PersistenceErrors writePlayer(Persistable player)
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
-            writer.write("Lines = " + persistables.size());
+            writer.write("Player Data:");
+            writer.newLine();
+            writer.write(player.getSaveInfo());
+            writer.newLine();
+            
+            return SUCCESS;
+        } catch(FileNotFoundException e)
+        {
+            if(saveFileLocation.mkdirs()) { return writePlayer(player); }
+            return WRITE_ERROR;
+        } catch(IOException | IllegalAccessException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    
+    public PersistenceErrors writeList(List<Persistable> persistables, String listName)
+    {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
+        {
+            writer.write(listName + ":");
+            writer.newLine();
+            writer.write("Lines"+ Persistable.FIELD_SEPARATOR + persistables.size() + Persistable.CLASS_SEPARATOR);
             writer.newLine();
             for(Persistable persistable : persistables)
             {
@@ -34,7 +56,7 @@ public class SaveFile
             return SUCCESS;
         } catch(FileNotFoundException e)
         {
-            if(saveFileLocation.mkdir()) { return write(persistables); }
+            if(saveFileLocation.mkdirs()) { return writeList(persistables, listName); }
             return WRITE_ERROR;
         } catch(IOException | IllegalAccessException e)
         {
@@ -42,24 +64,28 @@ public class SaveFile
         }
     }
     
-    public LoadResult read()
+    public LoadResult readPlayer()
     {
         try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
         {
-            String metadata = reader.readLine();
-            String[] data = new String[Integer.parseInt(metadata.substring(metadata.indexOf("= ") + "= ".length()))];
-            List<String> dataString= reader.readAllLines();
-            int i = 0;
-            for(String line : dataString)
+            String[] player = new String[1];
+            String metadata;
+            do
             {
-                if(i >= data.length) return new LoadResult(LOAD_ERROR, new String[0]);
-                data[i++] = line;
+                metadata = reader.readLine();
+                if(metadata == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                else if(metadata.toLowerCase().startsWith("player data")) break;
+            } while(true);
+            
+            String line = reader.readLine();
+            if(line != null)
+            {
+                player[0] = line;
+                return new LoadResult(SUCCESS, player);
             }
             
-            if(dataString.size() < data.length) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
-            
-            return new LoadResult(SUCCESS, data);
-        }  catch(NullPointerException e)
+            return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+        } catch(NullPointerException e)
         {
             return new LoadResult(SAVE_FILE_EMPTY, new String[0]);
         } catch(NumberFormatException e)
@@ -74,18 +100,61 @@ public class SaveFile
         }
     }
     
-    public SaveErrors selectSave(int number)
+    public LoadResult readList(String listName)
+    {
+        try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
+        {
+            String[] data;
+            String metadataLineOne;
+            String metadataLineTwo;
+            String length;
+            do
+            {
+                metadataLineOne = reader.readLine();
+                if(metadataLineOne == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                else if(metadataLineOne.toLowerCase().startsWith(listName.toLowerCase())) break;
+            } while(true);
+            
+            metadataLineTwo = reader.readLine();
+            if(metadataLineTwo == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+            length = metadataLineTwo.substring((metadataLineTwo.indexOf(Persistable.FIELD_SEPARATOR) + 1), metadataLineTwo.indexOf(Persistable.CLASS_SEPARATOR));
+            data = new String[Integer.parseInt(length)];
+            
+            for(int i = 0; i < data.length; i++)
+            {
+                String datum = reader.readLine();
+                if(datum == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                data[i] = datum;
+            }
+            
+            return new LoadResult(SUCCESS, data);
+        } catch(NullPointerException e)
+        {
+            return new LoadResult(SAVE_FILE_EMPTY, new String[0]);
+        } catch(NumberFormatException e)
+        {
+            return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+        } catch(FileNotFoundException e)
+        {
+            return new LoadResult(SAVE_FILE_MISSING, new String[0]);
+        } catch(IOException e)
+        {
+            return new LoadResult(LOAD_ERROR, new String[0]);
+        }
+    }
+    
+    public PersistenceErrors selectSave(int number)
     {
         int saveFileIndex = number - 1;
-        SaveFileResult sfResult = getSaveFileNames();
+        SaveResult sfResult = getSaveFileNames();
         if(saveFileIndex < 0 || saveFileIndex >= sfResult.size()) return NUMBER_OUT_OF_BOUNDS;
         saveFile = sfResult.getSelectedSaveFile(saveFileIndex);
         return SUCCESS;
     }
     
-    public SaveErrors createNewSave(String name)
+    public PersistenceErrors createNewSave(String name)
     {
-        SaveErrors check = checkCreateNewSave(name);
+        PersistenceErrors check = checkCreateNewSave(name);
         if(check != SUCCESS) return check;
         saveFile = new File(saveFileLocation + "/" + name + ".save");
         return SUCCESS;
@@ -96,13 +165,13 @@ public class SaveFile
         return (checkCreateNewSave(name) == SUCCESS);
     }
     
-    private SaveErrors checkCreateNewSave(String name)
+    private PersistenceErrors checkCreateNewSave(String name)
     {
         if(!checkFileNameValidity(name)) return INVALID_FILE_NAME;
         
-        SaveFileResult sfResult = getSaveFileNames();
+        SaveResult sfResult = getSaveFileNames();
         
-        for(File saveFile : sfResult.getSaveFiles())
+        for(File saveFile : sfResult.getResult())
         {
             if(Objects.equals(saveFile.getName(), name + ".save")) return FILE_ALREADY_EXISTS;
         }
@@ -139,9 +208,9 @@ public class SaveFile
         StringBuilder saves = new StringBuilder();
         int i = 0;
         
-        SaveFileResult saveFiles = getSaveFileNames();
+        SaveResult saveFiles = getSaveFileNames();
         
-        for(File saveFile : saveFiles.getSaveFiles())
+        for(File saveFile : saveFiles.getResult())
         {
             i++;
             saves.append(i).append(". ").append(saveFile.getName()).append("\n");
@@ -152,26 +221,21 @@ public class SaveFile
         return saves.toString();
     }
     
-    private SaveFileResult getSaveFileNames()
+    private SaveResult getSaveFileNames()
     {
-        SaveFileResult sfResult;
+        SaveResult sfResult;
         
         try
         {
-            sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
+            sfResult = new SaveResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         } catch(NullPointerException e)
         {
-            if(!saveFileLocation.mkdirs()) return new SaveFileResult(SAVE_FOLDER_LOCATION_MISSING, new File[0]);
-            sfResult = new SaveFileResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
+            if(!saveFileLocation.mkdirs()) return new SaveResult(SAVE_FOLDER_LOCATION_MISSING, new File[0]);
+            sfResult = new SaveResult(SUCCESS, Objects.requireNonNull(saveFileLocation.listFiles()));
         }
         
-        if(sfResult.size() == 0) return new SaveFileResult(SAVE_FOLDER_EMPTY, new File[0]);
+        if(sfResult.size() == 0) return new SaveResult(SAVE_FOLDER_EMPTY, new File[0]);
 
         return sfResult;
-    }
-    
-    public File getSaveFile()
-    {
-        return saveFile;
     }
 }
