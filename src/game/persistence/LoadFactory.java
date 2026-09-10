@@ -1,7 +1,9 @@
 package game.persistence;
 
 import game.entities.Persistable;
-import game.entities.Player;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 public class LoadFactory
 {
@@ -10,14 +12,15 @@ public class LoadFactory
     
     }
     
-    public Persistable create(String name, String[] data)
+    public Optional<Persistable> create(String name, String[] data)
     {
-        switch(name)
+        try
         {
-            case("Player"):
-                return new Player(data);
-            default:
-                throw new IllegalArgumentException("Failed to create: " + name);
+            return Optional.of((Persistable)Class.forName(name).getConstructor(String[].class).newInstance((Object)data));
+        } catch(ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException |
+                NoSuchMethodException e)
+        {
+            return Optional.empty();
         }
     }
 }

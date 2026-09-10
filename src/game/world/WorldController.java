@@ -49,7 +49,8 @@ public class WorldController implements Startable<MainMenuStates, Map<Point, Run
         for(Point point : generatedMap.keySet())
         {
             int chance = random.nextInt(100);
-            if(chance < 5  && checkRoomToBuild(point, MINIBOSS)) world.put(point, new RuntimeRoom(point, MINIBOSS));
+            if(point.getX() == 0 && point.getY() == 0) world.put(point, new RuntimeRoom(point, EMPTY));
+            else if(chance < 5  && checkRoomToBuild(point, MINIBOSS)) world.put(point, new RuntimeRoom(point, MINIBOSS));
             else if(chance < 25 && checkRoomToBuild(point, CHEST)) world.put(point, new RuntimeRoom(point, CHEST));
             else if(chance < 40 && checkRoomToBuild(point, EMPTY)) world.put(point, new RuntimeRoom(point, EMPTY));
             else world.put(point, new RuntimeRoom(point, COMBAT));

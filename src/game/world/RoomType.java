@@ -74,6 +74,8 @@ public enum RoomType
         };
     }
     
+    public static int maxToStringLength() { return MINIBOSS.toString().length(); }
+    
     public static RoomType parseRoom(String data)
     {
         return switch(data)
