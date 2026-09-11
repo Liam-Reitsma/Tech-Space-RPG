@@ -27,6 +27,11 @@ public class ConsoleHandler
     {
         String input = scanner.nextLine();
         if(input.equals("~")) return new InputResult<>();
+        while(input.isEmpty())
+        {
+            printLine("Please enter your input.");
+            input = scanner.nextLine();
+        }
         
         return new InputResult<>(input);
     }
