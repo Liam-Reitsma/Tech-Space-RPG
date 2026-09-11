@@ -20,8 +20,6 @@ public class Weapon extends EquippableItem
         loadSaveInfo(data);
     }
 
-    public WeaponType getWeaponType() { return weaponType; }
-
     public float calculateDamage(int stat) { return weaponType.calculateDamage(stat); }
     
     public int calculateStatReq() { return weaponType.calculateStatReq(level); }
@@ -29,4 +27,6 @@ public class Weapon extends EquippableItem
     public boolean canUseWeapon(int statValue) { return weaponType.canUseWeapon(statValue, level); }
     
     public StatType getScalingStat() { return weaponType.getScalingStat(); }
+    
+    public WeaponType getWeaponType() { return weaponType; }
 }
