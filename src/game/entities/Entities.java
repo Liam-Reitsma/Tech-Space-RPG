@@ -4,13 +4,8 @@ public abstract class Entities
 {
     protected String name;
     protected int level;
-    protected float health;
+    protected int health;
     
-    protected float baseMana;
-    protected float baseDamage;
-    protected float baseArmor;
-    
-    abstract void attack();
-    abstract void useAbility();
-    abstract void takeDamage(int ouch);
+    abstract float attack();
+    abstract void takeDamage(float damage);
 }
