@@ -26,6 +26,15 @@ public class PersistenceResult extends Result<PersistenceErrors>
         world = worldMap;
     }
     
+    public PersistenceResult(PersistenceErrors e)
+    {
+        error = e;
+        player = null;
+        inventory = null;
+        equipped = null;
+        world = null;
+    }
+    
     public Player getPlayer() { return player; }
     
     public List<Item> getInventory() { return inventory; }
