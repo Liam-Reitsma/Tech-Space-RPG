@@ -17,6 +17,9 @@ public enum ArmourMaterial
         protValue = pValue;
     }
     
+    @Override
+    public String toString() { return this.name().charAt(0) + this.name().substring(1).toLowerCase(); }
+    
     public int getRequiredLevel() { return  requiredLevel; }
     
     public float getProtValue() { return protValue; }
