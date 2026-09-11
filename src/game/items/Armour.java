@@ -4,10 +4,9 @@ public class Armour extends EquippableItem
 {
     private ArmourType armourType;
 
-    public Armour(String name, String desc, ArmourType type)
+    public Armour(String armour, ArmourType type)
     {
-        title = name;
-        description = desc;
+        this.name = armour;
         armourType = type;
         isEquipped = false;
     }
@@ -17,20 +16,5 @@ public class Armour extends EquippableItem
         loadSaveInfo(data);
     }
 
-    public ArmourType getArmourType()
-    {
-        return armourType;
-    }
-
-    @Override
-    public void equip()
-    {
-        isEquipped = true;
-    }
-
-    @Override
-    public void unequip()
-    {
-        isEquipped = false;
-    }
+    public ArmourType getArmourType() { return armourType; }
 }
