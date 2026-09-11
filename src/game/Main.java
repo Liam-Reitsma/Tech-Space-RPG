@@ -24,7 +24,7 @@ public class Main
         RoomController roomC = new RoomController(consoleH);
         WorldController worldC = new WorldController(consoleH);
         
-        GameController gameController = new GameController(combatC, mainMenuC, persistenceC, roomC, worldC);
+        GameController gameController = new GameController(combatC, mainMenuC, persistenceC, rewardC, roomC, worldC);
         
         int exitValue = gameController.start();
 
