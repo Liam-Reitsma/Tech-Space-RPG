@@ -4,14 +4,15 @@ import game.entities.StatType;
 
 public class Weapon extends EquippableItem
 {
+    private WeaponType weaponType;
+    
     private int level;
     
-    private WeaponType weaponType;
-
     public Weapon(WeaponType type, int playerLevel)
     {
-        level = playerLevel;
+        name = type.toString();
         weaponType = type;
+        level = playerLevel;
     }
 
     public Weapon(String[] data)

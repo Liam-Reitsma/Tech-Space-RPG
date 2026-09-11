@@ -3,12 +3,15 @@ package game.items;
 public class Armour extends EquippableItem
 {
     private ArmourType armourType;
+    
+    private int level;
 
-    public Armour(String armour, ArmourType type)
+    public Armour(ArmourType type, int playerLevel)
     {
-        this.name = armour;
+        name = type.toString();
         armourType = type;
         isEquipped = false;
+        level = playerLevel;
     }
 
     public Armour(String[] data)
