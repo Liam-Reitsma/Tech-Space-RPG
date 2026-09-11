@@ -49,7 +49,7 @@ public enum EnemyType
         roomType = type;
     }
 
-    public int statStr() { return strGrowth; }
+    public int getStrGrowth() { return strGrowth; }
 
     public int getDexGrowth() { return dexGrowth; }
 
