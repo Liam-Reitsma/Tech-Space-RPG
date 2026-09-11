@@ -10,7 +10,7 @@ public abstract class Entities
     protected float baseDamage;
     protected float baseArmor;
     
-    abstract void attack();
+    abstract int attack();
     abstract void useAbility();
     abstract void takeDamage(int ouch);
 }
