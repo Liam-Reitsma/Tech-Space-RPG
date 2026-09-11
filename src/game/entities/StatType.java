@@ -13,6 +13,19 @@ public enum StatType
         message = name;
     }
     
+    public String getMessage() { return message; }
+    
     @Override
-    public String toString() { return message; }
+    public String toString() { return name().charAt(0) + name().substring(1).toLowerCase(); }
+    
+    public String optionsToString()
+    {
+        StringBuilder result = new StringBuilder();
+        for(StatType stat : StatType.values())
+        {
+            result.append(stat.message);
+        }
+        
+        return result.toString();
+    }
 }
