@@ -4,7 +4,6 @@ import game.Errors;
 
 public enum MainMenuErrors implements Errors
 {
-    LOADING_LIST_FAILED("Loading Failed! Please try again or create a new save."),
     USER_WENT_BACK(""),
     SUCCESS("");
     
