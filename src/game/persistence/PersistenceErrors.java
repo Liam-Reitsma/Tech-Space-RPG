@@ -23,6 +23,7 @@ public enum PersistenceErrors implements Errors
     SAVE_FOLDER_LOCATION_MISSING("Getting Saves Failed! Cannot find save file location.", SEVERE),
     SAVE_FOLDER_EMPTY("No save files found.", RECOVERABLE),
     SAVE_FILE_EMPTY("Loading Failed! Save file is empty.", RECOVERABLE),
+    USER_EXITED_PROGRAM("", SEVERE),
     USER_WENT_BACK("", NONE),
     SUCCESS("", NONE);
     
