@@ -49,12 +49,6 @@ public enum EnemyType
         roomType = type;
     }
 
-    public int getStrGrowth() { return strGrowth; }
-
-    public int getDexGrowth() { return dexGrowth; }
-
-    public int getIntGrowth() { return intGrowth; }
-    
     public float getHealthGrowth() { return healthGrowth; }
     
     public float getDamageGrowth() { return damageGrowth; }
