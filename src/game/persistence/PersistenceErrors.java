@@ -9,6 +9,7 @@ public enum PersistenceErrors implements Errors
 {
     LOADING_MAP_FAILED("Loading Map Failed! The map data was unable to be loaded.", SEVERE),
     LOADING_ITEM_FAILED("Loading Item Failed! The item data was unable to be loaded.", RECOVERABLE),
+    LOADING_WEAPON_FAILED("Loading Weapon Failed! The weapon data was unable to be loaded.", RECOVERABLE),
     LOADING_PLAYER_FAILED("Loading Player Failed! The player data was unable to be loaded.", SEVERE),
     UNABLE_TO_SAVE("Saving Player Failed! The updated player data size is too big.", RECOVERABLE),
     INVALID_FILE_NAME("Creating Save Failed! The file given is an invalid name. Please try again", RECOVERABLE),
