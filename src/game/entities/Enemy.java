@@ -8,8 +8,10 @@ public class Enemy extends Entities implements Persistable
     private float damage;
     private float armour;
     
-    public Enemy(EnemyType type, int level)
+    public Enemy(EnemyType type, int playerLevel)
     {
+        level = playerLevel;
+        
         name = type.toString();
         health = (int)(type.getHealthGrowth() * level);
         gold = (int)(type.getGoldGrowth() * level);
