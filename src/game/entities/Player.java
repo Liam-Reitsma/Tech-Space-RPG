@@ -56,9 +56,17 @@ public class Player extends Entities implements Persistable
 
 
     @Override
-    public void attack()
-    {
+    public int attack()
+    {   //TODO: Replace the switch with a more robust method.
+        Optional<Weapon> currentWeapon = getEquippedWeapon();
+        if (currentWeapon.isEmpty()) { return statStr; }
 
+        WeaponType weapon = currentWeapon.get().getWeaponType();
+        return switch(currentWeapon.get().getWeaponType()){
+            case LIGHTSABER, DARKSABER -> weapon.getBaseDamage() + statStr;
+            case LASERGUN -> weapon.getBaseDamage() + statDex;
+            case FORCE -> weapon.getBaseDamage() + statInt;
+        };
     }
 
     @Override
@@ -89,6 +97,10 @@ public class Player extends Entities implements Persistable
             }
         }
         health -= Math.round(damageReceived);
+        if (health < 0)
+        {
+            health = 0;
+        }
     }
 
     public int getLevel() { return level; }

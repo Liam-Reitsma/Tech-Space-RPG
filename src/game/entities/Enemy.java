@@ -23,9 +23,9 @@ public class Enemy extends Entities implements Persistable
     public Enemy(String[] data) { loadSaveInfo(data); }
 
     @Override
-    public void attack()
+    public int attack()
     {
-
+        return this.statStr;
     }
 
     @Override
@@ -38,6 +38,10 @@ public class Enemy extends Entities implements Persistable
     public void takeDamage(int ouch)
     {
         health -= ouch;
+        if (health < 0)
+        {
+            health = 0;
+        }
     }
 
     public float getHealth() { return health; }
