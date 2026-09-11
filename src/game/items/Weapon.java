@@ -1,13 +1,12 @@
 package game.items;
 
-public class Weapon extends EquippableItem implements Usable
+public class Weapon extends EquippableItem
 {
     WeaponType weaponType;
+    
 
-    public Weapon(String name, String desc, WeaponType type)
+    public Weapon(WeaponType type, int level)
     {
-        title = name;
-        description = desc;
         weaponType = type;
     }
 
@@ -18,20 +17,10 @@ public class Weapon extends EquippableItem implements Usable
 
     public WeaponType getWeaponType() { return weaponType; }
 
-    @Override
-    public int use()
-    {
-        return weaponType.getBaseDamage();
-    }
+    public float getDamage(int stat) { return weaponType.calculateDamage(stat); }
 
     @Override
-    public void equip()
-    {
-        isEquipped = true;
-    }
+    public void equip() { isEquipped = true; }
     @Override
-    public void unequip()
-    {
-        isEquipped = false;
-    }
+    public void unequip() { isEquipped = false; }
 }
