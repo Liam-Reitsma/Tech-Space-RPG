@@ -2,8 +2,9 @@ package game.persistence;
 
 import game.Result;
 import game.entities.Player;
-import game.items.EquippableItem;
+import game.items.Armour;
 import game.items.Item;
+import game.items.Weapon;
 import game.world.Point;
 import game.world.RuntimeRoom;
 
@@ -13,33 +14,38 @@ import java.util.Map;
 public class PersistenceResult extends Result<PersistenceErrors>
 {
     private final Player player;
+    private final Weapon weapon;
     private final List<Item> inventory;
-    private final List<EquippableItem> equipped;
+    private final List<Armour> armour;
     private final Map<Point, RuntimeRoom> world;
     
-    public PersistenceResult(PersistenceErrors e, Player loadedPlayer, List<Item> inventoryList, List<EquippableItem> equippedList, Map<Point, RuntimeRoom> worldMap)
+    public PersistenceResult(PersistenceErrors e, Player loadedPlayer, Weapon loadedWeapon, List<Item> inventoryList, List<Armour> equippedList, Map<Point, RuntimeRoom> worldMap)
     {
         error = e;
+        weapon = loadedWeapon;
         player = loadedPlayer;
         inventory = inventoryList;
-        equipped = equippedList;
+        armour = equippedList;
         world = worldMap;
     }
     
     public PersistenceResult(PersistenceErrors e)
     {
         error = e;
+        weapon = null;
         player = null;
         inventory = null;
-        equipped = null;
+        armour = null;
         world = null;
     }
     
     public Player getPlayer() { return player; }
     
+    public Weapon getWeapon() { return weapon; }
+    
     public List<Item> getInventory() { return inventory; }
     
-    public List<EquippableItem> getEquipped() { return equipped; }
+    public List<Armour> getArmour() { return armour; }
     
     public Map<Point, RuntimeRoom> getWorld() { return world; }
 }
