@@ -1,14 +1,18 @@
 package game.items;
 
-public class Weapon extends EquippableItem implements Usable
-{
-    WeaponType weaponType;
+import game.entities.StatType;
 
-    public Weapon(String name, String desc, WeaponType type)
+public class Weapon extends EquippableItem
+{
+    private WeaponType weaponType;
+    
+    private int level;
+    
+    public Weapon(WeaponType type, int playerLevel)
     {
-        title = name;
-        description = desc;
+        name = type.toString();
         weaponType = type;
+        level = playerLevel;
     }
 
     public Weapon(String[] data)
@@ -16,22 +20,13 @@ public class Weapon extends EquippableItem implements Usable
         loadSaveInfo(data);
     }
 
+    public float calculateDamage(int stat) { return weaponType.calculateDamage(stat); }
+    
+    public int calculateStatReq() { return weaponType.calculateStatReq(level); }
+    
+    public boolean canUseWeapon(int statValue) { return weaponType.canUseWeapon(statValue, level); }
+    
+    public StatType getScalingStat() { return weaponType.getScalingStat(); }
+    
     public WeaponType getWeaponType() { return weaponType; }
-
-    @Override
-    public int use()
-    {
-        return weaponType.getBaseDamage();
-    }
-
-    @Override
-    public void equip()
-    {
-        isEquipped = true;
-    }
-    @Override
-    public void unequip()
-    {
-        isEquipped = false;
-    }
 }

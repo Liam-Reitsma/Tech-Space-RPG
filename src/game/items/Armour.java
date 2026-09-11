@@ -2,13 +2,14 @@ package game.items;
 
 public class Armour extends EquippableItem
 {
-    private ArmourType armourType;
+    private ArmourMaterial armourMaterial;
+    private ArmourSlot armourSlot;
 
-    public Armour(String name, String desc, ArmourType type)
+    public Armour(ArmourMaterial material, ArmourSlot slot)
     {
-        title = name;
-        description = desc;
-        armourType = type;
+        armourMaterial = material;
+        armourSlot = slot;
+        name = material.toString() + slot.toString();
         isEquipped = false;
     }
 
@@ -16,21 +17,10 @@ public class Armour extends EquippableItem
     {
         loadSaveInfo(data);
     }
-
-    public ArmourType getArmourType()
-    {
-        return armourType;
-    }
-
-    @Override
-    public void equip()
-    {
-        isEquipped = true;
-    }
-
-    @Override
-    public void unequip()
-    {
-        isEquipped = false;
-    }
+    
+    public float calculateProtection() { return armourSlot.getProtWeight() * armourMaterial.getProtValue(); }
+    
+    public ArmourMaterial getArmourMaterial() { return armourMaterial; }
+    
+    public ArmourSlot getArmourSlot() { return armourSlot; }
 }
