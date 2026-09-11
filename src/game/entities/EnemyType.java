@@ -25,9 +25,6 @@ public enum EnemyType
     WARCASTER(6, 4, 6, MINIBOSS),
     DREADLORD(9, 6, 9, BOSS);
 
-    private final int strGrowth;
-    private final int dexGrowth;
-    private final int intGrowth;
     private final float healthGrowth;
     private final float damageGrowth;
     private final float armourGrowth;
@@ -36,14 +33,11 @@ public enum EnemyType
     private final RoomType roomType;
 
 
-    EnemyType(int statStr, int statDex, int statIntel, RoomType type)
+    EnemyType(int statStr, int statDex, int statInt, RoomType type)
     {
-        strGrowth = statStr;
-        dexGrowth = statDex;
-        intGrowth = statIntel;
-        healthGrowth = ((5 * strGrowth + dexGrowth) / 3f);
-        damageGrowth = (Math.max(4 * strGrowth, (3 * (dexGrowth + intGrowth))) / 9f);
-        armourGrowth = ((4 * intGrowth + dexGrowth) / 1500f);
+        healthGrowth = ((5 * statStr + statDex) / 3f);
+        damageGrowth = (Math.max(4 * statStr, (3 * (statDex + statInt))) / 9f);
+        armourGrowth = ((4 * statInt + statDex) / 1500f);
         goldGrowth = 0.2f * (damageGrowth + (healthGrowth / (1 - armourGrowth)));
         xpGrowth   = 0.6f * (damageGrowth + (healthGrowth / (1 - armourGrowth)));
         roomType = type;
