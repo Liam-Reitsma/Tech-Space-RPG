@@ -18,7 +18,7 @@ public enum StatType
     @Override
     public String toString() { return name().charAt(0) + name().substring(1).toLowerCase(); }
     
-    public String optionsToString()
+    public static String optionsToString()
     {
         StringBuilder result = new StringBuilder();
         for(StatType stat : StatType.values())
