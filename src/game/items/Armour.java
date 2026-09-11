@@ -2,22 +2,25 @@ package game.items;
 
 public class Armour extends EquippableItem
 {
-    private ArmourType armourType;
-    
-    private int level;
+    private ArmourMaterial armourMaterial;
+    private ArmourSlot armourSlot;
 
-    public Armour(ArmourType type, int playerLevel)
+    public Armour(ArmourMaterial material, ArmourSlot slot)
     {
-        name = type.toString();
-        armourType = type;
+        armourMaterial = material;
+        armourSlot = slot;
+        name = material.toString() + slot.toString();
         isEquipped = false;
-        level = playerLevel;
     }
 
     public Armour(String[] data)
     {
         loadSaveInfo(data);
     }
-
-    public ArmourType getArmourType() { return armourType; }
+    
+    public float calculateProtection() { return armourSlot.getProtWeight() * armourMaterial.getProtValue(); }
+    
+    public ArmourMaterial getArmourMaterial() { return armourMaterial; }
+    
+    public ArmourSlot getArmourSlot() { return armourSlot; }
 }
