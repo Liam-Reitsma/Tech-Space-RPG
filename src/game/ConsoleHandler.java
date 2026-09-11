@@ -202,6 +202,62 @@ public class ConsoleHandler
         return new InputResult<>(result);
     }
     
+    public <T extends Enum<T>> InputResult<T> confirmInputInteger(String questionToAsk, String options, Class<T> type)
+    {
+        T result = null;
+        int response;
+        String question;
+        if(questionToAsk.contains(String.valueOf('?'))) question = questionToAsk.substring(0, questionToAsk.length() - 1);
+        else question = questionToAsk;
+        printLine(question + "?");
+        printLine("The options are:\n" + options );
+        
+        do
+        {
+            Optional<Integer> iResultInt;
+            Optional<Character> iResultChar;
+            iResultInt = nextInt().getInput();
+            if(iResultInt.isEmpty()) return new InputResult<>();
+            response = iResultInt.get();
+            for(T constant : type.getEnumConstants())
+            {
+                if(constant.ordinal() + 1 == response)
+                {
+                    result = constant;
+                    break;
+                }
+            }
+            
+            if(result == null)
+            {
+                printLine("Sorry, that is not a valid input. Please try again.");
+                printLine("The options are: " + options + ".");
+            }
+            else
+            {
+                printLine("Are you sure?");
+                
+                do
+                {
+                    iResultChar = nextCharToLowerCase().getInput();
+                    if(iResultChar.isEmpty() || iResultChar.get() == 'n')
+                    {
+                        printLine("Alright, " + question.toLowerCase() + " then?");
+                        printLine("The options are: " + options);
+                        break;
+                    }
+                    if(iResultChar.get() == 'y') break;
+                    printLine("Please enter \"Yes\" or \"No\"");
+                    
+                } while(true);
+                
+                if(iResultChar.isEmpty() || iResultChar.get() != 'y') result = null;
+            }
+        } while(result == null);
+        
+        return new InputResult<>(result);
+    }
+    
     public InputResult<Integer> nextInt()
     {
         splitNumber = false;
