@@ -1,5 +1,7 @@
 package game.items;
 
+import game.entities.ClassType;
+
 public enum ArmourMaterial
 {
     FABRIC   ( 1, 0.15f),
@@ -39,5 +41,15 @@ public enum ArmourMaterial
             case 5 -> NANOWEAVE;
             default -> null;
         };
+    }
+    
+    public static ArmourMaterial parseType(String typeToCheck)
+    {
+        for(ArmourMaterial material : ArmourMaterial.values())
+        {
+            if(material.toString().equalsIgnoreCase(typeToCheck)) return material;
+        }
+        
+        return null;
     }
 }
