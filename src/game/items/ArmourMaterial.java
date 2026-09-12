@@ -30,7 +30,7 @@ public enum ArmourMaterial
         for(ArmourMaterial mat : ArmourMaterial.values()) if(level >= mat.requiredLevel) i++;
         if(i == 0) return FABRIC;
         
-        return switch(Math.clamp(Math.round(Math.random() * i), 1, i))
+        return switch((int)(Math.random() * i) + 1)
         {
             case 1 -> FABRIC;
             case 2 -> POLYMER;
