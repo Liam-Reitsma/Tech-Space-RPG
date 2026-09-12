@@ -9,6 +9,8 @@ import game.Errors;
 public enum RewardErrors implements Errors
 {
     INVENTORY_FULL("Your inventory is too full, please remove something.", RECOVERABLE),
+    CLEARING_INVENTORY("", NONE),
+    ITEM_DISCARDED("", NONE),
     SUCCESS("", NONE);
 
     private final String message;
