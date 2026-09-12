@@ -20,4 +20,18 @@ public enum ArmourSlot
     public String toString() { return this.name().charAt(0) + this.name().substring(1).toLowerCase(); }
     
     public float getProtWeight() { return protWeight; }
+    
+    public static ArmourSlot getRandomSlot()
+    {
+        return switch((int)(Math.random() * 6) + 1)
+        {
+            case 1 -> HEAD;
+            case 2 -> CHEST;
+            case 3 -> ARMS;
+            case 4 -> THIGHS;
+            case 5 -> SHINS;
+            case 6 -> BOOTS;
+            default -> null;
+        };
+    }
 }
