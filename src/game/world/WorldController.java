@@ -143,34 +143,22 @@ public class WorldController implements Startable<MainMenuStates, Map<Point, Run
         StringBuilder stringToReturn = new StringBuilder();
         stringToReturn.append("Where would you like to move? Your options are:\n");
         int i = 1;
-        int direction = 0;
         
         for(Point orthogonalPoint : Point.getOrthogonalPoints(playerLocation))
         {
             if(world.containsKey(orthogonalPoint))
             {
-                stringToReturn.append(i).append(". ").append("Move ").append(getDirection(direction));
+                
+                stringToReturn.append(i).append(". ").append("Move ").append(playerLocation.returnRelativeDirection(orthogonalPoint));
                 if(world.get(orthogonalPoint).isCompleted()) stringToReturn.append(" (Completed)");
                 stringToReturn.append('\n');
                 i++;
             }
-            direction++;
         }
         
         stringToReturn.deleteCharAt(stringToReturn.length() - 1);
         
         return stringToReturn.toString();
-    }
-    
-    private String getDirection(int value)
-    {
-        return switch(value)
-        {
-            case 0 -> "North";
-            case 1 -> "East";
-            case 2 -> "South";
-            default -> "West";
-        };
     }
     
     public Map<Point, RuntimeRoom> getWorld() { return world; }
