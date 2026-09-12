@@ -70,4 +70,17 @@ public enum EnemyType
 
         return null;
     }
+    
+    public static EnemyType getRandomEnemyType(RoomType room)
+    {
+        EnemyType[] enemyOption = new EnemyType[6];
+        int i = 0;
+        for(EnemyType type : EnemyType.values())
+        {
+            if(type.roomType == room) enemyOption[i++] = type;
+            
+        }
+        
+        return enemyOption[((int)(Math.random() * enemyOption.length))];
+    }
 }
