@@ -9,7 +9,7 @@ public class Armour extends EquippableItem
     {
         armourMaterial = material;
         armourSlot = slot;
-        name = material.toString() + slot.toString();
+        name = material.toString() + " " + slot.toString();
         isEquipped = false;
     }
 
