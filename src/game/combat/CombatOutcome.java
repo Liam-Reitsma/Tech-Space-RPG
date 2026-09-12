@@ -4,7 +4,8 @@ public enum CombatOutcome
 {
     WIN("You Win."),
     LOSE("You Lose."),
-    FLEE("You Ran Away."),;
+    FLEE("You Ran Away."),
+    NOTHING("");
 
     private final String message;
 
