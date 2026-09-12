@@ -1,13 +1,14 @@
 package game.entities.player;
 
+import static game.entities.StatType.*;
+import static game.entities.player.PlayerErrors.*;
+
 import game.entities.*;
 import game.items.*;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
 
 import java.util.*;
-
-import static game.entities.StatType.*;
 
 public class Player extends Entities implements Persistable
 {
@@ -28,7 +29,7 @@ public class Player extends Entities implements Persistable
     @SaveExclude
     private List<Item> inventory;
     @SaveExclude
-    private List<Armour> equipped;
+    private List<Armour> equippedArmour;
     @SaveExclude
     private Weapon equippedWeapon;
     
@@ -68,10 +69,10 @@ public class Player extends Entities implements Persistable
         else inventory = newInventory;
     }
     
-    public void setEquipped(List<Armour> newEquipped)
+    public void setEquippedArmour(List<Armour> newEquipped)
     {
-        if(newEquipped == null) equipped = new ArrayList<>();
-        else equipped = newEquipped;
+        if(newEquipped == null) equippedArmour = new ArrayList<>();
+        else equippedArmour = newEquipped;
     }
     
     
@@ -97,7 +98,7 @@ public class Player extends Entities implements Persistable
     public void takeDamage(float damage)
     {
         float totalArmour = 0;
-        for (Armour armour : equipped)
+        for (Armour armour : equippedArmour)
         {
             totalArmour += (1 - totalArmour) * armour.calculateProtection();
         }
@@ -107,13 +108,7 @@ public class Player extends Entities implements Persistable
         if(health <= 0) health = 0;
     }
     
-    public int getLevel() { return level; }
-    
-    public float getHealth() { return health; }
-    
-    public int getXP() { return xp; }
-    
-    public int applyXP(int xpGain)
+    public int applyXPGain(int xpGain)
     {
         int currentLevel = level;
         xp += xpGain;
@@ -127,18 +122,39 @@ public class Player extends Entities implements Persistable
         return level - currentLevel;
     }
     
+    public void applyGoldGain(int goldGain) { gold += goldGain; }
     
-    public int getGold() { return gold; }
+    public void applyStatGain(StatType stat) { statTypeMap.put(stat, statTypeMap.get(stat) + 1); }
     
-    public void addGold(int goldGain) { gold += goldGain; }
-    
-    public String getName() { return name; }
-    
-    public void addStat(StatType stat) { statTypeMap.put(stat, statTypeMap.get(stat) + 1); }
-    
-    public boolean equipWeapon(Weapon weapon)
+    public PlayerResult<Weapon> hasWeaponsInInventory()
     {
-        if(!inventory.contains(weapon)) return false;
+        Weapon[] inventoryWeapons = new Weapon[10];
+        Weapon[] weapons;
+        int i = 0;
+        for(Item item : getInventory())
+        {
+            if(item instanceof Weapon weapon)
+            {
+                inventoryWeapons[i++] = weapon;
+            }
+        }
+        if(i == 0) return new PlayerResult<>(NO_WEAPON_AVAILABLE, new Weapon[0]);
+        weapons = new Weapon[i];
+        i = 0;
+        
+        for(Weapon weapon : inventoryWeapons)
+        {
+            if(weapon == null) continue;
+            weapons[i++] = weapon;
+        }
+        
+        return new PlayerResult<>(SUCCESS, weapons);
+    }
+    
+    public PlayerErrors equipWeapon(Weapon weapon)
+    {
+        if(weapon == null) return NO_WEAPON_GIVEN;
+        if(!inventory.contains(weapon)) return NO_WEAPON_AVAILABLE;
         else
         {
             if(equippedWeapon != null)
@@ -148,81 +164,120 @@ public class Player extends Entities implements Persistable
                 equippedWeapon = weapon;
                 inventory.remove(weapon);
                 weapon.equip();
-                return true;
+                return SUCCESS;
             }
             
             equippedWeapon = weapon;
             weapon.equip();
-            return true;
+            return SUCCESS;
         }
     }
     
-    public boolean equipArmour(Armour armour)
+    public PlayerErrors unequipWeapon()
     {
-        if(!inventory.contains(armour)) return false;
+        if(equippedWeapon == null) return NO_WEAPON_EQUIPPED;
+        equippedWeapon.unequip();
+        equippedWeapon = null;
+        return SUCCESS;
+    }
+    
+    public PlayerResult<Armour> hasArmourInInventory()
+    {
+        Armour[] inventoryArmours = new Armour[10];
+        Armour[] armours;
+        int i = 0;
+        for(Item item : getInventory())
+        {
+            if(item instanceof Armour armour)
+            {
+                inventoryArmours[i++] = armour;
+            }
+        }
+        if(i == 0) return new PlayerResult<>(NO_ARMOUR_AVAILABLE, new Armour[0]);
+        armours = new Armour[i];
+        i = 0;
+        
+        for(Armour armour : inventoryArmours)
+        {
+            if(armour == null) continue;
+            armours[i++] = armour;
+        }
+        
+        return new PlayerResult<>(SUCCESS, armours);
+    }
+    
+    public PlayerErrors equipArmour(Armour armour)
+    {
+        if(!inventory.contains(armour)) return NO_ARMOUR_AVAILABLE;
         else
         {
-            for(int  i = 0; i < equipped.size(); i++)
+            for(int i = 0; i < equippedArmour.size(); i++)
             {
-                if(equipped.get(i).getArmourSlot() == armour.getArmourSlot())
+                if(equippedArmour.get(i).getArmourSlot() == armour.getArmourSlot())
                 {
-                    Armour currentArmour = equipped.get(i);
+                    Armour currentArmour = equippedArmour.get(i);
                     currentArmour.unequip();
                     inventory.add(currentArmour);
-                    equipped.set(i, armour);
+                    equippedArmour.set(i, armour);
                     inventory.remove(armour);
                     armour.equip();
-                    return true;
+                    return SUCCESS;
                 }
             }
             
-            equipped.add(armour);
+            equippedArmour.add(armour);
             armour.equip();
-            return true;
+            return SUCCESS;
         }
     }
     
-    public boolean addToInventory(Item item)
+    public PlayerErrors unequipArmour(Armour armour)
+    {
+        if(equippedArmour.isEmpty()) { return NO_ARMOUR_EQUIPPED; }
+        if(!equippedArmour.contains(armour)) { return NO_SLOT_ARMOUR_EQUIPPED; }
+        equippedArmour.remove(armour);
+        armour.unequip();
+        inventory.add(armour);
+        return SUCCESS;
+    }
+    
+    public PlayerErrors addToInventory(Item item)
     {
         if(item == null)
         {
-            System.out.println("Add an Item");
-            return false;
+            return NO_ITEM_GIVEN;
         }
         else if (inventory.size() >= MAXIMUM_INVENTORY_SIZE)
         {
-            System.out.println("Maximum Inventory Size has been reached");
-            return false;
+            return MAX_INVENTORY_REACHED;
         }
         inventory.add(item);
-        return true;
+        return SUCCESS;
     }
     
-    public boolean unequipItem(Armour item)
-    {
-        if (!equipped.contains(item))
-        {
-            System.out.println("Item is not equipped");
-            return false;
-        }
-        equipped.remove(item);
-        item.unequip();
-        inventory.add(item);
-        return true;
-    }
-    
-    public void removeFromInventory(Item item)
+    public PlayerErrors removeFromInventory(Item item)
     {
         if (!inventory.contains(item))
         {
-            System.out.println("Item is not in inventory");
+            return ITEM_MISSING;
         }
         inventory.remove(item);
+        return SUCCESS;
     }
+    
+    public String getName() { return name; }
+    
+    public int getLevel() { return level; }
+    
+    public float getHealth() { return health; }
+    
+    public int getXP() { return xp; }
+    
+    public int getGold() { return gold; }
     
     public Weapon getEquippedWeapon() { return equippedWeapon; }
     
     public List<Item> getInventory() { return inventory; }
     
-    public List<Armour> getEquipped() { return equipped; }
+    public List<Armour> getEquippedArmour() { return equippedArmour; }
 }
