@@ -181,6 +181,31 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
+    public PlayerResult<Armour> hasArmourInInventory()
+    {
+        Armour[] inventoryArmours = new Armour[10];
+        Armour[] armours;
+        int i = 0;
+        for(Item item : getInventory())
+        {
+            if(item instanceof Armour armour)
+            {
+                inventoryArmours[i++] = armour;
+            }
+        }
+        if(i == 0) return new PlayerResult<>(NO_ARMOUR_AVAILABLE, new Armour[0]);
+        armours = new Armour[i];
+        i = 0;
+        
+        for(Armour armour : inventoryArmours)
+        {
+            if(armour == null) continue;
+            armours[i++] = armour;
+        }
+        
+        return new PlayerResult<>(SUCCESS, armours);
+    }
+    
     public PlayerErrors equipArmour(Armour armour)
     {
         if(!inventory.contains(armour)) return NO_ARMOUR_AVAILABLE;
