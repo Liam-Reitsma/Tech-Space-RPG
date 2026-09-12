@@ -4,9 +4,9 @@ public class Potion extends Item
 {
     private PotionType potionType;
 
-    public Potion(String potion, PotionType type)
+    public Potion(PotionType type)
     {
-        name = potion;
+        name = type.toString();
         potionType = type;
     }
 

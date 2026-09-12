@@ -6,6 +6,6 @@ public abstract class Entities
     protected int level;
     protected int health;
     
-    abstract float attack();
-    abstract void takeDamage(float damage);
+    public abstract float attack();
+    public abstract void takeDamage(float damage);
 }

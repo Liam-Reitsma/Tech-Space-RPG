@@ -1,4 +1,4 @@
-package game.items;
+package game.items.weapon;
 
 import static game.entities.StatType.*;
 

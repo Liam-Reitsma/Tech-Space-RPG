@@ -19,30 +19,11 @@ public class MainMenuController implements Startable<Void, Void, MainMenuResult>
     @Override
     public MainMenuResult start(Void input1, Void input2)
     {
-        Optional<Integer> userInput;
-        do
-        {
-            consoleH.printLine("Welcome to Tech Space.\nUse '~' whenever you wish to go back.");
-            consoleH.printLine("Select an Option:");
-            for(MainMenuStates state : MainMenuStates.values())
-            {
-                consoleH.printLine((state.ordinal() + 1) + ". "+ state);
-            }
-            
-            userInput = consoleH.nextInt().getInput();
-            if(userInput.isEmpty()) break;
-            int response = userInput.get();
-            
-            for(MainMenuStates state : MainMenuStates.values())
-            {
-                if(response == state.ordinal() + 1)
-                {
-                    return state.execute();
-                }
-            }
-        } while(true);
-        
-        return new MainMenuResult(USER_WENT_BACK, MainMenuStates.EXIT);
+        consoleH.printLine("Welcome to Tech Space.\nUse '~' whenever you wish to go back.");
+        consoleH.printLine("Select an Option:");
+        Optional<MainMenuStates> response = consoleH.confirmInputInteger("What would you like to do?", MainMenuStates.optionsToString(), MainMenuStates.class).getInput();
+        if(response.isEmpty()) return new MainMenuResult(USER_WENT_BACK, MainMenuStates.EXIT_GAME);
+        else return new MainMenuResult(SUCCESS, response.get());
     }
     
     public MainMenuResult start()

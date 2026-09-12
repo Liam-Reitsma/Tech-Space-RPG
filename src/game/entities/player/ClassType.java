@@ -1,8 +1,8 @@
-package game.entities;
+package game.entities.player;
 
-import game.items.WeaponType;
+import game.items.weapon.WeaponType;
 
-import static game.items.WeaponType.*;
+import static game.items.weapon.WeaponType.*;
 
 public enum ClassType
 {
@@ -38,16 +38,6 @@ public enum ClassType
     
     @Override
     public String toString() { return this.name().charAt(0) + this.name().substring(1).toLowerCase(); }
-    
-    public static ClassType parseType(String typeToCheck)
-    {
-        for(ClassType type : ClassType.values())
-        {
-            if(type.toString().equalsIgnoreCase(typeToCheck)) return type;
-        }
-        
-        return null;
-    }
     
     public static String optionsToString()
     {
