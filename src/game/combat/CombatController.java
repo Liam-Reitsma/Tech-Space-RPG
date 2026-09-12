@@ -1,5 +1,9 @@
 package game.combat;
 
+import static game.combat.CombatAction.ATTACK;
+import static game.combat.CombatErrors.*;
+import static game.combat.CombatOutcome.*;
+
 import game.ConsoleHandler;
 import game.Loopable;
 import game.entities.*;
@@ -11,9 +15,6 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
 {
     private final ConsoleHandler consoleH;
 
-    private boolean inCombat = true;
-    private CombatOutcome outcome;
-
     public CombatController(ConsoleHandler cH)
     {
         consoleH = cH;
@@ -22,65 +23,49 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
     @Override
     public CombatResult loop(Player player, Enemy enemy)
     {
+        CombatOutcome outcome;
         boolean userTurn = true;
-        while (inCombat)
+        
+        while(true)
         {
-            // check if combat should end
-            if (player.getHealth() <= 0)
+            if(userTurn)
             {
-                return new CombatResult(CombatErrors.SUCCESS, CombatOutcome.LOSE);
+                outcome = playerTurn(player, enemy);
+                if(outcome != NOTHING) return new CombatResult(SUCCESS, outcome);
+                userTurn = false;
             }
-            else if (enemy.getHealth() <= 0)
+            else
             {
-                return new CombatResult(CombatErrors.SUCCESS, CombatOutcome.WIN);
-            }
-            // checking if users turn or enemies turn
-            else {
-                if (userTurn) {
-                    playerTurn(player, enemy);
-                    userTurn = false;
-                } else {
-                    enemyTurn(player, enemy);
-                    userTurn = true;
-                }
+                outcome = enemyTurn(player, enemy);
+                if(outcome != NOTHING) return new CombatResult(SUCCESS, outcome);
+                userTurn = true;
             }
         }
-        return new CombatResult(CombatErrors.SUCCESS, outcome);
     }
 
-    public void playerTurn(Player player, Enemy enemy)
+    public CombatOutcome playerTurn(Player player, Enemy enemy)
     {
-        int response = -1;
-        // printing options and checking user input
+        Optional<CombatAction> action;
         do
         {
-            consoleH.printLine("What would you like to do?");
-            for (CombatAction action : CombatAction.values()) {
-                consoleH.printLine((action.ordinal() + 1) + ". " + action.toString());
+            action = consoleH.confirmInput("What would you like to do?", CombatAction.optionsToString(), CombatAction.class).getInput();
+            if(action.isEmpty())
+            {
+                consoleH.printLine("You cannot return here. Please choose an option");
+                continue;
             }
-            Optional<Integer> userInput = consoleH.nextInt().getInput();
-            if  (userInput.isPresent() && userInput.get() > 0 && userInput.get() <= CombatAction.values().length) {
-                response = userInput.get();
-                break;
-            }
+            break;
         } while(true);
-
-        CombatAction action = CombatAction.values()[response - 1];
-
-        // Functions of what the player is going to do and execute it
-        ActionDecider result = action.execute(consoleH, player, enemy);
-        consoleH.printLine(result.message());
-        if (result.endReason().isPresent())
-        {
-            inCombat = false;
-            outcome = result.endReason().get();
-        }
+        
+        ActionResult result = action.get().execute(consoleH, player, enemy);
+        consoleH.printLine(result.getMessage());
+        return result.getOutcome();
     }
 
-    public void enemyTurn(Player player, Enemy enemy)
+    public CombatOutcome enemyTurn(Player player, Enemy enemy)
     {
-        int oppDamage = enemy.getStats()[0];
-        player.takeDamage(oppDamage);
-        consoleH.printLine("Enemy has attacked.\nRemaining health: " + player.getHealth());
+        ActionResult result = ATTACK.execute(consoleH, player, enemy);
+        consoleH.printLine(result.getMessage());
+        return result.getOutcome();
     }
 }
