@@ -39,7 +39,7 @@ public class PlayerController implements Loopable<Player, Void, PlayerResult<?>>
             }
             case EQUIP_WEAPON ->
             {
-                PlayerResult<Weapon> result = player.hasWeaponsInInventory();
+                PlayerResult<Weapon> result = player.getWeaponsInInventory();
                 if(result.getError() != SUCCESS) return new PlayerResult<>(result.getError());
                 
                 StringBuilder weaponOptions = new StringBuilder();
@@ -74,7 +74,7 @@ public class PlayerController implements Loopable<Player, Void, PlayerResult<?>>
             }
             case EQUIP_ARMOR ->
             {
-                PlayerResult<Armour> result = player.hasArmourInInventory();
+                PlayerResult<Armour> result = player.getArmourInInventory();
                 if(result.getError() != SUCCESS) return new PlayerResult<>(result.getError());
                 
                 StringBuilder armourOptions = new StringBuilder();

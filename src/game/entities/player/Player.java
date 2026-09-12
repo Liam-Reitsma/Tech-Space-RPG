@@ -127,7 +127,7 @@ public class Player extends Entities implements Persistable
     
     public void applyStatGain(StatType stat) { statTypeMap.put(stat, statTypeMap.get(stat) + 1); }
     
-    public PlayerResult<Weapon> hasWeaponsInInventory()
+    public PlayerResult<Weapon> getWeaponsInInventory()
     {
         Weapon[] inventoryWeapons = new Weapon[10];
         Weapon[] weapons;
@@ -182,7 +182,7 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
-    public PlayerResult<Armour> hasArmourInInventory()
+    public PlayerResult<Armour> getArmourInInventory()
     {
         Armour[] inventoryArmours = new Armour[10];
         Armour[] armours;
@@ -242,7 +242,7 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
-    public PlayerResult<Potion> hasPotionsInInventory()
+    public PlayerResult<Potion> getPotionsInInventory()
     {
         Potion[] inventoryPotions = new Potion[10];
         Potion[] potions;
