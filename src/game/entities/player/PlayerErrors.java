@@ -8,13 +8,13 @@ import game.Errors;
 public enum PlayerErrors implements Errors
 {
     MAX_INVENTORY_REACHED("You have reached your maximum inventory. Please remove an item first.", RECOVERABLE),
-    ITEM_MISSING("", RECOVERABLE),
+    ITEM_MISSING("You cannot do that. The item selected is missing.", RECOVERABLE),
+    NO_ARMOUR_AVAILABLE("You have no armour to equip.", RECOVERABLE),
+    NO_WEAPON_AVAILABLE("You have no weapon to equip.", RECOVERABLE),
+    NO_ARMOUR_EQUIPPED("You have no armour of that slot equipped.", RECOVERABLE),
+    NO_WEAPON_EQUIPPED("You have no weapon equipped", RECOVERABLE),
     NO_ITEM_GIVEN("", RECOVERABLE),
     NO_WEAPON_GIVEN("", RECOVERABLE),
-    NO_ARMOR_AVAILABLE("", RECOVERABLE),
-    NO_WEAPON_AVAILABLE("", RECOVERABLE),
-    NO_ARMOUR_EQUIPPED("", RECOVERABLE),
-    NO_WEAPON_EQUIPPED("", RECOVERABLE),
     USER_WENT_BACK("", NONE),
     SUCCESS("", NONE);
 
