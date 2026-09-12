@@ -23,9 +23,9 @@ public enum StatType
         StringBuilder result = new StringBuilder();
         for(StatType stat : StatType.values())
         {
-            result.append(stat.message);
+            result.append(stat.toString()).append(", ");
         }
-        
+        result.delete(result.length() - 2, result.length());
         return result.toString();
     }
 }
