@@ -64,8 +64,8 @@ public class GameController
             WorldResult worldResult = worldC.start(mmResult.getStateUsed());
             if(worldResult.getError() != WorldErrors.SUCCESS) return 1;
             player.setInventory(null);
-            player.setEquipped(null);
-            persistenceC.fullSave(player, player.getEquippedWeapon(), player.getInventory(), player.getEquipped(), worldC.getWorld());
+            player.setEquippedArmour(null);
+            persistenceC.fullSave(player, player.getEquippedWeapon(), player.getInventory(), player.getEquippedArmour(), worldC.getWorld());
         }
         else if(mmResult.getStateUsed() == MainMenuStates.LOAD_GAME)
         {
@@ -73,7 +73,7 @@ public class GameController
             if(worldResult.getError() != WorldErrors.SUCCESS) return 2;
             player.setWeapon(pResult.getWeapon());
             player.setInventory(pResult.getInventory());
-            player.setEquipped(pResult.getArmour());
+            player.setEquippedArmour(pResult.getArmour());
         }
         
         return loop();
