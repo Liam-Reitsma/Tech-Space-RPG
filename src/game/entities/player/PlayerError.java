@@ -3,12 +3,13 @@ package game.entities.player;
 import game.ErrorSeverity;
 import game.Errors;
 
-import static game.ErrorSeverity.NONE;
+import static game.ErrorSeverity.*;
 
 public enum PlayerError implements Errors
 {
-    SUCCESS("", NONE),
-    GO_BACK("", NONE),;
+    NO_WEAPON_AVAILABLE("", RECOVERABLE),
+    USER_WENT_BACK("", NONE),
+    SUCCESS("", NONE);
 
     private final String message;
     private final ErrorSeverity severity;
@@ -20,12 +21,8 @@ public enum PlayerError implements Errors
     }
 
     @Override
-    public String getMessage() {
-        return message;
-    }
+    public String getMessage() { return message; }
 
     @Override
-    public ErrorSeverity getSeverity() {
-        return severity;
-    }
+    public ErrorSeverity getSeverity() { return severity; }
 }
