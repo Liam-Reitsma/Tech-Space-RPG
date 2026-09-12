@@ -1,12 +1,14 @@
 package game.reward;
 
 import static game.ErrorSeverity.NONE;
+import static game.ErrorSeverity.RECOVERABLE;
 
 import game.ErrorSeverity;
 import game.Errors;
 
 public enum RewardErrors implements Errors
 {
+    INVENTORY_FULL("Your inventory is too full, please remove something.", RECOVERABLE),
     SUCCESS("", NONE);
 
     private final String message;
