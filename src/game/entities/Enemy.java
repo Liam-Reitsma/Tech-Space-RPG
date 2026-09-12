@@ -13,7 +13,7 @@ public class Enemy extends Entities implements Persistable
         level = playerLevel;
         
         name = type.toString();
-        health = (int)(type.getHealthGrowth() * level);
+        health = (type.getHealthGrowth() * level);
         gold = (int)(type.getGoldGrowth() * level);
         xp = (int)(type.getXPGrowth() * level);
         
@@ -29,8 +29,6 @@ public class Enemy extends Entities implements Persistable
     @Override
     public void takeDamage(float damage)  { health -= Math.round((1-armour) * damage); }
 
-    public float getHealth() { return health; }
-    
     public int getGold() { return gold; }
     
     public int getXP() { return xp; }
