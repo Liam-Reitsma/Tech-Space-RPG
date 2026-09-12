@@ -1,6 +1,4 @@
-package game.items;
-
-import game.entities.ClassType;
+package game.items.armour;
 
 public enum ArmourMaterial
 {

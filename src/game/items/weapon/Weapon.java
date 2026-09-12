@@ -1,6 +1,7 @@
-package game.items;
+package game.items.weapon;
 
 import game.entities.StatType;
+import game.items.EquippableItem;
 
 public class Weapon extends EquippableItem
 {

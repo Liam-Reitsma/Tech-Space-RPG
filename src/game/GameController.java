@@ -4,6 +4,7 @@ import static game.ErrorSeverity.SEVERE;
 
 import game.combat.*;
 import game.entities.*;
+import game.entities.player.Player;
 import game.mainmenu.*;
 import game.persistence.*;
 import game.reward.*;

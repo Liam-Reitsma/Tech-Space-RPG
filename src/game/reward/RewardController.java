@@ -7,6 +7,7 @@ import static game.reward.RewardErrors.*;
 import game.ConsoleHandler;
 import game.Loopable;
 import game.entities.*;
+import game.entities.player.Player;
 import game.items.EquippableItem;
 
 import java.util.Optional;

@@ -4,9 +4,12 @@ import static game.ErrorSeverity.*;
 import static game.persistence.PersistenceErrors.*;
 
 import game.*;
-import game.entities.ClassType;
-import game.entities.Player;
+import game.entities.player.ClassType;
+import game.entities.player.Player;
 import game.items.*;
+import game.items.armour.Armour;
+import game.items.weapon.Weapon;
+import game.items.weapon.WeaponType;
 import game.mainmenu.MainMenuStates;
 import game.world.Point;
 import game.world.RuntimeRoom;

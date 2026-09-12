@@ -1,10 +1,10 @@
 package game.persistence;
 
 import game.Result;
-import game.entities.Player;
-import game.items.Armour;
+import game.entities.player.Player;
+import game.items.armour.Armour;
 import game.items.Item;
-import game.items.Weapon;
+import game.items.weapon.Weapon;
 import game.world.Point;
 import game.world.RuntimeRoom;
 

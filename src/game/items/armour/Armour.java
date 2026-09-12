@@ -1,4 +1,6 @@
-package game.items;
+package game.items.armour;
+
+import game.items.EquippableItem;
 
 public class Armour extends EquippableItem
 {

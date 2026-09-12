@@ -8,8 +8,10 @@ import game.Loopable;
 import game.entities.Enemy;
 import game.entities.EnemyType;
 import game.entities.Persistable;
-import game.entities.Player;
-import game.items.*;
+import game.entities.player.Player;
+import game.items.armour.Armour;
+import game.items.armour.ArmourMaterial;
+import game.items.armour.ArmourSlot;
 
 public class RoomController implements Loopable<RuntimeRoom, Player, RoomResult>
 {

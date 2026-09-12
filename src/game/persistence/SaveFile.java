@@ -1,7 +1,7 @@
 package game.persistence;
 
 import game.entities.Persistable;
-import game.entities.Player;
+import game.entities.player.Player;
 import game.items.Item;
 import game.world.RuntimeRoom;
 

@@ -1,8 +1,8 @@
-package game.entities;
+package game.entities.player;
 
-import game.items.WeaponType;
+import game.items.weapon.WeaponType;
 
-import static game.items.WeaponType.*;
+import static game.items.weapon.WeaponType.*;
 
 public enum ClassType
 {

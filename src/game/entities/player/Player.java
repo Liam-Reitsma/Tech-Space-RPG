@@ -1,6 +1,9 @@
-package game.entities;
+package game.entities.player;
 
+import game.entities.*;
 import game.items.*;
+import game.items.armour.Armour;
+import game.items.weapon.Weapon;
 
 import java.util.*;
 
