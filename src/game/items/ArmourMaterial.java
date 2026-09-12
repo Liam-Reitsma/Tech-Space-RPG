@@ -23,4 +23,21 @@ public enum ArmourMaterial
     public int getRequiredLevel() { return  requiredLevel; }
     
     public float getProtValue() { return protValue; }
+    
+    public static ArmourMaterial getRandomMaterial(int level)
+    {
+        int i = 0;
+        for(ArmourMaterial mat : ArmourMaterial.values()) if(level >= mat.requiredLevel) i++;
+        if(i == 0) return FABRIC;
+        
+        return switch(Math.clamp(Math.round(Math.random() * i), 1, i))
+        {
+            case 1 -> FABRIC;
+            case 2 -> POLYMER;
+            case 3 -> TITANIUM;
+            case 4 -> PLASTEEL;
+            case 5 -> NANOWEAVE;
+            default -> null;
+        };
+    }
 }
