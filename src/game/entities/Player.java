@@ -43,12 +43,14 @@ public class Player extends Entities implements Persistable
         
         equippedWeapon = new Weapon(type.getWeapon(), level);
         
-        xpToLevelUp = 15;
+        xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
     
     public Player(String[] data)
     {
         loadSaveInfo(data);
+        
+        xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
     
     public void setInventory(List<Item> newInventory)
@@ -113,7 +115,7 @@ public class Player extends Entities implements Persistable
             xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
         }
         
-        return currentLevel - level;
+        return level - currentLevel;
     }
     
     
