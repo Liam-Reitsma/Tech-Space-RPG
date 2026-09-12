@@ -233,11 +233,8 @@ public class Player extends Entities implements Persistable
     
     public PlayerErrors unequipArmour(Armour armour)
     {
-        if (!equippedArmour.contains(armour))
-        {
-            System.out.println("Item is not equipped");
-            return NO_ARMOUR_EQUIPPED;
-        }
+        if(equippedArmour.isEmpty()) { return NO_ARMOUR_EQUIPPED; }
+        if(!equippedArmour.contains(armour)) { return NO_SLOT_ARMOUR_EQUIPPED; }
         equippedArmour.remove(armour);
         armour.unequip();
         inventory.add(armour);
