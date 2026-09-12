@@ -79,6 +79,7 @@ public class Player extends Entities implements Persistable
     @Override
     public float attack()
     {
+        if(equippedWeapon == null) return statTypeMap.get(STR);
         return equippedWeapon.calculateDamage(statTypeMap.get(equippedWeapon.getScalingStat()));
     }
     
