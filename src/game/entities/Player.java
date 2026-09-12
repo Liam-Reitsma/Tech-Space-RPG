@@ -20,13 +20,14 @@ public class Player extends Entities implements Persistable
     private int xp;
     private int gold;
     
-    private Weapon equippedWeapon;
     private Map<StatType, Integer> statTypeMap;
     
     @SaveExclude
     private List<Item> inventory;
     @SaveExclude
     private List<Armour> equipped;
+    @SaveExclude
+    private Weapon equippedWeapon;
     
     public Player(String playerName, ClassType type)
     {
