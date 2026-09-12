@@ -13,9 +13,5 @@ public enum CombatOutcome
         message = s;
     }
 
-    @Override
-    public String toString()
-    {
-        return message;
-    }
+    public String getMessage() { return message; }
 }
