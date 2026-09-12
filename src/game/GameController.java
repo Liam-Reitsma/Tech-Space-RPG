@@ -70,6 +70,7 @@ public class GameController
         {
             WorldResult worldResult = worldC.start(MainMenuStates.LOAD_GAME,pResult.getWorld());
             if(worldResult.getError() != WorldErrors.SUCCESS) return 2;
+            player.setWeapon(pResult.getWeapon());
             player.setInventory(pResult.getInventory());
             player.setEquipped(pResult.getArmour());
         }
