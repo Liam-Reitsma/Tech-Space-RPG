@@ -126,6 +126,31 @@ public class Player extends Entities implements Persistable
     
     public void applyStatGain(StatType stat) { statTypeMap.put(stat, statTypeMap.get(stat) + 1); }
     
+    public PlayerResult<Weapon> hasWeaponsInInventory()
+    {
+        Weapon[] inventoryWeapons = new Weapon[10];
+        Weapon[] weapons;
+        int i = 0;
+        for(Item item : getInventory())
+        {
+            if(item instanceof Weapon weapon)
+            {
+                inventoryWeapons[i++] = weapon;
+            }
+        }
+        if(i == 0) return new PlayerResult<>(NO_WEAPON_AVAILABLE, new Weapon[0]);
+        weapons = new Weapon[i];
+        i = 0;
+        
+        for(Weapon weapon : inventoryWeapons)
+        {
+            if(weapon == null) continue;
+            weapons[i++] = weapon;
+        }
+        
+        return new PlayerResult<>(SUCCESS, weapons);
+    }
+    
     public PlayerError equipWeapon(Weapon weapon)
     {
         if(!inventory.contains(weapon)) return NO_WEAPON_EQUIPPED;
@@ -149,6 +174,7 @@ public class Player extends Entities implements Persistable
     
     public PlayerError unequipWeapon()
     {
+        if(equippedWeapon == null) return NO_WEAPON_EQUIPPED;
         equippedWeapon.unequip();
         equippedWeapon = null;
         return SUCCESS;
