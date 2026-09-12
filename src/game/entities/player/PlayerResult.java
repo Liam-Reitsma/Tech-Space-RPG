@@ -12,5 +12,11 @@ public class PlayerResult<T> extends Result<PlayerErrors>
         resultArray = array;
     }
     
+    public PlayerResult(PlayerErrors e)
+    {
+        error = e;
+        resultArray = null;
+    }
+    
     public T[] getResultArray() { return resultArray; }
 }
