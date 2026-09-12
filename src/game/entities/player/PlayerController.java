@@ -9,6 +9,7 @@ import game.items.armour.Armour;
 import game.items.weapon.Weapon;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -25,7 +26,7 @@ public class PlayerController implements Loopable<Player, Void, PlayerResult<?>>
     public PlayerResult<?> loop(Player player, Void input2)
     {
         Optional<PlayerMenuOption> response = consoleH.confirmInputInteger("What would you like to do?", PlayerMenuOption.optionsToString(), PlayerMenuOption.class).getInput();
-        if(response.isEmpty()) return new PlayerResult(USER_WENT_BACK);
+        if(response.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
         PlayerMenuOption option = response.get();
         switch(option)
         {
@@ -58,6 +59,7 @@ public class PlayerController implements Loopable<Player, Void, PlayerResult<?>>
             }
             case UNEQUIP_WEAPON ->
             {
+                Weapon weapon = player.getEquippedWeapon();
                 PlayerErrors error = player.unequipWeapon();
                 if(error != SUCCESS)
                 {
@@ -66,7 +68,7 @@ public class PlayerController implements Loopable<Player, Void, PlayerResult<?>>
                 }
                 else
                 {
-                    consoleH.printLine("Weapon successfully unequipped");
+                    consoleH.printLine(weapon.toString() + " successfully unequipped");
                     return new PlayerResult<>(SUCCESS);
                 }
             }
@@ -92,10 +94,38 @@ public class PlayerController implements Loopable<Player, Void, PlayerResult<?>>
             }
             case UNEQUIP_ARMOR ->
             {
-                consoleH.printLine("Armor piece unequipped");
-                //unequip the chosen piece
+                List<Armour> armourList = player.getEquippedArmour();
+                if(armourList.isEmpty()) return new PlayerResult<>(NO_ARMOUR_EQUIPPED);
+                
+                StringBuilder armourOptions = new StringBuilder();
+                String armourString = armourList.toString();
+                String armourSplit = armourString.substring(1, armourString.length() - 1);
+                int i = 1;
+                
+                for(String armour : armourSplit.split(", "))
+                {
+                    armourOptions.append(i++).append(". ").append(armour).append(", ");
+                }
+                
+                Optional<Integer> choice = consoleH.confirmInput("Which armour would you like to unequip?", armourOptions.toString(), ", ").getInput();
+                if(choice.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
+                
+                Armour armour = armourList.get(choice.get() - 1);
+                
+                PlayerErrors error = player.unequipArmour(armour);
+                if(error != SUCCESS)
+                {
+                    consoleH.printLine(error.getMessage());
+                    return new PlayerResult<>(error);
+                }
+                else
+                {
+                    consoleH.printLine(armour.toString() + " successfully unequipped");
+                    return new PlayerResult<>(SUCCESS);
+                }
             }
         }
-        return new PlayerResult(PlayerErrors.SUCCESS);
+        
+        return new PlayerResult<>(SUCCESS);
     }
 }
