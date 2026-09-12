@@ -5,7 +5,7 @@ import static game.ErrorSeverity.*;
 import game.ErrorSeverity;
 import game.Errors;
 
-public enum PlayerError implements Errors
+public enum PlayerErrors implements Errors
 {
     MAX_INVENTORY_REACHED("You have reached your maximum inventory. Please remove an item first.", RECOVERABLE),
     ITEM_MISSING("", RECOVERABLE),
@@ -21,7 +21,7 @@ public enum PlayerError implements Errors
     private final String message;
     private final ErrorSeverity severity;
 
-    PlayerError (String errorMessage,  ErrorSeverity errorSeverity)
+    PlayerErrors(String errorMessage, ErrorSeverity errorSeverity)
     {
         message = errorMessage;
         severity = errorSeverity;

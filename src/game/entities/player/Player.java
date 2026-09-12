@@ -1,7 +1,7 @@
 package game.entities.player;
 
 import static game.entities.StatType.*;
-import static game.entities.player.PlayerError.*;
+import static game.entities.player.PlayerErrors.*;
 
 import game.entities.*;
 import game.items.*;
@@ -151,7 +151,7 @@ public class Player extends Entities implements Persistable
         return new PlayerResult<>(SUCCESS, weapons);
     }
     
-    public PlayerError equipWeapon(Weapon weapon)
+    public PlayerErrors equipWeapon(Weapon weapon)
     {
         if(!inventory.contains(weapon)) return NO_WEAPON_EQUIPPED;
         else
@@ -172,7 +172,7 @@ public class Player extends Entities implements Persistable
         }
     }
     
-    public PlayerError unequipWeapon()
+    public PlayerErrors unequipWeapon()
     {
         if(equippedWeapon == null) return NO_WEAPON_EQUIPPED;
         equippedWeapon.unequip();
@@ -180,7 +180,7 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
-    public PlayerError equipArmour(Armour armour)
+    public PlayerErrors equipArmour(Armour armour)
     {
         if(!inventory.contains(armour)) return NO_ARMOR_AVAILABLE;
         else
@@ -205,7 +205,7 @@ public class Player extends Entities implements Persistable
         }
     }
     
-    public PlayerError unequipArmour(Armour armour)
+    public PlayerErrors unequipArmour(Armour armour)
     {
         if (!equipped.contains(armour))
         {
@@ -218,7 +218,7 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
-    public PlayerError addToInventory(Item item)
+    public PlayerErrors addToInventory(Item item)
     {
         if(item == null)
         {
@@ -232,7 +232,7 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
-    public PlayerError removeFromInventory(Item item)
+    public PlayerErrors removeFromInventory(Item item)
     {
         if (!inventory.contains(item))
         {
