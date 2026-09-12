@@ -1,12 +1,15 @@
 package game.persistence;
 
+import static game.ErrorSeverity.*;
 import static game.persistence.PersistenceErrors.*;
 
 import game.*;
-import game.entities.ClassType;
-import game.entities.Player;
-import game.items.EquippableItem;
-import game.items.Item;
+import game.entities.player.ClassType;
+import game.entities.player.Player;
+import game.items.*;
+import game.items.armour.Armour;
+import game.items.weapon.Weapon;
+import game.items.weapon.WeaponType;
 import game.mainmenu.MainMenuStates;
 import game.world.Point;
 import game.world.RuntimeRoom;
@@ -48,7 +51,7 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
                 {
                     case 0:
                         fileName = askFileName(consoleH);
-                        if(fileName == null) return new PersistenceResult(PersistenceErrors.USER_WENT_BACK, null, null, null, null);
+                        if(fileName == null) return new PersistenceResult(PersistenceErrors.USER_WENT_BACK);
                         break;
                     case 1:
                         Optional<String> userInputName = consoleH.confirmInput("What would you like to name your " + "character?").getInput();
@@ -65,11 +68,12 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
             
             player = new Player(charName, classType);
             PersistenceErrors error = saveF.createNewSave(fileName);
-            if(error != SUCCESS)  consoleH.printLine(error.toString());
-            else  break;
+            if(error.getSeverity() == SEVERE) return new PersistenceResult(error);
+            else if(error.getSeverity() == RECOVERABLE) consoleH.printLine(error.getMessage());
+            else if(error == SUCCESS) break;
         } while(true);
         
-        return new PersistenceResult(PersistenceErrors.SUCCESS, player, null, null, null);
+        return new PersistenceResult(SUCCESS, player, player.getEquippedWeapon(), null, null, null);
     }
     
     private String askFileName(ConsoleHandler consoleH)
@@ -93,87 +97,109 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
     
     public PersistenceResult loadSaveGame()
     {
-        PersistenceErrors result = setFileToLoad(consoleH);
+        PersistenceErrors result = setFileToLoad();
         
-        if(result != SUCCESS) return new PersistenceResult(PersistenceErrors.USER_WENT_BACK, null, null, null, null);
+        if(result != SUCCESS) return new PersistenceResult(result);
         
-        LoadResult playerResult = saveF.readPlayer();
         Player player;
+        LoadResult playerResult = saveF.readObject("player data");
+        if(playerResult.getError() != SUCCESS) return new PersistenceResult(playerResult.getError());
         Optional<?> playerCreateResult = loadF.create(playerResult.getClassName(0), playerResult.getClassData(0));
-        if(playerCreateResult.isEmpty()) return new PersistenceResult(LOADING_PLAYER_FAILED, null, null, null, null);
-        else if (playerCreateResult.get() instanceof Player) player = (Player)playerCreateResult.get();
-        else return new PersistenceResult(SAVE_FILE_CORRUPTED, null, null, null, null);
+        if(playerCreateResult.isEmpty()) return new PersistenceResult(LOADING_PLAYER_FAILED);
+        else if(playerCreateResult.get() instanceof Player) player = (Player)playerCreateResult.get();
+        else return new PersistenceResult(SAVE_FILE_CORRUPTED);
+        
+        Weapon weapon;
+        LoadResult weaponResult = saveF.readObject("weapon data");
+        if(weaponResult.getError() != SUCCESS) return new PersistenceResult(weaponResult.getError());
+        Optional<?> weaponCreateResult = loadF.create(weaponResult.getClassName(0), weaponResult.getClassData(0));
+        if(weaponCreateResult.isEmpty())
+        {
+            do
+            {
+                Optional<String> response = consoleH.confirmInput("We could not load your weapon. Would you like to load with the Rusted Knife?").getInput();
+                if(response.isEmpty()) consoleH.printLine("You can not go back here. Please select yes to continue or no to cancel");
+                else if(response.get().toLowerCase().startsWith("y")) { weapon = new Weapon(WeaponType.RUSTED_KNIFE, player.getLevel()); break; }
+                else if(response.get().toLowerCase().startsWith("n")) return new PersistenceResult(LOADING_WEAPON_FAILED);
+                else consoleH.printLine("Please select yes to continue or no to cancel");
+            } while(true);
+            
+        }
+        else if(weaponCreateResult.get() instanceof Weapon) weapon = (Weapon)weaponCreateResult.get();
+        else return new PersistenceResult(SAVE_FILE_CORRUPTED);
         
         LoadResult inventoryResult = saveF.readList("inventory");
-        List<Item> inventory = new ArrayList<>();
+        if(inventoryResult.getError() != SUCCESS) return new PersistenceResult(inventoryResult.getError());
+        List<Item> inventoryList = new ArrayList<>();
         for(int i = 0; i < inventoryResult.size(); i++)
         {
             Optional<?> inventoryCreateResult = loadF.create(inventoryResult.getClassName(i), inventoryResult.getClassData(i));
             if(inventoryCreateResult.isEmpty())
             {
-                consoleH.printLine(LOADING_ITEM_FAILED.toString());
+                consoleH.printLine(LOADING_ITEM_FAILED.getMessage());
                 do
                 {
                     Optional<String> response = consoleH.confirmInput("Would you like to skip this item or stop the game?").getInput();
                     if(response.isEmpty()) consoleH.printLine("You can not go back here. Please select yes to continue or no to cancel");
                     else if(response.get().toLowerCase().startsWith("y")) break;
-                    else if(response.get().toLowerCase().startsWith("n")) return new PersistenceResult(LOADING_ITEM_FAILED, null, null, null, null);
+                    else if(response.get().toLowerCase().startsWith("n")) return new PersistenceResult(LOADING_ITEM_FAILED);
                     else consoleH.printLine("Please select yes to continue or no to cancel");
                 } while(true);
             }
-            else if(inventoryCreateResult.get() instanceof Item) inventory.add((Item)inventoryCreateResult.get());
-            else return new PersistenceResult(SAVE_FILE_CORRUPTED, null, null, null, null);
+            else if(inventoryCreateResult.get() instanceof Item) inventoryList.add((Item)inventoryCreateResult.get());
+            else return new PersistenceResult(SAVE_FILE_CORRUPTED);
         }
         
-        LoadResult equippedResult = saveF.readList("equipped");
-        List<EquippableItem> equipped = new ArrayList<>();
-        for(int i = 0; i < equippedResult.size(); i++)
+        LoadResult armour = saveF.readList("armour");
+        if(armour.getError() != SUCCESS) return new PersistenceResult(armour.getError());
+        List<Armour> armourList = new ArrayList<>();
+        for(int i = 0; i < armour.size(); i++)
         {
-            Optional<?> equippedCreateResult = loadF.create(equippedResult.getClassName(i), equippedResult.getClassData(i));
-            if(equippedCreateResult.isEmpty())
+            Optional<?> armourCreateResult = loadF.create(armour.getClassName(i), armour.getClassData(i));
+            if(armourCreateResult.isEmpty())
             {
-                consoleH.printLine(LOADING_ITEM_FAILED.toString());
+                consoleH.printLine(LOADING_ITEM_FAILED.getMessage());
                 do
                 {
                     Optional<String> response = consoleH.confirmInput("Would you like to skip this item or stop the game?").getInput();
                     if(response.isEmpty()) consoleH.printLine("You can not go back here. Please select yes to continue or no to cancel");
                     else if(response.get().toLowerCase().startsWith("y")) break;
-                    else if(response.get().toLowerCase().startsWith("n")) return new PersistenceResult(LOADING_ITEM_FAILED, null, null, null, null);
+                    else if(response.get().toLowerCase().startsWith("n")) return new PersistenceResult(LOADING_ITEM_FAILED);
                     else consoleH.printLine("Please select yes to continue or no to cancel");
                 } while(true);
             }
-            else if(equippedCreateResult.get() instanceof EquippableItem) equipped.add((EquippableItem)equippedCreateResult.get());
-            else return new PersistenceResult(SAVE_FILE_CORRUPTED, null, null, null, null);
+            else if(armourCreateResult.get() instanceof Armour) armourList.add((Armour)armourCreateResult.get());
+            else return new PersistenceResult(SAVE_FILE_CORRUPTED);
         }
         
         LoadResult mapResult = saveF.readList("world");
+        if(mapResult.getError() != SUCCESS) return new PersistenceResult(mapResult.getError());
         Map<Point, RuntimeRoom> world = new HashMap<>();
         for(int i = 0; i < mapResult.size(); i++)
         {
             Optional<?> roomCreateResult = loadF.create(mapResult.getClassName(i), mapResult.getClassData(i));
-            if(roomCreateResult.isEmpty()) return new PersistenceResult(LOADING_MAP_FAILED, null, null, null, null);
+            if(roomCreateResult.isEmpty()) return new PersistenceResult(LOADING_MAP_FAILED);
             else if(roomCreateResult.get() instanceof RuntimeRoom) world.put(((RuntimeRoom)roomCreateResult.get()).getPoint(), (RuntimeRoom)roomCreateResult.get());
-            else return new PersistenceResult(SAVE_FILE_CORRUPTED, null, null, null, null);
+            else return new PersistenceResult(SAVE_FILE_CORRUPTED);
         }
         
-        return new PersistenceResult(PersistenceErrors.SUCCESS, player, inventory, equipped, world);
+        return new PersistenceResult(SUCCESS, player, weapon, inventoryList, armourList, world);
     }
     
-    private PersistenceErrors setFileToLoad(ConsoleHandler consoleH)
+    private PersistenceErrors setFileToLoad()
     {
         Optional<Integer> userInput;
-        PersistenceErrors error;
-        String question = "Which save would you like to use?";
-        String options = saveF.toString();
+        PersistenceErrors error = saveF.getSaveFileNames().getError();
+        if(error != SUCCESS) return error;
         
         do
         {
-            userInput = consoleH.confirmInput(question, options, "\n").getInput();
-            if(userInput.isEmpty()) return null;
+            userInput = consoleH.confirmInput("Which save would you like to use?", saveF.toString(), "\n").getInput();
+            if(userInput.isEmpty()) return USER_WENT_BACK;
             error = saveF.selectSave(userInput.get());
             
             if(error == SUCCESS) break;
-            consoleH.printLine(error.toString());
+            consoleH.printLine(error.getMessage());
         } while(true);
         
         return error;
@@ -182,58 +208,76 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
     @Override
     public PersistenceResult loop(Player player, RuntimeRoom room)
     {
-        PersistenceResult result;
-        result = updatePlayerStatus(player);
-        if(result.getError() != SUCCESS) consoleH.printLine(result.getError().toString());
+        for(int i = 0; i < 2; i++)
+        {
+            PersistenceResult result = i == 0 ? updatePlayerStatus(player) : updateRoomStatus(room);
+            if(result.getError().getSeverity() == SEVERE) return new PersistenceResult(result.getError());
+            else if(result.getError().getSeverity() == RECOVERABLE)
+            {
+                do
+                {
+                    consoleH.printLine(result.getError().getMessage());
+                    Optional<String> response = consoleH.confirmInput("Would you like to keep playing?").getInput();
+                    if(response.isEmpty()) consoleH.printLine("You can not go back here. Please select yes to continue or no to cancel");
+                    else if(response.get().toLowerCase().startsWith("y")) break;
+                    else if(response.get().toLowerCase().startsWith("n")) return new PersistenceResult(USER_EXITED_PROGRAM);
+                    else consoleH.printLine("Please select yes to continue or no to cancel");
+                } while(true);
+            }
+        }
         
-        result = updateRoomStatus(room);
-        if(result.getError() != SUCCESS) consoleH.printLine(result.getError().toString());
-        
-        return new PersistenceResult(SUCCESS, null, null, null, null);
+        return new PersistenceResult(SUCCESS);
     }
     
-    public PersistenceResult fullSave(Player player, List<Item> inventory, List<EquippableItem> equipped, Map<Point, RuntimeRoom> map)
+    public PersistenceResult fullSave(Player player, Weapon weapon, List<Item> inventory, List<Armour> armour, Map<Point, RuntimeRoom> map)
     {
         PersistenceErrors error;
-        error = saveF.writePlayer(player);
-        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        error = saveF.clearFile();
+        if(error != SUCCESS) return new PersistenceResult(error);
+        
+        
+        error = saveF.writeObject(player);
+        if(error != SUCCESS) return new PersistenceResult(error);
+        
+        error = saveF.writeObject(weapon);
+        if(error != SUCCESS) return new PersistenceResult(error);
         
         error = saveF.writeItemList(inventory, "inventory");
-        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        if(error != SUCCESS) return new PersistenceResult(error);
         
-        error = saveF.writeItemList(equipped, "equipped");
-        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        error = saveF.writeItemList(armour, "armour");
+        if(error != SUCCESS) return new PersistenceResult(error);
         
         error = saveF.writeWorld(new ArrayList<>(map.values()), "world");
-        if(error != SUCCESS) return new PersistenceResult(error, null, null, null, null);
+        if(error != SUCCESS) return new PersistenceResult(error);
         
-        return new PersistenceResult(SUCCESS, null, null, null, null);
+        return new PersistenceResult(SUCCESS);
     }
     
     public PersistenceResult saveItem(String listName, Item item)
     {
         LoadResult result = saveF.readAndInsert(listName, item);
         return result.getError() == SUCCESS ?
-                new PersistenceResult(saveF.writeAll(result.getResult()), null, null, null, null) :
-                new PersistenceResult(result.getError(), null, null, null, null);
+                new PersistenceResult(saveF.writeList(result.getResult())) :
+                new PersistenceResult(result.getError());
     }
     
     public PersistenceResult removeItem(String listName, Item item)
     {
         LoadResult result = saveF.readAndRemove(listName, item);
         return result.getError() == SUCCESS ?
-                new PersistenceResult(saveF.writeAll(result.getResult()), null, null, null, null) :
-                new PersistenceResult(result.getError(), null, null, null, null);
+                new PersistenceResult(saveF.writeList(result.getResult())) :
+                new PersistenceResult(result.getError());
     }
     
     public PersistenceResult updatePlayerStatus(Player player)
     {
-        return new PersistenceResult(saveF.writeDeltaPlayer(player), null, null, null, null);
+        return new PersistenceResult(saveF.writeDeltaPlayer(player));
     }
     
     public PersistenceResult updateRoomStatus(RuntimeRoom room)
     {
-        return new PersistenceResult(saveF.writeDeltaRoom(room), null, null, null, null);
+        return new PersistenceResult(saveF.writeDeltaRoom(room));
     }
     
     public PersistenceResult start(MainMenuStates state)

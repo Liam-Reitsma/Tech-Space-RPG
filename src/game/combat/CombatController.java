@@ -3,6 +3,7 @@ package game.combat;
 import game.ConsoleHandler;
 import game.Loopable;
 import game.entities.*;
+import game.entities.player.Player;
 
 import java.util.Optional;
 

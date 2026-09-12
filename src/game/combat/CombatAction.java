@@ -1,8 +1,11 @@
 package game.combat;
 
+import game.entities.player.Player;
 import game.items.*;
 import game.entities.*;
 import game.ConsoleHandler;
+import game.items.weapon.Weapon;
+
 import java.util.*;
 
 public enum CombatAction

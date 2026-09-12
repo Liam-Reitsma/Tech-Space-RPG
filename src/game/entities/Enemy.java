@@ -1,63 +1,37 @@
 package game.entities;
 
-import jdk.jshell.spi.ExecutionEnv;
-
 public class Enemy extends Entities implements Persistable
 {
-    private int statStr;
-    private int statDex;
-    private int statInt;
-
-    private EnemyType enemyType;
-
-    public Enemy(String n, EnemyType type)
+    private int gold;
+    private int xp;
+    
+    private float damage;
+    private float armour;
+    
+    public Enemy(EnemyType type, int playerLevel)
     {
-        name = n;
-        enemyType = type;
-        statStr = type.getStatStrength();
-        statDex = type.getStatDexterity();
-        statInt = type.getStatIntelligence();
-        health = type.getHealth();
+        level = playerLevel;
+        
+        name = type.toString();
+        health = (int)(type.getHealthGrowth() * level);
+        gold = (int)(type.getGoldGrowth() * level);
+        xp = (int)(type.getXPGrowth() * level);
+        
+        damage = type.getDamageGrowth() * level;
+        armour = Math.min(0.7f, type.getArmourGrowth() * level);
     }
 
     public Enemy(String[] data) { loadSaveInfo(data); }
 
     @Override
-    public int attack()
-    {
-        return this.statStr;
-    }
+    public float attack() { return damage; }
 
     @Override
-    public void useAbility()
-    {
-
-    }
-
-    @Override
-    public void takeDamage(int ouch)
-    {
-        health -= ouch;
-        if (health < 0)
-        {
-            health = 0;
-        }
-    }
+    public void takeDamage(float damage)  { health -= Math.round((1-armour) * damage); }
 
     public float getHealth() { return health; }
-
-    public EnemyType getEnemyType()
-    {
-        return enemyType;
-    }
-
-    public int[] getStats()
-    {
-        return new int[]{statStr, statDex, statInt};
-    }
-
-    public String getStatsToString()
-    {
-        return "STR: " + statStr + " | DEX: " + statDex + " | INT: " + statInt;
-    }
+    
+    public int getGold() { return gold; }
+    
+    public int getXP() { return xp; }
 }

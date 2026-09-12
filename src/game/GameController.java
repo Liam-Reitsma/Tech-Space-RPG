@@ -1,20 +1,13 @@
 package game;
 
-import game.combat.CombatController;
-import game.combat.CombatErrors;
-import game.combat.CombatOutcome;
-import game.combat.CombatResult;
-import game.entities.Enemy;
-import game.entities.Player;
-import game.mainmenu.MainMenuController;
-import game.mainmenu.MainMenuResult;
-import game.mainmenu.MainMenuStates;
-import game.persistence.PersistenceController;
-import game.persistence.PersistenceErrors;
-import game.persistence.PersistenceResult;
-import game.reward.RewardController;
-import game.reward.RewardErrors;
-import game.reward.RewardResult;
+import static game.ErrorSeverity.SEVERE;
+
+import game.combat.*;
+import game.entities.*;
+import game.entities.player.Player;
+import game.mainmenu.*;
+import game.persistence.*;
+import game.reward.*;
 import game.world.*;
 
 public class GameController
@@ -47,7 +40,7 @@ public class GameController
     public int start()
     {
         MainMenuResult mmResult = new MainMenuResult(null, null);
-        PersistenceResult pResult = new PersistenceResult(null, null, null, null, null);
+        PersistenceResult pResult = new PersistenceResult(null);
         
         for(int i = 0; i < 2; i++)
         {
@@ -55,7 +48,7 @@ public class GameController
             {
                 case 0:
                      mmResult = mainMenuC.start();
-                    if(mmResult.getStateUsed() == MainMenuStates.EXIT) return 0;
+                    if(mmResult.getStateUsed() == MainMenuStates.EXIT_GAME) return 0;
                     break;
                 case 1:
                     pResult = persistenceC.start(mmResult.getStateUsed());
@@ -72,14 +65,15 @@ public class GameController
             if(worldResult.getError() != WorldErrors.SUCCESS) return 1;
             player.setInventory(null);
             player.setEquipped(null);
-            persistenceC.fullSave(player, player.getInventory(), player.getEquipped(), worldC.getWorld());
+            persistenceC.fullSave(player, player.getEquippedWeapon(), player.getInventory(), player.getEquipped(), worldC.getWorld());
         }
         else if(mmResult.getStateUsed() == MainMenuStates.LOAD_GAME)
         {
             WorldResult worldResult = worldC.start(MainMenuStates.LOAD_GAME,pResult.getWorld());
             if(worldResult.getError() != WorldErrors.SUCCESS) return 2;
+            player.setWeapon(pResult.getWeapon());
             player.setInventory(pResult.getInventory());
-            player.setEquipped(pResult.getEquipped());
+            player.setEquipped(pResult.getArmour());
         }
         
         return loop();
@@ -89,33 +83,42 @@ public class GameController
     {
         while(isRunning && isAlive)
         {
-            WorldResult wr= worldC.loop();
-            if(wr.getError() != WorldErrors.SUCCESS) return 3;
-            RoomResult rr = roomC.loop(wr.getRoom());
-            if(rr.getError()  != WorldErrors.SUCCESS) return 4;
+            WorldResult worldR= worldC.loop();
+            if(worldR.getError() != WorldErrors.SUCCESS) return 3;
+            RoomResult roomR = roomC.loop(worldR.getRoom());
+            if(roomR.getError()  != WorldErrors.SUCCESS) return 4;
             
-            CombatResult cr;
-            switch(rr.getRoomType())
+            CombatResult combatR;
+            switch(roomR.getRoomType())
             {
-                case COMBAT, MINIBOSS, BOSS -> cr = combatC.loop(player, (Enemy)rr.getPersistable());
-                case EMPTY -> cr = new CombatResult(CombatErrors.SUCCESS, CombatOutcome.FLEE);
-                default -> cr = null;
+                case COMBAT, MINIBOSS, BOSS -> combatR = combatC.loop(player, (Enemy)roomR.getPersistable());
+                case CHEST, EMPTY -> combatR = new CombatResult(CombatErrors.SUCCESS, CombatOutcome.WIN);
+                default -> combatR = null;
             }
 
-            RewardResult rer = null;
-            if(cr == null || cr.getError() != CombatErrors.SUCCESS) return 5;
-            if(cr.getCombatOutcome() == CombatOutcome.LOSE) isAlive = false;
+            RewardResult rewardR = null;
+            if(combatR == null || combatR.getError() != CombatErrors.SUCCESS) return 5;
+            if(combatR.getCombatOutcome() == CombatOutcome.LOSE) isAlive = false;
             else
             {
-                switch(rr.getRoomType())
+                do
                 {
-                    case COMBAT, MINIBOSS, BOSS -> rer = rewardC.loop(player, (Enemy) rr.getPersistable());
-                }
+                    switch(roomR.getRoomType())
+                    {
+                        case COMBAT, MINIBOSS, BOSS, CHEST -> rewardR = rewardC.loop(player, roomR.getPersistable());
+                        case EMPTY -> rewardR = new RewardResult(RewardErrors.SUCCESS);
+                    }
+                    
+                    if(rewardR == null || rewardR.getError().getSeverity() == SEVERE) return 5;
+                    if(rewardR.getError() == RewardErrors.ITEM_DISCARDED || rewardR.getError() == RewardErrors.SUCCESS) break;
+                    //TODO Add PlayerController for Inventory Management, Saving, Exiting.
+                } while(true);
+                
                 roomC.loop();
             }
-            if(rer == null || rer.getError() != RewardErrors.SUCCESS) return 6;
-            PersistenceResult pr = persistenceC.loop(player, wr.getRoom());
-            if(pr.getError() != PersistenceErrors.SUCCESS) return 6;
+            if(rewardR == null || rewardR.getError() != RewardErrors.SUCCESS) return 6;
+            PersistenceResult persistenceR = persistenceC.loop(player, worldR.getRoom());
+            if(persistenceR.getError() != PersistenceErrors.SUCCESS) return 6;
         }
         
         return 0;

@@ -1,23 +1,27 @@
 package game.mainmenu;
 
+import static game.ErrorSeverity.NONE;
+
+import game.ErrorSeverity;
 import game.Errors;
 
 public enum MainMenuErrors implements Errors
 {
-    LOADING_LIST_FAILED("Loading Failed! Please try again or create a new save."),
-    USER_WENT_BACK(""),
-    SUCCESS("");
+    USER_WENT_BACK("", NONE),
+    SUCCESS("", NONE);
     
-    private final String errorMessage;
+    private final String message;
+    private final ErrorSeverity severity;
     
-    MainMenuErrors(String message)
+    MainMenuErrors(String errorMessage, ErrorSeverity errorSeverity)
     {
-        errorMessage = message;
+        message = errorMessage;
+        severity = errorSeverity;
     }
     
     @Override
-    public String toString()
-    {
-        return errorMessage;
-    }
+    public String getMessage() { return message; }
+    
+    @Override
+    public ErrorSeverity getSeverity() { return severity; }
 }

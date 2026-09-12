@@ -1,7 +1,7 @@
 package game.persistence;
 
 import game.entities.Persistable;
-import game.entities.Player;
+import game.entities.player.Player;
 import game.items.Item;
 import game.world.RuntimeRoom;
 
@@ -25,20 +25,32 @@ public class SaveFile
         saveFileLocation = new File("resources/saves");
     }
     
-    public PersistenceErrors writePlayer(Player player)
+    public PersistenceErrors clearFile()
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
-            writer.write("Player Data:");
+            writer.close();
+            return SUCCESS;
+        } catch(IOException e)
+        {
+            return WRITE_ERROR;
+        }
+    }
+    
+    public PersistenceErrors writeObject(Persistable object)
+    {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile, true)))
+        {
+            writer.write(object.getClass().getSimpleName() + " Data:");
             writer.newLine();
-            writer.write(player.getSaveInfo());
+            writer.write(object.getSaveInfo());
             writer.write(INITIAL_PADDING);
             writer.newLine();
             
             return SUCCESS;
         } catch(FileNotFoundException e)
         {
-            if(saveFileLocation.mkdirs()) { return writePlayer(player); }
+            if(saveFileLocation.mkdirs()) { return writeObject(object); }
             return WRITE_ERROR;
         } catch(IOException | IllegalAccessException e)
         {
@@ -97,7 +109,7 @@ public class SaveFile
         }
     }
     
-    public PersistenceErrors writeAll(String[] list)
+    public PersistenceErrors writeList(String[] list)
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile)))
         {
@@ -110,7 +122,7 @@ public class SaveFile
             return SUCCESS;
         } catch(FileNotFoundException e)
         {
-            if(saveFileLocation.mkdirs()) { return writeAll(list); }
+            if(saveFileLocation.mkdirs()) { return writeList(list); }
             return WRITE_ERROR;
         } catch(IOException e)
         {
@@ -123,6 +135,7 @@ public class SaveFile
         try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
         {
             String line;
+            String playerLine;
             String info = player.getSaveInfo();
             
             do
@@ -132,7 +145,12 @@ public class SaveFile
             } while(!line.toLowerCase().startsWith("player"));
             
             long startLine = fileEditor.getFilePointer();
-            String padding = " ".repeat(fileEditor.readLine().length() - info.length());
+            
+            playerLine = fileEditor.readLine();
+            if(playerLine == null) return SAVE_FILE_CORRUPTED;
+            String padding = " ".repeat(playerLine.length() - info.length());
+            
+            
             fileEditor.seek(startLine);
             fileEditor.write((info + padding).getBytes(StandardCharsets.UTF_8));
             
@@ -173,7 +191,7 @@ public class SaveFile
         }
     }
     
-    public LoadResult readPlayer()
+    public LoadResult readObject(String searchLine)
     {
         try(BufferedReader reader = new BufferedReader(new FileReader(saveFile)))
         {
@@ -183,7 +201,7 @@ public class SaveFile
             {
                 metadata = reader.readLine();
                 if(metadata == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
-                else if(metadata.toLowerCase().startsWith("player data")) break;
+                else if(metadata.toLowerCase().startsWith(searchLine)) break;
             } while(true);
             
             String line = reader.readLine();
@@ -217,6 +235,7 @@ public class SaveFile
             String metadataLineOne;
             String metadataLineTwo;
             String length;
+            
             do
             {
                 metadataLineOne = reader.readLine();
@@ -226,7 +245,13 @@ public class SaveFile
             
             metadataLineTwo = reader.readLine();
             if(metadataLineTwo == null) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
-            length = metadataLineTwo.substring((metadataLineTwo.indexOf(Persistable.FIELD_SEPARATOR) + 1), metadataLineTwo.indexOf(Persistable.CLASS_SEPARATOR));
+            
+            int metadataFS = metadataLineTwo.indexOf(Persistable.FIELD_SEPARATOR);
+            if(metadataFS == -1) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+            int metadataCS = metadataLineTwo.indexOf(Persistable.CLASS_SEPARATOR);
+            if(metadataCS == -1) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+            if(metadataCS <= metadataFS) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+            length = metadataLineTwo.substring(metadataFS + 1, metadataCS);
             data = new String[Integer.parseInt(length)];
             
             for(int i = 0; i < data.length; i++)
@@ -270,10 +295,15 @@ public class SaveFile
                 if(line.toLowerCase().startsWith(nameHeader.toLowerCase()) && !rightLocation) rightLocation = true;
                 if(rightLocation && line.toLowerCase().startsWith("lines"))
                 {
-                    int number = Integer.parseInt(line.substring(line.indexOf(Persistable.FIELD_SEPARATOR) + 1, line.indexOf(Persistable.CLASS_SEPARATOR))) + 1;
+                    int FS = line.indexOf(Persistable.FIELD_SEPARATOR);
+                    if(FS == -1) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                    int CS = line.indexOf(Persistable.CLASS_SEPARATOR);
+                    if(CS == -1) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                    if(CS <= FS) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                    int number = Integer.parseInt(line.substring(FS + 1, CS)) + 1;
                     list.add("Lines" + Persistable.FIELD_SEPARATOR + number + Persistable.CLASS_SEPARATOR);
                 }
-                else if(rightLocation && line.isEmpty()) { rightLocation = false; inserted = true; list.add(item.getSaveInfo()); list.add("\n"); }
+                else if(rightLocation && line.isEmpty()) { rightLocation = false; inserted = true; list.add(item.getSaveInfo()); }
                 else list.add(line);
             } while(true);
             
@@ -313,7 +343,12 @@ public class SaveFile
                 if(line.toLowerCase().startsWith(nameHeader.toLowerCase()) && !rightLocation) rightLocation = true;
                 if(rightLocation && line.toLowerCase().startsWith("lines"))
                 {
-                    int number = Integer.parseInt(line.substring(line.indexOf(Persistable.FIELD_SEPARATOR) + 1, line.indexOf(Persistable.CLASS_SEPARATOR))) - 1;
+                    int FS = line.indexOf(Persistable.FIELD_SEPARATOR);
+                    if(FS == -1) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                    int CS = line.indexOf(Persistable.CLASS_SEPARATOR);
+                    if(CS == -1) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                    if(CS <= FS) return new LoadResult(SAVE_FILE_CORRUPTED, new String[0]);
+                    int number = Integer.parseInt(line.substring(FS + 1, CS)) - 1;
                     list.add("Lines" + Persistable.FIELD_SEPARATOR + number + Persistable.CLASS_SEPARATOR);
                 }
                 else if(rightLocation && line.equals(item.getSaveInfo())) { rightLocation = false; removed = true; }
@@ -342,6 +377,7 @@ public class SaveFile
     {
         int saveFileIndex = number - 1;
         SaveResult sfResult = getSaveFileNames();
+        if(sfResult.getError() != SUCCESS) return sfResult.getError();
         if(saveFileIndex < 0 || saveFileIndex >= sfResult.size()) return NUMBER_OUT_OF_BOUNDS;
         saveFile = sfResult.getSelectedSaveFile(saveFileIndex);
         return SUCCESS;
@@ -411,12 +447,12 @@ public class SaveFile
             saves.append(i).append(". ").append(saveFile.getName()).append("\n");
         }
         
-        saves.deleteCharAt(saves.length() - 1);
+        if(!saves.isEmpty()) saves.deleteCharAt(saves.length() - 1);
         
         return saves.toString();
     }
     
-    private SaveResult getSaveFileNames()
+    public SaveResult getSaveFileNames()
     {
         SaveResult sfResult;
         

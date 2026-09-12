@@ -1,42 +1,27 @@
 package game.mainmenu;
 
-public enum MainMenuStates implements Menu
+public enum MainMenuStates
 {
-    NEW_GAME("Start a New Game.")
-            {
-                @Override
-                public MainMenuResult execute()
-                {
-                    return new MainMenuResult(MainMenuErrors.SUCCESS, this);
-                }
-            },
-    LOAD_GAME("Load a Saved Game.")
-            {
-                @Override
-                public MainMenuResult execute()
-                {
-                    return new MainMenuResult(MainMenuErrors.SUCCESS, this);
-                }
-            },
-    EXIT("Exit the Game")
-            {
-                @Override
-                public MainMenuResult execute()
-                {
-                    return new MainMenuResult(MainMenuErrors.SUCCESS, this);
-                }
-            };
+    NEW_GAME,
+    LOAD_GAME,
+    EXIT_GAME;
     
-    final String message;
-    
-    MainMenuStates(String s)
-    {
-        message = s;
-    }
     
     @Override
     public String toString()
     {
-        return message;
+        String[] s = this.name().split("_");
+        return s[0].charAt(0) + s[0].substring(1).toLowerCase() + " " + s[1].charAt(0) + s[1].substring(1).toLowerCase();
+    }
+    
+    public static String optionsToString()
+    {
+        StringBuilder result = new StringBuilder();
+        int i = 1;
+        for(MainMenuStates state : MainMenuStates.values())
+        {
+            result.append(i++).append(". ").append(state.toString()).append("\n");
+        }
+        return result.toString();
     }
 }

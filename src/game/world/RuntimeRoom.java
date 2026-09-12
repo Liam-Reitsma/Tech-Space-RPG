@@ -54,7 +54,7 @@ public class RuntimeRoom implements Persistable
         {
             if(datum.toLowerCase().startsWith("completed"))
             {
-                completed = Boolean.parseBoolean(datum.substring(datum.indexOf(String.valueOf(FIELD_SEPARATOR)) + 1));
+                completed = Boolean.parseBoolean(datum.trim().substring(datum.indexOf(String.valueOf(FIELD_SEPARATOR)) + 1));
             }
             else if(datum.toLowerCase().startsWith("point"))
             {
