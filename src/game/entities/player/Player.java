@@ -153,7 +153,8 @@ public class Player extends Entities implements Persistable
     
     public PlayerErrors equipWeapon(Weapon weapon)
     {
-        if(!inventory.contains(weapon)) return NO_WEAPON_EQUIPPED;
+        if(weapon == null) return NO_WEAPON_GIVEN;
+        if(!inventory.contains(weapon)) return NO_WEAPON_AVAILABLE;
         else
         {
             if(equippedWeapon != null)
@@ -182,7 +183,7 @@ public class Player extends Entities implements Persistable
     
     public PlayerErrors equipArmour(Armour armour)
     {
-        if(!inventory.contains(armour)) return NO_ARMOR_AVAILABLE;
+        if(!inventory.contains(armour)) return NO_ARMOUR_AVAILABLE;
         else
         {
             for(int  i = 0; i < equipped.size(); i++)
