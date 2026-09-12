@@ -7,10 +7,12 @@ import static game.ErrorSeverity.*;
 
 public enum PlayerError implements Errors
 {
+    
     MAX_INVENTORY_REACHED("You have reached your maximum inventory. Please remove an item first.", RECOVERABLE),
     NO_ITEM_GIVEN("", RECOVERABLE),
     NO_ARMOR_AVAILABLE("", RECOVERABLE),
-    NO_WEAPON_AVAILABLE("", RECOVERABLE),
+    NO_ARMOUR_EQUIPPED("", RECOVERABLE),
+    NO_WEAPON_EQUIPPED("", RECOVERABLE),
     USER_WENT_BACK("", NONE),
     SUCCESS("", NONE);
 
