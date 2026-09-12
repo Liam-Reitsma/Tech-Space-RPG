@@ -29,7 +29,7 @@ public class Player extends Entities implements Persistable
     @SaveExclude
     private List<Item> inventory;
     @SaveExclude
-    private List<Armour> equipped;
+    private List<Armour> equippedArmour;
     @SaveExclude
     private Weapon equippedWeapon;
     
@@ -69,10 +69,10 @@ public class Player extends Entities implements Persistable
         else inventory = newInventory;
     }
     
-    public void setEquipped(List<Armour> newEquipped)
+    public void setEquippedArmour(List<Armour> newEquipped)
     {
-        if(newEquipped == null) equipped = new ArrayList<>();
-        else equipped = newEquipped;
+        if(newEquipped == null) equippedArmour = new ArrayList<>();
+        else equippedArmour = newEquipped;
     }
     
     
@@ -98,7 +98,7 @@ public class Player extends Entities implements Persistable
     public void takeDamage(float damage)
     {
         float totalArmour = 0;
-        for (Armour armour : equipped)
+        for (Armour armour : equippedArmour)
         {
             totalArmour += (1 - totalArmour) * armour.calculateProtection();
         }
@@ -211,21 +211,21 @@ public class Player extends Entities implements Persistable
         if(!inventory.contains(armour)) return NO_ARMOUR_AVAILABLE;
         else
         {
-            for(int  i = 0; i < equipped.size(); i++)
+            for(int i = 0; i < equippedArmour.size(); i++)
             {
-                if(equipped.get(i).getArmourSlot() == armour.getArmourSlot())
+                if(equippedArmour.get(i).getArmourSlot() == armour.getArmourSlot())
                 {
-                    Armour currentArmour = equipped.get(i);
+                    Armour currentArmour = equippedArmour.get(i);
                     currentArmour.unequip();
                     inventory.add(currentArmour);
-                    equipped.set(i, armour);
+                    equippedArmour.set(i, armour);
                     inventory.remove(armour);
                     armour.equip();
                     return SUCCESS;
                 }
             }
             
-            equipped.add(armour);
+            equippedArmour.add(armour);
             armour.equip();
             return SUCCESS;
         }
@@ -233,12 +233,12 @@ public class Player extends Entities implements Persistable
     
     public PlayerErrors unequipArmour(Armour armour)
     {
-        if (!equipped.contains(armour))
+        if (!equippedArmour.contains(armour))
         {
             System.out.println("Item is not equipped");
             return NO_ARMOUR_EQUIPPED;
         }
-        equipped.remove(armour);
+        equippedArmour.remove(armour);
         armour.unequip();
         inventory.add(armour);
         return SUCCESS;
@@ -282,5 +282,5 @@ public class Player extends Entities implements Persistable
     
     public List<Item> getInventory() { return inventory; }
     
-    public List<Armour> getEquipped() { return equipped; }
+    public List<Armour> getEquippedArmour() { return equippedArmour; }
 }
