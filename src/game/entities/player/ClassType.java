@@ -42,12 +42,12 @@ public enum ClassType
     public static String optionsToString()
     {
         StringBuilder result = new StringBuilder();
+        int i = 0;
         for(ClassType type : ClassType.values())
         {
             if(type == UNSELECTED) continue;
-            result.append(type.toString()).append(", ");
+            result.append(i++).append(". ").append(type.toString()).append("\n");
         }
-        result.delete(result.length() - 2, result.length());
         return result.toString();
     }
 }
