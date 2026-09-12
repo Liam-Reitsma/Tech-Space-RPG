@@ -1,6 +1,8 @@
 package game.entities;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public interface Persistable
@@ -20,6 +22,7 @@ public interface Persistable
             for(Field field : current.getDeclaredFields())
             {
                 if(field.isAnnotationPresent(SaveExclude.class)) continue;
+                if(field.getType() == Map.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this).toString()).append(DATA_SEPARATOR);
                 field.setAccessible(true);
                 if(field.getType() == float.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(Math.round((float)field.get(this))).append(DATA_SEPARATOR);
                 else saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this)).append(DATA_SEPARATOR);
@@ -65,6 +68,24 @@ public interface Persistable
                             else if(field.getType().equals(float.class))
                             {
                                 field.set(this, Float.parseFloat(value));
+                            }
+                            else if(field.getType().equals(Map.class))
+                            {
+                                Map<StatType, Integer> map = new HashMap<>();
+                                value = value.substring(1, value.length() - 1);
+                                String[] strings = value.split(", ");
+                                for(String string : strings)
+                                {
+                                    String[] result = string.split("=");
+                                    for(StatType type : StatType.values())
+                                    {
+                                        if(Objects.equals(result[0], type.toString()))
+                                        {
+                                            map.put(type, Integer.parseInt(result[1]));
+                                        }
+                                    }
+                                }
+                                field.set(this, map);
                             }
                             else if(field.getType().isEnum())
                             {
