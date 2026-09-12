@@ -1,13 +1,14 @@
 package game.entities.player;
 
+import static game.entities.StatType.*;
+import static game.entities.player.PlayerError.*;
+
 import game.entities.*;
 import game.items.*;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
 
 import java.util.*;
-
-import static game.entities.StatType.*;
 
 public class Player extends Entities implements Persistable
 {
@@ -107,13 +108,7 @@ public class Player extends Entities implements Persistable
         if(health <= 0) health = 0;
     }
     
-    public int getLevel() { return level; }
-    
-    public float getHealth() { return health; }
-    
-    public int getXP() { return xp; }
-    
-    public int applyXP(int xpGain)
+    public int applyXPGain(int xpGain)
     {
         int currentLevel = level;
         xp += xpGain;
@@ -127,18 +122,13 @@ public class Player extends Entities implements Persistable
         return level - currentLevel;
     }
     
+    public void applyGoldGain(int goldGain) { gold += goldGain; }
     
-    public int getGold() { return gold; }
+    public void applyStatGain(StatType stat) { statTypeMap.put(stat, statTypeMap.get(stat) + 1); }
     
-    public void addGold(int goldGain) { gold += goldGain; }
-    
-    public String getName() { return name; }
-    
-    public void addStat(StatType stat) { statTypeMap.put(stat, statTypeMap.get(stat) + 1); }
-    
-    public boolean equipWeapon(Weapon weapon)
+    public PlayerError equipWeapon(Weapon weapon)
     {
-        if(!inventory.contains(weapon)) return false;
+        if(!inventory.contains(weapon)) return NO_WEAPON_EQUIPPED;
         else
         {
             if(equippedWeapon != null)
@@ -148,18 +138,25 @@ public class Player extends Entities implements Persistable
                 equippedWeapon = weapon;
                 inventory.remove(weapon);
                 weapon.equip();
-                return true;
+                return SUCCESS;
             }
             
             equippedWeapon = weapon;
             weapon.equip();
-            return true;
+            return SUCCESS;
         }
     }
     
-    public boolean equipArmour(Armour armour)
+    public PlayerError unequipWeapon()
     {
-        if(!inventory.contains(armour)) return false;
+        equippedWeapon.unequip();
+        equippedWeapon = null;
+        return SUCCESS;
+    }
+    
+    public PlayerError equipArmour(Armour armour)
+    {
+        if(!inventory.contains(armour)) return NO_ARMOR_AVAILABLE;
         else
         {
             for(int  i = 0; i < equipped.size(); i++)
@@ -172,53 +169,62 @@ public class Player extends Entities implements Persistable
                     equipped.set(i, armour);
                     inventory.remove(armour);
                     armour.equip();
-                    return true;
+                    return SUCCESS;
                 }
             }
             
             equipped.add(armour);
             armour.equip();
-            return true;
+            return SUCCESS;
         }
     }
     
-    public boolean addToInventory(Item item)
+    public PlayerError unequipArmour(Armour armour)
+    {
+        if (!equipped.contains(armour))
+        {
+            System.out.println("Item is not equipped");
+            return NO_ARMOUR_EQUIPPED;
+        }
+        equipped.remove(armour);
+        armour.unequip();
+        inventory.add(armour);
+        return SUCCESS;
+    }
+    
+    public PlayerError addToInventory(Item item)
     {
         if(item == null)
         {
-            System.out.println("Add an Item");
-            return false;
+            return NO_ITEM_GIVEN;
         }
         else if (inventory.size() >= MAXIMUM_INVENTORY_SIZE)
         {
-            System.out.println("Maximum Inventory Size has been reached");
-            return false;
+            return MAX_INVENTORY_REACHED;
         }
         inventory.add(item);
-        return true;
+        return SUCCESS;
     }
     
-    public boolean unequipItem(Armour item)
-    {
-        if (!equipped.contains(item))
-        {
-            System.out.println("Item is not equipped");
-            return false;
-        }
-        equipped.remove(item);
-        item.unequip();
-        inventory.add(item);
-        return true;
-    }
-    
-    public void removeFromInventory(Item item)
+    public PlayerError removeFromInventory(Item item)
     {
         if (!inventory.contains(item))
         {
-            System.out.println("Item is not in inventory");
+            return ITEM_MISSING;
         }
         inventory.remove(item);
+        return SUCCESS;
     }
+    
+    public String getName() { return name; }
+    
+    public int getLevel() { return level; }
+    
+    public float getHealth() { return health; }
+    
+    public int getXP() { return xp; }
+    
+    public int getGold() { return gold; }
     
     public Weapon getEquippedWeapon() { return equippedWeapon; }
     
