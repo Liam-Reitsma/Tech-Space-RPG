@@ -5,6 +5,7 @@ import static game.entities.player.PlayerErrors.*;
 import game.ConsoleHandler;
 import game.Loopable;
 import game.items.Item;
+import game.items.armour.Armour;
 import game.items.weapon.Weapon;
 
 import java.util.Arrays;
@@ -50,30 +51,44 @@ public class PlayerController implements Loopable<Player, Void, PlayerResult<?>>
                     weaponOptions.append(i++).append(". ").append(weapon).append(", ");
                 }
                 
-                Optional<Integer> choice = consoleH.confirmInput("Which weapon would you like to select?", weaponOptions.toString(), ", ").getInput();
+                Optional<Integer> choice = consoleH.confirmInput("Which weapon would you like to equip?", weaponOptions.toString(), ", ").getInput();
                 if(choice.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
                 
                 return new PlayerResult<>(player.equipWeapon(result.getResultArray()[choice.get() - 1]));
             }
             case UNEQUIP_WEAPON ->
             {
-                if(player.getEquippedWeapon() == null)
+                PlayerErrors error = player.unequipWeapon();
+                if(error != SUCCESS)
                 {
-                    consoleH.printLine("Sorry, you have no weapon to unequip");
-                    return new PlayerResult(SUCCESS);
+                    consoleH.printLine(error.getMessage());
+                    return new PlayerResult<>(error);
                 }
                 else
                 {
-                    player.unequipWeapon();
                     consoleH.printLine("Weapon successfully unequipped");
-                    return new PlayerResult(SUCCESS);
+                    return new PlayerResult<>(SUCCESS);
                 }
             }
             case EQUIP_ARMOR ->
             {
-                consoleH.printLine("Select Armor");
-                //prints inventory which user picks from
-                //equip the armour piece
+                PlayerResult<Armour> result = player.hasArmourInInventory();
+                if(result.getError() != SUCCESS) return new PlayerResult<>(result.getError());
+                
+                StringBuilder armourOptions = new StringBuilder();
+                String armourString = Arrays.toString(result.getResultArray());
+                String armourSplit = armourString.substring(1, armourString.length() - 1);
+                int i = 1;
+                
+                for(String weapon : armourSplit.split(", "))
+                {
+                    armourOptions.append(i++).append(". ").append(weapon).append(", ");
+                }
+                
+                Optional<Integer> choice = consoleH.confirmInput("Which armour would you like to equip?", armourOptions.toString(), ", ").getInput();
+                if(choice.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
+                
+                return new PlayerResult<>(player.equipArmour(result.getResultArray()[choice.get() - 1]));
             }
             case UNEQUIP_ARMOR ->
             {
