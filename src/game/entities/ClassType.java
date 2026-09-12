@@ -39,16 +39,6 @@ public enum ClassType
     @Override
     public String toString() { return this.name().charAt(0) + this.name().substring(1).toLowerCase(); }
     
-    public static ClassType parseType(String typeToCheck)
-    {
-        for(ClassType type : ClassType.values())
-        {
-            if(type.toString().equalsIgnoreCase(typeToCheck)) return type;
-        }
-        
-        return null;
-    }
-    
     public static String optionsToString()
     {
         StringBuilder result = new StringBuilder();

@@ -34,14 +34,4 @@ public enum ArmourSlot
             default -> null;
         };
     }
-    
-    public static ArmourSlot parseType(String typeToCheck)
-    {
-        for(ArmourSlot slot : ArmourSlot.values())
-        {
-            if(slot.toString().equalsIgnoreCase(typeToCheck)) return slot;
-        }
-        
-        return null;
-    }
 }

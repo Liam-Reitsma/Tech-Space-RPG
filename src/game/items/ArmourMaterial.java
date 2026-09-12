@@ -42,14 +42,4 @@ public enum ArmourMaterial
             default -> null;
         };
     }
-    
-    public static ArmourMaterial parseType(String typeToCheck)
-    {
-        for(ArmourMaterial material : ArmourMaterial.values())
-        {
-            if(material.toString().equalsIgnoreCase(typeToCheck)) return material;
-        }
-        
-        return null;
-    }
 }

@@ -1,6 +1,7 @@
 package game.entities;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 public interface Persistable
 {
@@ -61,13 +62,20 @@ public interface Persistable
                             {
                                 field.set(this, value);
                             }
-                            else if(field.getType().equals(ClassType.class))
-                            {
-                                field.set(this, ClassType.parseType(value));
-                            }
                             else if(field.getType().equals(float.class))
                             {
                                 field.set(this, Float.parseFloat(value));
+                            }
+                            else if(field.getType().isEnum())
+                            {
+                                for(Object type : field.getType().getEnumConstants())
+                                {
+                                    if(Objects.equals(value, type.toString()))
+                                    {
+                                        field.set(this, type);
+                                        break;
+                                    }
+                                }
                             }
                         } catch(IllegalAccessException e)
                         {
