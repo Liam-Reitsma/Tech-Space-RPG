@@ -69,6 +69,10 @@ public interface Persistable
                             {
                                 field.set(this, Float.parseFloat(value));
                             }
+                            else if(field.getType().equals(boolean.class))
+                            {
+                                field.set(this, Boolean.parseBoolean(value));
+                            }
                             else if(field.getType().equals(Map.class))
                             {
                                 Map<StatType, Integer> map = new HashMap<>();
