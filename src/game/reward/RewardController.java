@@ -1,12 +1,15 @@
 package game.reward;
 
+import static game.reward.RewardErrors.*;
+
 import game.ConsoleHandler;
 import game.Loopable;
 import game.entities.*;
+import game.items.EquippableItem;
 
 import java.util.Optional;
 
-public class RewardController implements Loopable<Player, Enemy, RewardResult>
+public class RewardController implements Loopable<Player, Persistable, RewardResult>
 {
     private final ConsoleHandler consoleH;
 
@@ -16,7 +19,14 @@ public class RewardController implements Loopable<Player, Enemy, RewardResult>
     }
 
     @Override
-    public RewardResult loop(Player player, Enemy enemy)
+    public RewardResult loop(Player player, Persistable persistable)
+    {
+        if(persistable instanceof Enemy enemy) return enemyReward(player, enemy);
+        else if(persistable instanceof EquippableItem item) return chestReward(player, item);
+        return new RewardResult(RewardErrors.SUCCESS);
+    }
+    
+    private RewardResult enemyReward(Player player, Enemy enemy)
     {
         int levelChange = player.applyXP(enemy.getXP());
         
@@ -34,6 +44,12 @@ public class RewardController implements Loopable<Player, Enemy, RewardResult>
             } while (true);
         }
         player.addGold(enemy.getGold());
-        return new RewardResult(RewardErrors.SUCCESS);
+        return new RewardResult(SUCCESS);
+    }
+    
+    private RewardResult chestReward(Player player, EquippableItem item)
+    {
+        return player.addToInventory(item) ?  new RewardResult(SUCCESS) :  new RewardResult(INVENTORY_FULL);
+        
     }
 }
