@@ -2,10 +2,15 @@ package game.entities.player;
 
 import game.Result;
 
-public class PlayerResult extends Result<PlayerError>
+public class PlayerResult<T> extends Result<PlayerError>
 {
-    public PlayerResult(PlayerError er)
+    private final T[] resultArray;
+    
+    public PlayerResult(PlayerError e, T[] array)
     {
-        error = er;
+        error = e;
+        resultArray = array;
     }
+    
+    public T[] getResultArray() { return resultArray; }
 }
