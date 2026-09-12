@@ -12,9 +12,9 @@ public enum PlayerMenuOption
     {
         StringBuilder result = new StringBuilder();
         int i = 1;
-        for(PlayerMenuOption state : PlayerMenuOption.values())
+        for(PlayerMenuOption option : PlayerMenuOption.values())
         {
-            result.append(i++).append(". ").append(state.toString()).append("\n");
+            result.append(option.toString()).append(", ");
         }
         return result.toString();
     }

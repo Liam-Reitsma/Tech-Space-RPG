@@ -215,7 +215,7 @@ public class ConsoleHandler
         if(questionToAsk.contains(String.valueOf('?'))) question = questionToAsk.substring(0, questionToAsk.length() - 1);
         else question = questionToAsk;
         printLine(question + "?");
-        printLine("The options are:\n" + options );
+        printLine("The options are:\n" + options);
         
         do
         {
@@ -317,7 +317,6 @@ public class ConsoleHandler
             {
                 result = parseInt(string.substring(0, string.length()-1));
             }
-            
         }
         
         return result;

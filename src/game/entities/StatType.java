@@ -21,11 +21,11 @@ public enum StatType
     public static String optionsToString()
     {
         StringBuilder result = new StringBuilder();
+        int i = 1;
         for(StatType stat : StatType.values())
         {
-            result.append(stat.toString()).append(", ");
+            result.append(i++).append(". ").append(stat.toString()).append("\n");
         }
-        result.delete(result.length() - 2, result.length());
         return result.toString();
     }
 }
