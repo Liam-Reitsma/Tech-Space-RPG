@@ -1,5 +1,7 @@
 package game.reward;
 
+import static game.ErrorSeverity.RECOVERABLE;
+import static game.ErrorSeverity.SEVERE;
 import static game.reward.RewardErrors.*;
 
 import game.ConsoleHandler;
@@ -21,9 +23,23 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
     @Override
     public RewardResult loop(Player player, Persistable persistable)
     {
+        if(persistable == null) return new RewardResult(SUCCESS);
         if(persistable instanceof Enemy enemy) return enemyReward(player, enemy);
-        else if(persistable instanceof EquippableItem item) return chestReward(player, item);
-        return new RewardResult(RewardErrors.SUCCESS);
+        if(persistable instanceof EquippableItem item)
+        {
+            RewardResult result = chestReward(player, item);
+            if(result.getError().getSeverity() == SEVERE) return new RewardResult(result.getError());
+            if(result.getError().getSeverity() == RECOVERABLE)
+            {
+                consoleH.printLine(result.getError().getMessage());
+                Optional<Integer> response = consoleH.confirmInput("Would you like to Clean your Inventory, or Discard this Item?", "Fix Inventory|Discard", "|").getInput();
+                if(response.isEmpty() || response.get() == 1) return new RewardResult(CLEARING_INVENTORY);
+                else if(response.get() == 2) return new RewardResult(ITEM_DISCARDED);
+            }
+            else if(result.getError() == SUCCESS) return new RewardResult(result.getError());
+        }
+        
+        return new RewardResult(SUCCESS);
     }
     
     private RewardResult enemyReward(Player player, Enemy enemy)
@@ -50,6 +66,5 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
     private RewardResult chestReward(Player player, EquippableItem item)
     {
         return player.addToInventory(item) ?  new RewardResult(SUCCESS) :  new RewardResult(INVENTORY_FULL);
-        
     }
 }
