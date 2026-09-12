@@ -265,12 +265,6 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
-    public String getName() { return name; }
-    
-    public int getLevel() { return level; }
-    
-    public float getHealth() { return health; }
-    
     public int getXP() { return xp; }
     
     public int getGold() { return gold; }
