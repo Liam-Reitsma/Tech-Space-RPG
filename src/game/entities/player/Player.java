@@ -242,6 +242,31 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
+    public PlayerResult<Potion> hasPotionsInInventory()
+    {
+        Potion[] inventoryPotions = new Potion[10];
+        Potion[] potions;
+        int i = 0;
+        for(Item item : getInventory())
+        {
+            if(item instanceof Potion potion)
+            {
+                inventoryPotions[i++] = potion;
+            }
+        }
+        if(i == 0) return new PlayerResult<>(NO_POTION_AVAILABLE, new Potion[0]);
+        potions = new Potion[i];
+        i = 0;
+        
+        for(Potion potion : inventoryPotions)
+        {
+            if(potion == null) continue;
+            potions[i++] = potion;
+        }
+        
+        return new PlayerResult<>(SUCCESS, potions);
+    }
+    
     public PlayerErrors addToInventory(Item item)
     {
         if(item == null)
