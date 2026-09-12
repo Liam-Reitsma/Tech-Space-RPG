@@ -5,5 +5,5 @@ import game.entities.player.Player;
 
 public interface Actionable
 {
-    public ActionResult action(Player player, Enemy enemy);
+    public ActionResult doAction(Player player, Enemy enemy);
 }
