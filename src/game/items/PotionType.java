@@ -14,4 +14,11 @@ public enum PotionType
     }
 
     public int getHealAmount() { return healGain; }
+    
+    @Override
+    public String toString()
+    {
+        String[] s = this.name().split("_");
+        return s[0].charAt(0) + s[0].substring(1).toLowerCase() + " " + s[1].charAt(0) + s[1].substring(1).toLowerCase();
+    }
 }
