@@ -48,7 +48,7 @@ public class PlayerController implements Loopable<Player, Void, PlayerResult>
                         inventoryWeapons[i++] = weapon;
                     }
                 }
-                if(i == 0) return new PlayerResult(NO_WEAPON_AVAILABLE);
+                if(i == 0) return new PlayerResult(NO_WEAPON_EQUIPPED);
                 weapons = new Weapon[i];
                 i = 0;
                 
@@ -76,8 +76,17 @@ public class PlayerController implements Loopable<Player, Void, PlayerResult>
             }
             case UNEQUIP_WEAPON ->
             {
-                consoleH.printLine("Weapon unequipped");
-                //unequip the weapon
+                if(player.getEquippedWeapon() == null)
+                {
+                    consoleH.printLine("Sorry, you have no weapon to unequip");
+                    return new PlayerResult(SUCCESS);
+                }
+                else
+                {
+                    player.unequipWeapon();
+                    consoleH.printLine("Weapon successfully unequipped");
+                    return new PlayerResult(SUCCESS);
+                }
             }
             case EQUIP_ARMOR ->
             {
