@@ -8,6 +8,7 @@ import game.Errors;
 
 public enum RewardErrors implements Errors
 {
+    CANNOT_ADD_ITEM("An error occurred while adding your chest item", RECOVERABLE),
     INVENTORY_FULL("Your inventory is too full, please remove something.", RECOVERABLE),
     CLEARING_INVENTORY("", NONE),
     ITEM_DISCARDED("", NONE),
