@@ -82,7 +82,7 @@ public class ConsoleHandler
             iResultString = nextLine().getInput();
             if(iResultString.isEmpty()) return new InputResult<>();
             else result = iResultString.get();
-            printLine("Are you Sure? (Y\\N)");
+            printLine("Are you Sure? (Y/N)");
             
             do
             {
@@ -129,7 +129,7 @@ public class ConsoleHandler
             }
             else
             {
-                printLine("Are you Sure? (Y\\N)");
+                printLine("Are you Sure? (Y/N)");
                 
                 do
                 {
@@ -184,7 +184,7 @@ public class ConsoleHandler
             }
             else
             {
-                printLine("Are you Sure? (Y\\N)");
+                printLine("Are you Sure? (Y/N)");
                 
                 do
                 {
@@ -240,7 +240,7 @@ public class ConsoleHandler
             }
             else
             {
-                printLine("Are you Sure? (Y\\N)");
+                printLine("Are you Sure? (Y/N)");
                 
                 do
                 {
