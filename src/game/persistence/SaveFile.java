@@ -40,14 +40,7 @@ public class SaveFile
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile, true)))
         {
-            if(object == null)
-            {
-                StringBuilder b = new StringBuilder();
-                writer.write("Weapon Data:");
-                writer.newLine();
-                writer.write(b.repeat(" ", 100).toString());
-                writer.newLine();
-            }
+            if(object == null) return SUCCESS;
             else
             {
                 writer.write(object.getClass().getSimpleName() + " Data:");
