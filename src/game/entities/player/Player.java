@@ -13,7 +13,7 @@ import java.util.*;
 public class Player extends Entities implements Persistable
 {
     @SaveExclude
-    private static final int MAXIMUM_INVENTORY_SIZE = 10;
+    private static final int MAXIMUM_INVENTORY_SIZE = 20;
     @SaveExclude
     private static final int STARTING_LEVEL_XP = 15;
     @SaveExclude
