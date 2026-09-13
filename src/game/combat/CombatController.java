@@ -70,11 +70,12 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
                 else if(error == NO_POTION_TO_USE)
                 {
                     consoleH.printLine(error.getMessage());
+                    continue;
                 }
             }
             break;
         } while(true);
-                
+        
         ActionResult result = action.get().doAction(player, enemy);
         consoleH.printLine(result.getMessage());
         return result.getOutcome();
