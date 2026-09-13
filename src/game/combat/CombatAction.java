@@ -1,90 +1,86 @@
 package game.combat;
 
+import static game.combat.CombatOutcome.*;
+
 import game.entities.player.Player;
+import game.entities.player.PlayerErrors;
+import game.entities.player.PlayerResult;
 import game.items.*;
 import game.entities.*;
-import game.ConsoleHandler;
-import game.items.weapon.Weapon;
 
 import java.util.*;
 
-public enum CombatAction
+public enum CombatAction implements Actionable
 {
-    FIGHT("Fight")
+    ATTACK()
         {
             @Override
-            public ActionDecider execute(ConsoleHandler consoleH, Player player, Enemy opponent)
+            public ActionResult doAction(Player player, Enemy enemy)
             {
-                Optional<Weapon> equippedWeaponDamage = player.getEquippedWeapon();
-                int damageDealt = player.getStats()[0];
-                if (equippedWeaponDamage.isPresent())
+                StringBuilder message = new StringBuilder();
+                CombatOutcome outcome = NOTHING;
+                float damage;
+                if(isUserTurn)
                 {
-                    damageDealt += equippedWeaponDamage.get().use();
+                    String equippedWeaponName = player.getEquippedWeapon() == null ? "fists" : player.getEquippedWeapon().getName();
+                    damage = player.attack();
+                    enemy.takeDamage(damage);
+                    message.append("You used " + equippedWeaponName + " to attack " + enemy.getName() +  "!\n");
+                    message.append("You dealt " + damage + "!\n");
+                    if(enemy.getHealth() <= 0) outcome = WIN;
                 }
-                opponent.takeDamage(damageDealt);
-
-                String message =  "Dealt: " +  damageDealt + "\n Opponent Health: " + opponent.getHealth();
-                return new ActionDecider(message, Optional.empty());
-            }
-        }
-    , RUN("Run")
-        {
-            @Override
-            public ActionDecider execute(ConsoleHandler consoleH, Player player, Enemy opponent)
-            {
-                return new ActionDecider("You ran Away.", Optional.of(CombatOutcome.FLEE));
-            }
-        }
-    , USE_ITEM("Use Item")
-        {
-            @Override
-            public ActionDecider execute(ConsoleHandler consoleH, Player player, Enemy opponent)
-            {
-                int response;
-                List<Item> usableItems = new ArrayList<>();
-                for (Item item : player.getInventory())
+                else
                 {
-                    if (item instanceof Potion)
-                    {
-                        usableItems.add(item);
-                    }
+                    damage = enemy.attack();
+                    player.takeDamage(damage);
+                    message.append(enemy.getName() + " attacked you!\n");
+                    message.append(enemy.getName() + " dealt " + damage + " to you!\n");
+                    if(player.getHealth() <= 0) outcome = LOSE;
                 }
-                do
-                {
-                    consoleH.printLine("What potion would you like to use? Press '~' to go back.");
-                    for (int i = 1; i <= usableItems.size(); i++)
-                    {
-                        consoleH.printLine(i + ". " + usableItems.get(i-1).toString());
-                    }
-
-                    Optional<Integer> userInput = consoleH.nextInt().getInput();
-                    if (userInput.isEmpty()) break;
-                    response = userInput.get();
-                    if (response > 0 && response <= usableItems.size())
-                    {
-                        Item chosenItem = usableItems.get(response - 1);
-                        player.healing(((Potion) chosenItem).use());
-                        player.removeFromInventory(chosenItem);
-                        String message = chosenItem.toString() + " has been used.";
-                        return new ActionDecider(message, Optional.empty());
-                    }
-                } while(true);
-                String message =  "Going back.";
-                return new  ActionDecider(message, Optional.empty());
+                
+                return new ActionResult(outcome, message.toString());
+            }
+        },
+    RUN()
+        {
+            @Override
+            public ActionResult doAction(Player player, Enemy enemy)
+            {
+                return new ActionResult(FLEE, "You ran away!");
+            }
+        },
+    HEAL()
+        {
+            @Override
+            public ActionResult doAction(Player player, Enemy enemy)
+            {
+                PlayerResult<Potion> result = player.getSelectedPotion();
+                if(result.getError() != PlayerErrors.SUCCESS) return new ActionResult(USER_WENT_BACK, "No potion was selected!");
+                Potion potionUsed = result.getResultArray()[0];
+                if(player.removeFromInventory(potionUsed) != PlayerErrors.SUCCESS) return new ActionResult(USER_WENT_BACK, "Something went wrong!");
+                player.healing(potionUsed.use());
+                player.setSelectedPotion(null);
+                return new ActionResult(NOTHING, "You healed for " + potionUsed.use() + "hp!");
             }
         };
+    
+    private static boolean isUserTurn;
 
-    private final String option;
-    public abstract ActionDecider execute(ConsoleHandler consoleH, Player player, Enemy opponent);
-
-
-    CombatAction(String m)
-    {
-        option = m;
-    }
+    public void userTurn() { isUserTurn = true; }
+    
+    public void enemyTurn() { isUserTurn = false; }
+    
     @Override
-    public String toString()
+    public String toString() { return name().charAt(0) + name().substring(1).toLowerCase(); }
+    
+    public static String optionsToString()
     {
-        return option;
+        StringBuilder result = new StringBuilder();
+        int i = 1;
+        for(CombatAction action : CombatAction.values())
+        {
+            result.append(i++).append(". ").append(action.toString()).append("\n");
+        }
+        return result.toString();
     }
 }
