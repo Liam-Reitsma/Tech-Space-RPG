@@ -15,6 +15,11 @@ import game.items.Potion;
 import java.util.Arrays;
 import java.util.Optional;
 
+/** CombatController implements {@link Loopable} by taking the {@link Player}, {@link Enemy} and the {@link CombatResult}.
+ * It is in charge of holding the main combat loop by checking whether it is the {@link Player}'s turn or the {@link Enemy}'s turn.
+ * If it is the {@link Player}'s turn, then it checks and performs the {@link Player}'s choice of action, while checking for errors.
+ * If it is the {@link Enemy}'s turn, then it calculates and applies the damage to the {@link Player}.
+ * */
 public class CombatController implements Loopable<Player, Enemy, CombatResult>
 {
     private final ConsoleHandler consoleH;
@@ -24,6 +29,10 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         consoleH = cH;
     }
 
+    /** The main loop which has a while(true) loop.
+     * It checks for whose turn it is, and if it is the {@link Player}'s turn, it prints a message of the current combat info by using printCombatInfo() method, and gets the outcome of the {@link Player}'s turn. If the outcome is anything other than NOTHING, then it exits the while loop with SUCCESS and the outcome.
+     * If it is the {@link Enemy}'s turn, it gets the outcome of the turn and if it is anything other than NOTHING, it returns SUCCESS and the outcome.
+     * */
     @Override
     public CombatResult loop(Player player, Enemy enemy)
     {
@@ -36,7 +45,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
             {
                 printCombatInfo(player, enemy);
                 outcome = playerTurn(player, enemy);
-                if(outcome != NOTHING)  return new CombatResult(SUCCESS, outcome);
+                if(outcome != NOTHING) return new CombatResult(SUCCESS, outcome);
                 userTurn = false;
             }
             else
@@ -52,6 +61,9 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         }
     }
 
+    /** Prompts the {@link Player} to choose an action to perform.
+     * If the action is HEAL, then it uses getPotionToUse() to check for {@link Potion}s in inventory, and if there are no {@link Potion}s in the inventory or the {@link Player} chooses "~" when selecting {@link Potion}, it prompts the {@link Player} to choose an action again.
+     * Otherwise, it performs the chosen action and returns the outcome of it.*/
     private CombatOutcome playerTurn(Player player, Enemy enemy)
     {
         Optional<CombatAction> action;
@@ -86,6 +98,8 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         return result.getOutcome();
     }
 
+    /** Calculates and applies the {@link Enemy}'s damage to the {@link Player} and if the {@link Player}'s health becomes 0, it sets the outcome to LOSE.
+     * It then prints "(Enemy) attacked you" along with "(Enemy) dealt "x" to you!", and returns the outcome.*/
     private CombatOutcome enemyTurn(Player player, Enemy enemy)
     {
         StringBuilder message = new StringBuilder();
@@ -99,7 +113,9 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         
         return outcome;
     }
-    
+
+    /** Checks the {@link Player}'s inventory for {@link Potion}s and puts them in an array. If there are no {@link Potion}s then it returns NO_POTION_TO_USE. Otherwise, it prints a list of {@link Potion} for the {@link Player} to choose from.
+     * If the {@link Player} chooses to go back by using "~" it returns USER_WENT_BACK. If not, it sets the {@link Player} selected {@link Potion} to the {@link Player}'s choice and returns SUCCESS.*/
     private CombatErrors getPotionToUse(Player player)
     {
         Potion[] potions = player.getPotionsInInventory().getResultArray();
@@ -122,7 +138,8 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         player.setSelectedPotion(potions[choice.get() - 1]);
         return SUCCESS;
     }
-    
+
+    /** Prints a message that tells the {@link Player} how much {@link Player} health is remaining and how much {@link Enemy} health is remaining.*/
     private void printCombatInfo(Player player, Enemy enemy)
     {
         StringBuilder info = new StringBuilder();
