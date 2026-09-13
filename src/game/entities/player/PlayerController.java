@@ -37,19 +37,18 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
         Optional<PlayerMenuOption> response = consoleH.confirmInputInteger("What would you like to do?", PlayerMenuOption.optionsToString(), PlayerMenuOption.class).getInput();
         if(response.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
         PlayerMenuOption option = response.get();
-        switch(option)
+        return switch(option)
         {
+            case SKIP_MENU -> new PlayerResult<Void>(SKIP);
             case VIEW_INVENTORY ->
             {
-                for(Item item : player.getInventory())
-                {
-                    consoleH.printLine(item.toString());
-                }
+                for(Item item : player.getInventory()) consoleH.printLine(item.toString());
+                yield new PlayerResult<Void>(RETRY);
             }
             case EQUIP_WEAPON ->
             {
                 PlayerResult<Weapon> result = player.getWeaponsInInventory();
-                if(result.getError() != SUCCESS) return new PlayerResult<>(result.getError());
+                if(result.getError() != SUCCESS) yield new PlayerResult<>(result.getError());
                 
                 StringBuilder weaponOptions = new StringBuilder();
                 String weaponsString = Arrays.toString(result.getResultArray());
@@ -62,9 +61,9 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
                 }
                 
                 Optional<Integer> choice = consoleH.confirmInput("Which weapon would you like to equip?", weaponOptions.toString(), ", ").getInput();
-                if(choice.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
+                if(choice.isEmpty()) yield new PlayerResult<>(USER_WENT_BACK);
                 
-                return new PlayerResult<>(player.equipWeapon(result.getResultArray()[choice.get() - 1]));
+                yield new PlayerResult<>(player.equipWeapon(result.getResultArray()[choice.get() - 1]));
             }
             case UNEQUIP_WEAPON ->
             {
@@ -73,18 +72,18 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
                 if(error != SUCCESS)
                 {
                     consoleH.printLine(error.getMessage());
-                    return new PlayerResult<>(error);
+                    yield new PlayerResult<>(error);
                 }
                 else
                 {
                     consoleH.printLine(weapon.toString() + " successfully unequipped");
-                    return new PlayerResult<>(SUCCESS);
+                    yield new PlayerResult<>(SUCCESS);
                 }
             }
             case EQUIP_ARMOR ->
             {
                 PlayerResult<Armour> result = player.getArmourInInventory();
-                if(result.getError() != SUCCESS) return new PlayerResult<>(result.getError());
+                if(result.getError() != SUCCESS) yield new PlayerResult<>(result.getError());
                 
                 StringBuilder armourOptions = new StringBuilder();
                 String armourString = Arrays.toString(result.getResultArray());
@@ -97,14 +96,14 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
                 }
                 
                 Optional<Integer> choice = consoleH.confirmInput("Which armour would you like to equip?", armourOptions.toString(), ", ").getInput();
-                if(choice.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
+                if(choice.isEmpty()) yield new PlayerResult<>(USER_WENT_BACK);
                 
-                return new PlayerResult<>(player.equipArmour(result.getResultArray()[choice.get() - 1]));
+                yield new PlayerResult<>(player.equipArmour(result.getResultArray()[choice.get() - 1]));
             }
             case UNEQUIP_ARMOR ->
             {
                 List<Armour> armourList = player.getEquippedArmour();
-                if(armourList.isEmpty()) return new PlayerResult<>(NO_ARMOUR_EQUIPPED);
+                if(armourList.isEmpty()) yield new PlayerResult<>(NO_ARMOUR_EQUIPPED);
                 
                 StringBuilder armourOptions = new StringBuilder();
                 String armourString = armourList.toString();
@@ -117,7 +116,7 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
                 }
                 
                 Optional<Integer> choice = consoleH.confirmInput("Which armour would you like to unequip?", armourOptions.toString(), ", ").getInput();
-                if(choice.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
+                if(choice.isEmpty()) yield new PlayerResult<>(USER_WENT_BACK);
                 
                 Armour armour = armourList.get(choice.get() - 1);
                 
@@ -125,16 +124,16 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
                 if(error != SUCCESS)
                 {
                     consoleH.printLine(error.getMessage());
-                    return new PlayerResult<>(error);
+                    yield new PlayerResult<>(error);
                 }
                 else
                 {
                     consoleH.printLine(armour.toString() + " successfully unequipped");
-                    return new PlayerResult<>(SUCCESS);
+                    yield new PlayerResult<>(SUCCESS);
                 }
             }
-        }
-        
-        return new PlayerResult<>(SUCCESS);
+            case SAVE_GAME -> new PlayerResult<>(SAVE_GAME);
+            case EXIT_GAME -> new PlayerResult<>(EXIT_GAME);
+        };
     }
 }
