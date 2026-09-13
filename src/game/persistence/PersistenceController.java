@@ -32,8 +32,14 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
     @Override
     public PersistenceResult start(MainMenuStates state, Void input2)
     {
-        if(state == MainMenuStates.NEW_GAME) return createNewGame();
-        else return loadSaveGame();
+        if(state == MainMenuStates.LOAD_GAME)
+        {
+            PersistenceResult result = loadSaveGame();
+            if(result.getError() == SUCCESS) return result;
+            consoleH.printLine(result.getError().getMessage());
+            return result;
+        }
+        else return createNewGame();
     }
     
     public PersistenceResult createNewGame()
