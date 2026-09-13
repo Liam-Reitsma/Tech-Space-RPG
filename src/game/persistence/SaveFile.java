@@ -1,7 +1,6 @@
 package game.persistence;
 
 import game.entities.Persistable;
-import game.entities.player.Player;
 import game.items.Item;
 import game.world.RuntimeRoom;
 
@@ -130,25 +129,26 @@ public class SaveFile
         }
     }
     
-    public PersistenceErrors writeDeltaPlayer(Player player)
+    public PersistenceErrors writeDeltaObject(Persistable object)
     {
         try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
         {
             String line;
-            String playerLine;
-            String info = player.getSaveInfo();
+            String objectLine;
+            String info = object.getSaveInfo();
+            String searchString = object.getClass().getSimpleName().toLowerCase();
             
             do
             {
                 line = fileEditor.readLine();
                 if(line == null) return SAVE_FILE_CORRUPTED;
-            } while(!line.toLowerCase().startsWith("player"));
+            } while(!line.toLowerCase().startsWith(searchString));
             
             long startLine = fileEditor.getFilePointer();
             
-            playerLine = fileEditor.readLine();
-            if(playerLine == null) return SAVE_FILE_CORRUPTED;
-            String padding = " ".repeat(playerLine.length() - info.length());
+            objectLine = fileEditor.readLine();
+            if(objectLine == null) return SAVE_FILE_CORRUPTED;
+            String padding = " ".repeat(objectLine.length() - info.length());
             
             
             fileEditor.seek(startLine);
