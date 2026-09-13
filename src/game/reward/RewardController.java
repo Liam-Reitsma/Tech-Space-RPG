@@ -57,7 +57,7 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
             Optional<StatType> userInput;
             do
             {
-                userInput = consoleH.confirmInput("Which stat would you like to level up?", StatType.optionsToString(), StatType.class).getInput();
+                userInput = consoleH.confirmInputInteger("Which stat would you like to level up?", StatType.optionsToString(), StatType.class).getInput();
                 if (userInput.isEmpty()) consoleH.printLine("You need to enter a stat type.");
                 else
                 {
