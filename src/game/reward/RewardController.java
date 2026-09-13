@@ -46,7 +46,12 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
     
     private RewardResult enemyReward(Player player, Enemy enemy)
     {
+        consoleH.printLine("You got " + enemy.getXP() + " XP from " + enemy.getName() + "!");
+        consoleH.printLine(enemy.getName() + " also dropped " + enemy.getGold() + " gold!");
         int levelChange = player.applyXPGain(enemy.getXP());
+        
+        if(levelChange == 1) consoleH.printLine("You levelled up one time!");
+        else if(levelChange > 1) consoleH.printLine("You levelled up " + levelChange + " times!");
         
         for (int i = 0; i < levelChange; i++) {
             Optional<StatType> userInput;
