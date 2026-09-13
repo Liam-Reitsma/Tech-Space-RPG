@@ -2,7 +2,7 @@ package game.entities.player;
 
 public enum PlayerMenuOption
 {
-    SKIP_MENU,
+    PROCEED_PAST,
     VIEW_INVENTORY,
     EQUIP_WEAPON,
     UNEQUIP_WEAPON,

@@ -38,7 +38,7 @@
             PlayerMenuOption option = response.get();
             return switch(option)
             {
-                case SKIP_MENU -> new PlayerResult<Void>(SKIP);
+                case PROCEED_PAST -> new PlayerResult<Void>(SKIP);
                 case VIEW_INVENTORY ->
                 {
                     consoleH.printLine("Your current level is: " + player.getLevel());
