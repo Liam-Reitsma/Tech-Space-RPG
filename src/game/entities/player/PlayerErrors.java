@@ -18,6 +18,8 @@ public enum PlayerErrors implements Errors
     NO_WEAPON_EQUIPPED("You have no weapon equipped", RECOVERABLE),
     NO_ITEM_GIVEN("", RECOVERABLE),
     NO_WEAPON_GIVEN("", RECOVERABLE),
+    EXIT_GAME("", NONE),
+    SAVE_GAME("", NONE),
     RETRY("", NONE),
     USER_WENT_BACK("", NONE),
     SUCCESS("", NONE);
