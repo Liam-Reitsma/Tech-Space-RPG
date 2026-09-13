@@ -293,6 +293,8 @@ public class Player extends Entities implements Persistable
     
     public int getXP() { return xp; }
     
+    public int getXpToLevelUp() { return xpToLevelUp; }
+    
     public int getGold() { return gold; }
     
     public Weapon getEquippedWeapon() { return equippedWeapon; }

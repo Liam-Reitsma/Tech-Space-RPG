@@ -9,7 +9,6 @@
     import game.items.armour.Armour;
     import game.items.weapon.Weapon;
     
-    import java.util.Arrays;
     import java.util.List;
     import java.util.Optional;
     
@@ -42,6 +41,9 @@
                 case SKIP_MENU -> new PlayerResult<Void>(SKIP);
                 case VIEW_INVENTORY ->
                 {
+                    consoleH.printLine("Your current level is: " + player.getLevel());
+                    consoleH.printLine("Your current XP is: " + player.getXP() + "/" + player.getXpToLevelUp());
+                    consoleH.printLine("Your current gold is: " + player.getGold());
                     for(Item item : player.getInventory())
                     {
                         if(item instanceof Weapon weapon)
