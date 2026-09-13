@@ -82,7 +82,7 @@ public class ConsoleHandler
             iResultString = nextLine().getInput();
             if(iResultString.isEmpty()) return new InputResult<>();
             else result = iResultString.get();
-            printLine("Are you sure?");
+            printLine("Are you Sure? (Y\\N)");
             
             do
             {
@@ -129,7 +129,7 @@ public class ConsoleHandler
             }
             else
             {
-                printLine("Are you sure?");
+                printLine("Are you Sure? (Y\\N)");
                 
                 do
                 {
@@ -159,7 +159,7 @@ public class ConsoleHandler
         if(questionToAsk.contains(String.valueOf('?'))) question = questionToAsk.substring(0, questionToAsk.length() - 1);
         else question = questionToAsk;
         printLine(question + "?");
-        printLine("The options are: " + options + ".");
+        printLine("The options are:\n" + options);
         
         do
         {
@@ -184,7 +184,7 @@ public class ConsoleHandler
             }
             else
             {
-                printLine("Are you sure?");
+                printLine("Are you Sure? (Y\\N)");
                 
                 do
                 {
@@ -240,7 +240,7 @@ public class ConsoleHandler
             }
             else
             {
-                printLine("Are you sure?");
+                printLine("Are you Sure? (Y\\N)");
                 
                 do
                 {
@@ -269,7 +269,7 @@ public class ConsoleHandler
         try
         {
             int result = scanner.nextInt();
-            nextLine();
+            clearLine();
             return new InputResult<>(result);
         } catch(InputMismatchException e)
         {
@@ -320,5 +320,10 @@ public class ConsoleHandler
         }
         
         return result;
+    }
+    
+    private void clearLine()
+    {
+        scanner.nextLine();
     }
 }
