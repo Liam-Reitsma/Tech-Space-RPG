@@ -29,6 +29,15 @@ public class Player extends Entities implements Persistable
     private Map<StatType, Integer> statTypeMap;
     
     @SaveExclude
+    private float maximumHealth;
+    @SaveExclude
+    private float armourPenetration;
+    @SaveExclude
+    private float damageMultiplier;
+    @SaveExclude
+    private float armourMultiplier;
+    
+    @SaveExclude
     private List<Item> inventory;
     @SaveExclude
     private List<Armour> equippedArmourPieces;
@@ -37,7 +46,6 @@ public class Player extends Entities implements Persistable
     
     public Player(String playerName, ClassType type)
     {
-        health = 100;
         level = 1;
         xp = 0;
         gold = 0;
@@ -49,6 +57,12 @@ public class Player extends Entities implements Persistable
         statTypeMap.put(STR, type.getStatStrength());
         statTypeMap.put(DEX, type.getStatDexterity());
         statTypeMap.put(INT, type.getStatIntelligence());
+        maximumHealth = 100 * (1 + statTypeMap.get(STR) * 0.05f);
+        armourPenetration = statTypeMap.get(DEX) * 0.005f;
+        damageMultiplier = 1 + statTypeMap.get(INT) * 0.006f;
+        armourMultiplier = 1 + statTypeMap.get(INT) * 0.003f;
+        
+        health = maximumHealth;
         
         equippedWeapon = new Weapon(type.getStartingWeapon(), level);
         equippedWeapon.equip();
@@ -59,7 +73,10 @@ public class Player extends Entities implements Persistable
     public Player(String[] data)
     {
         loadSaveInfo(data);
-        
+        maximumHealth = 100 * (1 + statTypeMap.get(STR) * 0.05f);
+        armourPenetration = statTypeMap.get(DEX) * 0.005f;
+        damageMultiplier = 1 + statTypeMap.get(INT) * 0.006f;
+        armourMultiplier = 1 + statTypeMap.get(INT) * 0.003f;
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
     
@@ -86,31 +103,33 @@ public class Player extends Entities implements Persistable
     public float attack()
     {
         if(equippedWeapon == null) return statTypeMap.get(STR);
-        return equippedWeapon.calculateDamage(statTypeMap.get(equippedWeapon.getScalingStat()));
+        return damageMultiplier * equippedWeapon.calculateDamage(statTypeMap.get(equippedWeapon.getScalingStat()));
     }
     
     public void healing(int healAmount)
     {
-        if (healAmount + health > 100)
+        float healthGain = healAmount * statTypeMap.get(STR) * 0.01f;
+        
+        if (healthGain + health >= maximumHealth)
         {
-            health = 100;
+            health = maximumHealth;
         }
         else
         {
-            health += healAmount;
+            health += healthGain;
         }
     }
     
     @Override
-    public void takeDamage(float damage)
+    public void takeDamage(float damage, float armourPen)
     {
         float totalArmour = 0;
         for (Armour armour : equippedArmourPieces)
         {
-            totalArmour += (1 - totalArmour) * armour.calculateProtection();
+            totalArmour += (1 - totalArmour) * Math.min(armour.calculateProtection() * armourMultiplier, 1);
         }
         
-        health -= Math.round(damage * (1 - totalArmour));
+        health -= Math.round(damage * Math.clamp((1 - totalArmour + armourPen), 0, 1));
         
         if(health <= 0) health = 0;
     }
@@ -129,9 +148,23 @@ public class Player extends Entities implements Persistable
         return level - currentLevel;
     }
     
+    private void recalculateStats()
+    {
+        float ratio = health / maximumHealth;
+        maximumHealth = 100 * (1 + statTypeMap.get(STR) * 0.05f);
+        health = ratio * maximumHealth;
+        armourPenetration = statTypeMap.get(DEX) * 0.005f;
+        damageMultiplier = 1 + statTypeMap.get(INT) * 0.006f;
+        armourMultiplier = 1 + statTypeMap.get(INT) * 0.003f;
+    }
+    
     public void applyGoldGain(int goldGain) { gold += goldGain; }
     
-    public void applyStatGain(StatType stat) { statTypeMap.put(stat, statTypeMap.get(stat) + 1); }
+    public void applyStatGain(StatType stat)
+    {
+        statTypeMap.put(stat, statTypeMap.get(stat) + 1);
+        recalculateStats();
+    }
     
     public PlayerResult<Weapon> getWeaponsInInventory()
     {
@@ -296,6 +329,8 @@ public class Player extends Entities implements Persistable
     public int getXpToLevelUp() { return xpToLevelUp; }
     
     public int getGold() { return gold; }
+    
+    public float getArmourPenetration() { return armourPenetration; }
     
     public Weapon getEquippedWeapon() { return equippedWeapon; }
     

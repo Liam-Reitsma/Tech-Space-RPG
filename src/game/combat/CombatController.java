@@ -87,7 +87,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         StringBuilder message = new StringBuilder();
         CombatOutcome outcome = NOTHING;
         float damage = enemy.attack();
-        player.takeDamage(damage);
+        player.takeDamage(damage, 0);
         message.append(enemy.getName()).append(" attacked you!\n");
         message.append(enemy.getName()).append(" dealt ").append(damage).append(" to you!\n");
         if(player.getHealth() <= 0) outcome = LOSE;
