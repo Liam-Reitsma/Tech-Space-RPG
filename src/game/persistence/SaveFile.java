@@ -102,7 +102,7 @@ public class SaveFile
         {
             if(saveFileLocation.mkdirs()) { return writeWorld(world, listName); }
             return WRITE_ERROR;
-        } catch(IOException e)
+        } catch(IOException | IllegalAccessException e)
         {
             return WRITE_ERROR;
         }
@@ -190,7 +190,7 @@ public class SaveFile
         } catch(IllegalArgumentException e)
         {
             return UNABLE_TO_SAVE;
-        } catch(IOException e)
+        } catch(IOException | IllegalAccessException e)
         {
             return WRITE_ERROR;
         }
