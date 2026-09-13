@@ -34,6 +34,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         {
             if(userTurn)
             {
+                printCombatInfo(player, enemy);
                 outcome = playerTurn(player, enemy);
                 if(outcome != NOTHING)  return new CombatResult(SUCCESS, outcome);
                 userTurn = false;
@@ -47,7 +48,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         }
     }
 
-    public CombatOutcome playerTurn(Player player, Enemy enemy)
+    private CombatOutcome playerTurn(Player player, Enemy enemy)
     {
         Optional<CombatAction> action;
         do
@@ -81,7 +82,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         return result.getOutcome();
     }
 
-    public CombatOutcome enemyTurn(Player player, Enemy enemy)
+    private CombatOutcome enemyTurn(Player player, Enemy enemy)
     {
         StringBuilder message = new StringBuilder();
         CombatOutcome outcome = NOTHING;
@@ -95,7 +96,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         return outcome;
     }
     
-    public CombatErrors getPotionToUse(Player player)
+    private CombatErrors getPotionToUse(Player player)
     {
         Potion[] potions = player.getPotionsInInventory().getResultArray();
         if(potions.length == 0) return NO_POTION_TO_USE;
@@ -114,5 +115,15 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         
         player.setSelectedPotion(potions[choice.get() - 1].getPotionType());
         return SUCCESS;
+    }
+    
+    private void printCombatInfo(Player player, Enemy enemy)
+    {
+        StringBuilder info = new StringBuilder();
+        
+        info.append(player.getName()).append(" has ").append(player.getHealth()).append(" hp remaining!\n");
+        info.append(enemy.getName()).append(" has ").append(enemy.getHealth()).append(" hp remaining!\n");
+        
+        consoleH.printLine(info.toString());
     }
 }
