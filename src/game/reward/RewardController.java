@@ -10,6 +10,8 @@ import game.entities.*;
 import game.entities.player.Player;
 import game.entities.player.PlayerErrors;
 import game.items.EquippableItem;
+import game.items.armour.Armour;
+import game.items.weapon.Weapon;
 
 import java.util.Optional;
 
@@ -72,6 +74,24 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
     
     private RewardResult chestReward(Player player, EquippableItem item)
     {
+        consoleH.printLine("Would you like to pick up the " + item.getName() + "?");
+        if(item instanceof Armour armour)
+        {
+            consoleH.printLine("The protection values is: " + armour.calculateProtection());
+        }
+        else if(item instanceof Weapon weapon)
+        {
+            if(player.addToInventory(weapon) == PlayerErrors.MAX_INVENTORY_REACHED) return new RewardResult(INVENTORY_FULL);
+            player.equipWeapon(weapon);
+            consoleH.printLine("The damage value is: " + player.attack());
+            player.unequipWeapon();
+            player.removeFromInventory(weapon);
+        }
+        
+        Optional<Integer> confirm = consoleH.confirmInput("Would you like to pick up the item?", "Yes|No", "|").getInput();
+        if(confirm.isEmpty()) return new RewardResult(CANNOT_ADD_ITEM);
+        else if(confirm.get() == 2) return new RewardResult(ITEM_DISCARDED);
+        
         PlayerErrors error = player.addToInventory(item);
         return switch(error)
         {
