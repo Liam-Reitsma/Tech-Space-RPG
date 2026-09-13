@@ -248,7 +248,7 @@ public class ConsoleHandler
                     if(iResultChar.isEmpty() || iResultChar.get() == 'n')
                     {
                         printLine("Alright, " + question.toLowerCase() + " then?");
-                        printLine("The options are: " + options);
+                        printLine("The options are:\n" + options);
                         break;
                     }
                     if(iResultChar.get() == 'y') break;
