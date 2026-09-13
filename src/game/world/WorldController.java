@@ -50,7 +50,7 @@ public class WorldController implements Startable<MainMenuStates, Map<Point, Run
     private WorldResult newMap()
     {
         Map<Point, GenerationRoom> generatedMap = worldGenerator.generate();
-        
+        world.clear();
         if(generatedMap.isEmpty()) return new WorldResult(WorldErrors.GENERATING_ERROR, null);
         
         for(Point point : generatedMap.keySet())
@@ -68,11 +68,14 @@ public class WorldController implements Startable<MainMenuStates, Map<Point, Run
     
     private WorldResult loadMapFromSave(Map<Point, RuntimeRoom> loadedWorld)
     {
+        int i = 0;
         for(Map.Entry<Point, RuntimeRoom> room : loadedWorld.entrySet())
         {
             if(room.getKey() == null) return new WorldResult(WorldErrors.LOADING_WORLD_ERROR, null);
+            if(!room.getValue().isCompleted()) i++;
             world.put(room.getKey(), room.getValue());
         }
+            if(i == 0) return newMap();
         
         return new WorldResult(WorldErrors.SUCCESS, null);
     }
