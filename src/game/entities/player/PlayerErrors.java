@@ -22,6 +22,7 @@ public enum PlayerErrors implements Errors
     SAVE_GAME("", NONE),
     RETRY("", NONE),
     USER_WENT_BACK("", NONE),
+    SKIP("", NONE),
     SUCCESS("", NONE);
 
     private final String message;
