@@ -40,11 +40,22 @@ public class SaveFile
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile, true)))
         {
-            writer.write(object.getClass().getSimpleName() + " Data:");
-            writer.newLine();
-            writer.write(object.getSaveInfo());
-            writer.write(INITIAL_PADDING);
-            writer.newLine();
+            if(object == null)
+            {
+                StringBuilder b = new StringBuilder();
+                writer.write("Weapon Data:");
+                writer.newLine();
+                writer.write(b.repeat(" ", 100).toString());
+                writer.newLine();
+            }
+            else
+            {
+                writer.write(object.getClass().getSimpleName() + " Data:");
+                writer.newLine();
+                writer.write(object.getSaveInfo());
+                writer.write(INITIAL_PADDING);
+                writer.newLine();
+            }
             
             return SUCCESS;
         } catch(FileNotFoundException e)
