@@ -15,6 +15,8 @@ public class Main
 {
     public static void main(String[] args)
     {
+        System.out.println(intro);
+        
         Scanner scanner = new Scanner(System.in);
         ConsoleHandler consoleH = new ConsoleHandler(scanner);
         SaveFile saveFile = new SaveFile();
@@ -33,4 +35,8 @@ public class Main
         scanner.close();
         System.exit(exitValue);
     }
+    
+    private static final String intro =
+    "Welcome to Tech Space.\nUse '~' whenever you wish to go back." +
+        "Select an Option:";
 }
