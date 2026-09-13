@@ -85,7 +85,7 @@ public class GameController
         {
             WorldResult worldR= worldC.loop();
             if(worldR.getError() != WorldErrors.SUCCESS) return 3;
-            RoomResult roomR = roomC.loop(worldR.getRoom());
+            RoomResult roomR = roomC.loop(worldR.getRoom(), player);
             if(roomR.getError()  != WorldErrors.SUCCESS) return 4;
             
             CombatResult combatR;
