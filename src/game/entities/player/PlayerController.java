@@ -42,7 +42,22 @@
                 case SKIP_MENU -> new PlayerResult<Void>(SKIP);
                 case VIEW_INVENTORY ->
                 {
-                    for(Item item : player.getInventory()) consoleH.printLine(item.getName());
+                    for(Item item : player.getInventory())
+                    {
+                        if(item instanceof Weapon weapon)
+                        {
+                            consoleH.printLine(weapon.getName() + "(" + player.attack() + " damage)");
+                        }
+                        else if(item instanceof Armour armour)
+                        {
+                            consoleH.printLine(armour.getName() + "(" + armour.calculateProtection() + " armour)");
+                        }
+                        else
+                        {
+                            consoleH.printLine(item.getName());
+                        }
+                    }
+
                     yield new PlayerResult<Void>(RETRY);
                 }
                 case EQUIP_WEAPON ->
@@ -59,10 +74,10 @@
                     int i = 1;
                     for(Weapon weapon : result.getResultArray())
                     {
-                        weaponOptions.append(i++).append(". ").append(weapon.getName()).append(", ");
+                        weaponOptions.append(i++).append(". ").append(weapon.getName()).append("(").append(player.attack()).append(" damage)").append(", ");
                     }
                     
-                    weaponOptions.delete(", ".length() + 1, weaponOptions.length());
+                    weaponOptions.delete(weaponOptions.length() - ", ".length(), weaponOptions.length());
                     
                     Optional<Integer> choice = consoleH.confirmInput("Which weapon would you like to equip?", weaponOptions.toString(), ", ").getInput();
                     if(choice.isEmpty()) yield new PlayerResult<>(USER_WENT_BACK);
@@ -99,10 +114,10 @@
                     int i = 1;
                     for(Armour armour : result.getResultArray())
                     {
-                        armourOptions.append(i++).append(". ").append(armour.getName()).append(", ");
+                        armourOptions.append(i++).append(". ").append(armour.getName()).append("(").append(armour.calculateProtection()).append(" armour)").append(", ");
                     }
                     
-                    armourOptions.delete(", ".length() + 1, armourOptions.length());
+                    armourOptions.delete(armourOptions.length() - ", ".length(), armourOptions.length());
                     
                     Optional<Integer> choice = consoleH.confirmInput("Which armour would you like to equip?", armourOptions.toString(), ", ").getInput();
                     if(choice.isEmpty()) yield new PlayerResult<>(USER_WENT_BACK);
