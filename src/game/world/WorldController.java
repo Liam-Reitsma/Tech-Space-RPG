@@ -1,6 +1,7 @@
 package game.world;
 
 import static game.world.RoomType.*;
+import static game.world.WorldErrors.*;
 
 import game.ConsoleHandler;
 import game.Loopable;
@@ -37,6 +38,11 @@ public class WorldController implements Startable<MainMenuStates, Map<Point, Run
     public WorldResult start(MainMenuStates state, Map<Point, RuntimeRoom> loadedWorld)
     {
         if(state == MainMenuStates.NEW_GAME) return newMap();
+        if(loadedWorld == null)
+        {
+            consoleH.printLine(LOADING_WORLD_ERROR.getMessage());
+            return new WorldResult(LOADING_WORLD_ERROR, null);
+        }
         else return loadMapFromSave(loadedWorld);
     }
     
