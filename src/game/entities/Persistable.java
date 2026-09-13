@@ -48,8 +48,8 @@ public interface Persistable
         {
             for(String datum : data)
             {
-                name = datum.split(String.valueOf(FIELD_SEPARATOR))[0];
-                value = datum.split(String.valueOf(FIELD_SEPARATOR))[1];
+                name = datum.split(String.valueOf(FIELD_SEPARATOR))[0].trim();
+                value = datum.split(String.valueOf(FIELD_SEPARATOR))[1].trim();
                 
                 for(Field field : current.getDeclaredFields())
                 {
@@ -118,10 +118,5 @@ public interface Persistable
             
             current = current.getSuperclass();
         }
-    }
-    
-    default String getClassName()
-    {
-        return this.getClass().getSimpleName();
     }
 }
