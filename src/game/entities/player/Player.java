@@ -306,5 +306,9 @@ public class Player extends Entities implements Persistable
     
     public List<Armour> getEquippedArmour() { return equippedArmour; }
     
-    public PlayerResult<PotionType> getSelectedPotion() { return new PlayerResult<>(SUCCESS, new PotionType[]{selectedPotionType}); }
+    public PlayerResult<Potion> getSelectedPotion()
+    {
+        if(selectedPotionType == null) return new PlayerResult<>(NO_POTION_SELECTED, new Potion[0]);
+        return new PlayerResult<>(SUCCESS, new Potion[]{new Potion(selectedPotionType)});
+    }
 }
