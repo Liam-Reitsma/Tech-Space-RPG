@@ -24,7 +24,7 @@ public class Enemy extends Entities implements Persistable
     public Enemy(String[] data) { loadSaveInfo(data); }
 
     @Override
-    public float attack() { return damage; }
+    public float attack() { return Math.round(damage * 10000f) / 10000f; }
 
     @Override
     public void takeDamage(float damage, float armorPen)
