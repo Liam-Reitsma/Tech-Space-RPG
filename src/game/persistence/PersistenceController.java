@@ -235,7 +235,6 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
         error = saveF.clearFile();
         if(error != SUCCESS) return new PersistenceResult(error);
         
-        
         error = saveF.writeObject(player);
         if(error != SUCCESS) return new PersistenceResult(error);
         
