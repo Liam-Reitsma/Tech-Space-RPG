@@ -59,7 +59,7 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
                         else i -= 2;
                         break;
                     case 2:
-                        Optional<ClassType> userInputClass = consoleH.confirmInput("What class do you want?", ClassType.optionsToString(), ClassType.class).getInput();
+                        Optional<ClassType> userInputClass = consoleH.confirmInputInteger("What class do you want?", ClassType.optionsToString(), ClassType.class).getInput();
                         if(userInputClass.isPresent()) classType = userInputClass.get();
                         else i -= 2;
                         break;
