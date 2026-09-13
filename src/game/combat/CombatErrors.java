@@ -7,6 +7,7 @@ import game.Errors;
 
 public enum CombatErrors implements Errors
 {
+    NO_POTION_TO_USE("You have no potions to use!", RECOVERABLE),
     SUCCESS("", NONE);
 
     private final String message;
