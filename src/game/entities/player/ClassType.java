@@ -42,7 +42,7 @@ public enum ClassType
     public static String optionsToString()
     {
         StringBuilder result = new StringBuilder();
-        int i = 0;
+        int i = 1;
         for(ClassType type : ClassType.values())
         {
             if(type == UNSELECTED) continue;
