@@ -38,7 +38,7 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
             if(result.getError().getSeverity() == RECOVERABLE)
             {
                 consoleH.printLine(result.getError().getMessage());
-                Optional<Integer> response = consoleH.confirmInput("Would you like to Clean your Inventory, or Discard this Item?", "Fix Inventory|Discard", "|").getInput();
+                Optional<Integer> response = consoleH.confirmInput("Would you like to Clean your Inventory, or Discard this Item?", "1. Fix Inventory\n2. Discard", "\n").getInput();
                 if(response.isEmpty() || response.get() == 1) return new RewardResult(CLEARING_INVENTORY);
                 else if(response.get() == 2) return new RewardResult(ITEM_DISCARDED);
             }
@@ -93,7 +93,7 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
             player.removeFromInventory(weapon);
         }
         
-        Optional<Integer> confirm = consoleH.confirmInput("Would you like to pick up the item?", "Yes|No", "|").getInput();
+        Optional<Integer> confirm = consoleH.confirmInput("Would you like to pick up the item?", "1.Yes\n2.No", "\n").getInput();
         if(confirm.isEmpty()) return new RewardResult(CANNOT_ADD_ITEM);
         else if(confirm.get() == 2) return new RewardResult(ITEM_DISCARDED);
         

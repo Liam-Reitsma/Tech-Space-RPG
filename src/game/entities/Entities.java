@@ -7,7 +7,7 @@ public abstract class Entities
     protected float health;
     
     public abstract float attack();
-    public abstract void takeDamage(float damage);
+    public abstract void takeDamage(float damage, float armourPen);
     
     public String getName() { return name; }
     

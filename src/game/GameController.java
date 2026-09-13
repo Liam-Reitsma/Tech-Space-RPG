@@ -66,6 +66,7 @@ public class GameController
             }
             
             player = pResult.getPlayer();
+            if(player.getHealth() <= 0) return 8;
             playerC.start(player);
             
             if(mmResult.getStateUsed() == MainMenuStates.NEW_GAME)
@@ -126,7 +127,11 @@ public class GameController
             
             RewardResult rewardR = null;
             if(combatR == null || combatR.getError() != CombatErrors.SUCCESS) return 5;
-            if(combatR.getCombatOutcome() == CombatOutcome.LOSE) isAlive = false;
+            if(combatR.getCombatOutcome() == CombatOutcome.LOSE)
+            {
+                rewardR = new RewardResult(RewardErrors.SUCCESS);
+                isAlive = false;
+            }
             else if(combatR.getCombatOutcome() != CombatOutcome.FLEE)
             {
                 do
@@ -147,7 +152,7 @@ public class GameController
             else rewardR = new RewardResult(RewardErrors.SUCCESS);
             if(rewardR == null || rewardR.getError() != RewardErrors.SUCCESS) return 6;
             PersistenceResult persistenceR = persistenceC.loop(player, worldR.getRoom());
-            if(persistenceR.getError() != PersistenceErrors.SUCCESS) return 6;
+            if(persistenceR.getError() != PersistenceErrors.SUCCESS) return 7;
         }
         
         return 0;

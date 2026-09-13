@@ -42,7 +42,11 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
             else
             {
                 outcome = enemyTurn(player, enemy);
-                if(outcome != NOTHING) return new CombatResult(SUCCESS, outcome);
+                if(outcome != NOTHING)
+                {
+                    consoleH.printLine(outcome.getMessage());
+                    return new CombatResult(SUCCESS, outcome);
+                }
                 userTurn = true;
             }
         }
@@ -87,7 +91,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         StringBuilder message = new StringBuilder();
         CombatOutcome outcome = NOTHING;
         float damage = enemy.attack();
-        player.takeDamage(damage);
+        player.takeDamage(damage, 0);
         message.append(enemy.getName()).append(" attacked you!\n");
         message.append(enemy.getName()).append(" dealt ").append(damage).append(" to you!\n");
         if(player.getHealth() <= 0) outcome = LOSE;
@@ -121,7 +125,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
     {
         StringBuilder info = new StringBuilder();
         
-        info.append(player.getName()).append(" has ").append((int)player.getHealth()).append(" hp remaining!\n");
+        info.append(player.getName()).append(" has ").append((int)player.getHealth()).append("/").append((int)player.getMaximumHealth()).append("!\n");
         info.append(enemy.getName()).append(" has ").append((int)enemy.getHealth()).append(" hp remaining!\n");
         
         consoleH.printLine(info.toString());

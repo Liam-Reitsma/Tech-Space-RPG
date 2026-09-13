@@ -136,15 +136,11 @@
                         consoleH.printLine(NO_ARMOUR_EQUIPPED.getMessage());
                         yield new PlayerResult<>(NO_ARMOUR_EQUIPPED);
                     }
-                    
                     StringBuilder armourOptions = new StringBuilder();
-                    String armourString = armourList.toString();
-                    String armourSplit = armourString.substring(1, armourString.length() - 1);
                     int i = 1;
-                    
-                    for(String armour : armourSplit.split(", "))
+                    for(Armour armour : armourList)
                     {
-                        armourOptions.append(i++).append(". ").append(armour).append(", ");
+                        armourOptions.append(i++).append(". ").append(armour.getName()).append("(").append(armour.calculateProtection()).append(" armour)").append(", ");
                     }
                     
                     Optional<Integer> choice = consoleH.confirmInput("Which armour would you like to unequip?", armourOptions.toString(), ", ").getInput();

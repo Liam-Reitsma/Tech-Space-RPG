@@ -21,7 +21,7 @@ public enum CombatAction implements Actionable
                 CombatOutcome outcome = NOTHING;
                 String equippedWeaponName = player.getEquippedWeapon() == null ? "fists" : player.getEquippedWeapon().getName();
                 float damage = player.attack();
-                enemy.takeDamage(damage);
+                enemy.takeDamage(damage, player.getArmourPenetration());
                 message.append("You used ").append(equippedWeaponName).append(" to attack ").append(enemy.getName()).append("!\n");
                 message.append("You dealt ").append(damage).append("!\n");
                 if(enemy.getHealth() <= 0) outcome = WIN;
