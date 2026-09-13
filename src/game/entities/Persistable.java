@@ -1,5 +1,7 @@
 package game.entities;
 
+import game.world.Point;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,6 +74,10 @@ public interface Persistable
                             else if(field.getType().equals(boolean.class))
                             {
                                 field.set(this, Boolean.parseBoolean(value));
+                            }
+                            else if(field.getType().equals(Point.class))
+                            {
+                                field.set(this, Point.parsePoint(value));
                             }
                             else if(field.getType().equals(Map.class))
                             {
