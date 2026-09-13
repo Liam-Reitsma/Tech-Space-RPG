@@ -20,7 +20,7 @@ public class Armour extends EquippableItem
         loadSaveInfo(data);
     }
     
-    public float calculateProtection() { return armourSlot.getProtWeight() * armourMaterial.getProtValue(); }
+    public float calculateProtection() { return Math.round(armourSlot.getProtWeight() * armourMaterial.getProtValue() * 10000f) / 10000f; }
     
     public ArmourMaterial getArmourMaterial() { return armourMaterial; }
     
