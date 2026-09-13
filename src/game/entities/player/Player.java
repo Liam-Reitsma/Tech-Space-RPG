@@ -168,13 +168,10 @@ public class Player extends Entities implements Persistable
             {
                 equippedWeapon.unequip();
                 inventory.add(equippedWeapon);
-                equippedWeapon = weapon;
-                inventory.remove(weapon);
-                weapon.equip();
-                return SUCCESS;
             }
             
             equippedWeapon = weapon;
+            inventory.remove(weapon);
             weapon.equip();
             return SUCCESS;
         }
