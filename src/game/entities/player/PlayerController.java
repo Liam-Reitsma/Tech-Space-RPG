@@ -48,7 +48,11 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
             case EQUIP_WEAPON ->
             {
                 PlayerResult<Weapon> result = player.getWeaponsInInventory();
-                if(result.getError() != SUCCESS) yield new PlayerResult<>(result.getError());
+                if(result.getError() != SUCCESS)
+                {
+                    consoleH.printLine(result.getError().getMessage());
+                    yield new PlayerResult<>(result.getError());
+                }
                 
                 StringBuilder weaponOptions = new StringBuilder();
                 String weaponsString = Arrays.toString(result.getResultArray());
@@ -85,7 +89,11 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
             case EQUIP_ARMOR ->
             {
                 PlayerResult<Armour> result = player.getArmourInInventory();
-                if(result.getError() != SUCCESS) yield new PlayerResult<>(result.getError());
+                if(result.getError() != SUCCESS)
+                {
+                    consoleH.printLine(result.getError().getMessage());
+                    yield new PlayerResult<>(result.getError());
+                }
                 
                 StringBuilder armourOptions = new StringBuilder();
                 String armourString = Arrays.toString(result.getResultArray());
@@ -107,7 +115,11 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
             case UNEQUIP_ARMOR ->
             {
                 List<Armour> armourList = player.getEquippedArmour();
-                if(armourList.isEmpty()) yield new PlayerResult<>(NO_ARMOUR_EQUIPPED);
+                if(armourList.isEmpty())
+                {
+                    consoleH.printLine(NO_ARMOUR_EQUIPPED.getMessage());
+                    yield new PlayerResult<>(NO_ARMOUR_EQUIPPED);
+                }
                 
                 StringBuilder armourOptions = new StringBuilder();
                 String armourString = armourList.toString();
