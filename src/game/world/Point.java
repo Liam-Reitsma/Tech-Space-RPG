@@ -41,26 +41,6 @@ public class Point
         return (((Point)otherPoint).getX() == this.getX() && ((Point)otherPoint).getY() == this.getY());
     }
     
-    @Override
-    public String toString()
-    {
-        return x + "&" + y;
-    }
-    
-    public static Point parsePoint(String data)
-    {
-        try
-        {
-            int dx = Integer.parseInt(data.split("&")[0]);
-            int dy = Integer.parseInt(data.split("&")[1]);
-            
-            return new Point(dx, dy);
-        } catch(RuntimeException e)
-        {
-            return null;
-        }
-    }
-    
     public static Point[] getOrthogonalPoints(Point playerPoint)
     {
         Point[] orthogonalPoints = new Point[4];
@@ -71,5 +51,25 @@ public class Point
         orthogonalPoints[3] = new Point(playerPoint.x - 1, playerPoint.y);
         
         return orthogonalPoints;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return x + "&" + y;
+    }
+    
+    public static Point parsePoint(String data)
+    {
+        try
+        {
+            int dx = Integer.parseInt(data.trim().split("&")[0]);
+            int dy = Integer.parseInt(data.trim().split("&")[1]);
+            
+            return new Point(dx, dy);
+        } catch(RuntimeException e)
+        {
+            return null;
+        }
     }
 }
