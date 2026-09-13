@@ -50,7 +50,8 @@ public class Player extends Entities implements Persistable
         statTypeMap.put(DEX, type.getStatDexterity());
         statTypeMap.put(INT, type.getStatIntelligence());
         
-        equippedWeapon = new Weapon(type.getWeapon(), level);
+        equippedWeapon = new Weapon(type.getStartingWeapon(), level);
+        equippedWeapon.equip();
         
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
