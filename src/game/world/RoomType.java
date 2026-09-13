@@ -66,22 +66,5 @@ public enum RoomType
     }
     
     @Override
-    public String toString()
-    {
-        return name().charAt(0) + name().substring(1).toLowerCase();
-    }
-    
-    public static int maxToStringLength() { return MINIBOSS.toString().length(); }
-    
-    public static RoomType parseRoom(String data)
-    {
-        return switch(data)
-        {
-            case "Combat" -> COMBAT;
-            case "Chest" -> CHEST;
-            case "Miniboss" -> MINIBOSS;
-            case "Boss" -> BOSS;
-            default -> EMPTY;
-        };
-    }
+    public String toString() { return name().charAt(0) + name().substring(1).toLowerCase(); }
 }
