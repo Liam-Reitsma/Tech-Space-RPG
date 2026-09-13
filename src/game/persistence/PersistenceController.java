@@ -89,7 +89,7 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
                 result = userInput.get();
                 break;
             }
-            else consoleH.printLine(saveF.createNewSave(userInput.get()).toString());
+            else consoleH.printLine(saveF.createNewSave(userInput.get()).getMessage());
         } while(true);
         
         return result;
