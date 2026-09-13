@@ -62,8 +62,10 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
                 
                 Optional<Integer> choice = consoleH.confirmInput("Which weapon would you like to equip?", weaponOptions.toString(), ", ").getInput();
                 if(choice.isEmpty()) yield new PlayerResult<>(USER_WENT_BACK);
+                PlayerErrors error = player.equipWeapon(result.getResultArray()[choice.get() - 1]);
+                if(error != SUCCESS) consoleH.printLine(error.getMessage());
                 
-                yield new PlayerResult<>(player.equipWeapon(result.getResultArray()[choice.get() - 1]));
+                yield new PlayerResult<>(error);
             }
             case UNEQUIP_WEAPON ->
             {
@@ -97,8 +99,10 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
                 
                 Optional<Integer> choice = consoleH.confirmInput("Which armour would you like to equip?", armourOptions.toString(), ", ").getInput();
                 if(choice.isEmpty()) yield new PlayerResult<>(USER_WENT_BACK);
+                PlayerErrors error = player.equipArmour(result.getResultArray()[choice.get() - 1]);
+                if(error != SUCCESS) consoleH.printLine(error.getMessage());
                 
-                yield new PlayerResult<>(player.equipArmour(result.getResultArray()[choice.get() - 1]));
+                yield new PlayerResult<>(error);
             }
             case UNEQUIP_ARMOR ->
             {
