@@ -1,7 +1,6 @@
 package game.persistence;
 
 import game.entities.Persistable;
-import game.entities.player.Player;
 import game.items.Item;
 import game.world.RuntimeRoom;
 
@@ -41,11 +40,15 @@ public class SaveFile
     {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(saveFile, true)))
         {
-            writer.write(object.getClass().getSimpleName() + " Data:");
-            writer.newLine();
-            writer.write(object.getSaveInfo());
-            writer.write(INITIAL_PADDING);
-            writer.newLine();
+            if(object == null) return SUCCESS;
+            else
+            {
+                writer.write(object.getClass().getSimpleName() + " Data:");
+                writer.newLine();
+                writer.write(object.getSaveInfo());
+                writer.write(INITIAL_PADDING);
+                writer.newLine();
+            }
             
             return SUCCESS;
         } catch(FileNotFoundException e)
@@ -103,7 +106,7 @@ public class SaveFile
         {
             if(saveFileLocation.mkdirs()) { return writeWorld(world, listName); }
             return WRITE_ERROR;
-        } catch(IOException e)
+        } catch(IOException | IllegalAccessException e)
         {
             return WRITE_ERROR;
         }
@@ -130,25 +133,26 @@ public class SaveFile
         }
     }
     
-    public PersistenceErrors writeDeltaPlayer(Player player)
+    public PersistenceErrors writeDeltaObject(Persistable object)
     {
         try(RandomAccessFile fileEditor = new RandomAccessFile(saveFile, "rw"))
         {
             String line;
-            String playerLine;
-            String info = player.getSaveInfo();
+            String objectLine;
+            String info = object.getSaveInfo();
+            String searchString = object.getClass().getSimpleName().toLowerCase();
             
             do
             {
                 line = fileEditor.readLine();
                 if(line == null) return SAVE_FILE_CORRUPTED;
-            } while(!line.toLowerCase().startsWith("player"));
+            } while(!line.toLowerCase().startsWith(searchString));
             
             long startLine = fileEditor.getFilePointer();
             
-            playerLine = fileEditor.readLine();
-            if(playerLine == null) return SAVE_FILE_CORRUPTED;
-            String padding = " ".repeat(playerLine.length() - info.length());
+            objectLine = fileEditor.readLine();
+            if(objectLine == null) return SAVE_FILE_CORRUPTED;
+            String padding = " ".repeat(objectLine.length() - info.length());
             
             
             fileEditor.seek(startLine);
@@ -181,11 +185,16 @@ public class SaveFile
                 if(line == null) return SAVE_FILE_CORRUPTED;
             } while(!line.toLowerCase().contains(info.substring(dsOne, dsTwo)));
             
+            String padding = " ".repeat(line.length() - info.length());
+            
             fileEditor.seek(startLine);
-            fileEditor.write(info.getBytes(StandardCharsets.UTF_8));
+            fileEditor.write((info + padding).getBytes(StandardCharsets.UTF_8));
             
             return SUCCESS;
-        } catch(IOException e)
+        } catch(IllegalArgumentException e)
+        {
+            return UNABLE_TO_SAVE;
+        } catch(IOException | IllegalAccessException e)
         {
             return WRITE_ERROR;
         }

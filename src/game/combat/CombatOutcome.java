@@ -4,7 +4,9 @@ public enum CombatOutcome
 {
     WIN("You Win."),
     LOSE("You Lose."),
-    FLEE("You Ran Away."),;
+    FLEE("You Ran Away."),
+    USER_WENT_BACK(""),
+    NOTHING("");
 
     private final String message;
 
@@ -13,9 +15,5 @@ public enum CombatOutcome
         message = s;
     }
 
-    @Override
-    public String toString()
-    {
-        return message;
-    }
+    public String getMessage() { return message; }
 }

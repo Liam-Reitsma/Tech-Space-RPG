@@ -32,8 +32,14 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
     @Override
     public PersistenceResult start(MainMenuStates state, Void input2)
     {
-        if(state == MainMenuStates.NEW_GAME) return createNewGame();
-        else return loadSaveGame();
+        if(state == MainMenuStates.LOAD_GAME)
+        {
+            PersistenceResult result = loadSaveGame();
+            if(result.getError() == SUCCESS) return result;
+            consoleH.printLine(result.getError().getMessage());
+            return result;
+        }
+        else return createNewGame();
     }
     
     public PersistenceResult createNewGame()
@@ -59,7 +65,7 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
                         else i -= 2;
                         break;
                     case 2:
-                        Optional<ClassType> userInputClass = consoleH.confirmInput("What class do you want?", "Warrior, Rogue, or Mage", ClassType.class).getInput();
+                        Optional<ClassType> userInputClass = consoleH.confirmInputInteger("What class do you want?", ClassType.optionsToString(), ClassType.class).getInput();
                         if(userInputClass.isPresent()) classType = userInputClass.get();
                         else i -= 2;
                         break;
@@ -89,7 +95,7 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
                 result = userInput.get();
                 break;
             }
-            else consoleH.printLine(saveF.createNewSave(userInput.get()).toString());
+            else consoleH.printLine(saveF.createNewSave(userInput.get()).getMessage());
         } while(true);
         
         return result;
@@ -235,7 +241,6 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
         error = saveF.clearFile();
         if(error != SUCCESS) return new PersistenceResult(error);
         
-        
         error = saveF.writeObject(player);
         if(error != SUCCESS) return new PersistenceResult(error);
         
@@ -272,7 +277,7 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
     
     public PersistenceResult updatePlayerStatus(Player player)
     {
-        return new PersistenceResult(saveF.writeDeltaPlayer(player));
+        return new PersistenceResult(saveF.writeDeltaObject(player));
     }
     
     public PersistenceResult updateRoomStatus(RuntimeRoom room)

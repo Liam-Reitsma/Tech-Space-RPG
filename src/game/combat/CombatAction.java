@@ -1,90 +1,69 @@
 package game.combat;
 
+import static game.combat.CombatOutcome.*;
+
 import game.entities.player.Player;
+import game.entities.player.PlayerErrors;
+import game.entities.player.PlayerResult;
 import game.items.*;
 import game.entities.*;
-import game.ConsoleHandler;
-import game.items.weapon.Weapon;
 
 import java.util.*;
 
-public enum CombatAction
+public enum CombatAction implements Actionable
 {
-    FIGHT("Fight")
+    ATTACK
         {
             @Override
-            public ActionDecider execute(ConsoleHandler consoleH, Player player, Enemy opponent)
+            public ActionResult doAction(Player player, Enemy enemy)
             {
-                Optional<Weapon> equippedWeaponDamage = player.getEquippedWeapon();
-                int damageDealt = player.getStats()[0];
-                if (equippedWeaponDamage.isPresent())
-                {
-                    damageDealt += equippedWeaponDamage.get().use();
-                }
-                opponent.takeDamage(damageDealt);
-
-                String message =  "Dealt: " +  damageDealt + "\n Opponent Health: " + opponent.getHealth();
-                return new ActionDecider(message, Optional.empty());
+                StringBuilder message = new StringBuilder();
+                CombatOutcome outcome = NOTHING;
+                String equippedWeaponName = player.getEquippedWeapon() == null ? "fists" : player.getEquippedWeapon().getName();
+                float damage = player.attack();
+                enemy.takeDamage(damage);
+                message.append("You used ").append(equippedWeaponName).append(" to attack ").append(enemy.getName()).append("!\n");
+                message.append("You dealt ").append(damage).append("!\n");
+                if(enemy.getHealth() <= 0) outcome = WIN;
+                
+                return new ActionResult(outcome, message.toString());
             }
-        }
-    , RUN("Run")
+        },
+    RUN
         {
             @Override
-            public ActionDecider execute(ConsoleHandler consoleH, Player player, Enemy opponent)
+            public ActionResult doAction(Player player, Enemy enemy)
             {
-                return new ActionDecider("You ran Away.", Optional.of(CombatOutcome.FLEE));
+                return new ActionResult(FLEE, "You ran away!");
             }
-        }
-    , USE_ITEM("Use Item")
+        },
+    HEAL
         {
             @Override
-            public ActionDecider execute(ConsoleHandler consoleH, Player player, Enemy opponent)
+            public ActionResult doAction(Player player, Enemy enemy)
             {
-                int response;
-                List<Item> usableItems = new ArrayList<>();
-                for (Item item : player.getInventory())
-                {
-                    if (item instanceof Potion)
-                    {
-                        usableItems.add(item);
-                    }
-                }
-                do
-                {
-                    consoleH.printLine("What potion would you like to use? Press '~' to go back.");
-                    for (int i = 1; i <= usableItems.size(); i++)
-                    {
-                        consoleH.printLine(i + ". " + usableItems.get(i-1).toString());
-                    }
-
-                    Optional<Integer> userInput = consoleH.nextInt().getInput();
-                    if (userInput.isEmpty()) break;
-                    response = userInput.get();
-                    if (response > 0 && response <= usableItems.size())
-                    {
-                        Item chosenItem = usableItems.get(response - 1);
-                        player.healing(((Potion) chosenItem).use());
-                        player.removeFromInventory(chosenItem);
-                        String message = chosenItem.toString() + " has been used.";
-                        return new ActionDecider(message, Optional.empty());
-                    }
-                } while(true);
-                String message =  "Going back.";
-                return new  ActionDecider(message, Optional.empty());
+                PlayerResult<Potion> result = player.getSelectedPotion();
+                if(result.getError() != PlayerErrors.SUCCESS) return new ActionResult(USER_WENT_BACK, "No potion was selected!");
+                Potion potionUsed = result.getResultArray()[0];
+                if(player.removeFromInventory(potionUsed) != PlayerErrors.SUCCESS) return new ActionResult(USER_WENT_BACK, "Something went wrong!");
+                player.healing(potionUsed.use());
+                player.setSelectedPotion(null);
+                return new ActionResult(NOTHING, "You healed for " + potionUsed.use() + "hp!");
             }
         };
-
-    private final String option;
-    public abstract ActionDecider execute(ConsoleHandler consoleH, Player player, Enemy opponent);
-
-
-    CombatAction(String m)
-    {
-        option = m;
-    }
+    
     @Override
-    public String toString()
+    public String toString() { return name().charAt(0) + name().substring(1).toLowerCase(); }
+    
+    public static String optionsToString()
     {
-        return option;
+        StringBuilder result = new StringBuilder();
+        int i = 1;
+        for(CombatAction action : CombatAction.values())
+        {
+            result.append(i++).append(". ").append(action.toString()).append("\n");
+        }
+        result.deleteCharAt(result.length() - 1);
+        return result.toString();
     }
 }

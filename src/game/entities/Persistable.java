@@ -1,5 +1,7 @@
 package game.entities;
 
+import game.world.Point;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,9 +24,9 @@ public interface Persistable
             for(Field field : current.getDeclaredFields())
             {
                 if(field.isAnnotationPresent(SaveExclude.class)) continue;
-                if(field.getType() == Map.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this).toString()).append(DATA_SEPARATOR);
                 field.setAccessible(true);
-                if(field.getType() == float.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(Math.round((float)field.get(this))).append(DATA_SEPARATOR);
+                if(field.getType() == Map.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this).toString()).append(DATA_SEPARATOR);
+                else if(field.getType() == float.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(Math.round((float)field.get(this))).append(DATA_SEPARATOR);
                 else saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this)).append(DATA_SEPARATOR);
             }
             
@@ -46,8 +48,8 @@ public interface Persistable
         {
             for(String datum : data)
             {
-                name = datum.split(String.valueOf(FIELD_SEPARATOR))[0];
-                value = datum.split(String.valueOf(FIELD_SEPARATOR))[1];
+                name = datum.split(String.valueOf(FIELD_SEPARATOR))[0].trim();
+                value = datum.split(String.valueOf(FIELD_SEPARATOR))[1].trim();
                 
                 for(Field field : current.getDeclaredFields())
                 {
@@ -72,6 +74,10 @@ public interface Persistable
                             else if(field.getType().equals(boolean.class))
                             {
                                 field.set(this, Boolean.parseBoolean(value));
+                            }
+                            else if(field.getType().equals(Point.class))
+                            {
+                                field.set(this, Point.parsePoint(value));
                             }
                             else if(field.getType().equals(Map.class))
                             {
@@ -112,10 +118,5 @@ public interface Persistable
             
             current = current.getSuperclass();
         }
-    }
-    
-    default String getClassName()
-    {
-        return this.getClass().getSimpleName();
     }
 }

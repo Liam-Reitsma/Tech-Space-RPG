@@ -22,6 +22,7 @@ public enum MainMenuStates
         {
             result.append(i++).append(". ").append(state.toString()).append("\n");
         }
+        result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
 }

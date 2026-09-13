@@ -19,8 +19,6 @@ public class MainMenuController implements Startable<Void, Void, MainMenuResult>
     @Override
     public MainMenuResult start(Void input1, Void input2)
     {
-        consoleH.printLine("Welcome to Tech Space.\nUse '~' whenever you wish to go back.");
-        consoleH.printLine("Select an Option:");
         Optional<MainMenuStates> response = consoleH.confirmInputInteger("What would you like to do?", MainMenuStates.optionsToString(), MainMenuStates.class).getInput();
         if(response.isEmpty()) return new MainMenuResult(USER_WENT_BACK, MainMenuStates.EXIT_GAME);
         else return new MainMenuResult(SUCCESS, response.get());

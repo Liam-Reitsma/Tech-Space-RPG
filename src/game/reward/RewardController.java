@@ -8,7 +8,10 @@ import game.ConsoleHandler;
 import game.Loopable;
 import game.entities.*;
 import game.entities.player.Player;
+import game.entities.player.PlayerErrors;
 import game.items.EquippableItem;
+import game.items.armour.Armour;
+import game.items.weapon.Weapon;
 
 import java.util.Optional;
 
@@ -45,27 +48,56 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
     
     private RewardResult enemyReward(Player player, Enemy enemy)
     {
-        int levelChange = player.applyXP(enemy.getXP());
+        consoleH.printLine("You got " + enemy.getXP() + " XP from " + enemy.getName() + "!");
+        consoleH.printLine(enemy.getName() + " also dropped " + enemy.getGold() + " gold!");
+        int levelChange = player.applyXPGain(enemy.getXP());
+        
+        if(levelChange == 1) consoleH.printLine("You levelled up one time!");
+        else if(levelChange > 1) consoleH.printLine("You levelled up " + levelChange + " times!");
         
         for (int i = 0; i < levelChange; i++) {
             Optional<StatType> userInput;
             do
             {
-                userInput = consoleH.confirmInput("Which stat would you like to level up?", StatType.optionsToString(), StatType.class).getInput();
+                userInput = consoleH.confirmInputInteger("Which stat would you like to level up?", StatType.optionsToString(), StatType.class).getInput();
                 if (userInput.isEmpty()) consoleH.printLine("You need to enter a stat type.");
                 else
                 {
-                    player.addStat(userInput.get());
+                    player.applyStatGain(userInput.get());
                     break;
                 }
             } while (true);
         }
-        player.addGold(enemy.getGold());
+        player.applyGoldGain(enemy.getGold());
         return new RewardResult(SUCCESS);
     }
     
     private RewardResult chestReward(Player player, EquippableItem item)
     {
-        return player.addToInventory(item) ?  new RewardResult(SUCCESS) :  new RewardResult(INVENTORY_FULL);
+        consoleH.printLine("Would you like to pick up the " + item.getName() + "?");
+        if(item instanceof Armour armour)
+        {
+            consoleH.printLine("The protection values is: " + armour.calculateProtection());
+        }
+        else if(item instanceof Weapon weapon)
+        {
+            if(player.addToInventory(weapon) == PlayerErrors.MAX_INVENTORY_REACHED) return new RewardResult(INVENTORY_FULL);
+            player.equipWeapon(weapon);
+            consoleH.printLine("The damage value is: " + player.attack());
+            player.unequipWeapon();
+            player.removeFromInventory(weapon);
+        }
+        
+        Optional<Integer> confirm = consoleH.confirmInput("Would you like to pick up the item?", "Yes|No", "|").getInput();
+        if(confirm.isEmpty()) return new RewardResult(CANNOT_ADD_ITEM);
+        else if(confirm.get() == 2) return new RewardResult(ITEM_DISCARDED);
+        
+        PlayerErrors error = player.addToInventory(item);
+        return switch(error)
+        {
+            case SUCCESS -> new RewardResult(SUCCESS);
+            case MAX_INVENTORY_REACHED -> new RewardResult(INVENTORY_FULL);
+            default -> new RewardResult(CANNOT_ADD_ITEM);
+        };
     }
 }

@@ -18,6 +18,7 @@ public class RoomController implements Loopable<RuntimeRoom, Player, RoomResult>
     private static final int ENEMY_LEVEL_RANGE = 7;
     
     private static RuntimeRoom currentRoom;
+    private static RuntimeRoom oldRoom;
     
     private final ConsoleHandler consoleH;
     
@@ -29,9 +30,11 @@ public class RoomController implements Loopable<RuntimeRoom, Player, RoomResult>
     @Override
     public RoomResult loop(RuntimeRoom room, Player player)
     {
+        oldRoom = currentRoom == null ? new RuntimeRoom(new Point(0,0), EMPTY) : currentRoom;
         currentRoom = room;
         
-        return switch(room.getRoomType())
+        consoleH.printLine(currentRoom.getRoomType().getRoomFlavourText());
+        return switch(currentRoom.getRoomType())
         {
             case EMPTY    -> new RoomResult(SUCCESS, null, EMPTY);
             case COMBAT   -> new RoomResult(SUCCESS, createEnemy(COMBAT, player.getLevel()), COMBAT);
@@ -54,6 +57,11 @@ public class RoomController implements Loopable<RuntimeRoom, Player, RoomResult>
         EnemyType type = EnemyType.getRandomEnemyType(roomType);
         
         return new Enemy(type, Math.max((level + (int)Math.round((ENEMY_LEVEL_RANGE * (Math.random() - 0.5)))), 1));
+    }
+    
+    public RuntimeRoom getRoom(boolean fled)
+    {
+        return fled ? oldRoom : currentRoom;
     }
     
     public RoomResult loop()

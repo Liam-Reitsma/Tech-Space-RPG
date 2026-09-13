@@ -1,8 +1,8 @@
 package game.entities.player;
 
-import game.items.weapon.WeaponType;
-
 import static game.items.weapon.WeaponType.*;
+
+import game.items.weapon.WeaponType;
 
 public enum ClassType
 {
@@ -18,14 +18,14 @@ public enum ClassType
     private final int statStrength;
     private final int statDexterity;
     private final int statIntelligence;
-    private final WeaponType weapon;
+    private final WeaponType startingWeapon;
     
-    ClassType(int sStr, int sDex, int sInt, WeaponType startingWeapon)
+    ClassType(int sStr, int sDex, int sInt, WeaponType weapon)
     {
         statStrength = sStr;
         statDexterity = sDex;
         statIntelligence = sInt;
-        weapon = startingWeapon;
+        startingWeapon = weapon;
     }
     
     public int getStatStrength() { return statStrength; }
@@ -34,7 +34,7 @@ public enum ClassType
     
     public int getStatIntelligence() { return statIntelligence; }
 
-    public WeaponType getWeapon() { return weapon; }
+    public WeaponType getStartingWeapon() { return startingWeapon; }
     
     @Override
     public String toString() { return this.name().charAt(0) + this.name().substring(1).toLowerCase(); }
@@ -42,12 +42,13 @@ public enum ClassType
     public static String optionsToString()
     {
         StringBuilder result = new StringBuilder();
+        int i = 1;
         for(ClassType type : ClassType.values())
         {
             if(type == UNSELECTED) continue;
-            result.append(type.toString()).append(", ");
+            result.append(i++).append(". ").append(type.toString()).append("\n");
         }
-        result.delete(result.length() - 2, result.length());
+        result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
 }
