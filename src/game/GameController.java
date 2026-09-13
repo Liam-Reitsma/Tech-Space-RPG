@@ -46,41 +46,44 @@ public class GameController
     {
         MainMenuResult mmResult = new MainMenuResult(null, null);
         PersistenceResult pResult = new PersistenceResult(null);
-        
-        for(int i = 0; i < 2; i++)
+        do
         {
-            switch(i)
+            for(int i = 0; i < 2; i++)
             {
-                case 0:
-                     mmResult = mainMenuC.start();
-                    if(mmResult.getStateUsed() == MainMenuStates.EXIT_GAME) return 0;
-                    break;
-                case 1:
-                    pResult = persistenceC.start(mmResult.getStateUsed());
-                    if(pResult.getError() == PersistenceErrors.USER_WENT_BACK) i -= 2;
-                    break;
+                switch(i)
+                {
+                    case 0:
+                        mmResult = mainMenuC.start();
+                        if(mmResult.getStateUsed() == MainMenuStates.EXIT_GAME) return 0;
+                        break;
+                    case 1:
+                        pResult = persistenceC.start(mmResult.getStateUsed());
+                        if(pResult.getError() == PersistenceErrors.USER_WENT_BACK) i -= 2;
+                        break;
+                }
             }
-        }
-        
-        player = pResult.getPlayer();
-        playerC.start(player);
-        
-        if(mmResult.getStateUsed() == MainMenuStates.NEW_GAME)
-        {
-            WorldResult worldResult = worldC.start(mmResult.getStateUsed());
-            if(worldResult.getError() != WorldErrors.SUCCESS) return 1;
-            player.setInventory(null);
-            player.setEquippedArmour(null);
-            persistenceC.fullSave(player, player.getEquippedWeapon(), player.getInventory(), player.getEquippedArmour(), worldC.getWorld());
-        }
-        else if(mmResult.getStateUsed() == MainMenuStates.LOAD_GAME)
-        {
-            WorldResult worldResult = worldC.start(MainMenuStates.LOAD_GAME,pResult.getWorld());
-            if(worldResult.getError() != WorldErrors.SUCCESS) return 2;
-            player.setWeapon(pResult.getWeapon());
-            player.setInventory(pResult.getInventory());
-            player.setEquippedArmour(pResult.getArmour());
-        }
+            
+            player = pResult.getPlayer();
+            playerC.start(player);
+            
+            if(mmResult.getStateUsed() == MainMenuStates.NEW_GAME)
+            {
+                WorldResult worldResult = worldC.start(mmResult.getStateUsed());
+                if(worldResult.getError() != WorldErrors.SUCCESS) return 1;
+                player.setInventory(null);
+                player.setEquippedArmour(null);
+                persistenceC.fullSave(player, player.getEquippedWeapon(), player.getInventory(), player.getEquippedArmour(), worldC.getWorld());
+            }
+            else if(mmResult.getStateUsed() == MainMenuStates.LOAD_GAME)
+            {
+                WorldResult worldResult = worldC.start(MainMenuStates.LOAD_GAME,pResult.getWorld());
+                if(worldResult.getError() != WorldErrors.SUCCESS) continue;
+                player.setWeapon(pResult.getWeapon());
+                player.setInventory(pResult.getInventory());
+                player.setEquippedArmour(pResult.getArmour());
+            }
+            break;
+        } while(true);
         
         return loop();
     }
@@ -116,7 +119,7 @@ public class GameController
                 case CHEST, EMPTY -> combatR = new CombatResult(CombatErrors.SUCCESS, CombatOutcome.WIN);
                 default -> combatR = null;
             }
-
+            
             RewardResult rewardR = null;
             if(combatR == null || combatR.getError() != CombatErrors.SUCCESS) return 5;
             if(combatR.getCombatOutcome() == CombatOutcome.LOSE) isAlive = false;
