@@ -62,7 +62,7 @@ public enum RoomType
     
     public String getRoomFlavourText()
     {
-        return messages[random.nextInt(5)];
+        return messages[random.nextInt(messages.length)];
     }
     
     @Override
