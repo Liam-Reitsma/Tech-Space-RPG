@@ -24,7 +24,7 @@ public class Player extends Entities implements Persistable
     private int xp;
     private int gold;
     
-    private PotionType selectedPotionType;
+    private Potion selectedPotion;
     
     private Map<StatType, Integer> statTypeMap;
     
@@ -51,7 +51,7 @@ public class Player extends Entities implements Persistable
         gold = 0;
         name = playerName;
         
-        selectedPotionType = null;
+        selectedPotion = null;
         
         statTypeMap = new HashMap<>();
         statTypeMap.put(STR, type.getStatStrength());
@@ -94,9 +94,9 @@ public class Player extends Entities implements Persistable
         else equippedArmourPieces = newEquipped;
     }
     
-    public void setSelectedPotion(PotionType type)
+    public void setSelectedPotion(Potion potion)
     {
-        selectedPotionType = type;
+        selectedPotion = potion;
     }
     
     @Override
@@ -342,7 +342,7 @@ public class Player extends Entities implements Persistable
     
     public PlayerResult<Potion> getSelectedPotion()
     {
-        if(selectedPotionType == null) return new PlayerResult<>(NO_POTION_SELECTED, new Potion[0]);
-        return new PlayerResult<>(SUCCESS, new Potion[]{new Potion(selectedPotionType)});
+        if(selectedPotion == null) return new PlayerResult<>(NO_POTION_SELECTED, new Potion[0]);
+        return new PlayerResult<>(SUCCESS, new Potion[]{selectedPotion});
     }
 }

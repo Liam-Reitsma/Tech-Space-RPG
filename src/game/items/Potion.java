@@ -1,5 +1,7 @@
 package game.items;
 
+import java.util.Random;
+
 public class Potion extends Item
 {
     private PotionType potionType;
@@ -17,8 +19,20 @@ public class Potion extends Item
 
     public PotionType getPotionType() { return potionType; }
 
+    public PotionType getRandomPotionType()
+    {
+        int random = new Random().nextInt(PotionType.values().length);
+        return PotionType.values()[random];
+    }
+
     public int use()
     {
         return potionType.getHealAmount();
+    }
+
+    @Override
+    public String toString()
+    {
+        return potionType.toString();
     }
 }

@@ -10,6 +10,8 @@ import game.entities.*;
 import game.entities.player.Player;
 import game.entities.player.PlayerErrors;
 import game.items.EquippableItem;
+import game.items.Potion;
+import game.items.PotionType;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
 
@@ -68,6 +70,9 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
                 }
             } while (true);
         }
+
+        player.addToInventory(new Potion(PotionType.getRandomPotionType()));
+
         player.applyGoldGain(enemy.getGold());
         return new RewardResult(SUCCESS);
     }
