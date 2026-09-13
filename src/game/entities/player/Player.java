@@ -31,7 +31,7 @@ public class Player extends Entities implements Persistable
     @SaveExclude
     private List<Item> inventory;
     @SaveExclude
-    private List<Armour> equippedArmour;
+    private List<Armour> equippedArmourPieces;
     @SaveExclude
     private Weapon equippedWeapon;
     
@@ -71,10 +71,10 @@ public class Player extends Entities implements Persistable
         else inventory = newInventory;
     }
     
-    public void setEquippedArmour(List<Armour> newEquipped)
+    public void setEquippedArmourPieces(List<Armour> newEquipped)
     {
-        if(newEquipped == null) equippedArmour = new ArrayList<>();
-        else equippedArmour = newEquipped;
+        if(newEquipped == null) equippedArmourPieces = new ArrayList<>();
+        else equippedArmourPieces = newEquipped;
     }
     
     public void setSelectedPotion(PotionType type)
@@ -105,7 +105,7 @@ public class Player extends Entities implements Persistable
     public void takeDamage(float damage)
     {
         float totalArmour = 0;
-        for (Armour armour : equippedArmour)
+        for (Armour armour : equippedArmourPieces)
         {
             totalArmour += (1 - totalArmour) * armour.calculateProtection();
         }
@@ -216,21 +216,17 @@ public class Player extends Entities implements Persistable
         if(!inventory.contains(armour)) return NO_ARMOUR_AVAILABLE;
         else
         {
-            for(int i = 0; i < equippedArmour.size(); i++)
+            for(Armour equippedArmour : equippedArmourPieces)
             {
-                if(equippedArmour.get(i).getArmourSlot() == armour.getArmourSlot())
+                if(armour.getArmourSlot() == equippedArmour.getArmourSlot())
                 {
-                    Armour currentArmour = equippedArmour.get(i);
-                    currentArmour.unequip();
-                    inventory.add(currentArmour);
-                    equippedArmour.set(i, armour);
-                    inventory.remove(armour);
-                    armour.equip();
-                    return SUCCESS;
+                    equippedArmour.unequip();
+                    inventory.add(equippedArmour);
                 }
             }
             
-            equippedArmour.add(armour);
+            equippedArmourPieces.add(armour);
+            inventory.remove(armour);
             armour.equip();
             return SUCCESS;
         }
@@ -238,9 +234,9 @@ public class Player extends Entities implements Persistable
     
     public PlayerErrors unequipArmour(Armour armour)
     {
-        if(equippedArmour.isEmpty()) { return NO_ARMOUR_EQUIPPED; }
-        if(!equippedArmour.contains(armour)) { return NO_SLOT_ARMOUR_EQUIPPED; }
-        equippedArmour.remove(armour);
+        if(equippedArmourPieces.isEmpty()) { return NO_ARMOUR_EQUIPPED; }
+        if(!equippedArmourPieces.contains(armour)) { return NO_SLOT_ARMOUR_EQUIPPED; }
+        equippedArmourPieces.remove(armour);
         armour.unequip();
         inventory.add(armour);
         return SUCCESS;
@@ -303,7 +299,7 @@ public class Player extends Entities implements Persistable
     
     public List<Item> getInventory() { return inventory; }
     
-    public List<Armour> getEquippedArmour() { return equippedArmour; }
+    public List<Armour> getEquippedArmour() { return equippedArmourPieces; }
     
     public PlayerResult<Potion> getSelectedPotion()
     {
