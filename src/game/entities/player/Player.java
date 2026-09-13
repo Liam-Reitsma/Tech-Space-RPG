@@ -17,7 +17,7 @@ public class Player extends Entities implements Persistable
     @SaveExclude
     private static final int STARTING_LEVEL_XP = 15;
     @SaveExclude
-    private static final float XP_GAIN_FACTOR = 1.5f;
+    private static final float XP_GAIN_FACTOR = 1.25f;
     
     @SaveExclude
     private int xpToLevelUp;
