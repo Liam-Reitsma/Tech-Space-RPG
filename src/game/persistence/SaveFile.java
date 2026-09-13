@@ -181,10 +181,15 @@ public class SaveFile
                 if(line == null) return SAVE_FILE_CORRUPTED;
             } while(!line.toLowerCase().contains(info.substring(dsOne, dsTwo)));
             
+            String padding = " ".repeat(line.length() - info.length());
+            
             fileEditor.seek(startLine);
-            fileEditor.write(info.getBytes(StandardCharsets.UTF_8));
+            fileEditor.write((info + padding).getBytes(StandardCharsets.UTF_8));
             
             return SUCCESS;
+        } catch(IllegalArgumentException e)
+        {
+            return UNABLE_TO_SAVE;
         } catch(IOException e)
         {
             return WRITE_ERROR;
