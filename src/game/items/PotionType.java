@@ -1,5 +1,9 @@
 package game.items;
 
+import game.entities.EnemyType;
+
+import java.util.Random;
+
 public enum PotionType
 {
     SMALL_HEALTH(20),
@@ -14,6 +18,11 @@ public enum PotionType
     }
 
     public int getHealAmount() { return healGain; }
+
+    public static PotionType getRandomPotionType()
+    {
+        return PotionType.values()[((int)(Math.random() * PotionType.values().length))];
+    }
     
     @Override
     public String toString()
