@@ -55,7 +55,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
         {
             do
             {
-                action = consoleH.confirmInput("What would you like to do?", CombatAction.optionsToString(), CombatAction.class).getInput();
+                action = consoleH.confirmInputInteger("What would you like to do?", CombatAction.optionsToString(), CombatAction.class).getInput();
                 if(action.isEmpty())
                 {
                     consoleH.printLine("You cannot return here. Please choose an option");
@@ -121,8 +121,8 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
     {
         StringBuilder info = new StringBuilder();
         
-        info.append(player.getName()).append(" has ").append(player.getHealth()).append(" hp remaining!\n");
-        info.append(enemy.getName()).append(" has ").append(enemy.getHealth()).append(" hp remaining!\n");
+        info.append(player.getName()).append(" has ").append((int)player.getHealth()).append(" hp remaining!\n");
+        info.append(enemy.getName()).append(" has ").append((int)enemy.getHealth()).append(" hp remaining!\n");
         
         consoleH.printLine(info.toString());
     }
