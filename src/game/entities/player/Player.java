@@ -103,7 +103,7 @@ public class Player extends Entities implements Persistable
     public float attack()
     {
         if(equippedWeapon == null) return statTypeMap.get(STR);
-        return damageMultiplier * equippedWeapon.calculateDamage(statTypeMap.get(equippedWeapon.getScalingStat()));
+        return Math.round(damageMultiplier * equippedWeapon.calculateDamage(statTypeMap.get(equippedWeapon.getScalingStat())) * 10000f) / 10000f;
     }
     
     public void healing(int healAmount)
