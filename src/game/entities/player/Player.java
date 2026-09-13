@@ -24,6 +24,8 @@ public class Player extends Entities implements Persistable
     private int xp;
     private int gold;
     
+    private PotionType selectedPotionType;
+    
     private Map<StatType, Integer> statTypeMap;
     
     @SaveExclude
@@ -40,6 +42,8 @@ public class Player extends Entities implements Persistable
         xp = 0;
         gold = 0;
         name = playerName;
+        
+        selectedPotionType = null;
         
         statTypeMap = new HashMap<>();
         statTypeMap.put(STR, type.getStatStrength());
@@ -58,10 +62,7 @@ public class Player extends Entities implements Persistable
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
     
-    public void setWeapon(Weapon weapon)
-    {
-        equippedWeapon = weapon;
-    }
+    public void setWeapon(Weapon weapon) { equippedWeapon = weapon; }
     
     public void setInventory(List<Item> newInventory)
     {
@@ -75,6 +76,10 @@ public class Player extends Entities implements Persistable
         else equippedArmour = newEquipped;
     }
     
+    public void setSelectedPotion(PotionType type)
+    {
+        selectedPotionType = type;
+    }
     
     @Override
     public float attack()
@@ -300,4 +305,6 @@ public class Player extends Entities implements Persistable
     public List<Item> getInventory() { return inventory; }
     
     public List<Armour> getEquippedArmour() { return equippedArmour; }
+    
+    public PlayerResult<PotionType> getSelectedPotion(PotionType type) { return new PlayerResult<>(SUCCESS, new PotionType[]{selectedPotionType}); }
 }
