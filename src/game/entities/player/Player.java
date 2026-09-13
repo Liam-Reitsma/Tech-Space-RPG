@@ -330,6 +330,8 @@ public class Player extends Entities implements Persistable
     
     public int getGold() { return gold; }
     
+    public float getMaximumHealth() { return maximumHealth; }
+    
     public float getArmourPenetration() { return armourPenetration; }
     
     public Weapon getEquippedWeapon() { return equippedWeapon; }

@@ -121,7 +121,7 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
     {
         StringBuilder info = new StringBuilder();
         
-        info.append(player.getName()).append(" has ").append((int)player.getHealth()).append(" hp remaining!\n");
+        info.append(player.getName()).append(" has ").append((int)player.getHealth()).append("/").append((int)player.getMaximumHealth()).append("!\n");
         info.append(enemy.getName()).append(" has ").append((int)enemy.getHealth()).append(" hp remaining!\n");
         
         consoleH.printLine(info.toString());
