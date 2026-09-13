@@ -4,6 +4,7 @@ import static game.entities.player.PlayerErrors.*;
 
 import game.ConsoleHandler;
 import game.Loopable;
+import game.Startable;
 import game.items.Item;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
@@ -13,17 +14,25 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class PlayerController implements Loopable<Player, Void, PlayerResult<?>>
+public class PlayerController implements Startable<Player, Void, PlayerResult<?>>, Loopable<Void, Void, PlayerResult<?>>
 {
     private final ConsoleHandler consoleH;
-
+    private Player player;
+    
     public PlayerController(ConsoleHandler cH)
     {
         consoleH = cH;
     }
+    
+    @Override
+    public PlayerResult<?> start(Player startPlayer, Void input1)
+    {
+        player = startPlayer;
+        return new PlayerResult<>(SUCCESS);
+    }
 
     @Override
-    public PlayerResult<?> loop(Player player, Void input2)
+    public PlayerResult<?> loop(Void input1, Void input2)
     {
         Optional<PlayerMenuOption> response = consoleH.confirmInputInteger("What would you like to do?", PlayerMenuOption.optionsToString(), PlayerMenuOption.class).getInput();
         if(response.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
