@@ -68,14 +68,7 @@ public enum RoomType
     @Override
     public String toString()
     {
-        return switch(this)
-        {
-            case COMBAT ->   "roomType" + Persistable.FIELD_SEPARATOR + "Combat";
-            case CHEST ->    "roomType" + Persistable.FIELD_SEPARATOR +"Chest";
-            case MINIBOSS -> "roomType" + Persistable.FIELD_SEPARATOR +"Miniboss";
-            case BOSS ->     "roomType" + Persistable.FIELD_SEPARATOR +"Boss";
-            case EMPTY ->    "roomType" + Persistable.FIELD_SEPARATOR +"Empty";
-        };
+        return name().charAt(0) + name().substring(1).toLowerCase();
     }
     
     public static int maxToStringLength() { return MINIBOSS.toString().length(); }
