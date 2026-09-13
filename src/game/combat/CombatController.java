@@ -83,16 +83,22 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
 
     public CombatOutcome enemyTurn(Player player, Enemy enemy)
     {
-        ActionResult result = ATTACK.doAction(player, enemy);
-        consoleH.printLine(result.getMessage());
-        return result.getOutcome();
+        StringBuilder message = new StringBuilder();
+        CombatOutcome outcome = NOTHING;
+        float damage = enemy.attack();
+        player.takeDamage(damage);
+        message.append(enemy.getName()).append(" attacked you!\n");
+        message.append(enemy.getName()).append(" dealt ").append(damage).append(" to you!\n");
+        if(player.getHealth() <= 0) outcome = LOSE;
+        consoleH.printLine(message.toString());
+        
+        return outcome;
     }
     
     public CombatErrors getPotionToUse(Player player)
     {
         Potion[] potions = player.getPotionsInInventory().getResultArray();
         if(potions.length == 0) return NO_POTION_TO_USE;
-        Potion potionUsed;
         StringBuilder potionOptions = new StringBuilder();
         String potionString = Arrays.toString(potions);
         String potionsSplit = potionString.substring(1, potionString.length() - 1);
