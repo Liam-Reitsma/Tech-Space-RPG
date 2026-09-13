@@ -15,8 +15,6 @@ public class Main
 {
     public static void main(String[] args)
     {
-        System.out.println(intro);
-        
         Scanner scanner = new Scanner(System.in);
         ConsoleHandler consoleH = new ConsoleHandler(scanner);
         SaveFile saveFile = new SaveFile();
@@ -30,8 +28,10 @@ public class Main
         
         GameController gameController = new GameController(combatC, mainMenuC, persistenceC, playerC, rewardC, roomC, worldC);
         
+        consoleH.printLine(intro);
+        
         int exitValue = gameController.start();
-
+        if(exitValue == 8) consoleH.printLine("You cannot load a dead character");
         scanner.close();
         System.exit(exitValue);
     }
