@@ -42,7 +42,7 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
             case SKIP_MENU -> new PlayerResult<Void>(SKIP);
             case VIEW_INVENTORY ->
             {
-                for(Item item : player.getInventory()) consoleH.printLine(item.toString());
+                for(Item item : player.getInventory()) consoleH.printLine(item.getName());
                 yield new PlayerResult<Void>(RETRY);
             }
             case EQUIP_WEAPON ->
@@ -82,7 +82,7 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
                 }
                 else
                 {
-                    consoleH.printLine(weapon.toString() + " successfully unequipped");
+                    consoleH.printLine(weapon.getName() + " successfully unequipped");
                     yield new PlayerResult<>(SUCCESS);
                 }
             }
@@ -144,7 +144,7 @@ public class PlayerController implements Startable<Player, Void, PlayerResult<?>
                 }
                 else
                 {
-                    consoleH.printLine(armour.toString() + " successfully unequipped");
+                    consoleH.printLine(armour.getName() + " successfully unequipped");
                     yield new PlayerResult<>(SUCCESS);
                 }
             }
