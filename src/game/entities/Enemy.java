@@ -27,7 +27,10 @@ public class Enemy extends Entities implements Persistable
     public float attack() { return damage; }
 
     @Override
-    public void takeDamage(float damage)  { health -= Math.round((1-armour) * damage); }
+    public void takeDamage(float damage, float armorPen)
+    {
+        health -= Math.round(damage * Math.clamp((1 - armour + armorPen), 0, 1));
+    }
 
     public int getGold() { return gold; }
     
