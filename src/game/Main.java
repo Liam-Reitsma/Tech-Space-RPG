@@ -1,6 +1,7 @@
 package game;
 
 import game.combat.CombatController;
+import game.entities.player.PlayerController;
 import game.mainmenu.MainMenuController;
 import game.persistence.SaveFile;
 import game.persistence.PersistenceController;
@@ -20,11 +21,12 @@ public class Main
         CombatController combatC = new CombatController(consoleH);
         MainMenuController mainMenuC = new MainMenuController(consoleH);
         PersistenceController persistenceC = new PersistenceController(consoleH, saveFile);
+        PlayerController playerC = new PlayerController(consoleH);
         RewardController rewardC = new RewardController(consoleH);
         RoomController roomC = new RoomController(consoleH);
         WorldController worldC = new WorldController(consoleH);
         
-        GameController gameController = new GameController(combatC, mainMenuC, persistenceC, rewardC, roomC, worldC);
+        GameController gameController = new GameController(combatC, mainMenuC, persistenceC, playerC, rewardC, roomC, worldC);
         
         int exitValue = gameController.start();
 
