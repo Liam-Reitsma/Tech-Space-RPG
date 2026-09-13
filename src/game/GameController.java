@@ -5,6 +5,7 @@ import static game.ErrorSeverity.SEVERE;
 import game.combat.*;
 import game.entities.*;
 import game.entities.player.Player;
+import game.entities.player.PlayerController;
 import game.mainmenu.*;
 import game.persistence.*;
 import game.reward.*;
@@ -20,18 +21,20 @@ public class GameController
     private final CombatController combatC;
     private final MainMenuController mainMenuC;
     private final PersistenceController persistenceC;
+    private final PlayerController playerC;
     private final RewardController rewardC;
     private final RoomController roomC;
     private final WorldController worldC;
     
-    public GameController(CombatController cc, MainMenuController mmc, PersistenceController pc, RewardController rec, RoomController roc, WorldController wc)
+    public GameController(CombatController cc, MainMenuController mmc, PersistenceController pec, PlayerController plc, RewardController rec, RoomController roc, WorldController wc)
     {
         isAlive = true;
         isRunning = true;
         
         combatC = cc;
         mainMenuC = mmc;
-        persistenceC = pc;
+        persistenceC = pec;
+        playerC = plc;
         rewardC = rec;
         roomC = roc;
         worldC = wc;
@@ -58,6 +61,7 @@ public class GameController
         }
         
         player = pResult.getPlayer();
+        playerC.start(player);
         
         if(mmResult.getStateUsed() == MainMenuStates.NEW_GAME)
         {
@@ -83,6 +87,7 @@ public class GameController
     {
         while(isRunning && isAlive)
         {
+            playerC.loop();
             WorldResult worldR= worldC.loop();
             if(worldR.getError() != WorldErrors.SUCCESS) return 3;
             RoomResult roomR = roomC.loop(worldR.getRoom(), player);
@@ -111,7 +116,7 @@ public class GameController
                     
                     if(rewardR == null || rewardR.getError().getSeverity() == SEVERE) return 5;
                     if(rewardR.getError() == RewardErrors.ITEM_DISCARDED || rewardR.getError() == RewardErrors.SUCCESS) break;
-                    //TODO Add PlayerController for Inventory Management, Saving, Exiting.
+                    playerC.loop();
                 } while(true);
                 
                 roomC.loop();
