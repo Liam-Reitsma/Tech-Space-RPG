@@ -272,7 +272,7 @@ public class PersistenceController implements Startable<MainMenuStates, Void, Pe
     
     public PersistenceResult updatePlayerStatus(Player player)
     {
-        return new PersistenceResult(saveF.writeDeltaPlayer(player));
+        return new PersistenceResult(saveF.writeDeltaObject(player));
     }
     
     public PersistenceResult updateRoomStatus(RuntimeRoom room)
