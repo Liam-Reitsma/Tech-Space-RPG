@@ -137,7 +137,7 @@
                         yield new PlayerResult<>(NO_ARMOUR_EQUIPPED);
                     }
                     StringBuilder armourOptions = new StringBuilder();
-                    int i = 0;
+                    int i = 1;
                     for(Armour armour : armourList)
                     {
                         armourOptions.append(i++).append(". ").append(armour.getName()).append("(").append(armour.calculateProtection()).append(" armour)").append(", ");
