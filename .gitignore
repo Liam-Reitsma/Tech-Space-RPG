@@ -19,7 +19,7 @@ bin/
 !**/src/test/**/bin/
 
 ### NetBeans ###
-/nbproject/private/
+/nbproject/
 /nbbuild/
 /dist/
 /nbdist/
@@ -33,3 +33,6 @@ bin/
 
 ### Extra ###
 resources/saves/
+/build/
+build.xml
+manifest.mf
