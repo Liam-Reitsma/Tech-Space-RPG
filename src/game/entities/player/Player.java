@@ -24,6 +24,8 @@ public class Player extends Entities implements Persistable
     private int xp;
     private int gold;
     
+    private PotionType selectedPotionType;
+    
     private Map<StatType, Integer> statTypeMap;
     
     @SaveExclude
@@ -40,6 +42,8 @@ public class Player extends Entities implements Persistable
         xp = 0;
         gold = 0;
         name = playerName;
+        
+        selectedPotionType = null;
         
         statTypeMap = new HashMap<>();
         statTypeMap.put(STR, type.getStatStrength());
@@ -58,10 +62,7 @@ public class Player extends Entities implements Persistable
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
     
-    public void setWeapon(Weapon weapon)
-    {
-        equippedWeapon = weapon;
-    }
+    public void setWeapon(Weapon weapon) { equippedWeapon = weapon; }
     
     public void setInventory(List<Item> newInventory)
     {
@@ -75,10 +76,15 @@ public class Player extends Entities implements Persistable
         else equippedArmour = newEquipped;
     }
     
+    public void setSelectedPotion(PotionType type)
+    {
+        selectedPotionType = type;
+    }
     
     @Override
     public float attack()
     {
+        if(equippedWeapon == null) return statTypeMap.get(STR);
         return equippedWeapon.calculateDamage(statTypeMap.get(equippedWeapon.getScalingStat()));
     }
     
@@ -126,7 +132,7 @@ public class Player extends Entities implements Persistable
     
     public void applyStatGain(StatType stat) { statTypeMap.put(stat, statTypeMap.get(stat) + 1); }
     
-    public PlayerResult<Weapon> hasWeaponsInInventory()
+    public PlayerResult<Weapon> getWeaponsInInventory()
     {
         Weapon[] inventoryWeapons = new Weapon[10];
         Weapon[] weapons;
@@ -181,7 +187,7 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
-    public PlayerResult<Armour> hasArmourInInventory()
+    public PlayerResult<Armour> getArmourInInventory()
     {
         Armour[] inventoryArmours = new Armour[10];
         Armour[] armours;
@@ -241,6 +247,31 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
+    public PlayerResult<Potion> getPotionsInInventory()
+    {
+        Potion[] inventoryPotions = new Potion[10];
+        Potion[] potions;
+        int i = 0;
+        for(Item item : getInventory())
+        {
+            if(item instanceof Potion potion)
+            {
+                inventoryPotions[i++] = potion;
+            }
+        }
+        if(i == 0) return new PlayerResult<>(NO_POTION_AVAILABLE, new Potion[0]);
+        potions = new Potion[i];
+        i = 0;
+        
+        for(Potion potion : inventoryPotions)
+        {
+            if(potion == null) continue;
+            potions[i++] = potion;
+        }
+        
+        return new PlayerResult<>(SUCCESS, potions);
+    }
+    
     public PlayerErrors addToInventory(Item item)
     {
         if(item == null)
@@ -265,12 +296,6 @@ public class Player extends Entities implements Persistable
         return SUCCESS;
     }
     
-    public String getName() { return name; }
-    
-    public int getLevel() { return level; }
-    
-    public float getHealth() { return health; }
-    
     public int getXP() { return xp; }
     
     public int getGold() { return gold; }
@@ -280,4 +305,10 @@ public class Player extends Entities implements Persistable
     public List<Item> getInventory() { return inventory; }
     
     public List<Armour> getEquippedArmour() { return equippedArmour; }
+    
+    public PlayerResult<Potion> getSelectedPotion()
+    {
+        if(selectedPotionType == null) return new PlayerResult<>(NO_POTION_SELECTED, new Potion[0]);
+        return new PlayerResult<>(SUCCESS, new Potion[]{new Potion(selectedPotionType)});
+    }
 }

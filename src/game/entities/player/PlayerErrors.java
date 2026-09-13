@@ -9,6 +9,8 @@ public enum PlayerErrors implements Errors
 {
     MAX_INVENTORY_REACHED("You have reached your maximum inventory. Please remove an item first.", RECOVERABLE),
     ITEM_MISSING("You cannot do that. The item selected is missing.", RECOVERABLE),
+    NO_POTION_SELECTED("You have not selected a potion.", RECOVERABLE),
+    NO_POTION_AVAILABLE("You have no potion to use.", RECOVERABLE),
     NO_ARMOUR_AVAILABLE("You have no armour to equip.", RECOVERABLE),
     NO_WEAPON_AVAILABLE("You have no weapon to equip.", RECOVERABLE),
     NO_SLOT_ARMOUR_EQUIPPED("You have no armour of that specific slot equipped",  RECOVERABLE),

@@ -12,9 +12,5 @@ public class CombatResult extends Result<CombatErrors>
         combatOutcome = co;
     }
 
-    public CombatOutcome getCombatOutcome()
-    {
-        return combatOutcome;
-    }
-
+    public CombatOutcome getCombatOutcome() { return combatOutcome; }
 }

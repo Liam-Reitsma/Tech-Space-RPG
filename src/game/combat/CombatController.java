@@ -1,18 +1,23 @@
 package game.combat;
 
+import static game.combat.CombatAction.*;
+import static game.combat.CombatErrors.USER_WENT_BACK;
+import static game.combat.CombatErrors.SUCCESS;
+import static game.combat.CombatErrors.NO_POTION_TO_USE;
+import static game.combat.CombatOutcome.*;
+
 import game.ConsoleHandler;
 import game.Loopable;
 import game.entities.*;
 import game.entities.player.Player;
+import game.items.Potion;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public class CombatController implements Loopable<Player, Enemy, CombatResult>
 {
     private final ConsoleHandler consoleH;
-
-    private boolean inCombat = true;
-    private CombatOutcome outcome;
 
     public CombatController(ConsoleHandler cH)
     {
@@ -22,65 +27,103 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
     @Override
     public CombatResult loop(Player player, Enemy enemy)
     {
+        CombatOutcome outcome;
         boolean userTurn = true;
-        while (inCombat)
+        
+        while(true)
         {
-            // check if combat should end
-            if (player.getHealth() <= 0)
+            if(userTurn)
             {
-                return new CombatResult(CombatErrors.SUCCESS, CombatOutcome.LOSE);
+                printCombatInfo(player, enemy);
+                outcome = playerTurn(player, enemy);
+                if(outcome != NOTHING)  return new CombatResult(SUCCESS, outcome);
+                userTurn = false;
             }
-            else if (enemy.getHealth() <= 0)
+            else
             {
-                return new CombatResult(CombatErrors.SUCCESS, CombatOutcome.WIN);
-            }
-            // checking if users turn or enemies turn
-            else {
-                if (userTurn) {
-                    playerTurn(player, enemy);
-                    userTurn = false;
-                } else {
-                    enemyTurn(player, enemy);
-                    userTurn = true;
-                }
+                outcome = enemyTurn(player, enemy);
+                if(outcome != NOTHING) return new CombatResult(SUCCESS, outcome);
+                userTurn = true;
             }
         }
-        return new CombatResult(CombatErrors.SUCCESS, outcome);
     }
 
-    public void playerTurn(Player player, Enemy enemy)
+    private CombatOutcome playerTurn(Player player, Enemy enemy)
     {
-        int response = -1;
-        // printing options and checking user input
+        Optional<CombatAction> action;
         do
         {
-            consoleH.printLine("What would you like to do?");
-            for (CombatAction action : CombatAction.values()) {
-                consoleH.printLine((action.ordinal() + 1) + ". " + action.toString());
-            }
-            Optional<Integer> userInput = consoleH.nextInt().getInput();
-            if  (userInput.isPresent() && userInput.get() > 0 && userInput.get() <= CombatAction.values().length) {
-                response = userInput.get();
+            do
+            {
+                action = consoleH.confirmInput("What would you like to do?", CombatAction.optionsToString(), CombatAction.class).getInput();
+                if(action.isEmpty())
+                {
+                    consoleH.printLine("You cannot return here. Please choose an option");
+                    continue;
+                }
                 break;
+            } while(true);
+            
+            if(action.get() == HEAL)
+            {
+                CombatErrors error = getPotionToUse(player);
+                if(error == USER_WENT_BACK) continue;
+                else if(error == NO_POTION_TO_USE)
+                {
+                    consoleH.printLine(error.getMessage());
+                    continue;
+                }
             }
+            break;
         } while(true);
-
-        CombatAction action = CombatAction.values()[response - 1];
-
-        // Functions of what the player is going to do and execute it
-        ActionDecider result = action.execute(consoleH, player, enemy);
-        consoleH.printLine(result.message());
-        if (result.endReason().isPresent())
-        {
-            inCombat = false;
-            outcome = result.endReason().get();
-        }
+        
+        ActionResult result = action.get().doAction(player, enemy);
+        consoleH.printLine(result.getMessage());
+        return result.getOutcome();
     }
 
-    public void enemyTurn(Player player, Enemy enemy)
+    private CombatOutcome enemyTurn(Player player, Enemy enemy)
     {
-        int oppDamage = enemy.getStats()[0];
-        player.takeDamage(oppDamage);
-        consoleH.printLine("Enemy has attacked.\nRemaining health: " + player.getHealth());
+        StringBuilder message = new StringBuilder();
+        CombatOutcome outcome = NOTHING;
+        float damage = enemy.attack();
+        player.takeDamage(damage);
+        message.append(enemy.getName()).append(" attacked you!\n");
+        message.append(enemy.getName()).append(" dealt ").append(damage).append(" to you!\n");
+        if(player.getHealth() <= 0) outcome = LOSE;
+        consoleH.printLine(message.toString());
+        
+        return outcome;
+    }
+    
+    private CombatErrors getPotionToUse(Player player)
+    {
+        Potion[] potions = player.getPotionsInInventory().getResultArray();
+        if(potions.length == 0) return NO_POTION_TO_USE;
+        StringBuilder potionOptions = new StringBuilder();
+        String potionString = Arrays.toString(potions);
+        String potionsSplit = potionString.substring(1, potionString.length() - 1);
+        int i = 1;
+        
+        for(String weapon : potionsSplit.split(", "))
+        {
+            potionOptions.append(i++).append(". ").append(weapon).append(", ");
+        }
+        
+        Optional<Integer> choice = consoleH.confirmInput("Which potion would you like to use?", potionOptions.toString(), ", ").getInput();
+        if(choice.isEmpty()) return USER_WENT_BACK;
+        
+        player.setSelectedPotion(potions[choice.get() - 1].getPotionType());
+        return SUCCESS;
+    }
+    
+    private void printCombatInfo(Player player, Enemy enemy)
+    {
+        StringBuilder info = new StringBuilder();
+        
+        info.append(player.getName()).append(" has ").append(player.getHealth()).append(" hp remaining!\n");
+        info.append(enemy.getName()).append(" has ").append(enemy.getHealth()).append(" hp remaining!\n");
+        
+        consoleH.printLine(info.toString());
     }
 }
