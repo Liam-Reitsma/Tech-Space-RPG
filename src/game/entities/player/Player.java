@@ -183,6 +183,7 @@ public class Player extends Entities implements Persistable
     public PlayerErrors unequipWeapon()
     {
         if(equippedWeapon == null) return NO_WEAPON_EQUIPPED;
+        inventory.add(equippedWeapon);
         equippedWeapon.unequip();
         equippedWeapon = null;
         return SUCCESS;
