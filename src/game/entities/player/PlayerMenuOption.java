@@ -11,6 +11,13 @@ public enum PlayerMenuOption
     SAVE_GAME,
     EXIT_GAME;
 
+    @Override
+    public String toString()
+    {
+        String[] names = name().split("_");
+        return names[0].charAt(0) + names[0].substring(1).toLowerCase() + names[1].charAt(0) + names[1].substring(1).toLowerCase();
+    }
+    
     public static String optionsToString()
     {
         StringBuilder result = new StringBuilder();
