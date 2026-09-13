@@ -30,8 +30,8 @@ public class RoomController implements Loopable<RuntimeRoom, Player, RoomResult>
     public RoomResult loop(RuntimeRoom room, Player player)
     {
         currentRoom = room;
-        consoleH.printLine(room.getRoomType().getRoomFlavourText());
-        return switch(room.getRoomType())
+        consoleH.printLine(currentRoom.getRoomType().getRoomFlavourText());
+        return switch(currentRoom.getRoomType())
         {
             case EMPTY    -> new RoomResult(SUCCESS, null, EMPTY);
             case COMBAT   -> new RoomResult(SUCCESS, createEnemy(COMBAT, player.getLevel()), COMBAT);
