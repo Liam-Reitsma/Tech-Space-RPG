@@ -42,7 +42,11 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
             else
             {
                 outcome = enemyTurn(player, enemy);
-                if(outcome != NOTHING) return new CombatResult(SUCCESS, outcome);
+                if(outcome != NOTHING)
+                {
+                    consoleH.printLine(outcome.getMessage());
+                    return new CombatResult(SUCCESS, outcome);
+                }
                 userTurn = true;
             }
         }
