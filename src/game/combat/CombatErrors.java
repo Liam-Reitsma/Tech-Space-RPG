@@ -7,8 +7,11 @@ import game.Errors;
 
 public enum CombatErrors implements Errors
 {
+    /** Error for when there are no potions in the inventory. Used to prompt the Player again.*/
     NO_POTION_TO_USE("You have no potions to use!", RECOVERABLE),
+    /** Not a real error. Used when Player chooses to go back.*/
     USER_WENT_BACK("", NONE),
+    /** Not a real error. Used to show that the task was successful.*/
     SUCCESS("", NONE);
 
     private final String message;
