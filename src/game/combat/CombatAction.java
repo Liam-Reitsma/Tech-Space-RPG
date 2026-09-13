@@ -12,36 +12,24 @@ import java.util.*;
 
 public enum CombatAction implements Actionable
 {
-    ATTACK()
+    ATTACK
         {
             @Override
             public ActionResult doAction(Player player, Enemy enemy)
             {
                 StringBuilder message = new StringBuilder();
                 CombatOutcome outcome = NOTHING;
-                float damage;
-                if(isUserTurn)
-                {
-                    String equippedWeaponName = player.getEquippedWeapon() == null ? "fists" : player.getEquippedWeapon().getName();
-                    damage = player.attack();
-                    enemy.takeDamage(damage);
-                    message.append("You used " + equippedWeaponName + " to attack " + enemy.getName() +  "!\n");
-                    message.append("You dealt " + damage + "!\n");
-                    if(enemy.getHealth() <= 0) outcome = WIN;
-                }
-                else
-                {
-                    damage = enemy.attack();
-                    player.takeDamage(damage);
-                    message.append(enemy.getName() + " attacked you!\n");
-                    message.append(enemy.getName() + " dealt " + damage + " to you!\n");
-                    if(player.getHealth() <= 0) outcome = LOSE;
-                }
+                String equippedWeaponName = player.getEquippedWeapon() == null ? "fists" : player.getEquippedWeapon().getName();
+                float damage = player.attack();
+                enemy.takeDamage(damage);
+                message.append("You used ").append(equippedWeaponName).append(" to attack ").append(enemy.getName()).append("!\n");
+                message.append("You dealt ").append(damage).append("!\n");
+                if(enemy.getHealth() <= 0) outcome = WIN;
                 
                 return new ActionResult(outcome, message.toString());
             }
         },
-    RUN()
+    RUN
         {
             @Override
             public ActionResult doAction(Player player, Enemy enemy)
@@ -49,7 +37,7 @@ public enum CombatAction implements Actionable
                 return new ActionResult(FLEE, "You ran away!");
             }
         },
-    HEAL()
+    HEAL
         {
             @Override
             public ActionResult doAction(Player player, Enemy enemy)
@@ -63,12 +51,6 @@ public enum CombatAction implements Actionable
                 return new ActionResult(NOTHING, "You healed for " + potionUsed.use() + "hp!");
             }
         };
-    
-    private static boolean isUserTurn;
-
-    public void userTurn() { isUserTurn = true; }
-    
-    public void enemyTurn() { isUserTurn = false; }
     
     @Override
     public String toString() { return name().charAt(0) + name().substring(1).toLowerCase(); }
