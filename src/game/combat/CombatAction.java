@@ -63,6 +63,7 @@ public enum CombatAction implements Actionable
         {
             result.append(i++).append(". ").append(action.toString()).append("\n");
         }
+        result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
 }

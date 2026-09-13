@@ -16,6 +16,7 @@ public enum PlayerMenuOption
         {
             result.append(option.toString()).append(", ");
         }
+        result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
 }

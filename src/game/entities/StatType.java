@@ -26,6 +26,7 @@ public enum StatType
         {
             result.append(i++).append(". ").append(stat.toString()).append("\n");
         }
+        result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
 }

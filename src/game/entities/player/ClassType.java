@@ -48,6 +48,7 @@ public enum ClassType
             if(type == UNSELECTED) continue;
             result.append(i++).append(". ").append(type.toString()).append("\n");
         }
+        result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
 }
