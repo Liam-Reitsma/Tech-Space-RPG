@@ -12,10 +12,11 @@ import game.world.generation.WorldGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Random;
 
-public class WorldController implements Startable<MainMenuStates, Map<Point, RuntimeRoom>, WorldResult>, Loopable<Void, Void, WorldResult>
+public class WorldController implements Startable<MainMenuStates, Map<Point, RuntimeRoom>, WorldResult>, Loopable<RuntimeRoom, Void, WorldResult>
 {
     private final Random random;
     private final WorldGenerator worldGenerator;
@@ -99,8 +100,17 @@ public class WorldController implements Startable<MainMenuStates, Map<Point, Run
     }
     
     @Override
-    public WorldResult loop(Void input1, Void input2)
+    public WorldResult loop(RuntimeRoom currentRoom, Void input2)
     {
+        if(currentRoom != null) playerLocation = currentRoom.getPoint();
+        
+        int i = 0;
+        for(Entry<Point, RuntimeRoom> room : world.entrySet())
+        {
+            if(!room.getValue().isCompleted()) i++;
+            if(i > 1) break;
+        }
+        
         consoleH.printLine(movementOptions());
         Optional<Integer> result;
         RuntimeRoom room;
@@ -114,7 +124,7 @@ public class WorldController implements Startable<MainMenuStates, Map<Point, Run
             else if(getNextRoom(result.get()) == null) return new WorldResult(WorldErrors.IMPOSSIBLE_ROOM_ERROR, null);
         } while(true);
         
-        playerLocation = room.getPoint();
+        if(i == 1 && room != null) room.setRoomType(BOSS);
         
         return new WorldResult(WorldErrors.SUCCESS, room);
     }

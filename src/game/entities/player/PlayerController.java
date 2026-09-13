@@ -33,9 +33,9 @@
         @Override
         public PlayerResult<?> loop(Void input1, Void input2)
         {
-            Optional<PlayerMenuOption> response = consoleH.confirmInputInteger("What would you like to do?", PlayerMenuOption.optionsToString(), PlayerMenuOption.class).getInput();
+            Optional<PlayerMenuOptions> response = consoleH.confirmInputInteger("What would you like to do?", PlayerMenuOptions.optionsToString(), PlayerMenuOptions.class).getInput();
             if(response.isEmpty()) return new PlayerResult<>(USER_WENT_BACK);
-            PlayerMenuOption option = response.get();
+            PlayerMenuOptions option = response.get();
             return switch(option)
             {
                 case PROCEED_PAST -> new PlayerResult<Void>(SKIP);

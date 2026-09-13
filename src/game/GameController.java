@@ -17,6 +17,7 @@ public class GameController
 {
     private boolean isAlive;
     private boolean isRunning;
+    private boolean fled;
     
     private Player player;
     
@@ -32,6 +33,7 @@ public class GameController
     {
         isAlive = true;
         isRunning = true;
+        fled = false;
         
         combatC = cc;
         mainMenuC = mmc;
@@ -107,7 +109,7 @@ public class GameController
             
             if(!isRunning) continue;
             
-            WorldResult worldR= worldC.loop();
+            WorldResult worldR= worldC.loop(roomC.getRoom(fled));
             if(worldR.getError() != WorldErrors.SUCCESS) return 3;
             RoomResult roomR = roomC.loop(worldR.getRoom(), player);
             if(roomR.getError()  != WorldErrors.SUCCESS) return 4;
@@ -120,10 +122,12 @@ public class GameController
                 default -> combatR = null;
             }
             
+            if(combatR != null) fled = combatR.getCombatOutcome() == CombatOutcome.FLEE;
+            
             RewardResult rewardR = null;
             if(combatR == null || combatR.getError() != CombatErrors.SUCCESS) return 5;
             if(combatR.getCombatOutcome() == CombatOutcome.LOSE) isAlive = false;
-            else
+            else if(combatR.getCombatOutcome() != CombatOutcome.FLEE)
             {
                 do
                 {
@@ -140,6 +144,7 @@ public class GameController
                 
                 roomC.loop();
             }
+            else rewardR = new RewardResult(RewardErrors.SUCCESS);
             if(rewardR == null || rewardR.getError() != RewardErrors.SUCCESS) return 6;
             PersistenceResult persistenceR = persistenceC.loop(player, worldR.getRoom());
             if(persistenceR.getError() != PersistenceErrors.SUCCESS) return 6;

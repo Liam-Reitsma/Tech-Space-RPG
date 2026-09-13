@@ -1,6 +1,6 @@
 package game.entities.player;
 
-public enum PlayerMenuOption
+public enum PlayerMenuOptions
 {
     PROCEED_PAST,
     VIEW_INVENTORY,
@@ -15,14 +15,14 @@ public enum PlayerMenuOption
     public String toString()
     {
         String[] names = name().split("_");
-        return names[0].charAt(0) + names[0].substring(1).toLowerCase() + names[1].charAt(0) + names[1].substring(1).toLowerCase();
+        return names[0].charAt(0) + names[0].substring(1).toLowerCase() + " " + names[1].charAt(0) + names[1].substring(1).toLowerCase();
     }
     
     public static String optionsToString()
     {
         StringBuilder result = new StringBuilder();
         int i = 1;
-        for(PlayerMenuOption option : PlayerMenuOption.values())
+        for(PlayerMenuOptions option : PlayerMenuOptions.values())
         {
             result.append(i++).append(". ").append(option.toString()).append("\n");
         }
