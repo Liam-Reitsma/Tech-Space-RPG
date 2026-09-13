@@ -1,11 +1,13 @@
 package game;
 
 import static game.ErrorSeverity.SEVERE;
+import static game.entities.player.PlayerErrors.*;
 
 import game.combat.*;
 import game.entities.*;
 import game.entities.player.Player;
 import game.entities.player.PlayerController;
+import game.entities.player.PlayerResult;
 import game.mainmenu.*;
 import game.persistence.*;
 import game.reward.*;
@@ -87,7 +89,21 @@ public class GameController
     {
         while(isRunning && isAlive)
         {
-            playerC.loop();
+            do
+            {
+                PlayerResult<?> playerR = playerC.loop();
+                if(playerR.getError() == SAVE_GAME) persistenceC.fullSave(player, player.getEquippedWeapon(), player.getInventory(), player.getEquippedArmour(), worldC.getWorld());
+                else if(playerR.getError() == EXIT_GAME)
+                {
+                    persistenceC.fullSave(player, player.getEquippedWeapon(), player.getInventory(), player.getEquippedArmour(), worldC.getWorld());
+                    isRunning = false;
+                }
+                else if(playerR.getError() != SKIP) continue;
+                break;
+            } while(true);
+            
+            if(!isRunning) continue;
+            
             WorldResult worldR= worldC.loop();
             if(worldR.getError() != WorldErrors.SUCCESS) return 3;
             RoomResult roomR = roomC.loop(worldR.getRoom(), player);
