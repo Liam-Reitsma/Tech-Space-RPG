@@ -22,9 +22,9 @@ public interface Persistable
             for(Field field : current.getDeclaredFields())
             {
                 if(field.isAnnotationPresent(SaveExclude.class)) continue;
-                if(field.getType() == Map.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this).toString()).append(DATA_SEPARATOR);
                 field.setAccessible(true);
-                if(field.getType() == float.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(Math.round((float)field.get(this))).append(DATA_SEPARATOR);
+                if(field.getType() == Map.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this).toString()).append(DATA_SEPARATOR);
+                else if(field.getType() == float.class) saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(Math.round((float)field.get(this))).append(DATA_SEPARATOR);
                 else saveInfo.append(field.getName()).append(FIELD_SEPARATOR).append(field.get(this)).append(DATA_SEPARATOR);
             }
             
