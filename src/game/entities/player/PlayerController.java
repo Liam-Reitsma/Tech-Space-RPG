@@ -12,7 +12,7 @@
     import java.util.List;
     import java.util.Optional;
     
-    
+    /** PlayerController implements both Startable and Loopable. Startable takes Player, Void, and PlayerResult, while Loopable takes Void, Void, and PlayerResult.*/
     public class PlayerController implements Startable<Player, Void, PlayerResult<?>>, Loopable<Void, Void, PlayerResult<?>>
     {
         private final ConsoleHandler consoleH;
@@ -46,18 +46,9 @@
                     consoleH.printLine("Your current gold is: " + player.getGold());
                     for(Item item : player.getInventory())
                     {
-                        if(item instanceof Weapon weapon)
-                        {
-                            consoleH.printLine(weapon.getName() + "(" + player.attack() + " damage)");
-                        }
-                        else if(item instanceof Armour armour)
-                        {
-                            consoleH.printLine(armour.getName() + "(" + armour.calculateProtection() + " armour)");
-                        }
-                        else
-                        {
-                            consoleH.printLine(item.getName());
-                        }
+                        if(item instanceof Weapon weapon)  {consoleH.printLine(weapon.getName() + "(" + player.attack() + " damage)"); }
+                        else if(item instanceof Armour armour) { consoleH.printLine(armour.getName() + "(" + armour.calculateProtection() + " armour)"); }
+                        else { consoleH.printLine(item.getName()); }
                     }
 
                     yield new PlayerResult<Void>(RETRY);

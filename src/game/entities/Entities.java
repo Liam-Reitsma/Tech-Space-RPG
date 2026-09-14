@@ -9,7 +9,7 @@ public abstract class Entities
 
     /** Returns a float of the total damage value that an entity can deal.*/
     public abstract float attack();
-    /** Reduces the entity's health by the calculated by considering damage and armourPen*/
+    /** Reduces the entity's health calculated by considering damage and armourPen.*/
     public abstract void takeDamage(float damage, float armourPen);
     
     public String getName() { return name; }
