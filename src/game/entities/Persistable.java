@@ -7,12 +7,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/** Interface is used to load and save games.
+ * Has 3 non-printable characters and used to separate each piece of data so that it can load accurately through loadSaveInfo().*/
 public interface Persistable
 {
     static final char CLASS_SEPARATOR = '\u001E';
     static final char DATA_SEPARATOR  = '\u001F';
     static final char FIELD_SEPARATOR = '\u0005';
-    
+
+    /** Method creates a string. It first save the class name, then goes through the class and saves each field name first then the value separated by FIELD_SEPARATOR non-printable. Each field is separated by the DATA_SEPARATOR non-printable character.
+     * It then returns the string after it has added all the fields.*/
     default String getSaveInfo() throws IllegalAccessException
     {
         StringBuilder saveInfo = new StringBuilder();
@@ -37,7 +41,8 @@ public interface Persistable
         
         return saveInfo.toString();
     }
-    
+
+    /** Method gets the class type. If it is not null, each piece of data will be separated by using FIELD_SEPARATOR and will go through all the fields and sets the correct value to it.*/
     default void loadSaveInfo(String[] data)
     {
         Class<?> current = this.getClass();
@@ -59,26 +64,11 @@ public interface Persistable
                     {
                         try
                         {
-                            if(field.getType().equals(int.class))
-                            {
-                                field.set(this, Integer.parseInt(value));
-                            }
-                            else if(field.getType().equals(String.class))
-                            {
-                                field.set(this, value);
-                            }
-                            else if(field.getType().equals(float.class))
-                            {
-                                field.set(this, Float.parseFloat(value));
-                            }
-                            else if(field.getType().equals(boolean.class))
-                            {
-                                field.set(this, Boolean.parseBoolean(value));
-                            }
-                            else if(field.getType().equals(Point.class))
-                            {
-                                field.set(this, Point.parsePoint(value));
-                            }
+                            if(field.getType().equals(int.class)) { field.set(this, Integer.parseInt(value)); }
+                            else if(field.getType().equals(String.class)) { field.set(this, value); }
+                            else if(field.getType().equals(float.class)) { field.set(this, Float.parseFloat(value)); }
+                            else if(field.getType().equals(boolean.class)) { field.set(this, Boolean.parseBoolean(value)); }
+                            else if(field.getType().equals(Point.class)) { field.set(this, Point.parsePoint(value)); }
                             else if(field.getType().equals(Map.class))
                             {
                                 Map<StatType, Integer> map = new HashMap<>();
@@ -89,10 +79,7 @@ public interface Persistable
                                     String[] result = string.split("=");
                                     for(StatType type : StatType.values())
                                     {
-                                        if(Objects.equals(result[0], type.toString()))
-                                        {
-                                            map.put(type, Integer.parseInt(result[1]));
-                                        }
+                                        if(Objects.equals(result[0], type.toString())) { map.put(type, Integer.parseInt(result[1]));}
                                     }
                                 }
                                 field.set(this, map);
