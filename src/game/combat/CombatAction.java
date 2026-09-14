@@ -59,7 +59,7 @@ public enum CombatAction implements Actionable
                 return new ActionResult(NOTHING, "You healed for " + potionUsed.use() + "hp!");
             }
         };
-    /** Returns enum values as first letter capitalised and lowercase for rest by overriding the default toString(). */
+    /** Returns enum values as first letter capitalised and lowercase for rest by overriding the default toString().*/
     @Override
     public String toString() { return name().charAt(0) + name().substring(1).toLowerCase(); }
 

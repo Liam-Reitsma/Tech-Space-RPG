@@ -10,6 +10,7 @@ import game.items.weapon.Weapon;
 
 import java.util.*;
 
+/** Player extends Entities and implements Persistable. It holds all the methods that apply to the {@link Player}*/
 public class Player extends Entities implements Persistable
 {
     @SaveExclude
@@ -43,7 +44,8 @@ public class Player extends Entities implements Persistable
     private List<Armour> equippedArmourPieces;
     @SaveExclude
     private Weapon equippedWeapon;
-    
+
+    /** Used when creating character at the start of a new game.*/
     public Player(String playerName, ClassType type)
     {
         level = 1;
@@ -69,7 +71,8 @@ public class Player extends Entities implements Persistable
         
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
-    
+
+    /** Used when loading an existing character.*/
     public Player(String[] data)
     {
         loadSaveInfo(data);
@@ -98,7 +101,8 @@ public class Player extends Entities implements Persistable
     {
         selectedPotion = potion;
     }
-    
+
+    /** First checks for equipped weapon and if there is no weapon equipped, it returns the strength value of {@link Player}. Otherwise, it gets the equipped weapons damage by using calculateDamage() and multiplying by the {@link Player} damage multiplier field. It is then rounded to 4 decimal places.*/
     @Override
     public float attack()
     {
@@ -110,7 +114,7 @@ public class Player extends Entities implements Persistable
     {
         float healthGain = healAmount * statTypeMap.get(STR) * 0.01f;
         
-        if (healthGain + health >= maximumHealth)
+        if(healthGain + health >= maximumHealth)
         {
             health = maximumHealth;
         }
@@ -119,12 +123,14 @@ public class Player extends Entities implements Persistable
             health += healthGain;
         }
     }
-    
+
+    /** Calculates the damage that is applied to the {@link Player} by first, going through the equipped armours and totalling the damage that the armour pieces blocks, second, subtracting the total protection value from 1, third, adding it to armour penetration value, finally, multiplying by the damage that is given to the {@link Player}.
+     * If the health results in being less than or equal to 0, it sets to 0.*/
     @Override
     public void takeDamage(float damage, float armourPen)
     {
         float totalArmour = 0;
-        for (Armour armour : equippedArmourPieces)
+        for(Armour armour : equippedArmourPieces)
         {
             totalArmour += (1 - totalArmour) * Math.min(armour.calculateProtection() * armourMultiplier, 1);
         }
@@ -147,7 +153,13 @@ public class Player extends Entities implements Persistable
         
         return level - currentLevel;
     }
-    
+
+    /** Used to recalculate the stat of the {@link Player} after increasing a stat when levelling up.
+     * The ratio is used to get the ratio of the {@link Player} current health and current maximum health due to the maximum health increasing when the strength stat increases.
+     * The ratio will allow the current health to increase with the same ratio as before.
+     * Armour penetration gets the dexterity stat and multiplies it by a fixed multiplier.
+     * Damage multiplier gets the intelligence stat, multiplies it by a fixed multiplier, and adding 1 to it so that the damage value increases when damage multiplier is applied.
+     * Armour multiplier gets the intelligence stat, multiplies it by a fixed multiplier, and adding 1 to it so that the armour value increases when armour multiplier is applied.*/
     private void recalculateStats()
     {
         float ratio = health / maximumHealth;
@@ -165,7 +177,8 @@ public class Player extends Entities implements Persistable
         statTypeMap.put(stat, statTypeMap.get(stat) + 1);
         recalculateStats();
     }
-    
+
+    /** Checks for {@link Weapon} in the inventory and adds it to a weapons array and returns a SUCCESS with the weapons array, however, if there are no weapons in the inventory, it returns a NO_WEAPON_AVAILABLE with an empty array.*/
     public PlayerResult<Weapon> getWeaponsInInventory()
     {
         Weapon[] inventoryWeapons = new Weapon[10];
@@ -173,10 +186,7 @@ public class Player extends Entities implements Persistable
         int i = 0;
         for(Item item : getInventory())
         {
-            if(item instanceof Weapon weapon)
-            {
-                inventoryWeapons[i++] = weapon;
-            }
+            if(item instanceof Weapon weapon) inventoryWeapons[i++] = weapon;
         }
         if(i == 0) return new PlayerResult<>(NO_WEAPON_AVAILABLE, new Weapon[0]);
         weapons = new Weapon[i];
@@ -218,7 +228,8 @@ public class Player extends Entities implements Persistable
         equippedWeapon = null;
         return SUCCESS;
     }
-    
+
+    /** Checks for {@link Armour} in the inventory and adds it to an armours array and returns a SUCCESS with the armours array, however, if there are no armours in the inventory, it returns a NO_ARMOUR_AVAILABLE with an empty array.*/
     public PlayerResult<Armour> getArmourInInventory()
     {
         Armour[] inventoryArmours = new Armour[10];
@@ -226,10 +237,7 @@ public class Player extends Entities implements Persistable
         int i = 0;
         for(Item item : getInventory())
         {
-            if(item instanceof Armour armour)
-            {
-                inventoryArmours[i++] = armour;
-            }
+            if(item instanceof Armour armour) inventoryArmours[i++] = armour;
         }
         if(i == 0) return new PlayerResult<>(NO_ARMOUR_AVAILABLE, new Armour[0]);
         armours = new Armour[i];
@@ -267,14 +275,15 @@ public class Player extends Entities implements Persistable
     
     public PlayerErrors unequipArmour(Armour armour)
     {
-        if(equippedArmourPieces.isEmpty()) { return NO_ARMOUR_EQUIPPED; }
-        if(!equippedArmourPieces.contains(armour)) { return NO_SLOT_ARMOUR_EQUIPPED; }
+        if(equippedArmourPieces.isEmpty()) return NO_ARMOUR_EQUIPPED;
+        if(!equippedArmourPieces.contains(armour)) return NO_SLOT_ARMOUR_EQUIPPED;
         equippedArmourPieces.remove(armour);
         armour.unequip();
         inventory.add(armour);
         return SUCCESS;
     }
-    
+
+    /** Checks for {@link Potion} in the inventory and adds it to a potions array and returns a SUCCESS with the potions array, however, if there are no potions in the inventory, it returns a NO_POTION_AVAILABLE with an empty array.*/
     public PlayerResult<Potion> getPotionsInInventory()
     {
         Potion[] inventoryPotions = new Potion[10];
@@ -282,10 +291,7 @@ public class Player extends Entities implements Persistable
         int i = 0;
         for(Item item : getInventory())
         {
-            if(item instanceof Potion potion)
-            {
-                inventoryPotions[i++] = potion;
-            }
+            if(item instanceof Potion potion) inventoryPotions[i++] = potion;
         }
         if(i == 0) return new PlayerResult<>(NO_POTION_AVAILABLE, new Potion[0]);
         potions = new Potion[i];
@@ -302,24 +308,15 @@ public class Player extends Entities implements Persistable
     
     public PlayerErrors addToInventory(Item item)
     {
-        if(item == null)
-        {
-            return NO_ITEM_GIVEN;
-        }
-        else if (inventory.size() >= MAXIMUM_INVENTORY_SIZE)
-        {
-            return MAX_INVENTORY_REACHED;
-        }
+        if(item == null) return NO_ITEM_GIVEN;
+        else if(inventory.size() >= MAXIMUM_INVENTORY_SIZE) return MAX_INVENTORY_REACHED;
         inventory.add(item);
         return SUCCESS;
     }
     
     public PlayerErrors removeFromInventory(Item item)
     {
-        if (!inventory.contains(item))
-        {
-            return ITEM_MISSING;
-        }
+        if(!inventory.contains(item)) return ITEM_MISSING;
         inventory.remove(item);
         return SUCCESS;
     }
