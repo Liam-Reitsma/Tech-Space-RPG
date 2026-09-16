@@ -1,31 +1,33 @@
 package game.mainmenu;
 
-import static game.mainmenu.MainMenuErrors.*;
+import game.gui.GUIAction;
 
-import game.ConsoleHandler;
-import game.Startable;
-
-import java.util.Optional;
-
-public class MainMenuController implements Startable<Void, Void, MainMenuResult>
+public class MainMenuController
 {
-    private final ConsoleHandler consoleH;
+    private final GUIAction guiAction;
     
-    public MainMenuController(ConsoleHandler cH)
+    public MainMenuController(GUIAction actions)
     {
-        consoleH = cH;
+        guiAction = actions;
     }
     
-    @Override
-    public MainMenuResult start(Void input1, Void input2)
+    public void newGame()
     {
-        Optional<MainMenuStates> response = consoleH.confirmInputInteger("What would you like to do?", MainMenuStates.optionsToString(), MainMenuStates.class).getInput();
-        if(response.isEmpty()) return new MainMenuResult(USER_WENT_BACK, MainMenuStates.EXIT_GAME);
-        else return new MainMenuResult(SUCCESS, response.get());
+        guiAction.openGameScreen();
     }
     
-    public MainMenuResult start()
+    public void loadGame()
     {
-        return start(null, null);
+        guiAction.openSavesScreen();
+    }
+    
+    public void openOptions()
+    {
+        guiAction.openOptionsScreen();
+    }
+    
+    public void exitGame()
+    {
+        guiAction.closeGame();
     }
 }
