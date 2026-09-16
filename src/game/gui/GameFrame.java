@@ -1,9 +1,11 @@
 package game.gui;
 
+import game.mainmenu.MainMenuController;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class GameFrame extends JFrame
+public class GameFrame extends JFrame implements GUIAction
 {
     private static final int programWidth = 1280;
     private static final int programHeight = 720;
@@ -16,5 +18,33 @@ public class GameFrame extends JFrame
         setLocationRelativeTo(null);
         
         setLayout(new BorderLayout());
+        
+        MainMenuController mmController = new MainMenuController(this);
+        
+        add(new MainMenuPanel(name, mmController));
+    }
+    
+    @Override
+    public void openGameScreen()
+    {
+    
+    }
+    
+    @Override
+    public void openSavesScreen()
+    {
+    
+    }
+    
+    @Override
+    public void openOptionsScreen()
+    {
+    
+    }
+    
+    @Override
+    public void closeGame()
+    {
+        dispose();
     }
 }
