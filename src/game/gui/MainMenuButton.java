@@ -9,7 +9,7 @@ public class MainMenuButton extends JButton
     public MainMenuButton(String name, ActionListener actionListener)
     {
         super(name);
-        //addActionListener(actionListener);
+        addActionListener(actionListener);
         setPreferredSize(new Dimension(225, 75));
         setFont(new Font("OCR A Extended", Font.BOLD, 30));
         setOpaque(false);

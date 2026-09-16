@@ -1,15 +1,19 @@
 package game.gui;
 
+import game.mainmenu.MainMenuController;
+import game.mainmenu.MainMenuState;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainMenuPanel extends JPanel
 {
     private static final Image mainMenuImage = new ImageIcon("resources/images/Main Menu Background.png").getImage();
     
-    public MainMenuPanel(String title, String[] buttonOptions, ActionListener[] buttonActions)
+    public MainMenuPanel(String title, MainMenuController mmController)
     {
         super(new GridBagLayout());
         
@@ -24,10 +28,13 @@ public class MainMenuPanel extends JPanel
         
         gbConstraints.insets = new Insets(0, 0, 15, 0);
         
-        for(int i = 0; i < buttonOptions.length; i++)
+        int i = 1;
+        for(MainMenuState state : MainMenuState.values())
         {
-            gbConstraints.gridy = i + 1;
-            add(new MainMenuButton(buttonOptions[i], buttonActions[i]), gbConstraints);
+            gbConstraints.gridy = i++;
+            
+            ActionListener stateListener = e -> state.executeStateAction(mmController);
+            add(new MainMenuButton(state.toString(), stateListener), gbConstraints);
         }
     }
     
