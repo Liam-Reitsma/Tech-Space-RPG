@@ -7,7 +7,7 @@ public class OptionsOverlay extends JPanel
     public OptionsOverlay(OptionsPanel optionsPanel)
     {
         add(optionsPanel);
-        setSize(300, 900);
+        setSize(optionsPanel.getSize());
         setOpaque(false);
         setVisible(true);
     }
