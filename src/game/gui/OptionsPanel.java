@@ -68,6 +68,17 @@ public class OptionsPanel extends JPanel
         add(applyResButton, gbConstraints);
     }
     
+    private JSlider createSlider()
+    {
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, 100);
+        slider.setOpaque(false);
+        slider.setUI(new AudioSliderUI(slider, Color.LIGHT_GRAY, 0.1f));
+        slider.setMinimumSize(new Dimension(SLIDER_PREFERRED_WIDTH / 100, SLIDER_PREFERRED_HEIGHT / 100));
+        slider.setPreferredSize(new Dimension(SLIDER_PREFERRED_WIDTH, SLIDER_PREFERRED_HEIGHT));
+        
+        return slider;
+    }
+    
     private void createLabels(GridBagConstraints gbConstraints)
     {
         gbConstraints.anchor = GridBagConstraints.NORTH;
