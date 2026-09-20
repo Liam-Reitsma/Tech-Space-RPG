@@ -4,6 +4,8 @@ import game.mainmenu.MainMenuController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class GameFrame extends JFrame implements GUIAction
 {
@@ -17,7 +19,6 @@ public class GameFrame extends JFrame implements GUIAction
         super(name);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(new Dimension(programWidth, programHeight));
-        
         setLayout(new BorderLayout());
         
         MainMenuController mmController = new MainMenuController(this);
@@ -28,7 +29,24 @@ public class GameFrame extends JFrame implements GUIAction
         
         optionsOverlay = new OptionsOverlay(new OptionsPanel(this));
         getLayeredPane().add(optionsOverlay, JLayeredPane.MODAL_LAYER);
+        getLayeredPane().addComponentListener((new ComponentAdapter()
+        {
+            @Override
+            public void componentResized(ComponentEvent e)
+            {
+                for(Component component : getLayeredPane().getComponents())
+                {
+                    if(component instanceof JPanel panel)
+                    {
+                        panel.setSize(getLayeredPane().getSize());
+                    }
+                }
+            }
+        }));
         optionsOverlay.setVisible(false);
+        
+        pack();
+        setLocationRelativeTo(null);
     }
     
     @Override
@@ -59,6 +77,9 @@ public class GameFrame extends JFrame implements GUIAction
     @Override
     public void changeResolution(DisplayResolution resolution)
     {
-        setSize(resolution.getWidth(), resolution.getHeight());
+        getContentPane().setPreferredSize(new Dimension(resolution.getWidth(), resolution.getHeight()));
+        pack();
+        revalidate();
+        repaint();
     }
 }
