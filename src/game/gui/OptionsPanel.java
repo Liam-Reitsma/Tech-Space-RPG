@@ -11,9 +11,13 @@ import java.awt.event.MouseAdapter;
 
 public class OptionsPanel extends JPanel
 {
+    private static final Image SETTINGS_IMAGE = new ImageIcon("resources/images/Settings Background.png").getImage();
+    
     private static final int LABEL_FONT_SIZE = 72;
+    
     private static final int SLIDER_PREFERRED_WIDTH = 860;
     private static final int SLIDER_PREFERRED_HEIGHT = 129;
+    
     GUIAction guiAction;
     
     public OptionsPanel(GUIAction action)
@@ -127,7 +131,6 @@ public class OptionsPanel extends JPanel
         add(createLabel("SFX Volume", labelFont), gbConstraints);
         
         gbConstraints.gridy = ++y;
-        add(new JLabel("Music Volume"), gbConstraints);
         add(createLabel("Music Volume", labelFont), gbConstraints);
     }
     
@@ -140,5 +143,10 @@ public class OptionsPanel extends JPanel
         return label;
     }
     
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        g.drawImage(SETTINGS_IMAGE, 0, 0, getWidth(), getHeight(), null);
     }
 }
