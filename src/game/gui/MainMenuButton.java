@@ -10,7 +10,6 @@ public class MainMenuButton extends JButton
     {
         super(name);
         addActionListener(actionListener);
-        setPreferredSize(new Dimension(225, 75));
         setFont(new Font("OCR A Extended", Font.BOLD, 30));
         setOpaque(false);
         setContentAreaFilled(false);
