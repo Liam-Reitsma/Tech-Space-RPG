@@ -22,12 +22,10 @@ public class GameFrame extends JFrame implements GUIAction
         setLayout(new BorderLayout());
         
         MainMenuController mmController = new MainMenuController(this);
-        add(new MainMenuPanel(name, mmController));
-        pack();
+        MainMenuPanel mmPanel = new MainMenuPanel(name, mmController);
+        add(mmPanel);
         
-        setLocationRelativeTo(null);
-        
-        optionsOverlay = new OptionsOverlay(new OptionsPanel(this));
+        optionsOverlay = new OptionsOverlay(new OptionsPanel(this), new OptionsTitlePanel(this), programWidth, programHeight);
         getLayeredPane().add(optionsOverlay, JLayeredPane.MODAL_LAYER);
         getLayeredPane().addComponentListener((new ComponentAdapter()
         {
@@ -66,6 +64,12 @@ public class GameFrame extends JFrame implements GUIAction
     {
         optionsOverlay.setLocation((getLayeredPane().getWidth() - optionsOverlay.getWidth()) / 2, (getLayeredPane().getHeight() - optionsOverlay.getHeight()) / 2);
         optionsOverlay.setVisible(true);
+    }
+    
+    @Override
+    public void closeOptionsScreen()
+    {
+        optionsOverlay.setVisible(false);
     }
     
     @Override
