@@ -7,6 +7,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class MainMenuPanel extends JPanel
 {
@@ -20,9 +22,40 @@ public class MainMenuPanel extends JPanel
         super(new GridBagLayout());
         
         GridBagConstraints gbConstraints = new GridBagConstraints();
-        gbConstraints.fill = GridBagConstraints.NONE;
+        
+        createTitlePanel(title, gbConstraints);
+        createButtonPanel(mmController, gbConstraints);
+        
+        addComponentListener(new ComponentAdapter()
+        {
+            @Override public void componentResized(ComponentEvent e)
+            {
+                for(Component component : buttonPanel.getComponents())
+                {
+                    if(component instanceof JButton button)
+                    {
+                        button.setFont(new Font(button.getFont().getFontName(), button.getFont().getStyle(),
+                                (int)Math.max(Math.clamp(80 - 30000 * Math.log1p(1.0 / getWidth()), 0, 80), button.getWidth() / 10.0)
+                        ));
+                        
+                    }
+                }
+                for(Component component : titlePanel.getComponents())
+                {
+                    if(component instanceof JLabel label)
+                    {
+                        label.setFont(new Font(label.getFont().getFontName(), label.getFont().getStyle(), getWidth() / 10));
+                    }
+                }
+            }
+        });
+    }
+    
+    private void createTitlePanel(String title, GridBagConstraints gbConstraints)
+    {
         gbConstraints.anchor = GridBagConstraints.CENTER;
-        gbConstraints.gridx = 0;
+        gbConstraints.fill = GridBagConstraints.BOTH;
+        gbConstraints.gridx = 1;
         gbConstraints.gridy = 0;
         gbConstraints.weightx = 1;
         gbConstraints.weighty = 1;
@@ -98,27 +131,6 @@ public class MainMenuPanel extends JPanel
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        g.drawImage(mainMenuImage, 0, 0, getWidth(), getHeight(), null);
-    }
-    
-    private JPanel createTitlePanel(String title)
-    {
-        JPanel titlePanel = new JPanel();
-        titlePanel.setOpaque(false);
-        OverlayLayout titlePanelLayout = new OverlayLayout(titlePanel);
-        titlePanel.setLayout(titlePanelLayout);
-        
-        JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Agency FB", Font.BOLD, 100));
-        titleLabel.setForeground(Color.WHITE);
-        titlePanel.add(titleLabel);
-        
-        JLabel titleLabelShadow = new JLabel(title);
-        titleLabelShadow.setFont(new Font("Agency FB", Font.BOLD, 100));
-        titleLabelShadow.setForeground(Color.BLACK);
-        titleLabelShadow.setBorder(new EmptyBorder(10, 7, 0, 0));
-        titlePanel.add(titleLabelShadow);
-        
-        return titlePanel;
+        g.drawImage(MAIN_MENU_IMAGE, 0, 0, getWidth(), getHeight(), null);
     }
 }
