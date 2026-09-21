@@ -19,15 +19,15 @@ public class AudioSliderUI extends BasicSliderUI
     private final int xBorderGap;
     private final int yBorderGap;
     
-    public AudioSliderUI(JSlider slider, Color colour, float barSize)
+    public AudioSliderUI(JSlider slider, Color colour, float barHeight, float barWidth)
     {
         super(slider);
         barColour = colour;
-        strokeSize = barSize;
-        thumbHeight = (int)(barSize * 120);
-        thumbWidth = (int)(barSize * 120);
-        xBorderGap = Math.round(barSize * 70);
-        yBorderGap = Math.round(barSize * 5);
+        strokeSize = (barHeight + barWidth) / 2;
+        thumbHeight = (int)(barHeight * 120);
+        thumbWidth = (int)(barWidth * 120);
+        xBorderGap = Math.round(barHeight * 70);
+        yBorderGap = Math.round(barWidth * 5);
         
         slider.addChangeListener(e -> slider.repaint());
     }
