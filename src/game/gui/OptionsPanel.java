@@ -11,7 +11,13 @@ import java.awt.event.MouseAdapter;
 
 public class OptionsPanel extends JPanel
 {
-    private static final Image SETTINGS_IMAGE = new ImageIcon("resources/images/Settings Background.png").getImage();
+    private static final Image OPTIONS_CONTENT_IMAGE = new ImageIcon("resources/images/Settings Content.png").getImage();
+    private static final Image OPTIONS_BORDER_IMAGE = new ImageIcon("resources/images/Settings Border.png").getImage();
+    private static final int OPTIONS_BACKGROUND_IMAGE_TOTAL_WIDTH = OPTIONS_BORDER_IMAGE.getWidth(null);
+    private static final int OPTIONS_BACKGROUND_IMAGE_TOTAL_HEIGHT = OPTIONS_BORDER_IMAGE.getHeight(null);
+    
+    private static final int OPTIONS_IMAGE_BORDER_WIDTH = (OPTIONS_BACKGROUND_IMAGE_TOTAL_WIDTH - OPTIONS_CONTENT_IMAGE.getWidth(null)) / 2;
+    private static final int OPTIONS_IMAGE_BORDER_HEIGHT = (OPTIONS_BACKGROUND_IMAGE_TOTAL_HEIGHT - OPTIONS_CONTENT_IMAGE.getHeight(null)) / 2;
     
     private static final int LABEL_FONT_SIZE = 72;
     
@@ -26,25 +32,34 @@ public class OptionsPanel extends JPanel
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbConstraints = new GridBagConstraints();
+        
+        setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+        
         createComponents(gbConstraints);
         createLabels(gbConstraints);
         addComponentListener(new ComponentAdapter()
         {
             @Override public void componentResized(ComponentEvent e)
             {
-                double panelWidth = getSize().getWidth();
-                double panelHeight = getSize().getHeight();
+                Container parent = getParent();
+                
+                double panelWidth = parent.getWidth();
+                double panelHeight = parent.getHeight();
                 
                 for(Component component : getComponents())
                 {
                     
                     if(component instanceof JSlider slider)
                     {
-                        slider.setPreferredSize(new Dimension((int)Math.round(SLIDER_PREFERRED_WIDTH * (panelWidth / PROGRAM_WIDTH)), (int)Math.round(SLIDER_PREFERRED_HEIGHT * (panelHeight / PROGRAM_HEIGHT))));
+                        slider.setPreferredSize(new Dimension((int)Math.round(SLIDER_PREFERRED_WIDTH * 0.8f * (panelWidth / PROGRAM_WIDTH)), (int)Math.round(SLIDER_PREFERRED_HEIGHT * 0.5f * (panelHeight / PROGRAM_HEIGHT))));
                     }
-                    else
+                    else if(component instanceof JLabel label)
                     {
-                        component.setFont(component.getFont().deriveFont((float)(LABEL_FONT_SIZE * panelWidth) / PROGRAM_WIDTH));
+                        label.setFont(label.getFont().deriveFont((float)(LABEL_FONT_SIZE * panelWidth) / PROGRAM_WIDTH));
+                    }
+                    else if(component instanceof JComboBox<?> combo)
+                    {
+                        combo.setFont(combo.getFont().deriveFont((float)(LABEL_FONT_SIZE / 2f * panelWidth) / PROGRAM_WIDTH));
                     }
                 }
                 
@@ -102,7 +117,7 @@ public class OptionsPanel extends JPanel
     {
         JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, 100);
         slider.setOpaque(false);
-        slider.setUI(new AudioSliderUI(slider, Color.LIGHT_GRAY, 0.1f));
+        slider.setUI(new AudioSliderUI(slider, Color.LIGHT_GRAY, 0.1f, 0.1f));
         slider.setMinimumSize(new Dimension(SLIDER_PREFERRED_WIDTH / 100, SLIDER_PREFERRED_HEIGHT / 100));
         slider.setPreferredSize(new Dimension(SLIDER_PREFERRED_WIDTH, SLIDER_PREFERRED_HEIGHT));
         
@@ -147,6 +162,12 @@ public class OptionsPanel extends JPanel
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        g.drawImage(SETTINGS_IMAGE, 0, 0, getWidth(), getHeight(), null);
+        
+        g.drawImage(OPTIONS_BORDER_IMAGE, 0, 0, getWidth(), getHeight(), null);
+        
+        int insetX = (int)(getWidth() * ((double)OPTIONS_IMAGE_BORDER_WIDTH / OPTIONS_BACKGROUND_IMAGE_TOTAL_WIDTH));
+        int insetY = (int)(getHeight() * ((double)OPTIONS_IMAGE_BORDER_HEIGHT / OPTIONS_BACKGROUND_IMAGE_TOTAL_HEIGHT));
+        
+        g.drawImage(OPTIONS_CONTENT_IMAGE, insetX, insetY, getWidth() - insetX * 2, getHeight() - insetY * 2, null);
     }
 }
