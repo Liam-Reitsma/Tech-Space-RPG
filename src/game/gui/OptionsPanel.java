@@ -24,6 +24,9 @@ public class OptionsPanel extends JPanel
     private static final int SLIDER_PREFERRED_WIDTH = 860;
     private static final int SLIDER_PREFERRED_HEIGHT = 129;
     
+    private static final int BUTTON_PREFERRED_WIDTH = 200;
+    private static final int BUTTON_PREFERRED_HEIGHT = 45;
+    
     GUIAction guiAction;
     
     public OptionsPanel(GUIAction action)
@@ -60,6 +63,10 @@ public class OptionsPanel extends JPanel
                     else if(component instanceof JComboBox<?> combo)
                     {
                         combo.setFont(combo.getFont().deriveFont((float)(LABEL_FONT_SIZE / 2f * panelWidth) / PROGRAM_WIDTH));
+                    }
+                    else if(component instanceof OptionsButton button)
+                    {
+                        button.resizeButton((float)((BUTTON_PREFERRED_WIDTH * panelWidth) / PROGRAM_WIDTH), ((float)(BUTTON_PREFERRED_HEIGHT * panelHeight) / PROGRAM_HEIGHT));
                     }
                 }
                 
@@ -107,7 +114,7 @@ public class OptionsPanel extends JPanel
         gbConstraints.gridy = ++y;
         gbConstraints.weightx = 0.0;
         gbConstraints.weighty = 1.0;
-        ConfirmButton applyResButton = new ConfirmButton("Apply", resButtonListener);
+        OptionsButton applyResButton = new OptionsButton("Apply", resButtonListener);
         add(applyResButton, gbConstraints);
         
         addMouseListener(new MouseAdapter() {});
