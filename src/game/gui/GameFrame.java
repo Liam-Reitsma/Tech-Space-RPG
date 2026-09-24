@@ -67,6 +67,15 @@ public class GameFrame extends JFrame implements GUIAction
     }
     
     @Override
+    public void changeResolution(DisplayResolution resolution)
+    {
+        getContentPane().setPreferredSize(new Dimension(resolution.getWidth(), resolution.getHeight()));
+        pack();
+        revalidate();
+        repaint();
+    }
+    
+    @Override
     public void closeOptionsScreen()
     {
         optionsOverlay.setVisible(false);
