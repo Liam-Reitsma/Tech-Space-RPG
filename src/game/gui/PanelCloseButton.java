@@ -4,13 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class OptionsTitleButton extends ConfirmButton
+public class PanelCloseButton extends ConfirmButton
 {
     private final Image normalImage;
     private final Image rolloverImage;
     private final Image pressedImage;
     
-    public OptionsTitleButton(String name, ActionListener actionListener)
+    public PanelCloseButton(String name, ActionListener actionListener)
     {
         super(name, actionListener);
         
