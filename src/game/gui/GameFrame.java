@@ -77,13 +77,4 @@ public class GameFrame extends JFrame implements GUIAction
     {
         dispose();
     }
-    
-    @Override
-    public void changeResolution(DisplayResolution resolution)
-    {
-        getContentPane().setPreferredSize(new Dimension(resolution.getWidth(), resolution.getHeight()));
-        pack();
-        revalidate();
-        repaint();
-    }
 }
