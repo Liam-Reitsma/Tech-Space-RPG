@@ -4,13 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class OptionsButton extends ConfirmButton
+public class PanelButton extends ConfirmButton
 {
     private final Image normalImage;
     private final Image rolloverImage;
     private final Image pressedImage;
     
-    public OptionsButton(String name, ActionListener actionListener)
+    public PanelButton(String name, ActionListener actionListener)
     {
         super(name, actionListener);
         setFont(new Font("OCR A Extended", Font.BOLD, 30));
