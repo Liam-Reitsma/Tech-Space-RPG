@@ -7,8 +7,8 @@ import java.awt.event.MouseAdapter;
 
 public class OptionsTitlePanel extends JPanel
 {
-    private static final Image OPTIONS_TITLE_CONTENT = new ImageIcon("resources/images/Settings Title Content.png").getImage();
-    private static final Image OPTIONS_TITLE_BORDER = new ImageIcon("resources/images/Settings Title Border.png").getImage();
+    private static final Image OPTIONS_TITLE_CONTENT = new ImageIcon("resources/images/Options Title Content.png").getImage();
+    private static final Image OPTIONS_TITLE_BORDER = new ImageIcon("resources/images/Options Title Border.png").getImage();
     
     private static final int OPTIONS_TITLE_IMAGE_TOTAL_WIDTH = OPTIONS_TITLE_BORDER.getWidth(null);
     private static final int OPTIONS_TITLE_IMAGE_TOTAL_HEIGHT = OPTIONS_TITLE_BORDER.getHeight(null);
@@ -32,14 +32,14 @@ public class OptionsTitlePanel extends JPanel
         gbConstraints.gridx = 0;
         gbConstraints.gridy = 0;
         
-        JLabel label = new JLabel("Settings");
+        JLabel label = new JLabel("Options");
         label.setFont(new Font("Agency FB", Font.BOLD, LABEL_FONT_SIZE));
         label.setForeground(Color.WHITE);
         add(label, gbConstraints);
         
         gbConstraints.anchor = GridBagConstraints.EAST;
         gbConstraints.gridx = 1;
-        OptionsTitleButton applyResButton = new OptionsTitleButton("X", closeButtonListener);
+        PanelCloseButton applyResButton = new PanelCloseButton("X", closeButtonListener);
         gbConstraints.weightx = 1;
         add(applyResButton, gbConstraints);
         
