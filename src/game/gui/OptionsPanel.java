@@ -11,8 +11,8 @@ import java.awt.event.MouseAdapter;
 
 public class OptionsPanel extends JPanel
 {
-    private static final Image OPTIONS_CONTENT_IMAGE = new ImageIcon("resources/images/Settings Content.png").getImage();
-    private static final Image OPTIONS_BORDER_IMAGE = new ImageIcon("resources/images/Settings Border.png").getImage();
+    private static final Image OPTIONS_CONTENT_IMAGE = new ImageIcon("resources/images/Options Content.png").getImage();
+    private static final Image OPTIONS_BORDER_IMAGE = new ImageIcon("resources/images/Options Border.png").getImage();
     private static final int OPTIONS_BACKGROUND_IMAGE_TOTAL_WIDTH = OPTIONS_BORDER_IMAGE.getWidth(null);
     private static final int OPTIONS_BACKGROUND_IMAGE_TOTAL_HEIGHT = OPTIONS_BORDER_IMAGE.getHeight(null);
     
@@ -64,7 +64,7 @@ public class OptionsPanel extends JPanel
                     {
                         combo.setFont(combo.getFont().deriveFont((float)(LABEL_FONT_SIZE / 2f * panelWidth) / PROGRAM_WIDTH));
                     }
-                    else if(component instanceof OptionsButton button)
+                    else if(component instanceof PanelButton button)
                     {
                         button.resizeButton((float)((BUTTON_PREFERRED_WIDTH * panelWidth) / PROGRAM_WIDTH), ((float)(BUTTON_PREFERRED_HEIGHT * panelHeight) / PROGRAM_HEIGHT));
                     }
@@ -114,7 +114,7 @@ public class OptionsPanel extends JPanel
         gbConstraints.gridy = ++y;
         gbConstraints.weightx = 0.0;
         gbConstraints.weighty = 1.0;
-        OptionsButton applyResButton = new OptionsButton("Apply", resButtonListener);
+        PanelButton applyResButton = new PanelButton("Apply", resButtonListener);
         add(applyResButton, gbConstraints);
         
         addMouseListener(new MouseAdapter() {});
