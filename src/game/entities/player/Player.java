@@ -1,20 +1,18 @@
 package game.entities.player;
 
 import static game.entities.StatType.*;
-import static game.entities.player.PlayerErrors.*;
 
 import game.entities.*;
 import game.items.*;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
+import game.world.Point;
 
 import java.util.*;
 
 /** Player extends Entities and implements Persistable. It holds all the methods that apply to the {@link Player}*/
 public class Player extends Entities implements Persistable
 {
-    @SaveExclude
-    private static final int MAXIMUM_INVENTORY_SIZE = 20;
     @SaveExclude
     private static final int STARTING_LEVEL_XP = 15;
     @SaveExclude
@@ -25,9 +23,9 @@ public class Player extends Entities implements Persistable
     private int xp;
     private int gold;
     
-    private Potion selectedPotion;
-    
-    private Map<StatType, Integer> statTypeMap;
+    private final Point point;
+    private final ClassType classType;
+    private final Map<StatType, Integer> statTypeMap;
     
     @SaveExclude
     private float maximumHealth;
@@ -63,42 +61,37 @@ public class Player extends Entities implements Persistable
         
         health = maximumHealth;
         
-        equippedWeapon = new Weapon(type.getStartingWeapon(), level);
-        equippedWeapon.equip();
-        
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
 
     /** Used when loading an existing character.*/
-    public Player(String[] data)
+    public Player(Object[] playerData, Object[] statData)
     {
-        loadSaveInfo(data);
+        int i = -1;
+        name = (String)playerData[++i];
+        level = (int)playerData[++i];
+        health = (float)playerData[++i];
+        xp = (int)playerData[++i];
+        gold = (int)playerData[++i];
+        classType = ClassType.parseClassType((String)playerData[++i]);
+        point = new Point((int)playerData[++i], (int)playerData[++i]);
+
+        inventory = new Inventory();
+        
+        i = -1;
+        statTypeMap = new HashMap<>();
+        statTypeMap.put(STR, (int)statData[++i]);
+        statTypeMap.put(DEX, (int)statData[++i]);
+        statTypeMap.put(INT, (int)statData[++i]);
+        
         maximumHealth = 100 * (1 + statTypeMap.get(STR) * 0.05f);
         armourPenetration = statTypeMap.get(DEX) * 0.005f;
         damageMultiplier = 1 + statTypeMap.get(INT) * 0.006f;
         armourMultiplier = 1 + statTypeMap.get(INT) * 0.003f;
+        
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
     
-    public void setWeapon(Weapon weapon) { equippedWeapon = weapon; }
-    
-    public void setInventory(List<Item> newInventory)
-    {
-        if(newInventory == null) inventory = new ArrayList<>();
-        else inventory = newInventory;
-    }
-    
-    public void setEquippedArmourPieces(List<Armour> newEquipped)
-    {
-        if(newEquipped == null) equippedArmourPieces = new ArrayList<>();
-        else equippedArmourPieces = newEquipped;
-    }
-    
-    public void setSelectedPotion(Potion potion)
-    {
-        selectedPotion = potion;
-    }
-
     /** First checks for equipped weapon and if there is no weapon equipped, it returns the strength value of {@link Player}. Otherwise, it gets the equipped weapons damage by using calculateDamage() and multiplying by the {@link Player} damage multiplier field. It is then rounded to 4 decimal places.*/
     @Override
     public float attack()
@@ -206,6 +199,12 @@ public class Player extends Entities implements Persistable
     public int getXpToLevelUp() { return xpToLevelUp; }
     
     public int getGold() { return gold; }
+    
+    public int getSTR() { return statTypeMap.get(STR); }
+    
+    public int getDEX() { return statTypeMap.get(DEX); }
+    
+    public int getINT() { return statTypeMap.get(INT); }
     
     public float getMaximumHealth() { return maximumHealth; }
     
