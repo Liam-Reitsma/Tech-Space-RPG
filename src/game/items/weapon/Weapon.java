@@ -34,4 +34,18 @@ public class Weapon extends EquippableItem
     @Override
     public EquipSlot getEquipSlot() { return weaponSlot; }
     
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(weaponType, weaponSlot, level);
+    }
+    
+    @Override
+    public boolean equals(Object object)
+    {
+        if(object == null) return false;
+        if(!(object instanceof Weapon weapon)) return false;
+        
+        return weaponType == weapon.weaponType && weaponSlot == weapon.weaponSlot && level == weapon.level;
+    }
 }
