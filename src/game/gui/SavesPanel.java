@@ -3,15 +3,12 @@ package game.gui;
 import static game.gui.GUIConfig.PROGRAM_HEIGHT;
 import static game.gui.GUIConfig.PROGRAM_WIDTH;
 
-import game.persistence.SaveFile;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
-import java.io.File;
 
 public class SavesPanel extends JPanel
 {
@@ -31,14 +28,17 @@ public class SavesPanel extends JPanel
     
     private static final int LABEL_FONT_SIZE = 120;
     
-    public SavesPanel(GUIAction guiAction, File[] saveFiles)
+    public SavesPanel(GUIAction guiAction, String[] saveNames)
     {
         setLayout(new GridBagLayout());
         GridBagConstraints gbConstraints = new GridBagConstraints();
         
         setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
         
-        createSaveList(saveFiles);
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        JList<String> saveList = new JList<>(listModel);
+        
+        createSaveList(saveNames, saveList, listModel);
         
         gbConstraints.anchor = GridBagConstraints.SOUTHEAST;
         gbConstraints.fill = GridBagConstraints.BOTH;
@@ -46,7 +46,15 @@ public class SavesPanel extends JPanel
         gbConstraints.weightx = 1.0;
         gbConstraints.weighty = 1.0;
         
-        ActionListener saveButtonListener = e -> guiAction.selectSave(null);
+        ActionListener saveButtonListener = e ->
+        {
+            String selectedSaveName = saveList.getSelectedValue();
+            
+            if(selectedSaveName != null)
+            {
+                guiAction.selectSave(selectedSaveName);
+            }
+        };
         PanelButton selectSaveButton = new PanelButton("Select", saveButtonListener);
         selectSaveButton.resizeButton(200, 50);
         add(selectSaveButton, gbConstraints);
@@ -56,46 +64,43 @@ public class SavesPanel extends JPanel
         {
             @Override public void componentResized(ComponentEvent e)
             {
-                Container parent = getParent();
-                
-                double panelWidth = parent.getWidth();
-                double panelHeight = parent.getHeight();
-                
-                for(Component component : getComponents())
+            Container parent = getParent();
+            
+            double panelWidth = parent.getWidth();
+            double panelHeight = parent.getHeight();
+            
+            for(Component component : getComponents())
+            {
+                if(component instanceof PanelButton button)
                 {
-                    if(component instanceof PanelButton button)
-                    {
-                        button.resizeButton((float)((BUTTON_PREFERRED_WIDTH * panelWidth) / PROGRAM_WIDTH), ((float)(BUTTON_PREFERRED_HEIGHT * panelHeight) / PROGRAM_HEIGHT));
-                        button.setFont(button.getFont().deriveFont((float)(LABEL_FONT_SIZE / 3f * panelWidth) / PROGRAM_WIDTH));
-                    }
-                    else if(component instanceof JList<?> list)
-                    {
-                        float fontSize = (float)(LABEL_FONT_SIZE / 2f * panelWidth) / PROGRAM_WIDTH;
-                        Font newFont = list.getFont().deriveFont(fontSize);
-                        list.setFont(newFont);
-                        
-                        int rowHeight = list.getFontMetrics(newFont).getHeight();
-                        list.setFixedCellHeight(rowHeight);
-                        
-                        int listWidth = (int) Math.round(LIST_PREFERRED_WIDTH * 1.5f * (panelWidth / PROGRAM_WIDTH));
-                        int listHeight = rowHeight * list.getModel().getSize();
-                        
-                        list.setPreferredSize(new Dimension(listWidth, listHeight));
-                    }
+                    button.resizeButton((float)((BUTTON_PREFERRED_WIDTH * panelWidth) / PROGRAM_WIDTH), ((float)(BUTTON_PREFERRED_HEIGHT * panelHeight) / PROGRAM_HEIGHT));
+                    button.setFont(button.getFont().deriveFont((float)(LABEL_FONT_SIZE / 3f * panelWidth) / PROGRAM_WIDTH));
                 }
-                
-                revalidate();
-                repaint();
+                else if(component instanceof JList<?> list)
+                {
+                    float fontSize = (float)(LABEL_FONT_SIZE / 2f * panelWidth) / PROGRAM_WIDTH;
+                    Font newFont = list.getFont().deriveFont(fontSize);
+                    list.setFont(newFont);
+                    
+                    int rowHeight = list.getFontMetrics(newFont).getHeight();
+                    list.setFixedCellHeight(rowHeight);
+                    
+                    int listWidth = (int) Math.round(LIST_PREFERRED_WIDTH * 1.5f * (panelWidth / PROGRAM_WIDTH));
+                    int listHeight = rowHeight * list.getModel().getSize();
+                    
+                    list.setPreferredSize(new Dimension(listWidth, listHeight));
+                }
             }
-        });
+            
+            revalidate();
+            repaint();
+        }
+    });
     }
     
-    private void createSaveList(File[] saveFiles)
+    private void createSaveList(String[] saveNames, JList<String> saveList, DefaultListModel<String> listModel)
     {
         GridBagConstraints gbConstraints = new GridBagConstraints();
-        
-        DefaultListModel<File> listModel = new DefaultListModel<>();
-        JList<File> saveList = new JList<>(listModel);
         
         gbConstraints.gridx = 0;
         gbConstraints.gridy = 0;
@@ -103,7 +108,7 @@ public class SavesPanel extends JPanel
         
         add(saveList, gbConstraints);
         
-        for(File save : saveFiles)
+        for(String save : saveNames)
         {
             listModel.addElement(save);
         }
@@ -112,7 +117,7 @@ public class SavesPanel extends JPanel
         
         saveList.setCellRenderer((list, value, index, isSelected, cellHasFocus) ->
         {
-            JLabel saveToDisplay = new JLabel(value.getName());
+            JLabel saveToDisplay = new JLabel(value);
             saveToDisplay.setFont(list.getFont());
             saveToDisplay.setOpaque(true);
             
