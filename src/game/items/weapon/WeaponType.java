@@ -52,4 +52,13 @@ public enum WeaponType
     public boolean canUseWeapon(int statValue, int level) { return statValue >= calculateStatReq(level); }
     
     public StatType getScalingStat() { return scalingStat; }
+    public static WeaponType parseWeaponType(String type)
+    {
+        for(WeaponType weaponType : WeaponType.values())
+        {
+            if(weaponType.toString().equalsIgnoreCase(type)) return weaponType;
+        }
+        
+        return null;
+    }
 }

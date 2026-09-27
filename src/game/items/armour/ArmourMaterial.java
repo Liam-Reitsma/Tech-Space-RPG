@@ -40,4 +40,14 @@ public enum ArmourMaterial
             default -> null;
         };
     }
+    
+    public static ArmourMaterial parse(String material)
+    {
+        for(ArmourMaterial armourMaterial : ArmourMaterial.values())
+        {
+            if(armourMaterial.toString().equalsIgnoreCase(material)) return armourMaterial;
+        }
+        
+        return null;
+    }
 }

@@ -62,4 +62,14 @@ public enum ClassType
         result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
+    
+    public static ClassType parseClassType(String classType)
+    {
+        for(ClassType type : ClassType.values())
+        {
+            if(type.toString().equalsIgnoreCase(classType)) return type;
+        }
+        
+        return null;
+    }
 }
