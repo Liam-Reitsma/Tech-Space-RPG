@@ -1,6 +1,8 @@
 package game.items.armour;
 
-public enum ArmourSlot
+import game.items.EquipSlot;
+
+public enum ArmourSlot implements EquipSlot
 {
     HEAD  (0.20f),
     CHEST (0.40f),
