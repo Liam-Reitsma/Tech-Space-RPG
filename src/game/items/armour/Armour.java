@@ -11,13 +11,20 @@ public class Armour extends EquippableItem
     {
         armourMaterial = material;
         armourSlot = slot;
-        name = material.toString() + " " + slot.toString();
-        isEquipped = false;
+        name = armourMaterial + " " + armourSlot;
     }
-
-    public Armour(String[] data)
+    
+    public Armour(String armourString)
     {
-        loadSaveInfo(data);
+        String armourMaterialString = armourString.split(" ")[0];
+        String armourSlotString = armourString.split(" ")[1];
+        
+        armourMaterial = ArmourMaterial.parse(armourMaterialString);
+        armourSlot = ArmourSlot.parse(armourSlotString);
+        if(armourMaterial != null & armourSlot != null)
+        {
+            name = armourMaterial + " " + armourSlot;
+        }
     }
     
     public float calculateProtection() { return Math.round(armourSlot.getProtWeight() * armourMaterial.getProtValue() * 10000f) / 10000f; }
