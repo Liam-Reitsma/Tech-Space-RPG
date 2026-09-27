@@ -48,8 +48,6 @@ public class Player extends Entities implements Persistable
         xp = 0;
         gold = 0;
         name = playerName;
-        
-        selectedPotion = null;
         classType = type;
         point = new Point(0, 0);
         inventory = new Inventory();
