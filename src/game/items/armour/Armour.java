@@ -1,5 +1,6 @@
 package game.items.armour;
 
+import game.items.EquipSlot;
 import game.items.EquippableItem;
 
 public class Armour extends EquippableItem
@@ -26,10 +27,13 @@ public class Armour extends EquippableItem
             name = armourMaterial + " " + armourSlot;
         }
     }
-    
+
     public float calculateProtection() { return Math.round(armourSlot.getProtWeight() * armourMaterial.getProtValue() * 10000f) / 10000f; }
     
     public ArmourMaterial getArmourMaterial() { return armourMaterial; }
+    @Override
+    public EquipSlot getEquipSlot() { return armourSlot; }
+    
     
     public ArmourSlot getArmourSlot() { return armourSlot; }
 }
