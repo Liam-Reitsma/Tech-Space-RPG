@@ -1,12 +1,10 @@
 package game.gui;
 
-import game.persistence.SaveFile;
-
 public interface GUIAction
 {
     void openGameScreen();
     void openSavesScreen();
-    void selectSave(SaveFile saveFile);
+    void selectSave(String saveName);
     void closeSavesScreen();
     void openOptionsScreen();
     void changeResolution(DisplayResolution resolution);
