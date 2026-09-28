@@ -27,6 +27,8 @@ public class Weapon extends EquippableItem
     
     public boolean canUseWeapon(int statValue) { return weaponType.canUseWeapon(statValue, level); }
     
+    public int getLevel() { return level; }
+    
     public StatType getScalingStat() { return weaponType.getScalingStat(); }
     
     public WeaponType getWeaponType() { return weaponType; }
