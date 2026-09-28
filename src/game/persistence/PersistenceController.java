@@ -276,7 +276,18 @@ public class PersistenceController
     
     private void updateMap(Map<Point, RuntimeRoom> map)
     {
-    
+        dbManager.deleteEntryDB(buildDeleteAllRows(ROOMS.name(), iKeyColumnName), iKeyCurrent);
+        
+        
+        String[] allColumns = ROOMS.getColumns().keySet().toArray(new String[0]);
+        for(RuntimeRoom room : map.values())
+        {
+            Object[] arg = new Object[]
+                    {
+                            iKeyCurrent, room.getPoint().getX(), room.getPoint().getY(), room.getRoomType().name(), room.isCompleted()
+                    };
+            dbManager.addEntryDB(buildInsertIntoSQL(ROOMS.name(), allColumns),arg);
+        }
     }
     
     public void addItem(Item item, int count)
