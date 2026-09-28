@@ -6,6 +6,7 @@ import static game.persistence.SQLCommandFactory.*;
 
 import game.*;
 import game.entities.player.ClassType;
+import game.entities.player.Inventory;
 import game.entities.player.Player;
 import game.items.*;
 import game.items.armour.Armour;
@@ -18,20 +19,21 @@ import java.util.*;
 
 public class PersistenceController
 {
-    private final SaveFile saveF;
-    private final LoadFactory loadF;
+    private String iKeyCurrent;
+    private String iKeyColumnName;
     
+    private final SaveFile saveF;
     private final DBManager dbManager;
     
     public PersistenceController(DBManager dbm)
     {
         saveF = new SaveFile();
-        loadF = new LoadFactory();
         dbManager = dbm;
     }
     
     public PersistenceErrors createNewGame(String saveName, String charName, ClassType classType)
     {
+        iKeyCurrent = saveName;
         Player player = new Player(charName, classType);
         String iKey = "SAVE_NAME";
         createTables(iKey);
@@ -145,6 +147,7 @@ public class PersistenceController
     
     public PersistenceResult loadSaveGame(String saveName)
     {
+        iKeyCurrent = saveName;
         //TODO: Replace Player Object[] loading with column-name-based mapping (e.g. Map<String, Object>) so loading does not depend on database column order.
         Object[] playerData = dbManager.queryDB(buildSelectSQL(PLAYER.name(), "SAVE_NAME"), saveName);
         Object[] statsData = dbManager.queryDB(buildSelectSQL(PLAYER_STATS.name(), "SAVE_NAME"), saveName);
@@ -171,28 +174,66 @@ public class PersistenceController
         return new PersistenceResult(SUCCESS);
     }
     
-    public PersistenceResult fullSave(Player player, Weapon weapon, List<Item> inventory, List<Armour> armour, Map<Point, RuntimeRoom> map)
+    public void fullSave(Player player, Map<Point, RuntimeRoom> map)
     {
-        PersistenceErrors error;
-        error = saveF.clearFile();
-        if(error != SUCCESS) return new PersistenceResult(error);
+        if(iKeyCurrent == null) return;
+        updatePlayer(player);
+        updateEquippedEquipment(player.getInventory());
+        updateStoredEquipment(player.getInventory());
+        updateMap(map);
+    }
+    
+    private void updatePlayer(Player player)
+    {
+        String[] allColumns = PLAYER.getColumns().keySet().toArray(new String[0]);
         
-        error = saveF.writeObject(player);
-        if(error != SUCCESS) return new PersistenceResult(error);
+        Object[] args = new Object[]
+                {
+                        player.getName(), player.getLevel(),
+                        player.getHealth(), player.getXP(), player.getGold(),
+                        player.getClassType().toString(), player.getPoint().getX(), player.getPoint().getY()
+                };
+        dbManager.updateEntryDB(buildUpdateTable(PLAYER.name(), iKeyColumnName, Arrays.copyOfRange(allColumns, 1, allColumns.length)), iKeyCurrent, args);
         
-        error = saveF.writeObject(weapon);
-        if(error != SUCCESS) return new PersistenceResult(error);
+        allColumns = PLAYER_STATS.getColumns().keySet().toArray(new String[0]);
         
-        error = saveF.writeItemList(inventory, "inventory");
-        if(error != SUCCESS) return new PersistenceResult(error);
+        args = new Object[]
+                {
+                        player.getSTR(), player.getDEX(), player.getINT()
+                };
         
-        error = saveF.writeItemList(armour, "armour");
-        if(error != SUCCESS) return new PersistenceResult(error);
-        
-        error = saveF.writeWorld(new ArrayList<>(map.values()), "world");
-        if(error != SUCCESS) return new PersistenceResult(error);
+        dbManager.updateEntryDB(buildUpdateTable(PLAYER_STATS.name(), iKeyColumnName, Arrays.copyOfRange(allColumns, 1, allColumns.length)), iKeyCurrent, args);
+    }
+    
+    private void updateEquippedEquipment(Inventory inventory)
+    {
+        String[] allColumns = EQUIPPED_ITEMS.getColumns().keySet().toArray(new String[0]);
         
         return new PersistenceResult(SUCCESS);
+        String[] columns = Arrays.copyOfRange(allColumns, 1, allColumns.length);
+        
+        Object[] args = new Object[columns.length];
+        
+        args[0] = inventory.getEquippedWeapon();
+        
+        for(int i = 1; i < args.length; i++)
+        {
+            for(Armour armour : inventory.getEquippedArmour())
+            {
+                if(armour.getEquipSlot().toString().equalsIgnoreCase(columns[i]))
+                {
+                    args[i] = armour.toString();
+                    break;
+                }
+            }
+        }
+        
+        dbManager.updateEntryDB(buildUpdateTable(EQUIPPED_ITEMS.name(), iKeyColumnName, columns), iKeyCurrent, args);
+    }
+    
+    private void updateMap(Map<Point, RuntimeRoom> map)
+    {
+    
     }
     
     public PersistenceResult saveItem(String listName, Item item)
