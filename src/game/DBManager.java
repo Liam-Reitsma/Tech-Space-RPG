@@ -84,8 +84,9 @@ public class DBManager
         return result;
     }
     
-    public void insertIntoDB(String templateSQL, Object... args)
+    public void addEntryDB(String templateSQL, Object... args)
     {
+        //TODO Add return value & meaning to inform caller result.
         int i = 0;
         
         try(PreparedStatement ps = connection.prepareStatement(templateSQL))
