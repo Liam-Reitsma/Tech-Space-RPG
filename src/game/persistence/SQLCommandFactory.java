@@ -133,6 +133,21 @@ public class SQLCommandFactory
         return sql.toString();
     }
     
+    public static String buildDeleteRow(String tableName, String[] columns)
+    {
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("DELETE FROM ").append(tableName).append(" WHERE ");
+        for(String column : columns)
+        {
+            sql.append(column).append(" = ?").append(" AND ");
+        }
+        
+        sql.delete(sql.length() - " AND ".length(), sql.length());
+        
+        return sql.toString();
+    }
+    
     public static String buildDeleteAllRows(String tableName, String columnName)
     {
         StringBuilder sql = new StringBuilder();
