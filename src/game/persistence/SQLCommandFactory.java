@@ -100,4 +100,20 @@ public class SQLCommandFactory
         
         return sql.toString();
     }
+
+    public static String buildUpdateTable(String tableName, String columnName, String[] columns)
+    {
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE ").append(tableName).append(" SET ");
+        for(String column : columns)
+        {
+            sql.append(column).append(" = ?").append(separator);
+        }
+        
+        sql.delete((sql.length()) - separator.length(), sql.length());
+        sql.append(" WHERE ").append(columnName).append(" = ?");
+        
+        return sql.toString();
+    }
 }
