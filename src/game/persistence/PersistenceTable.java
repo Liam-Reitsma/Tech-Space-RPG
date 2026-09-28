@@ -38,7 +38,9 @@ public enum PersistenceTable
     STORED_WEAPONS
             (
             "SAVE_NAME", "VARCHAR(50)",
+            "WEAPON_SLOT", "VARCHAR(25)",
             "WEAPON_TYPE", "VARCHAR(25)",
+            "LEVEL", "INT",
             "COUNT", "INT"
             ),
     STORED_ARMOUR
