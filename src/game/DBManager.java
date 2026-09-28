@@ -124,6 +124,28 @@ public class DBManager
         }
     }
     
+    public void updateCellEntryDB(String templateSQL, Object newCellValue, Object... args)
+    {
+        //TODO Add return value & meaning to inform caller result.
+        
+        int i = 0;
+        
+        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
+        {
+            ps.setObject(++i, newCellValue);
+            
+            for(Object object : args)
+            {
+                ps.setObject(++i, object);
+            }
+            
+            ps.executeUpdate();
+        } catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public void deleteEntryDB(String templateSQL, String saveName)
     {
         //TODO Add return value & meaning to inform caller result.
