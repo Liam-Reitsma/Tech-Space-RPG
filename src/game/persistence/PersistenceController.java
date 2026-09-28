@@ -107,12 +107,7 @@ public class PersistenceController
                             player.getClassType().toString(), player.getPoint().getX(), player.getPoint().getY()
                         };
         
-        dbManager.insertIntoDB(buildInsertIntoSQL(PLAYER.name(), columns), args);
-    }
-    
-    private void insertPlayerStats(String saveName, Player player)
-    {
-        LinkedHashMap<String, String> playerStatColumns = PLAYER_STATS.getColumns();
+        dbManager.addEntryDB(buildInsertIntoSQL(PLAYER.name(), playerColumns), playerArgs);
         
         String[] columns = playerStatColumns.keySet().toArray(new String[0]);
         
@@ -121,7 +116,7 @@ public class PersistenceController
                             saveName, player.getSTR(), player.getDEX(), player.getINT()
                         };
         
-        dbManager.insertIntoDB(buildInsertIntoSQL(PLAYER_STATS.name(), columns), args);
+        dbManager.addEntryDB(buildInsertIntoSQL(PLAYER_STATS.name(), statColumns), statArgs);
     }
     
     private void insertEquippedItems(String saveName, Player player)
@@ -137,7 +132,7 @@ public class PersistenceController
                         saveName, player.getClassType().getStartingWeapon(), null, null, null, null, null, null
                 };
         
-        dbManager.insertIntoDB(buildInsertIntoSQL(tableName, columns), args);
+        dbManager.addEntryDB(buildInsertIntoSQL(tableName, columns), args);
     }
     
     public String[] getSaveOptionNames()
@@ -209,7 +204,6 @@ public class PersistenceController
     {
         String[] allColumns = EQUIPPED_ITEMS.getColumns().keySet().toArray(new String[0]);
         
-        return new PersistenceResult(SUCCESS);
         String[] columns = Arrays.copyOfRange(allColumns, 1, allColumns.length);
         
         Object[] args = new Object[columns.length];
@@ -229,6 +223,58 @@ public class PersistenceController
         }
         
         dbManager.updateEntryDB(buildUpdateTable(EQUIPPED_ITEMS.name(), iKeyColumnName, columns), iKeyCurrent, args);
+    }
+    
+    private void updateStoredEquipment(Inventory inventory)
+    {
+        dbManager.deleteEntryDB(buildDeleteAllRows(STORED_ARMOUR.name(), iKeyColumnName), iKeyCurrent);
+        dbManager.deleteEntryDB(buildDeleteAllRows(STORED_WEAPONS.name(), iKeyColumnName), iKeyCurrent);
+        dbManager.deleteEntryDB(buildDeleteAllRows(STORED_POTIONS.name(), iKeyColumnName), iKeyCurrent);
+        
+        String tableName = STORED_ARMOUR.name();
+        LinkedHashMap<String, String> itemsColumns = STORED_ARMOUR.getColumns();
+        String[] columns = itemsColumns.keySet().toArray(new String[0]);
+        
+        Armour[] armourArray = inventory.getAllItemTypeInInventory(Armour.class);
+        for(Armour armour : armourArray)
+        {
+            Object[] args = new Object[]
+                    {
+                            iKeyCurrent, armour.getEquipSlot().name(), armour.getArmourMaterial().name(), inventory.getItemCount(armour)
+                    };
+            
+            dbManager.addEntryDB(buildInsertIntoSQL(tableName, columns), args);
+        }
+        
+        tableName = STORED_WEAPONS.name();
+        itemsColumns = STORED_WEAPONS.getColumns();
+        columns = itemsColumns.keySet().toArray(new String[0]);
+        
+        Weapon[] weaponsArray = inventory.getAllItemTypeInInventory(Weapon.class);
+        for(Weapon weapon : weaponsArray)
+        {
+            Object[] args = new Object[]
+                    {
+                            iKeyCurrent, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel(), inventory.getItemCount(weapon)
+                    };
+            
+            dbManager.addEntryDB(buildInsertIntoSQL(tableName, columns), args);
+        }
+        
+        tableName = STORED_POTIONS.name();
+        itemsColumns = STORED_POTIONS.getColumns();
+        columns = itemsColumns.keySet().toArray(new String[0]);
+        
+        Potion[] potionsArray = inventory.getAllItemTypeInInventory(Potion.class);
+        for(Potion potion : potionsArray)
+        {
+            Object[] args = new Object[]
+                    {
+                            iKeyCurrent, potion.getPotionType().name(), inventory.getItemCount(potion)
+                    };
+            
+            dbManager.addEntryDB(buildInsertIntoSQL(tableName, columns), args);
+        }
     }
     
     private void updateMap(Map<Point, RuntimeRoom> map)
