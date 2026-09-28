@@ -101,7 +101,7 @@ public class SQLCommandFactory
         return sql.toString();
     }
     
-    public static String buildUpdateTable(String tableName, String columnName, String[] columns)
+    public static String buildUpdateTableSQL(String tableName, String columnName, String[] columns)
     {
         StringBuilder sql = new StringBuilder();
         
@@ -117,7 +117,7 @@ public class SQLCommandFactory
         return sql.toString();
     }
     
-    public static String buildUpdateRow(String tableName, String columnName, String[] columns)
+    public static String buildUpdateRowSQL(String tableName, String columnName, String[] columns)
     {
         StringBuilder sql = new StringBuilder();
         
@@ -133,7 +133,7 @@ public class SQLCommandFactory
         return sql.toString();
     }
     
-    public static String buildDeleteRow(String tableName, String[] columns)
+    public static String buildDeleteRowSQL(String tableName, String[] columns)
     {
         StringBuilder sql = new StringBuilder();
         
@@ -148,7 +148,7 @@ public class SQLCommandFactory
         return sql.toString();
     }
     
-    public static String buildDeleteAllRows(String tableName, String columnName)
+    public static String buildDeleteAllRowSQL(String tableName, String columnName)
     {
         StringBuilder sql = new StringBuilder();
         
