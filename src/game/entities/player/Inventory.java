@@ -6,6 +6,7 @@ import game.items.armour.ArmourSlot;
 import game.items.weapon.Weapon;
 import game.items.weapon.WeaponSlot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,5 +81,27 @@ public class Inventory
     public Item[] getItemsInInventory()
     {
         return storedItemsMap.keySet().toArray(new Item[0]);
+    }
+    
+    public <I extends Item> I[] getAllItemTypeInInventory(Class<I> itemClass)
+    {
+        List<I> itemList = new ArrayList<>();
+        
+        for(Item item : getItemsInInventory())
+        {
+            if(itemClass.isInstance(item))
+            {
+                itemList.add(itemClass.cast(item));
+            }
+        }
+        
+        I[] result = (I[])Array.newInstance(itemClass, itemList.size());
+        
+        return itemList.toArray(result);
+    }
+    
+    public int getItemCount(Item item)
+    {
+        return storedItemsMap.get(item);
     }
 }
