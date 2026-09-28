@@ -1,6 +1,5 @@
 package game.persistence;
 
-import static game.persistence.PersistenceErrors.*;
 import static game.persistence.PersistenceTable.*;
 import static game.persistence.SQLCommandFactory.*;
 
@@ -331,12 +330,55 @@ public class PersistenceController
         }
     }
     
-    public PersistenceResult removeItem(String listName, Item item)
+    public void removeItem(Item item, int count)
     {
-        LoadResult result = saveF.readAndRemove(listName, item);
-        return result.getError() == SUCCESS ?
-                new PersistenceResult(saveF.writeList(result.getResult())) :
-                new PersistenceResult(result.getError());
+        PersistenceTable table;
+        Object[] args;
+        if(item instanceof Armour armour)
+        {
+            table = STORED_ARMOUR;
+            
+            if(count == 0)
+            {
+                args = new Object[]{ iKeyCurrent, armour.getEquipSlot().name(), armour.getArmourMaterial().name(), count};
+                dbManager.deleteSingleEntryDB(buildDeleteRow(table.name(), table.getColumnStrings()), args);
+            }
+            else
+            {
+                args = new Object[]{ iKeyCurrent, armour.getEquipSlot().name(), armour.getArmourMaterial().name() };
+                dbManager.updateCellEntryDB(buildUpdateRow(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
+            }
+        }
+        else if(item instanceof Weapon weapon)
+        {
+            table = STORED_WEAPONS;
+            
+            if(count == 0)
+            {
+                args = new Object[]{ iKeyCurrent, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel(), count};
+                dbManager.deleteSingleEntryDB(buildDeleteRow(table.name(), table.getColumnStrings()), args);
+            }
+            else
+            {
+                args = new Object[]{ iKeyCurrent, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel()};
+                dbManager.updateCellEntryDB(buildUpdateRow(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
+            }
+        }
+        else if(item instanceof Potion potion)
+        {
+            table = STORED_POTIONS;
+            
+            if(count == 0)
+            {
+                args = new Object[]{ iKeyCurrent, potion.getPotionType().name(), count};
+                dbManager.deleteSingleEntryDB(buildDeleteRow(table.name(), table.getColumnStrings()), args);
+            }
+            else
+            {
+                args = new Object[]{ iKeyCurrent, potion.getPotionType().name()};
+                dbManager.updateCellEntryDB(buildUpdateRow(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
+            }
+        }
     }
     
     public PersistenceResult updatePlayerStatus(Player player)
