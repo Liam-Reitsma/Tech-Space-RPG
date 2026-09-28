@@ -100,7 +100,7 @@ public class SQLCommandFactory
         
         return sql.toString();
     }
-
+    
     public static String buildUpdateTable(String tableName, String columnName, String[] columns)
     {
         StringBuilder sql = new StringBuilder();
@@ -113,6 +113,22 @@ public class SQLCommandFactory
         
         sql.delete((sql.length()) - separator.length(), sql.length());
         sql.append(" WHERE ").append(columnName).append(" = ?");
+        
+        return sql.toString();
+    }
+    
+    public static String buildUpdateRow(String tableName, String columnName, String[] columns)
+    {
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("UPDATE ").append(tableName).append(" SET ").append(columnName).append(" = ? ").append(" WHERE ");
+        for(String column : columns)
+        {
+            if(columnName.equalsIgnoreCase(column)) continue;
+            sql.append(column).append(" = ?").append(" AND ");
+        }
+        
+        sql.delete(sql.length() - " AND ".length(), sql.length());
         
         return sql.toString();
     }
