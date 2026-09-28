@@ -123,6 +123,22 @@ public class DBManager
         }
     }
     
+    public void deleteEntryDB(String templateSQL, String saveName)
+    {
+        //TODO Add return value & meaning to inform caller result.
+        
+        int i = 0;
+        
+        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
+        {
+            ps.setObject(++i, saveName);
+            
+            ps.executeUpdate();
+        } catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
     
     public Object[] queryDB(String templateSQL, String searchName)
     {
