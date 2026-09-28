@@ -163,6 +163,26 @@ public class DBManager
         }
     }
     
+    public void deleteSingleEntryDB(String templateSQL, Object... args)
+    {
+        //TODO Add return value & meaning to inform caller result.
+        
+        int i = 0;
+        
+        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
+        {
+            for(Object object : args)
+            {
+                ps.setObject(++i, object);
+            }
+            
+            ps.executeUpdate();
+        } catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public Object[] queryDB(String templateSQL, String searchName)
     {
         List<Object> objectList = new ArrayList<>();
