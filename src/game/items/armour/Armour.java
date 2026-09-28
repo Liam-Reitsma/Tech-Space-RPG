@@ -35,6 +35,8 @@ public class Armour extends EquippableItem
     @Override
     public EquipSlot getEquipSlot() { return armourSlot; }
     
+    public ArmourMaterial getArmourMaterial() { return armourMaterial; }
+    
     @Override
     public int hashCode()
     {
