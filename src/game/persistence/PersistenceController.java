@@ -185,7 +185,7 @@ public class PersistenceController
                         player.getHealth(), player.getXP(), player.getGold(),
                         player.getClassType().toString(), player.getPoint().getX(), player.getPoint().getY()
                 };
-        dbManager.updateEntryDB(buildUpdateTable(PLAYER.name(), iKeyColumnName, Arrays.copyOfRange(allColumns, 1, allColumns.length)), iKeyCurrent, args);
+        dbManager.updateEntryDB(buildUpdateTableSQL(PLAYER.name(), iKeyColumnName, Arrays.copyOfRange(allColumns, 1, allColumns.length)), iKeyCurrent, args);
         
         allColumns = PLAYER_STATS.getColumns().keySet().toArray(new String[0]);
         
@@ -194,7 +194,7 @@ public class PersistenceController
                         player.getSTR(), player.getDEX(), player.getINT()
                 };
         
-        dbManager.updateEntryDB(buildUpdateTable(PLAYER_STATS.name(), iKeyColumnName, Arrays.copyOfRange(allColumns, 1, allColumns.length)), iKeyCurrent, args);
+        dbManager.updateEntryDB(buildUpdateTableSQL(PLAYER_STATS.name(), iKeyColumnName, Arrays.copyOfRange(allColumns, 1, allColumns.length)), iKeyCurrent, args);
     }
     
     private void updateEquippedEquipment(Inventory inventory)
@@ -219,14 +219,14 @@ public class PersistenceController
             }
         }
         
-        dbManager.updateEntryDB(buildUpdateTable(EQUIPPED_ITEMS.name(), iKeyColumnName, columns), iKeyCurrent, args);
+        dbManager.updateEntryDB(buildUpdateTableSQL(EQUIPPED_ITEMS.name(), iKeyColumnName, columns), iKeyCurrent, args);
     }
     
     private void updateStoredEquipment(Inventory inventory)
     {
-        dbManager.deleteEntryDB(buildDeleteAllRows(STORED_ARMOUR.name(), iKeyColumnName), iKeyCurrent);
-        dbManager.deleteEntryDB(buildDeleteAllRows(STORED_WEAPONS.name(), iKeyColumnName), iKeyCurrent);
-        dbManager.deleteEntryDB(buildDeleteAllRows(STORED_POTIONS.name(), iKeyColumnName), iKeyCurrent);
+        dbManager.deleteEntryDB(buildDeleteAllRowSQL(STORED_ARMOUR.name(), iKeyColumnName), iKeyCurrent);
+        dbManager.deleteEntryDB(buildDeleteAllRowSQL(STORED_WEAPONS.name(), iKeyColumnName), iKeyCurrent);
+        dbManager.deleteEntryDB(buildDeleteAllRowSQL(STORED_POTIONS.name(), iKeyColumnName), iKeyCurrent);
         
         String tableName = STORED_ARMOUR.name();
         LinkedHashMap<String, String> itemsColumns = STORED_ARMOUR.getColumns();
@@ -276,7 +276,7 @@ public class PersistenceController
     
     private void updateMap(Map<Point, RuntimeRoom> map)
     {
-        dbManager.deleteEntryDB(buildDeleteAllRows(ROOMS.name(), iKeyColumnName), iKeyCurrent);
+        dbManager.deleteEntryDB(buildDeleteAllRowSQL(ROOMS.name(), iKeyColumnName), iKeyCurrent);
         
         
         String[] allColumns = ROOMS.getColumns().keySet().toArray(new String[0]);
@@ -306,7 +306,7 @@ public class PersistenceController
             else
             {
                 args = new Object[]{ iKeyCurrent, armour.getEquipSlot().name(), armour.getArmourMaterial().name() };
-                dbManager.updateCellEntryDB(buildUpdateRow(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
+                dbManager.updateCellEntryDB(buildUpdateRowSQL(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
             }
         }
         else if(item instanceof Weapon weapon)
@@ -321,7 +321,7 @@ public class PersistenceController
             else
             {
                 args = new Object[]{ iKeyCurrent, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel()};
-                dbManager.updateCellEntryDB(buildUpdateRow(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
+                dbManager.updateCellEntryDB(buildUpdateRowSQL(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
             }
         }
         else if(item instanceof Potion potion)
@@ -336,7 +336,7 @@ public class PersistenceController
             else
             {
                 args = new Object[]{ iKeyCurrent, potion.getPotionType().name()};
-                dbManager.updateCellEntryDB(buildUpdateRow(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
+                dbManager.updateCellEntryDB(buildUpdateRowSQL(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
             }
         }
     }
@@ -352,12 +352,12 @@ public class PersistenceController
             if(count == 0)
             {
                 args = new Object[]{ iKeyCurrent, armour.getEquipSlot().name(), armour.getArmourMaterial().name(), count};
-                dbManager.deleteSingleEntryDB(buildDeleteRow(table.name(), table.getColumnStrings()), args);
+                dbManager.deleteSingleEntryDB(buildDeleteRowSQL(table.name(), table.getColumnStrings()), args);
             }
             else
             {
                 args = new Object[]{ iKeyCurrent, armour.getEquipSlot().name(), armour.getArmourMaterial().name() };
-                dbManager.updateCellEntryDB(buildUpdateRow(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
+                dbManager.updateCellEntryDB(buildUpdateRowSQL(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
             }
         }
         else if(item instanceof Weapon weapon)
@@ -367,12 +367,12 @@ public class PersistenceController
             if(count == 0)
             {
                 args = new Object[]{ iKeyCurrent, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel(), count};
-                dbManager.deleteSingleEntryDB(buildDeleteRow(table.name(), table.getColumnStrings()), args);
+                dbManager.deleteSingleEntryDB(buildDeleteRowSQL(table.name(), table.getColumnStrings()), args);
             }
             else
             {
                 args = new Object[]{ iKeyCurrent, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel()};
-                dbManager.updateCellEntryDB(buildUpdateRow(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
+                dbManager.updateCellEntryDB(buildUpdateRowSQL(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
             }
         }
         else if(item instanceof Potion potion)
@@ -382,23 +382,23 @@ public class PersistenceController
             if(count == 0)
             {
                 args = new Object[]{ iKeyCurrent, potion.getPotionType().name(), count};
-                dbManager.deleteSingleEntryDB(buildDeleteRow(table.name(), table.getColumnStrings()), args);
+                dbManager.deleteSingleEntryDB(buildDeleteRowSQL(table.name(), table.getColumnStrings()), args);
             }
             else
             {
                 args = new Object[]{ iKeyCurrent, potion.getPotionType().name()};
-                dbManager.updateCellEntryDB(buildUpdateRow(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
+                dbManager.updateCellEntryDB(buildUpdateRowSQL(table.name(), table.getColumnStrings()[table.getColumnStrings().length - 1], table.getColumnStrings()), count, args);
             }
         }
     }
-    
-    public PersistenceResult updatePlayerStatus(Player player)
-    {
-        return new PersistenceResult(saveF.writeDeltaObject(player));
-    }
-    
-    public PersistenceResult updateRoomStatus(RuntimeRoom room)
-    {
-        return new PersistenceResult(saveF.writeDeltaRoom(room));
-    }
+//    useless but check to make sure - Philip
+//    public PersistenceResult updatePlayerStatus(Player player)
+//    {
+//        return new PersistenceResult(saveF.writeDeltaObject(player));
+//    }
+//
+//    public PersistenceResult updateRoomStatus(RuntimeRoom room)
+//    {
+//        return new PersistenceResult(saveF.writeDeltaRoom(room));
+//    }
 }
