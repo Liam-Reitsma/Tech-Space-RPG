@@ -78,4 +78,6 @@ public enum PersistenceTable
     }
     
     public LinkedHashMap<String, String> getColumns() { return new LinkedHashMap<>(columns); }
+    
+    public String[] getColumnStrings() { return columns.keySet().toArray(new String[0]); }
 }
