@@ -135,7 +135,7 @@ public class PersistenceController
         return dbManager.getSavesName();
     }
     
-    public Player loadSaveGame(String saveName)
+    public Player loadSavedPlayer(String saveName)
     {
         iKeyCurrent = saveName;
         //TODO: Replace Player Object[] loading with column-name-based mapping (e.g. Map<String, Object>) so loading does not depend on database column order.
@@ -143,7 +143,8 @@ public class PersistenceController
         Object[] statsData = dbManager.queryDB(buildSelectSQL(PLAYER_STATS.name(), "SAVE_NAME"), saveName);
         Player player = new Player(playerData, statsData);
         
-        //TODO: Replace type/string-parsing based loading for Weapon, Armour, WeaponType, ArmourType, etc. with explicit column-name mapping so each saved field is reconstructed from its intended database column.
+        //TODO: Replace type/string-parsing based loading for Weapon, Armour, WeaponType, ArmourType, etc. with explicit column-name mapping so each saved
+        //      field is reconstructed from its intended database column.
         WeaponType weaponType = WeaponType.RUSTED_KNIFE;
         int weaponLevel = 0;
         for(Object datum : dbManager.queryDB(buildSelectSQL(EQUIPPED_ITEMS.name(), "SAVE_NAME"), saveName))
@@ -164,6 +165,19 @@ public class PersistenceController
         
         player.equipItem(new Weapon(weaponType, weaponLevel));
         return player;
+    }
+    
+    public RuntimeRoom[] loadSavedWorld()
+    {
+        Object[][] loadedRoomsList = dbManager.queryRoomDB(buildSelectSQL(ROOMS.name(), iKeyColumnName), iKeyCurrent);
+        RuntimeRoom[] roomArray = new RuntimeRoom[loadedRoomsList.length];
+        int i = 0;
+        for(Object[] loadedRoom : loadedRoomsList)
+        {
+            roomArray[i++] = new RuntimeRoom(loadedRoom);
+        }
+        
+        return roomArray;
     }
     
     public void fullSave(Player player, Map<Point, RuntimeRoom> map)
