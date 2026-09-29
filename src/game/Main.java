@@ -3,6 +3,7 @@ package game;
 import game.entities.player.ClassType;
 import game.gui.GameFrame;
 import game.mainmenu.MainMenuController;
+import game.options.OptionsController;
 import game.persistence.DBManager;
 import game.persistence.PersistenceService;
 import game.saves.SavesController;
@@ -17,8 +18,10 @@ public class Main
         
         SavesController sController = new SavesController(pService, gameFrame);
         MainMenuController mmController = new MainMenuController(sController, gameFrame);
-        gameFrame.setSavesAction(sController);
+        OptionsController oController = new OptionsController(gameFrame);
         gameFrame.setMainMenuAction(mmController);
+        gameFrame.setOptionsAction(oController);
+        gameFrame.setSavesAction(sController);
         
         pService.createNewGame("test", "testGuy", ClassType.GUARDIAN);
         

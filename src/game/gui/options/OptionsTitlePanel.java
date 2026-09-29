@@ -1,4 +1,7 @@
-package game.gui;
+package game.gui.options;
+
+import game.gui.PanelCloseButton;
+import game.options.OptionsAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,14 +21,14 @@ public class OptionsTitlePanel extends JPanel
     
     private static final int LABEL_FONT_SIZE = 46;
     
-    public OptionsTitlePanel(GUIAction guiAction)
+    public OptionsTitlePanel(OptionsAction optionsAction)
     {
         setLayout(new GridBagLayout());
         GridBagConstraints gbConstraints = new GridBagConstraints();
         
         setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         
-        ActionListener closeButtonListener = e -> guiAction.closeOptionsScreen();
+        ActionListener closeButtonListener = e -> optionsAction.requestCloseOptions();
         
         gbConstraints.anchor = GridBagConstraints.WEST;
         gbConstraints.fill = GridBagConstraints.NONE;

@@ -1,6 +1,11 @@
-package game.gui;
+package game.gui.options;
 
 import static game.gui.GUIConfig.*;
+
+import game.gui.AudioSliderUI;
+import game.gui.DisplayResolution;
+import game.gui.PanelButton;
+import game.options.OptionsAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,11 +32,11 @@ public class OptionsPanel extends JPanel
     private static final int BUTTON_PREFERRED_WIDTH = 200;
     private static final int BUTTON_PREFERRED_HEIGHT = 45;
     
-    GUIAction guiAction;
+    OptionsAction optionsAction;
     
-    public OptionsPanel(GUIAction action)
+    public OptionsPanel(OptionsAction oAction)
     {
-        guiAction = action;
+        optionsAction = oAction;
         
         setLayout(new GridBagLayout());
         GridBagConstraints gbConstraints = new GridBagConstraints();
@@ -107,7 +112,7 @@ public class OptionsPanel extends JPanel
         gbConstraints.gridy = ++y;
         add(createSlider(), gbConstraints);
         
-        ActionListener resButtonListener = e -> guiAction.changeResolution((DisplayResolution) resolutionComboBox.getSelectedItem());
+        ActionListener resButtonListener = e -> optionsAction.requestResolutionChange((DisplayResolution) resolutionComboBox.getSelectedItem());
         
         gbConstraints.anchor = GridBagConstraints.SOUTHEAST;
         gbConstraints.fill = GridBagConstraints.NONE;

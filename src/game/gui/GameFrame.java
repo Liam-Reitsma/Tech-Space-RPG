@@ -1,8 +1,13 @@
 package game.gui;
 
+import game.gui.options.OptionsOverlay;
+import game.gui.options.OptionsPanel;
+import game.gui.options.OptionsTitlePanel;
 import game.mainmenu.MainMenuViewAction;
 import game.gui.mainmenu.MainMenuPanel;
 import game.mainmenu.MainMenuAction;
+import game.options.OptionsAction;
+import game.options.OptionsViewAction;
 import game.saves.SavesAction;
 import game.saves.SavesViewAction;
 
@@ -11,14 +16,16 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class GameFrame extends JFrame implements GUIAction, MainMenuViewAction, SavesViewAction
+public class GameFrame extends JFrame implements MainMenuViewAction, OptionsViewAction, SavesViewAction
 {
     private static final int programWidth = 1280;
     private static final int programHeight = 720;
     
-    private final OptionsOverlay optionsOverlay;
-    private SavesOverlay savesOverlay;
+    private OptionsAction optionsAction;
     private SavesAction savesAction;
+    
+    private OptionsOverlay optionsOverlay;
+    private SavesOverlay savesOverlay;
     
     public GameFrame(String name)
     {
@@ -27,8 +34,7 @@ public class GameFrame extends JFrame implements GUIAction, MainMenuViewAction, 
         getContentPane().setPreferredSize(new Dimension(programWidth, programHeight));
         setLayout(new BorderLayout());
         
-        optionsOverlay = new OptionsOverlay(new OptionsPanel(this), new OptionsTitlePanel(this), programWidth, programHeight);
-        getLayeredPane().add(optionsOverlay, JLayeredPane.MODAL_LAYER);
+        
         getLayeredPane().addComponentListener((new ComponentAdapter()
         {
             @Override
@@ -44,16 +50,19 @@ public class GameFrame extends JFrame implements GUIAction, MainMenuViewAction, 
             }
         }));
         
-        optionsOverlay.setVisible(false);
-        
         pack();
         setLocationRelativeTo(null);
     }
     
-    public void setMainMenuAction(MainMenuAction mainMenuAction)
+    public void setMainMenuAction(MainMenuAction mmAction)
     {
-        MainMenuPanel mmPanel = new MainMenuPanel(getTitle(), mainMenuAction);
+        MainMenuPanel mmPanel = new MainMenuPanel(getTitle(), mmAction);
         add(mmPanel);
+    }
+    
+    public void setOptionsAction(OptionsAction oAction)
+    {
+        optionsAction = oAction;
     }
     
     public void setSavesAction(SavesAction sAction)
@@ -73,13 +82,13 @@ public class GameFrame extends JFrame implements GUIAction, MainMenuViewAction, 
     {
         createSavesOverlay(saveNames);
         savesOverlay.setLocation((getLayeredPane().getWidth() - savesOverlay.getWidth()) / 2, (getLayeredPane().getHeight() - savesOverlay.getHeight()) / 2);
+        savesOverlay.setVisible(true);
     }
     
     private void createSavesOverlay(String[] saveNames)
     {
         savesOverlay = new SavesOverlay(new SavesPanel(savesAction, saveNames), new SavesTitlePanel(savesAction), programWidth, programHeight);
         getLayeredPane().add(savesOverlay, JLayeredPane.MODAL_LAYER);
-        savesOverlay.setVisible(true);
     }
     
     //Loaded Games
@@ -102,12 +111,19 @@ public class GameFrame extends JFrame implements GUIAction, MainMenuViewAction, 
     @Override
     public void openOptionsScreen()
     {
+        createOptionsOverlay();
         optionsOverlay.setLocation((getLayeredPane().getWidth() - optionsOverlay.getWidth()) / 2, (getLayeredPane().getHeight() - optionsOverlay.getHeight()) / 2);
         optionsOverlay.setVisible(true);
     }
     
+    private void createOptionsOverlay()
+    {
+        optionsOverlay = new OptionsOverlay(new OptionsPanel(optionsAction), new OptionsTitlePanel(optionsAction), programWidth, programHeight);
+        getLayeredPane().add(optionsOverlay, JLayeredPane.MODAL_LAYER);
+    }
+    
     @Override
-    public void changeResolution(DisplayResolution resolution)
+    public void resizeGameFrame(DisplayResolution resolution)
     {
         getContentPane().setPreferredSize(new Dimension(resolution.getWidth(), resolution.getHeight()));
         pack();
@@ -118,7 +134,11 @@ public class GameFrame extends JFrame implements GUIAction, MainMenuViewAction, 
     @Override
     public void closeOptionsScreen()
     {
-        optionsOverlay.setVisible(false);
+        getLayeredPane().remove(optionsOverlay);
+        optionsOverlay = null;
+        
+        revalidate();
+        repaint();
     }
     
     @Override
