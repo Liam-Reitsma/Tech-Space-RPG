@@ -1,6 +1,7 @@
 package game.gui;
 
 import game.DBManager;
+import game.gui.mainmenu.MainMenuPanel;
 import game.mainmenu.MainMenuAction;
 import game.persistence.PersistenceController;
 

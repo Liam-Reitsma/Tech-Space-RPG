@@ -1,4 +1,4 @@
-package game.gui;
+package game.gui.mainmenu;
 
 import game.mainmenu.MainMenuAction;
 import game.mainmenu.MainMenuState;
