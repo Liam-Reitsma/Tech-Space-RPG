@@ -1,6 +1,6 @@
 package game.gui;
 
-import game.mainmenu.MainMenuController;
+import game.mainmenu.MainMenuAction;
 import game.mainmenu.MainMenuState;
 
 import javax.swing.*;
@@ -17,14 +17,14 @@ public class MainMenuPanel extends JPanel
     private JPanel titlePanel;
     private JPanel buttonPanel;
     
-    public MainMenuPanel(String title, MainMenuController mmController)
+    public MainMenuPanel(String title, MainMenuAction mmAction)
     {
         super(new GridBagLayout());
         
         GridBagConstraints gbConstraints = new GridBagConstraints();
         
         createTitlePanel(title, gbConstraints);
-        createButtonPanel(mmController, gbConstraints);
+        createButtonPanel(mmAction, gbConstraints);
         
         addComponentListener(new ComponentAdapter()
         {
@@ -88,7 +88,7 @@ public class MainMenuPanel extends JPanel
         add(tPanel, gbConstraints);
     }
     
-    private void createButtonPanel(MainMenuController mmController, GridBagConstraints gbConstraints)
+    private void createButtonPanel(MainMenuAction mmAction, GridBagConstraints gbConstraints)
     {
         gbConstraints.anchor = GridBagConstraints.CENTER;
         gbConstraints.fill = GridBagConstraints.BOTH;
@@ -107,7 +107,7 @@ public class MainMenuPanel extends JPanel
         for(MainMenuState state : MainMenuState.values())
         {
             buttonGBC.gridy = i++;
-            ActionListener stateListener = e -> state.executeStateAction(mmController);
+            ActionListener stateListener = e -> state.executeStateAction(mmAction);
             bPanel.add(new MainMenuButton(state.toString(), stateListener), buttonGBC);
         }
         
