@@ -1,5 +1,7 @@
 package game.gui;
 
+import game.saves.SavesAction;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -17,14 +19,14 @@ public class SavesTitlePanel extends JPanel
     private static final int SAVES_TITLE_IMAGE_BORDER_HEIGHT = (SAVES_TITLE_IMAGE_TOTAL_HEIGHT - SAVES_TITLE_CONTENT.getHeight(null)) / 2;
     
     private static final int LABEL_FONT_SIZE = 46;
-    public SavesTitlePanel(GUIAction guiAction)
+    public SavesTitlePanel(SavesAction saveSaction)
     {
         setLayout(new GridBagLayout());
         GridBagConstraints gbConstraints = new GridBagConstraints();
         
         setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         
-        ActionListener closeButtonListener = e -> guiAction.closeSavesScreen();
+        ActionListener closeButtonListener = e -> saveSaction.requestCloseSaves();
         
         gbConstraints.anchor = GridBagConstraints.WEST;
         gbConstraints.fill = GridBagConstraints.NONE;

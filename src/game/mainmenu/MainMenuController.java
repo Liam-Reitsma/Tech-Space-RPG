@@ -1,19 +1,27 @@
 package game.mainmenu;
 
+import game.saves.SavesAction;
+
 public class MainMenuController implements MainMenuAction
 {
+    private final SavesAction savesAction;
     private final MainMenuViewAction mmViewAction;
     
-    public MainMenuController(MainMenuViewAction actions)
+    public MainMenuController(SavesAction sAction, MainMenuViewAction mmvAction)
     {
-        mmViewAction = actions;
+        savesAction = sAction;
+        mmViewAction = mmvAction;
+        
     }
     
     @Override
     public void requestNewGame() { mmViewAction.openNewGameScreen(); }
     
     @Override
-    public void requestLoadGame() { mmViewAction.openLoadGameScreen(); }
+    public void requestLoadGame()
+    {
+        mmViewAction.openLoadGameScreen(savesAction.requestOpenSaves());
+    }
     
     @Override
     public void requestOpenOptions() { mmViewAction.openOptionsScreen(); }

@@ -5,17 +5,22 @@ import game.gui.GameFrame;
 import game.mainmenu.MainMenuController;
 import game.persistence.DBManager;
 import game.persistence.PersistenceService;
+import game.saves.SavesController;
 
 public class Main
 {
     public static void main(String[] args)
     {
-        GameFrame gameFrame = new GameFrame("Tech Space RPG");
-        MainMenuController mmController = new MainMenuController(gameFrame);
-        gameFrame.setMainMenuAction(mmController);
         DBManager dbManager = new DBManager();
-        PersistenceService pController = new PersistenceService(dbManager);
-        pController.createNewGame("test", "testGuy", ClassType.GUARDIAN);
+        PersistenceService pService = new PersistenceService(dbManager);
+        GameFrame gameFrame = new GameFrame("Tech Space RPG");
+        
+        SavesController sController = new SavesController(pService, gameFrame);
+        MainMenuController mmController = new MainMenuController(sController, gameFrame);
+        gameFrame.setSavesAction(sController);
+        gameFrame.setMainMenuAction(mmController);
+        
+        pService.createNewGame("test", "testGuy", ClassType.GUARDIAN);
         
         gameFrame.setVisible(true);
         

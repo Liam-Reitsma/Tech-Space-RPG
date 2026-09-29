@@ -1,24 +1,24 @@
 package game.gui;
 
-import game.persistence.DBManager;
+import game.mainmenu.MainMenuViewAction;
 import game.gui.mainmenu.MainMenuPanel;
 import game.mainmenu.MainMenuAction;
-import game.persistence.PersistenceService;
+import game.saves.SavesAction;
+import game.saves.SavesViewAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class GameFrame extends JFrame implements GUIAction
+public class GameFrame extends JFrame implements GUIAction, MainMenuViewAction, SavesViewAction
 {
     private static final int programWidth = 1280;
     private static final int programHeight = 720;
     
-    private final PersistenceService pController;
-    
     private final OptionsOverlay optionsOverlay;
-    private final SavesOverlay savesOverlay;
+    private SavesOverlay savesOverlay;
+    private SavesAction savesAction;
     
     public GameFrame(String name)
     {
@@ -27,12 +27,8 @@ public class GameFrame extends JFrame implements GUIAction
         getContentPane().setPreferredSize(new Dimension(programWidth, programHeight));
         setLayout(new BorderLayout());
         
-        pController = new PersistenceService(new DBManager());
-        
         optionsOverlay = new OptionsOverlay(new OptionsPanel(this), new OptionsTitlePanel(this), programWidth, programHeight);
-        savesOverlay = new SavesOverlay(new SavesPanel(this, pController.getSaveOptionNames()), new SavesTitlePanel(this), programWidth, programHeight);
         getLayeredPane().add(optionsOverlay, JLayeredPane.MODAL_LAYER);
-        getLayeredPane().add(savesOverlay, JLayeredPane.MODAL_LAYER);
         getLayeredPane().addComponentListener((new ComponentAdapter()
         {
             @Override
@@ -49,7 +45,6 @@ public class GameFrame extends JFrame implements GUIAction
         }));
         
         optionsOverlay.setVisible(false);
-        savesOverlay.setVisible(false);
         
         pack();
         setLocationRelativeTo(null);
@@ -61,6 +56,33 @@ public class GameFrame extends JFrame implements GUIAction
         add(mmPanel);
     }
     
+    public void setSavesAction(SavesAction sAction)
+    {
+        savesAction = sAction;
+    }
+    
+    //Open New Game
+    @Override
+    public void openNewGameScreen()
+    {
+    
+    }
+    
+    @Override
+    public void openLoadGameScreen(String[] saveNames)
+    {
+        createSavesOverlay(saveNames);
+        savesOverlay.setLocation((getLayeredPane().getWidth() - savesOverlay.getWidth()) / 2, (getLayeredPane().getHeight() - savesOverlay.getHeight()) / 2);
+    }
+    
+    private void createSavesOverlay(String[] saveNames)
+    {
+        savesOverlay = new SavesOverlay(new SavesPanel(savesAction, saveNames), new SavesTitlePanel(savesAction), programWidth, programHeight);
+        getLayeredPane().add(savesOverlay, JLayeredPane.MODAL_LAYER);
+        savesOverlay.setVisible(true);
+    }
+    
+    //Loaded Games
     @Override
     public void openGameScreen()
     {
@@ -68,24 +90,11 @@ public class GameFrame extends JFrame implements GUIAction
     }
     
     @Override
-    public void openSavesScreen()
-    {
-        savesOverlay.setLocation((getLayeredPane().getWidth() - savesOverlay.getWidth()) / 2, (getLayeredPane().getHeight() - savesOverlay.getHeight()) / 2);
-        savesOverlay.setVisible(true);
-    }
-    
-    @Override
-    public void selectSave(String saveName)
-    {
-        pController.loadSavedPlayer(saveName);
-        pController.loadSavedWorld();
-    }
-    
-    @Override
     public void closeSavesScreen()
     {
         savesOverlay.setVisible(false);
     }
+    
     
     @Override
     public void openOptionsScreen()
@@ -110,7 +119,7 @@ public class GameFrame extends JFrame implements GUIAction
     }
     
     @Override
-    public void closeGame()
+    public void closeGameFrame()
     {
         dispose();
     }

@@ -14,6 +14,12 @@ public class SavesController implements SavesAction
     }
     
     @Override
+    public String[] requestOpenSaves()
+    {
+        return pService.getSaveOptionNames();
+    }
+    
+    @Override
     public void requestSelectSave(String saveName)
     {
         pService.loadSavedPlayer(saveName);
