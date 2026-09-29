@@ -19,7 +19,7 @@ public class GameFrame extends JFrame implements GUIAction
     private final OptionsOverlay optionsOverlay;
     private final SavesOverlay savesOverlay;
     
-    public GameFrame(String name, MainMenuAction mainMenuAction)
+    public GameFrame(String name)
     {
         super(name);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -27,8 +27,6 @@ public class GameFrame extends JFrame implements GUIAction
         setLayout(new BorderLayout());
         
         pController = new PersistenceController(new DBManager());
-        MainMenuPanel mmPanel = new MainMenuPanel(name, mainMenuAction);
-        add(mmPanel);
         
         optionsOverlay = new OptionsOverlay(new OptionsPanel(this), new OptionsTitlePanel(this), programWidth, programHeight);
         savesOverlay = new SavesOverlay(new SavesPanel(this, pController.getSaveOptionNames()), new SavesTitlePanel(this), programWidth, programHeight);
@@ -54,6 +52,12 @@ public class GameFrame extends JFrame implements GUIAction
         
         pack();
         setLocationRelativeTo(null);
+    }
+    
+    public void setMainMenuAction(MainMenuAction mainMenuAction)
+    {
+        MainMenuPanel mmPanel = new MainMenuPanel(getTitle(), mainMenuAction);
+        add(mmPanel);
     }
     
     @Override
