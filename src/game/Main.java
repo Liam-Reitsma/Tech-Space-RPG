@@ -24,11 +24,11 @@ public class Main
         gameFrame.setOptionsAction(oController);
         gameFrame.setSavesAction(sController);
         
-        pService.createNewGame("test", "testGuy", ClassType.GUARDIAN);
+        //pService.createNewGame("test", "testGuy", ClassType.GUARDIAN);
         
         gameFrame.setVisible(true);
         
-        dbManager.closeSQLConnection();
-        System.exit(0);
+        //dbManager.closeSQLConnection();
+        //System.exit(0);
     }
 }
