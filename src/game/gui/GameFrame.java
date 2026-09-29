@@ -92,9 +92,12 @@ public class GameFrame extends JFrame implements GUIAction, MainMenuViewAction, 
     @Override
     public void closeSavesScreen()
     {
-        savesOverlay.setVisible(false);
+        getLayeredPane().remove(savesOverlay);
+        savesOverlay = null;
+        
+        revalidate();
+        repaint();
     }
-    
     
     @Override
     public void openOptionsScreen()
