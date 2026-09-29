@@ -30,8 +30,8 @@ public class PersistenceService
     public void createNewGame(String saveName, String charName, ClassType classType)
     {
         iKeyCurrent = saveName;
+        iKeyColumnName = "SAVE_NAME";
         Player player = new Player(charName, classType);
-        String iKey = iKeyColumnName;
         createTables();
         insertPlayer(player);
         insertEquippedItems(player);
@@ -42,50 +42,50 @@ public class PersistenceService
         PersistenceTable table = PLAYER;
         LinkedHashMap<String, String> columns = table.getColumns();
         dbManager.createTable(table.name(),
-                buildCreateTableSQL(table.name(), columns, new String[]{iKeyCurrent},
+                buildCreateTableSQL(table.name(), columns, new String[]{iKeyColumnName},
                         columns.keySet().toArray(new String[0])));
         
         table = PLAYER_STATS;
         columns = table.getColumns();
         dbManager.createTable(table.name(),
-                buildCreateTableSQL(table.name(), columns, new String[]{iKeyCurrent},
+                buildCreateTableSQL(table.name(), columns, new String[]{iKeyColumnName},
                         columns.keySet().toArray(new String[0]),
-                        new String[]{PLAYER.name()},new String[]{iKeyCurrent}));
+                        new String[]{PLAYER.name()},new String[]{iKeyColumnName}));
         
         table = EQUIPPED_ITEMS;
         columns = table.getColumns();
         dbManager.createTable(table.name(),
-                buildCreateTableSQL(table.name(), columns, new String[]{iKeyCurrent},
-                        new String[]{iKeyCurrent},
-                        new String[]{PLAYER.name()},new String[]{iKeyCurrent}));
+                buildCreateTableSQL(table.name(), columns, new String[]{iKeyColumnName},
+                        new String[]{iKeyColumnName},
+                        new String[]{PLAYER.name()},new String[]{iKeyColumnName}));
         
         table = STORED_WEAPONS;
         columns = table.getColumns();
         dbManager.createTable(table.name(),
-                buildCreateTableSQL(table.name(), columns, new String[]{iKeyCurrent, "WEAPON_SLOT", "WEAPON_TYPE"},
+                buildCreateTableSQL(table.name(), columns, new String[]{iKeyColumnName, "WEAPON_SLOT", "WEAPON_TYPE"},
                         columns.keySet().toArray(new String[0]),
-                        new String[]{PLAYER.name()},new String[]{iKeyCurrent}));
+                        new String[]{PLAYER.name()},new String[]{iKeyColumnName}));
         
         table = STORED_ARMOUR;
         columns = table.getColumns();
         dbManager.createTable(table.name(),
-                buildCreateTableSQL(table.name(), columns, new String[]{iKeyCurrent, "ARMOUR_SLOT", "ARMOUR_MATERIAL"},
+                buildCreateTableSQL(table.name(), columns, new String[]{iKeyColumnName, "ARMOUR_SLOT", "ARMOUR_MATERIAL"},
                         columns.keySet().toArray(new String[0]),
-                        new String[]{PLAYER.name()},new String[]{iKeyCurrent}));
+                        new String[]{PLAYER.name()},new String[]{iKeyColumnName}));
         
         table = STORED_POTIONS;
         columns = table.getColumns();
         dbManager.createTable(table.name(),
-                buildCreateTableSQL(table.name(), columns, new String[]{iKeyCurrent, "POTION_TYPE"},
+                buildCreateTableSQL(table.name(), columns, new String[]{iKeyColumnName, "POTION_TYPE"},
                         columns.keySet().toArray(new String[0]),
-                        new String[]{PLAYER.name()},new String[]{iKeyCurrent}));
+                        new String[]{PLAYER.name()},new String[]{iKeyColumnName}));
         
         table = ROOMS;
         columns = table.getColumns();
         dbManager.createTable(table.name(),
-                buildCreateTableSQL(table.name(), columns, new String[]{iKeyCurrent, "X_POINT", "Y_POINT"},
+                buildCreateTableSQL(table.name(), columns, new String[]{iKeyColumnName, "X_POINT", "Y_POINT"},
                         columns.keySet().toArray(new String[0]),
-                        new String[]{PLAYER.name()},new String[]{iKeyCurrent}));
+                        new String[]{PLAYER.name()},new String[]{iKeyColumnName}));
     }
     
     private void insertPlayer(Player player)
@@ -121,7 +121,7 @@ public class PersistenceService
         
         Object[] args = new Object[]
                 {
-                        iKeyCurrent, player.getClassType().getStartingWeapon(), null, null, null, null, null, null
+                        iKeyCurrent, player.getClassType().getStartingWeapon().toString(), player.getLevel(), null, null, null, null, null, null
                 };
         
         dbManager.addEntryDB(buildInsertIntoSQL(tableName, columns), args);
