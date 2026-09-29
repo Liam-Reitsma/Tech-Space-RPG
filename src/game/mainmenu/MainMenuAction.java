@@ -2,5 +2,8 @@ package game.mainmenu;
 
 public interface MainMenuAction
 {
-    public void executeStateAction(MainMenuAction controller);
+    void newGame();
+    void loadGame();
+    void openOptions();
+    void exitGame();
 }

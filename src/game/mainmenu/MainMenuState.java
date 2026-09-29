@@ -1,37 +1,37 @@
 package game.mainmenu;
 
-public enum MainMenuState implements MainMenuAction
+public enum MainMenuState implements MainMenuStateAction
 {
     NEW_GAME
         {
             @Override
-            public void executeStateAction(MainMenuController mmController)
+            public void execute(MainMenuAction mmAction)
             {
-                mmController.newGame();
+                mmAction.newGame();
             }
         },
     LOAD_GAME
         {
             @Override
-            public void executeStateAction(MainMenuController mmController)
+            public void execute(MainMenuAction mmAction)
             {
-                mmController.loadGame();
+                mmAction.loadGame();
             }
         },
     OPTIONS
         {
             @Override
-            public void executeStateAction(MainMenuController mmController)
+            public void execute(MainMenuAction mmAction)
             {
-                mmController.openOptions();
+                mmAction.openOptions();
             }
         },
     EXIT_GAME
         {
             @Override
-            public void executeStateAction(MainMenuController mmController)
+            public void execute(MainMenuAction mmAction)
             {
-                mmController.exitGame();
+                mmAction.exitGame();
             }
         };
     

@@ -107,7 +107,7 @@ public class MainMenuPanel extends JPanel
         for(MainMenuState state : MainMenuState.values())
         {
             buttonGBC.gridy = i++;
-            ActionListener stateListener = e -> state.executeStateAction(mmAction);
+            ActionListener stateListener = e -> state.execute(mmAction);
             bPanel.add(new MainMenuButton(state.toString(), stateListener), buttonGBC);
         }
         
