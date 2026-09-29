@@ -21,12 +21,10 @@ public class PersistenceController
     private String iKeyCurrent;
     private String iKeyColumnName;
     
-    private final SaveFile saveF;
     private final DBManager dbManager;
     
     public PersistenceController(DBManager dbm)
     {
-        saveF = new SaveFile();
         dbManager = dbm;
     }
     
