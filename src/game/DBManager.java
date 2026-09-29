@@ -204,6 +204,35 @@ public class DBManager
         }
     }
     
+    public Object[][] queryRoomDB(String templateSQL, String searchName)
+    {
+        List<Object[]> roomsList = new ArrayList<>();
+        
+        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
+        {
+            ps.setString( 1, searchName);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next())
+            {
+                Object[] room = new Object[4];
+                
+                room[0] =  rs.getInt("X_POINT");
+                room[1] =  rs.getInt("Y_POINT");
+                room[2] =  rs.getString("ROOM_TYPE");
+                room[3] =  rs.getBoolean("IS_COMPLETE");
+                
+                roomsList.add(room);
+            }
+            
+            return roomsList.toArray(new Object[0][]);
+        } catch(SQLException e)
+        {
+            return null;
+        }
+    }
+    
     public String[] getSavesName()
     {
         Connection conn = connection;
