@@ -1,7 +1,7 @@
 package game.gui;
 
 import game.DBManager;
-import game.mainmenu.MainMenuController;
+import game.mainmenu.MainMenuAction;
 import game.persistence.PersistenceController;
 
 import javax.swing.*;
@@ -14,22 +14,20 @@ public class GameFrame extends JFrame implements GUIAction
     private static final int programWidth = 1280;
     private static final int programHeight = 720;
     
-    private final MainMenuController mmController;
     private final PersistenceController pController;
     
     private final OptionsOverlay optionsOverlay;
     private final SavesOverlay savesOverlay;
     
-    public GameFrame(String name)
+    public GameFrame(String name, MainMenuAction mainMenuAction)
     {
         super(name);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(new Dimension(programWidth, programHeight));
         setLayout(new BorderLayout());
         
-        mmController = new MainMenuController(this);
         pController = new PersistenceController(new DBManager());
-        MainMenuPanel mmPanel = new MainMenuPanel(name, mmController);
+        MainMenuPanel mmPanel = new MainMenuPanel(name, mainMenuAction);
         add(mmPanel);
         
         optionsOverlay = new OptionsOverlay(new OptionsPanel(this), new OptionsTitlePanel(this), programWidth, programHeight);
@@ -74,7 +72,8 @@ public class GameFrame extends JFrame implements GUIAction
     @Override
     public void selectSave(String saveName)
     {
-        pController.loadSaveGame(saveName);
+        pController.loadSavedPlayer(saveName);
+        pController.loadSavedWorld();
     }
     
     @Override
