@@ -3,7 +3,6 @@ package game.persistence;
 import static game.persistence.PersistenceTable.*;
 import static game.persistence.SQLCommandFactory.*;
 
-import game.*;
 import game.entities.player.ClassType;
 import game.entities.player.Inventory;
 import game.entities.player.Player;
@@ -16,14 +15,14 @@ import game.world.RuntimeRoom;
 
 import java.util.*;
 
-public class PersistenceController
+public class PersistenceService
 {
     private String iKeyCurrent;
     private String iKeyColumnName;
     
     private final DBManager dbManager;
     
-    public PersistenceController(DBManager dbm)
+    public PersistenceService(DBManager dbm)
     {
         dbManager = dbm;
     }
@@ -404,14 +403,14 @@ public class PersistenceController
             }
         }
     }
-//    useless but check to make sure - Philip
-//    public PersistenceResult updatePlayerStatus(Player player)
-//    {
-//        return new PersistenceResult(saveF.writeDeltaObject(player));
-//    }
-//
-//    public PersistenceResult updateRoomStatus(RuntimeRoom room)
-//    {
-//        return new PersistenceResult(saveF.writeDeltaRoom(room));
-//    }
+    
+    public void updatePlayerStatus(Player player)
+    {
+        //Update Player Stats
+    }
+
+    public void updateRoomStatus(RuntimeRoom room)
+    {
+        //Update Single Entry
+    }
 }

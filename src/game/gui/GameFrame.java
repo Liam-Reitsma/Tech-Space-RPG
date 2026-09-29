@@ -1,9 +1,9 @@
 package game.gui;
 
-import game.DBManager;
+import game.persistence.DBManager;
 import game.gui.mainmenu.MainMenuPanel;
 import game.mainmenu.MainMenuAction;
-import game.persistence.PersistenceController;
+import game.persistence.PersistenceService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ public class GameFrame extends JFrame implements GUIAction
     private static final int programWidth = 1280;
     private static final int programHeight = 720;
     
-    private final PersistenceController pController;
+    private final PersistenceService pController;
     
     private final OptionsOverlay optionsOverlay;
     private final SavesOverlay savesOverlay;
@@ -27,7 +27,7 @@ public class GameFrame extends JFrame implements GUIAction
         getContentPane().setPreferredSize(new Dimension(programWidth, programHeight));
         setLayout(new BorderLayout());
         
-        pController = new PersistenceController(new DBManager());
+        pController = new PersistenceService(new DBManager());
         
         optionsOverlay = new OptionsOverlay(new OptionsPanel(this), new OptionsTitlePanel(this), programWidth, programHeight);
         savesOverlay = new SavesOverlay(new SavesPanel(this, pController.getSaveOptionNames()), new SavesTitlePanel(this), programWidth, programHeight);

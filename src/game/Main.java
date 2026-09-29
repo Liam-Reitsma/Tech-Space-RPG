@@ -3,9 +3,8 @@ package game;
 import game.entities.player.ClassType;
 import game.gui.GameFrame;
 import game.mainmenu.MainMenuController;
-import game.persistence.PersistenceController;
-
-import javax.swing.*;
+import game.persistence.DBManager;
+import game.persistence.PersistenceService;
 
 public class Main
 {
@@ -15,7 +14,7 @@ public class Main
         MainMenuController mmController = new MainMenuController(gameFrame);
         gameFrame.setMainMenuAction(mmController);
         DBManager dbManager = new DBManager();
-        PersistenceController pController = new PersistenceController(dbManager);
+        PersistenceService pController = new PersistenceService(dbManager);
         pController.createNewGame("test", "testGuy", ClassType.GUARDIAN);
         
         gameFrame.setVisible(true);

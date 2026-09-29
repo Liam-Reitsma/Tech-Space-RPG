@@ -1,4 +1,4 @@
-package game;
+package game.persistence;
 
 import java.sql.*;
 import java.util.ArrayList;
