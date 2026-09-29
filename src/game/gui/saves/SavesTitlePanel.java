@@ -1,5 +1,6 @@
-package game.gui;
+package game.gui.saves;
 
+import game.gui.PanelCloseButton;
 import game.saves.SavesAction;
 
 import javax.swing.*;

@@ -1,8 +1,9 @@
-package game.gui;
+package game.gui.saves;
 
 import static game.gui.GUIConfig.PROGRAM_HEIGHT;
 import static game.gui.GUIConfig.PROGRAM_WIDTH;
 
+import game.gui.PanelButton;
 import game.saves.SavesAction;
 
 import javax.swing.*;
