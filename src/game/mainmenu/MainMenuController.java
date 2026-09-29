@@ -1,37 +1,23 @@
 package game.mainmenu;
 
-import game.gui.GUIAction;
-
 public class MainMenuController implements MainMenuAction
 {
-    private final GUIAction guiAction;
+    private final MainMenuViewAction mmViewAction;
     
-    public MainMenuController(GUIAction actions)
+    public MainMenuController(MainMenuViewAction actions)
     {
-        guiAction = actions;
+        mmViewAction = actions;
     }
     
     @Override
-    public void requestNewGame()
-    {
-        guiAction.openGameScreen();
-    }
+    public void requestNewGame() { mmViewAction.openNewGameScreen(); }
     
     @Override
-    public void requestLoadGame()
-    {
-        guiAction.openSavesScreen();
-    }
+    public void requestLoadGame() { mmViewAction.openLoadGameScreen(); }
     
     @Override
-    public void requestOpenOptions()
-    {
-        guiAction.openOptionsScreen();
-    }
+    public void requestOpenOptions() { mmViewAction.openOptionsScreen(); }
     
     @Override
-    public void requestExitGame()
-    {
-        guiAction.closeGame();
-    }
+    public void requestExitGame() { mmViewAction.closeGameFrame(); }
 }
