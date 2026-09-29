@@ -32,7 +32,7 @@ public class PersistenceController
     {
         iKeyCurrent = saveName;
         Player player = new Player(charName, classType);
-        String iKey = "SAVE_NAME";
+        String iKey = iKeyColumnName;
         createTables();
         insertPlayer(player);
         insertEquippedItems(player);
@@ -136,16 +136,17 @@ public class PersistenceController
     public Player loadSavedPlayer(String saveName)
     {
         iKeyCurrent = saveName;
+        iKeyColumnName = "SAVE_NAME";
         //TODO: Replace Player Object[] loading with column-name-based mapping (e.g. Map<String, Object>) so loading does not depend on database column order.
-        Object[] playerData = dbManager.queryDB(buildSelectSQL(PLAYER.name(), "SAVE_NAME"), saveName);
-        Object[] statsData = dbManager.queryDB(buildSelectSQL(PLAYER_STATS.name(), "SAVE_NAME"), saveName);
+        Object[] playerData = dbManager.queryDB(buildSelectSQL(PLAYER.name(), iKeyColumnName), saveName);
+        Object[] statsData = dbManager.queryDB(buildSelectSQL(PLAYER_STATS.name(), iKeyColumnName), saveName);
         Player player = new Player(playerData, statsData);
         
         //TODO: Replace type/string-parsing based loading for Weapon, Armour, WeaponType, ArmourType, etc. with explicit column-name mapping so each saved
         //      field is reconstructed from its intended database column.
         WeaponType weaponType = WeaponType.RUSTED_KNIFE;
         int weaponLevel = 0;
-        for(Object datum : dbManager.queryDB(buildSelectSQL(EQUIPPED_ITEMS.name(), "SAVE_NAME"), saveName))
+        for(Object datum : dbManager.queryDB(buildSelectSQL(EQUIPPED_ITEMS.name(), iKeyColumnName), saveName))
         {
             if(datum instanceof Integer level)
             {
