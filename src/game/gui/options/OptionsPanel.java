@@ -1,10 +1,10 @@
 package game.gui.options;
 
-import static game.gui.GUIConfig.*;
+import static game.gui.config.GUIConfig.*;
 
-import game.gui.AudioSliderUI;
+import game.gui.common.AudioSliderUI;
 import game.gui.DisplayResolution;
-import game.gui.PanelButton;
+import game.gui.common.PanelButton;
 import game.options.OptionsAction;
 
 import javax.swing.*;

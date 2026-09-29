@@ -1,4 +1,4 @@
-package game.gui;
+package game.gui.common;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSliderUI;

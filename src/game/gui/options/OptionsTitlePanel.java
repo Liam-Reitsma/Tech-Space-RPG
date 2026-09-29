@@ -1,6 +1,6 @@
 package game.gui.options;
 
-import game.gui.PanelCloseButton;
+import game.gui.common.PanelCloseButton;
 import game.options.OptionsAction;
 
 import javax.swing.*;
