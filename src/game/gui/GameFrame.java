@@ -7,7 +7,7 @@ import game.gui.saves.SavesOverlay;
 import game.gui.saves.SavesPanel;
 import game.gui.saves.SavesTitlePanel;
 import game.mainmenu.MainMenuViewAction;
-import game.gui.mainmenu.MainMenuPanel;
+import game.gui.mainmenu.MainMenuScreen;
 import game.mainmenu.MainMenuAction;
 import game.options.OptionsAction;
 import game.options.OptionsViewAction;
@@ -59,7 +59,7 @@ public class GameFrame extends JFrame implements MainMenuViewAction, OptionsView
     
     public void setMainMenuAction(MainMenuAction mmAction)
     {
-        MainMenuPanel mmPanel = new MainMenuPanel(getTitle(), mmAction);
+        MainMenuScreen mmPanel = new MainMenuScreen(getTitle(), mmAction);
         add(mmPanel);
     }
     

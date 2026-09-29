@@ -10,14 +10,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class MainMenuPanel extends JPanel
+public class MainMenuScreen extends JPanel
 {
     private static final Image MAIN_MENU_IMAGE = new ImageIcon("resources/images/Main Menu Background.png").getImage();
     
     private JPanel titlePanel;
     private JPanel buttonPanel;
     
-    public MainMenuPanel(String title, MainMenuAction mmAction)
+    public MainMenuScreen(String title, MainMenuAction mmAction)
     {
         super(new GridBagLayout());
         
