@@ -1,37 +1,39 @@
 package game.saves;
 
+import game.GameAction;
 import game.persistence.PersistenceService;
 
 public class SavesController implements SavesAction
 {
-    private final PersistenceService pService;
-    private final SavesViewAction sViewAction;
+    private final GameAction gameAction;
+    private final PersistenceService persistenceService;
+    private final SavesViewAction savesViewAction;
     
-    public SavesController(PersistenceService persistenceService, SavesViewAction savesViewAction)
+    public SavesController(GameAction gAction, PersistenceService pService, SavesViewAction svAction)
     {
-        pService = persistenceService;
-        sViewAction = savesViewAction;
+        gameAction = gAction;
+        persistenceService = pService;
+        savesViewAction = svAction;
     }
     
     @Override
     public String[] requestOpenSaves()
     {
-        return pService.getSaveOptionNames();
+        return persistenceService.getSaveOptionNames();
     }
     
     @Override
     public void requestSelectSave(String saveName)
     {
-        pService.loadSavedPlayer(saveName);
-        pService.loadSavedWorld();
+        gameAction.requestLoadGame(persistenceService.loadSavedPlayer(saveName), persistenceService.loadSavedWorld());
         
-        sViewAction.closeSavesScreen();
-        sViewAction.openGameScreen();
+        savesViewAction.closeSavesScreen();
+        savesViewAction.openGameScreen();
     }
     
     @Override
     public void requestCloseSaves()
     {
-        sViewAction.closeSavesScreen();
+        savesViewAction.closeSavesScreen();
     }
 }

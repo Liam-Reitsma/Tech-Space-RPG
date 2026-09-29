@@ -15,8 +15,9 @@ public class Main
         DBManager dbManager = new DBManager();
         PersistenceService pService = new PersistenceService(dbManager);
         GameFrame gameFrame = new GameFrame("Tech Space RPG");
+        GameController gController = new GameController();
         
-        SavesController sController = new SavesController(pService, gameFrame);
+        SavesController sController = new SavesController(gController, pService, gameFrame);
         MainMenuController mmController = new MainMenuController(sController, gameFrame);
         OptionsController oController = new OptionsController(gameFrame);
         gameFrame.setMainMenuAction(mmController);
