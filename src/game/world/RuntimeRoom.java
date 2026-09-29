@@ -15,9 +15,11 @@ public class RuntimeRoom implements Persistable
         completed = false;
     }
     
-    public RuntimeRoom(String[] data)
+    public RuntimeRoom(Object[] data)
     {
-        loadSaveInfo(data);
+        point = new Point((int)data[0], (int)data[1]);
+        roomType = RoomType.valueOf((String)data[2]);
+        completed = (boolean)data[3];
     }
     
     public boolean isCompleted() { return completed; }
