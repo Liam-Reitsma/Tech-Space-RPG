@@ -3,6 +3,8 @@ package game.gui;
 import static game.gui.GUIConfig.PROGRAM_HEIGHT;
 import static game.gui.GUIConfig.PROGRAM_WIDTH;
 
+import game.saves.SavesAction;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -28,7 +30,7 @@ public class SavesPanel extends JPanel
     
     private static final int LABEL_FONT_SIZE = 120;
     
-    public SavesPanel(GUIAction guiAction, String[] saveNames)
+    public SavesPanel(SavesAction savesAction, String[] saveNames)
     {
         setLayout(new GridBagLayout());
         GridBagConstraints gbConstraints = new GridBagConstraints();
@@ -52,7 +54,7 @@ public class SavesPanel extends JPanel
             
             if(selectedSaveName != null)
             {
-                guiAction.selectSave(selectedSaveName);
+                savesAction.requestSelectSave(selectedSaveName);
             }
         };
         PanelButton selectSaveButton = new PanelButton("Select", saveButtonListener);
