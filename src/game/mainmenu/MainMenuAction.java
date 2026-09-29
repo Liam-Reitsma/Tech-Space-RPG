@@ -2,8 +2,8 @@ package game.mainmenu;
 
 public interface MainMenuAction
 {
-    void newGame();
-    void loadGame();
-    void openOptions();
-    void exitGame();
+    void requestNewGame();
+    void requestLoadGame();
+    void requestOpenOptions();
+    void requestExitGame();
 }

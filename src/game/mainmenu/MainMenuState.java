@@ -7,7 +7,7 @@ public enum MainMenuState implements MainMenuStateAction
             @Override
             public void execute(MainMenuAction mmAction)
             {
-                mmAction.newGame();
+                mmAction.requestNewGame();
             }
         },
     LOAD_GAME
@@ -15,7 +15,7 @@ public enum MainMenuState implements MainMenuStateAction
             @Override
             public void execute(MainMenuAction mmAction)
             {
-                mmAction.loadGame();
+                mmAction.requestLoadGame();
             }
         },
     OPTIONS
@@ -23,7 +23,7 @@ public enum MainMenuState implements MainMenuStateAction
             @Override
             public void execute(MainMenuAction mmAction)
             {
-                mmAction.openOptions();
+                mmAction.requestOpenOptions();
             }
         },
     EXIT_GAME
@@ -31,7 +31,7 @@ public enum MainMenuState implements MainMenuStateAction
             @Override
             public void execute(MainMenuAction mmAction)
             {
-                mmAction.exitGame();
+                mmAction.requestExitGame();
             }
         };
     

@@ -12,25 +12,25 @@ public class MainMenuController implements MainMenuAction
     }
     
     @Override
-    public void newGame()
+    public void requestNewGame()
     {
         guiAction.openGameScreen();
     }
     
     @Override
-    public void loadGame()
+    public void requestLoadGame()
     {
         guiAction.openSavesScreen();
     }
     
     @Override
-    public void openOptions()
+    public void requestOpenOptions()
     {
         guiAction.openOptionsScreen();
     }
     
     @Override
-    public void exitGame()
+    public void requestExitGame()
     {
         guiAction.closeGame();
     }
