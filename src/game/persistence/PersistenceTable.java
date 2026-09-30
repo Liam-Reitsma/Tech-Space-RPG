@@ -61,8 +61,8 @@ public enum PersistenceTable
             "SAVE_NAME", "VARCHAR(50)",
             "X_POINT", "INT",
             "Y_POINT", "INT",
-            "ROOM_TYPE", "VARCHAR(25)",
-            "IS_COMPLETE", "BOOLEAN"
+            "ROOM_TILE_STATE", "VARCHAR(25)",
+            "ROOM_TYPE", "VARCHAR(25)"
             );
     
     private final LinkedHashMap<String, String> columns;

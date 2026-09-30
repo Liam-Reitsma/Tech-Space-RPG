@@ -14,6 +14,7 @@ import game.world.Point;
 import game.world.room.RuntimeRoom;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 public class PersistenceService
 {
@@ -27,7 +28,7 @@ public class PersistenceService
         dbManager = dbm;
     }
     
-    public void createNewGame(String saveName, String charName, ClassType classType)
+    public void createNewGame(String saveName, String charName, ClassType classType, Map<Point, RuntimeRoom> world)
     {
         iKeyCurrent = saveName;
         iKeyColumnName = "SAVE_NAME";
@@ -35,6 +36,7 @@ public class PersistenceService
         createTables();
         insertPlayer(player);
         insertEquippedItems(player);
+        insertWorld(world);
     }
     
     private void createTables()
@@ -125,6 +127,27 @@ public class PersistenceService
                 };
         
         dbManager.addEntryDB(buildInsertIntoSQL(tableName, columns), args);
+    }
+    
+    private void insertWorld(Map<Point, RuntimeRoom> world)
+    {
+        String tableName = ROOMS.name();
+        
+        LinkedHashMap<String, String> roomsColumns = ROOMS.getColumns();
+        
+        String[] columns = roomsColumns.keySet().toArray(new String[0]);
+        
+        for(Entry<Point, RuntimeRoom> worldEntry : world.entrySet())
+        {
+            Point pointEntry = worldEntry.getKey();
+            RuntimeRoom roomEntry = worldEntry.getValue();
+            Object[] args = new Object[]
+                    {
+                            iKeyCurrent, pointEntry.getX(), pointEntry.getY(), roomEntry.getRoomState().toString(), roomEntry.isCompleted()
+                    };
+            
+            dbManager.addEntryDB(buildInsertIntoSQL(tableName, columns), args);
+        }
     }
     
     public String[] getSaveOptionNames()
@@ -296,7 +319,8 @@ public class PersistenceService
         {
             Object[] arg = new Object[]
                     {
-                            iKeyCurrent, room.getPoint().getX(), room.getPoint().getY(), room.getRoomType().name(), room.isCompleted()
+                            iKeyCurrent, room.getPoint().getX(), room.getPoint().getY(),
+                            room.getRoomState().getRoomTileState().name(), room.getRoomState().getRoomType()
                     };
             dbManager.addEntryDB(buildInsertIntoSQL(ROOMS.name(), allColumns),arg);
         }
