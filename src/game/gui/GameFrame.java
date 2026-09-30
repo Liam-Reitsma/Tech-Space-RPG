@@ -1,5 +1,7 @@
 package game.gui;
 
+import game.GameViewAction;
+import game.gui.newgame.NewGameScreen;
 import game.gui.options.OptionsOverlay;
 import game.gui.options.OptionsPanel;
 import game.gui.options.OptionsTitlePanel;
@@ -9,21 +11,29 @@ import game.gui.saves.SavesTitlePanel;
 import game.mainmenu.MainMenuViewAction;
 import game.gui.mainmenu.MainMenuScreen;
 import game.mainmenu.MainMenuAction;
+import game.newgame.NewGameAction;
+import game.newgame.NewGameViewAction;
 import game.options.OptionsAction;
 import game.options.OptionsViewAction;
 import game.saves.SavesAction;
 import game.saves.SavesViewAction;
+import game.world.Direction;
+import game.world.WorldViewAction;
+import game.world.room.RoomState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-public class GameFrame extends JFrame implements MainMenuViewAction, OptionsViewAction, SavesViewAction
+public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAction, NewGameViewAction, OptionsViewAction
+        , SavesViewAction, WorldViewAction
 {
     private static final int programWidth = 1280;
     private static final int programHeight = 720;
     
+    private MainMenuAction mainMenuAction;
+    private NewGameAction newGameAction;
     private OptionsAction optionsAction;
     private SavesAction savesAction;
     
@@ -36,7 +46,6 @@ public class GameFrame extends JFrame implements MainMenuViewAction, OptionsView
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(new Dimension(programWidth, programHeight));
         setLayout(new BorderLayout());
-        
         
         getLayeredPane().addComponentListener((new ComponentAdapter()
         {
@@ -57,40 +66,53 @@ public class GameFrame extends JFrame implements MainMenuViewAction, OptionsView
         setLocationRelativeTo(null);
     }
     
-    public void setMainMenuAction(MainMenuAction mmAction)
-    {
-        MainMenuScreen mmPanel = new MainMenuScreen(getTitle(), mmAction);
-        add(mmPanel);
-    }
+    public void setMainMenuAction(MainMenuAction mmAction) { mainMenuAction = mmAction; }
     
-    public void setOptionsAction(OptionsAction oAction)
-    {
-        optionsAction = oAction;
-    }
+    public void setOptionsAction(OptionsAction oAction) { optionsAction = oAction; }
     
-    public void setSavesAction(SavesAction sAction)
-    {
-        savesAction = sAction;
-    }
+    public void setSavesAction(SavesAction sAction) { savesAction = sAction; }
     
-    //Open New Game
+    public void setNewGameAction(NewGameAction ngAction) { newGameAction = ngAction; }
+    
     @Override
     public void openNewGameScreen()
     {
+        NewGameScreen newGameScreen = new NewGameScreen();
+        getContentPane().removeAll();
+        getContentPane().add(newGameScreen);
+        revalidate();
+        repaint();
+    }
+    
+    @Override
+    public void changeCharacterPanel()
+    {
     
     }
     
     @Override
-    public void openLoadGameScreen(String[] saveNames)
+    public void openMainMenuScreen()
+    {
+        MainMenuScreen mainMenuScreen = new MainMenuScreen(getTitle(), mainMenuAction);
+        getContentPane().removeAll();
+        getContentPane().add(mainMenuScreen);
+        revalidate();
+        repaint();
+    }
+    
+    @Override
+    public void openLoadGameOverlay(String[] saveNames)
     {
         createSavesOverlay(saveNames);
-        savesOverlay.setLocation((getLayeredPane().getWidth() - savesOverlay.getWidth()) / 2, (getLayeredPane().getHeight() - savesOverlay.getHeight()) / 2);
+        savesOverlay.setLocation((getLayeredPane().getWidth() - savesOverlay.getWidth()) / 2,
+                (getLayeredPane().getHeight() - savesOverlay.getHeight()) / 2);
         savesOverlay.setVisible(true);
     }
     
     private void createSavesOverlay(String[] saveNames)
     {
-        savesOverlay = new SavesOverlay(new SavesPanel(savesAction, saveNames), new SavesTitlePanel(savesAction), programWidth, programHeight);
+        savesOverlay = new SavesOverlay(new SavesPanel(savesAction, saveNames), new SavesTitlePanel(savesAction),
+                programWidth, programHeight);
         getLayeredPane().add(savesOverlay, JLayeredPane.MODAL_LAYER);
     }
     
@@ -112,16 +134,18 @@ public class GameFrame extends JFrame implements MainMenuViewAction, OptionsView
     }
     
     @Override
-    public void openOptionsScreen()
+    public void openOptionsOverlay()
     {
         createOptionsOverlay();
-        optionsOverlay.setLocation((getLayeredPane().getWidth() - optionsOverlay.getWidth()) / 2, (getLayeredPane().getHeight() - optionsOverlay.getHeight()) / 2);
+        optionsOverlay.setLocation((getLayeredPane().getWidth() - optionsOverlay.getWidth()) / 2,
+                (getLayeredPane().getHeight() - optionsOverlay.getHeight()) / 2);
         optionsOverlay.setVisible(true);
     }
     
     private void createOptionsOverlay()
     {
-        optionsOverlay = new OptionsOverlay(new OptionsPanel(optionsAction), new OptionsTitlePanel(optionsAction), programWidth, programHeight);
+        optionsOverlay = new OptionsOverlay(new OptionsPanel(optionsAction), new OptionsTitlePanel(optionsAction),
+                programWidth, programHeight);
         getLayeredPane().add(optionsOverlay, JLayeredPane.MODAL_LAYER);
     }
     
@@ -148,5 +172,29 @@ public class GameFrame extends JFrame implements MainMenuViewAction, OptionsView
     public void closeGameFrame()
     {
         dispose();
+    }
+    
+    @Override
+    public void openMainGameScreen()
+    {
+    
+    }
+    
+    @Override
+    public void updateMainGameScreen()
+    {
+    
+    }
+    
+    @Override
+    public void updateWorldMapPanel(RoomState[][] roomState)
+    {
+    
+    }
+    
+    @Override
+    public void updateAvailableMovementsPanel(Direction[] directions)
+    {
+    
     }
 }
