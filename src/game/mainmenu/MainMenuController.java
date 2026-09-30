@@ -20,11 +20,11 @@ public class MainMenuController implements MainMenuAction
     @Override
     public void requestLoadGame()
     {
-        mmViewAction.openLoadGameScreen(savesAction.requestOpenSaves());
+        mmViewAction.openLoadGameOverlay(savesAction.requestOpenSaves());
     }
     
     @Override
-    public void requestOpenOptions() { mmViewAction.openOptionsScreen(); }
+    public void requestOpenOptions() { mmViewAction.openOptionsOverlay(); }
     
     @Override
     public void requestExitGame() { mmViewAction.closeGameFrame(); }
