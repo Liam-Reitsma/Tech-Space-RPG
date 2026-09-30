@@ -27,6 +27,16 @@ public class Point
         return null;
     }
     
+    public Point calculateNewPoint(Direction direction)
+    {
+        if(direction == Direction.NORTH) return new Point(getX(), getY() + 1);
+        if(direction == Direction.SOUTH) return new Point(getX(), getY() - 1);
+        if(direction == Direction.EAST)  return new Point(getX() + 1, getY());
+        if(direction == Direction.WEST)  return new Point(getX() - 1, getY());
+        
+        return null;
+    }
+    
     @Override
     public int hashCode()
     {
