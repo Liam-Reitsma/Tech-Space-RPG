@@ -188,17 +188,18 @@ public class PersistenceService
         return player;
     }
     
-    public RuntimeRoom[] loadSavedWorld()
+    public Map<Point, RuntimeRoom> loadSavedWorld()
     {
         Object[][] loadedRoomsList = dbManager.queryRoomDB(buildSelectSQL(ROOMS.name(), iKeyColumnName), iKeyCurrent);
-        RuntimeRoom[] roomArray = new RuntimeRoom[loadedRoomsList.length];
-        int i = 0;
+        Map<Point, RuntimeRoom> world = new HashMap<>();
+        
         for(Object[] loadedRoom : loadedRoomsList)
         {
-            roomArray[i++] = new RuntimeRoom(loadedRoom);
+            RuntimeRoom room = new RuntimeRoom(loadedRoom);
+            world.put(room.getPoint(), room);
         }
         
-        return roomArray;
+        return world;
     }
     
     public void fullSave(Player player, Map<Point, RuntimeRoom> map)
