@@ -1,4 +1,4 @@
-package game.world;
+package game.world.room;
 
 public interface RoomContent
 {

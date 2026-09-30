@@ -1,7 +1,7 @@
 package game;
 
 import game.entities.player.Player;
-import game.world.RuntimeRoom;
+import game.world.room.RuntimeRoom;
 
 public interface GameAction
 {

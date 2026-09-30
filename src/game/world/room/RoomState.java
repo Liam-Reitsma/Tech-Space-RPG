@@ -1,6 +1,6 @@
-package game.world;
+package game.world.room;
 
-import static game.world.RoomTileState.*;
+import static game.world.room.RoomTileState.*;
 
 public class RoomState
 {

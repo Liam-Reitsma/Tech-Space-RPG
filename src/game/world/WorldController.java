@@ -2,6 +2,7 @@ package game.world;
 
 import game.GameModel;
 import game.entities.player.Player;
+import game.world.room.RuntimeRoom;
 
 import java.util.Map;
 

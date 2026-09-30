@@ -11,7 +11,7 @@ import game.items.armour.Armour;
 import game.items.weapon.Weapon;
 import game.items.weapon.WeaponType;
 import game.world.Point;
-import game.world.RuntimeRoom;
+import game.world.room.RuntimeRoom;
 
 import java.util.*;
 

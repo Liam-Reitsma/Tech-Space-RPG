@@ -1,10 +1,14 @@
 package game.world;
 
-import static game.world.RoomType.*;
+import static game.world.room.RoomType.*;
 import static game.world.generation.WorldGenConfig.MAX_RANGE;
 
 import game.world.generation.GenerationRoom;
 import game.world.generation.WorldGenerator;
+import game.world.room.RoomState;
+import game.world.room.RoomTileState;
+import game.world.room.RoomType;
+import game.world.room.RuntimeRoom;
 
 import java.util.*;
 
