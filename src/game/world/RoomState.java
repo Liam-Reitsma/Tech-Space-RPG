@@ -7,6 +7,18 @@ public class RoomState
     private RoomTileState roomTileState;
     private final RoomType roomType;
     
+    public RoomState(RoomTileState state)
+    {
+        roomTileState = state;
+        roomType = RoomType.EMPTY;
+    }
+    
+    public RoomState(RoomType type)
+    {
+        roomTileState = UNVISITED;
+        roomType = type;
+    }
+    
     public RoomState(RoomTileState state, RoomType type)
     {
         roomTileState = state;
