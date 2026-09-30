@@ -4,35 +4,26 @@ import game.entities.Persistable;
 
 public class RuntimeRoom implements Persistable
 {
-    private boolean completed;
-    private Point point;
-    private RoomType roomType;
+    private final Point point;
+    private final RoomState roomState;
     
-    public RuntimeRoom(Point roomPoint, RoomType type)
+    public RuntimeRoom(Point roomPoint, RoomState state)
     {
         point = roomPoint;
-        roomType = type;
-        completed = false;
+        roomState = state;
     }
     
     public RuntimeRoom(Object[] data)
     {
         point = new Point((int)data[0], (int)data[1]);
-        roomType = RoomType.valueOf((String)data[2]);
-        completed = (boolean)data[3];
+        roomState = new RoomState(RoomTileState.valueOf((String)data[3]), RoomType.valueOf((String)data[2]));
     }
     
-    public boolean isCompleted() { return completed; }
+    public boolean isCompleted() { return roomState.isCompleted(); }
     
     public Point getPoint() { return point; }
     
-    public RoomType getRoomType() { return roomType; }
+    public RoomState getRoomState() { return roomState; }
     
-    public void setCompleted()
-    {
-        completed = true;
-        roomType = RoomType.EMPTY;
-    }
-    
-    public void setRoomType(RoomType newType) { roomType = newType; }
+    public void setCompleted() { roomState.setCompleted(); }
 }

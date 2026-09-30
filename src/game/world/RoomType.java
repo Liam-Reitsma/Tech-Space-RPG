@@ -1,7 +1,5 @@
 package game.world;
 
-import game.entities.Persistable;
-
 import java.util.Random;
 
 public enum RoomType
