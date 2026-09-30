@@ -2,6 +2,6 @@ package game.world;
 
 public interface WorldViewAction
 {
-    void updateWorldMapPanel();
-    void updateAvailableMovementsPanel();
+    void updateWorldMapPanel(RoomState[][] roomState);
+    void updateAvailableMovementsPanel(Direction[] directions);
 }
