@@ -58,6 +58,11 @@ public enum WeaponType
     
     public WeaponSlot getWeaponSlot() { return weaponSlot; }
     
+    public static WeaponType getRandomWeaponType()
+    {
+        return values()[Math.round((float)(Math.random() * values().length))];
+    }
+    
     public static WeaponType parseWeaponType(String type)
     {
         for(WeaponType weaponType : WeaponType.values())
