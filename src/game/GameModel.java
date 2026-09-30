@@ -1,0 +1,29 @@
+package game;
+
+import game.entities.player.Player;
+import game.world.Point;
+import game.world.RuntimeRoom;
+
+import java.util.Map;
+
+public class GameModel
+{
+    private Player player;
+    private Map<Point, RuntimeRoom> world;
+    
+    
+    public GameModel()
+    {
+    
+    }
+    
+    public void setGame(Player newPlayer, Map<Point, RuntimeRoom> newWorld)
+    {
+        player = newPlayer;
+        world = newWorld;
+    }
+    
+    public Player getPlayer() { return player; }
+    
+    public Map<Point, RuntimeRoom> getWorld() { return world; }
+}
