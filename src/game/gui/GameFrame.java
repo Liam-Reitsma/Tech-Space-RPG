@@ -116,13 +116,6 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
         getLayeredPane().add(savesOverlay, JLayeredPane.MODAL_LAYER);
     }
     
-    //Loaded Games
-    @Override
-    public void openGameScreen()
-    {
-    
-    }
-    
     @Override
     public void closeSavesScreen()
     {

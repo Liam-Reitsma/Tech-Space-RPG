@@ -28,7 +28,7 @@ public class SavesController implements SavesAction
         gameAction.requestLoadGame(persistenceService.loadSavedPlayer(saveName), persistenceService.loadSavedWorld());
         
         savesViewAction.closeSavesScreen();
-        savesViewAction.openGameScreen();
+        savesViewAction.openMainGameScreen();
     }
     
     @Override
