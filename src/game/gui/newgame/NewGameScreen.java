@@ -4,6 +4,7 @@ import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
 import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
 
 import game.entities.player.ClassType;
+import game.gui.common.ImagePanel;
 import game.gui.common.PanelButton;
 import game.gui.common.PicturePreview;
 import game.newgame.NewGameAction;
@@ -18,9 +19,11 @@ import java.awt.event.KeyEvent;
 public class NewGameScreen extends JPanel
 {
     private static final Image NEW_GAME_IMAGE = new ImageIcon("resources/images/New Game Background.png").getImage();
-    private static final Image GUARDIAN_IMAGE = new ImageIcon("resources/images/classes/Guardian.png").getImage();
+    private static final Image NEW_GAME_PANEL_IMAGE = new ImageIcon("resources/images/New Game Character Panel.png").getImage();
+    
     private static final int BUTTON_PREFERRED_WIDTH = 400;
     private static final int BUTTON_PREFERRED_HEIGHT = 400;
+    
     private final NewGameAction newGameAction;
     
     private JPanel picturePanel;
@@ -34,7 +37,7 @@ public class NewGameScreen extends JPanel
     private JPanel classInfoPanel;
     private JLabel classStatsLabel;
     private JLabel classBonusesLabel;
-    private JLabel classDescriptionLabel;
+    private JTextArea classDescriptionTextArea;
     
     private JPanel navigationPanel;
     private JButton backButton;
@@ -115,8 +118,8 @@ public class NewGameScreen extends JPanel
     
     private void createCharacterPanel(GridBagConstraints gbConstraints)
     {
-        characterPanel = new JPanel(new GridBagLayout());
-        characterPanel.setOpaque(false);
+        characterPanel = new ImagePanel(new GridBagLayout(), NEW_GAME_PANEL_IMAGE);
+        
         GridBagConstraints characterPanelGBConstraints = new GridBagConstraints();
         createCharacterInputPanel(characterPanel, characterPanelGBConstraints);
         createClassInfoPanel(characterPanel, characterPanelGBConstraints);
@@ -188,21 +191,22 @@ public class NewGameScreen extends JPanel
         
         classGBConstraints.gridx = 0;
         classGBConstraints.gridheight = 1;
-        classGBConstraints.fill = GridBagConstraints.BOTH;
+        classGBConstraints.fill = GridBagConstraints.VERTICAL;
         classGBConstraints.weightx = 1;
         classGBConstraints.weighty = 1;
+        classGBConstraints.anchor = GridBagConstraints.CENTER;
         
         classGBConstraints.gridy = 0;
-        classStatsLabel = new JLabel();
-        classInfoPanel.add(classStatsLabel, classGBConstraints);
-        
-        classGBConstraints.gridy = 1;
-        classBonusesLabel = new JLabel();
-        classInfoPanel.add(classBonusesLabel, classGBConstraints);
-        
-        classGBConstraints.gridy = 2;
-        classDescriptionLabel = new JLabel();
-        classInfoPanel.add(classDescriptionLabel, classGBConstraints);
+        classDescriptionTextArea = new JTextArea();
+        classDescriptionTextArea.setLineWrap(true);
+        classDescriptionTextArea.setWrapStyleWord(true);
+        classDescriptionTextArea.setEditable(false);
+        classDescriptionTextArea.setOpaque(false);
+        classDescriptionTextArea.setFocusable(false);
+        classDescriptionTextArea.setFont(new Font("OCR ExtendedA", Font.PLAIN, 15));
+        classDescriptionTextArea.setForeground(Color.WHITE);
+        classDescriptionTextArea.setPreferredSize(new Dimension((int)nameTextField.getPreferredSize().getWidth(), 0));
+        classInfoPanel.add(classDescriptionTextArea, classGBConstraints);
         
         gbConstraints.gridx = 0;
         gbConstraints.gridy = 1;
