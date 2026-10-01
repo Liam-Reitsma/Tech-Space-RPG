@@ -1,15 +1,26 @@
 package game.gui.newgame;
 
+import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
+import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
+
 import game.entities.player.ClassType;
+import game.gui.common.PanelButton;
 import game.gui.common.PicturePreview;
+import game.newgame.NewGameAction;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class NewGameScreen extends JPanel
 {
     private static final Image NEW_GAME_IMAGE = new ImageIcon("resources/images/New Game Background.png").getImage();
     private static final Image GUARDIAN_IMAGE = new ImageIcon("resources/images/classes/Guardian.png").getImage();
+    private static final int BUTTON_PREFERRED_WIDTH = 400;
+    private static final int BUTTON_PREFERRED_HEIGHT = 400;
     private final NewGameAction newGameAction;
     
     private JPanel picturePanel;
@@ -38,16 +49,59 @@ public class NewGameScreen extends JPanel
         
         setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
         
-        createPicturePanel(gbConstraints);
         createCharacterPanel(gbConstraints);
+        createPicturePanel(gbConstraints);
+        
+        addComponentListener(new ComponentAdapter()
+        {
+            @Override public void componentResized(ComponentEvent e)
+            {
+                for(Component component : characterInputPanel.getComponents())
+                {
+                    if(component instanceof JTextField textField)
+                    {
+                        textField.setFont(new Font(textField.getFont().getFontName(), textField.getFont().getStyle(),
+                                (int)Math.max(Math.clamp(80 - 30000 * Math.log1p(1.0 / getWidth()), 0, 80), textField.getWidth() / 10.0)
+                        ));
+                    }
+                    else if(component instanceof JComboBox<?> comboBox)
+                    {
+                        comboBox.setFont(new Font(comboBox.getFont().getFontName(), comboBox.getFont().getStyle(),
+                                (int)Math.max(Math.clamp(80 - 30000 * Math.log1p(1.0 / getWidth()), 0, 80), comboBox.getWidth() / 10.0)
+                        ));
+                    }
+                }
+                for(Component component : classInfoPanel.getComponents())
+                {
+                    if(component instanceof JTextArea textArea)
+                    {
+                        int font = Math.max(12, textArea.getWidth() / 30);
+                        textArea.setFont(new Font(textArea.getFont().getFontName(), textArea.getFont().getStyle(),
+                                (int)Math.max(Math.clamp(60 - 30000 * Math.log1p(1.0 / getWidth()), 0, 15), textArea.getWidth() / 100.0)
+                        ));
+                    }
+                }
+                for(Component component : navigationPanel.getComponents())
+                {
+                    if(component instanceof PanelButton button)
+                    {
+                        button.setFont(new Font(button.getFont().getFontName(), button.getFont().getStyle(),
+                                (int)Math.max(Math.clamp(80 - 30000 * Math.log1p(1.0 / getWidth()), 0, 80), button.getWidth() / 10.0)
+                        ));
+                        button.resizeButton((float)((BUTTON_PREFERRED_WIDTH * button.getParent().getWidth()) / PROGRAM_WIDTH), ((float)(BUTTON_PREFERRED_HEIGHT * button.getParent().getHeight()) / PROGRAM_HEIGHT));
+                    }
+                }
+            }
+        });
     }
     
     private void createPicturePanel(GridBagConstraints gbConstraints)
     {
         picturePanel = new JPanel(new BorderLayout());
-        picturePreview = new PicturePreview(GUARDIAN_IMAGE);
+        picturePreview = new PicturePreview();
         picturePanel.setOpaque(false);
         picturePanel.add(picturePreview, BorderLayout.CENTER);
+        updateCharacter(new ImageIcon(ClassType.values()[0].getImagePath()).getImage(), ClassType.values()[0].getStartingDescription());
         
         gbConstraints.gridx = 0;
         gbConstraints.gridy = 0;
@@ -93,12 +147,28 @@ public class NewGameScreen extends JPanel
         charGBConstraints.gridy = 0;
         nameTextField = new JTextField(10);
         nameTextField.setFont(new Font("OCR Extended A", Font.BOLD, 50));
-        nameTextField.setText("Insert Your Name Here!");
+        nameTextField.setText("Insert Your Name!");
         nameTextField.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        nameTextField.addKeyListener(new KeyAdapter(){
+            @Override
+            public void keyPressed(KeyEvent e)
+            {
+                FontMetrics metrics = nameTextField.getFontMetrics(nameTextField.getFont());
+                if(metrics.stringWidth(nameTextField.getText()) > nameTextField.getWidth() - 10)
+                {
+                    String text = nameTextField.getText();
+                    nameTextField.setText(text.substring(0, text.length() - 1));
+                }
+            }
+        });
         characterInputPanel.add(nameTextField, charGBConstraints);
         
         charGBConstraints.gridy = 1;
-        classComboBox = new JComboBox<>();
+        classComboBox = new JComboBox<>(ClassType.values());
+        classComboBox.setFont(new Font("OCR ExtendedA", Font.PLAIN, 40));
+        classComboBox.setMaximumRowCount(4);
+        classComboBox.addActionListener(e -> newGameAction.requestCharacterChange((ClassType)classComboBox.getSelectedItem()));
         characterInputPanel.add(classComboBox, charGBConstraints);
         
         gbConstraints.gridx = 0;
@@ -157,11 +227,11 @@ public class NewGameScreen extends JPanel
         navigationGBConstraints.weighty = 1;
         
         navigationGBConstraints.gridx = 0;
-        backButton = new JButton("Back");
+        backButton = new PanelButton("Back", e ->  newGameAction.requestGoBack());
         navigationPanel.add(backButton, navigationGBConstraints);
         
         navigationGBConstraints.gridx = 1;
-        confirmButton = new JButton("Confirm");
+        confirmButton = new PanelButton("Confirm", e -> newGameAction.requestConfirmCreation(nameTextField.getText(), (ClassType)classComboBox.getSelectedItem()));
         navigationPanel.add(confirmButton, navigationGBConstraints);
         
         gbConstraints.gridx = 0;
