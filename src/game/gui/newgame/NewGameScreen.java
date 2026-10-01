@@ -10,6 +10,7 @@ public class NewGameScreen extends JPanel
 {
     private static final Image NEW_GAME_IMAGE = new ImageIcon("resources/images/New Game Background.png").getImage();
     private static final Image GUARDIAN_IMAGE = new ImageIcon("resources/images/classes/Guardian.png").getImage();
+    private final NewGameAction newGameAction;
     
     private JPanel picturePanel;
     private PicturePreview picturePreview;
@@ -28,8 +29,10 @@ public class NewGameScreen extends JPanel
     private JButton backButton;
     private JButton confirmButton;
     
-    public NewGameScreen()
+    public NewGameScreen(NewGameAction ngAction)
     {
+        newGameAction = ngAction;
+        
         setLayout(new GridBagLayout());
         GridBagConstraints gbConstraints = new GridBagConstraints();
         
@@ -168,6 +171,12 @@ public class NewGameScreen extends JPanel
         gbConstraints.weightx = 1;
         gbConstraints.weighty = 0.15;
         characterPanel.add(navigationPanel, gbConstraints);
+    }
+    
+    public void updateCharacter(Image classImage, String startingDescription)
+    {
+        picturePreview.setImage(classImage);
+        classDescriptionTextArea.setText(startingDescription);
     }
     
     @Override

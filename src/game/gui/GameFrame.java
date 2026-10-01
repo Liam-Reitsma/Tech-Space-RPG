@@ -41,6 +41,8 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     private OptionsOverlay optionsOverlay;
     private SavesOverlay savesOverlay;
     
+    NewGameScreen newGameScreen;
+    
     public GameFrame(String name)
     {
         super(name);
@@ -78,7 +80,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void openNewGameScreen()
     {
-        NewGameScreen newGameScreen = new NewGameScreen();
+        newGameScreen = new NewGameScreen(newGameAction);
         getContentPane().removeAll();
         getContentPane().add(newGameScreen);
         revalidate();
@@ -88,7 +90,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void changeCharacterPanel(ClassType classType)
     {
-    
+        newGameScreen.updateCharacter(new ImageIcon(classType.getImagePath()).getImage(), classType.getStartingDescription());
     }
     
     @Override
