@@ -22,9 +22,9 @@ public class NewGameController implements NewGameAction
     }
     
     @Override
-    public void requestCharacterChange()
+    public void requestCharacterChange(ClassType classType)
     {
-        newGameViewAction.changeCharacterPanel();
+        newGameViewAction.changeCharacterPanel(classType);
     }
     
     @Override

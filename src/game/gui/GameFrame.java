@@ -1,6 +1,7 @@
 package game.gui;
 
 import game.GameViewAction;
+import game.entities.player.ClassType;
 import game.gui.newgame.NewGameScreen;
 import game.gui.options.OptionsOverlay;
 import game.gui.options.OptionsPanel;
@@ -85,7 +86,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     }
     
     @Override
-    public void changeCharacterPanel()
+    public void changeCharacterPanel(ClassType classType)
     {
     
     }
