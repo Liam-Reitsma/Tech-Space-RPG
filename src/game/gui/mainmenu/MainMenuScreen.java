@@ -1,5 +1,9 @@
 package game.gui.mainmenu;
 
+import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
+import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
+
+import game.gui.common.ScaledLayout;
 import game.mainmenu.MainMenuAction;
 import game.mainmenu.MainMenuState;
 
@@ -19,12 +23,12 @@ public class MainMenuScreen extends JPanel
     
     public MainMenuScreen(String title, MainMenuAction mmAction)
     {
-        super(new GridBagLayout());
+        super(new ScaledLayout(PROGRAM_WIDTH, PROGRAM_HEIGHT));
         
         GridBagConstraints gbConstraints = new GridBagConstraints();
         
-        createTitlePanel(title, gbConstraints);
-        createButtonPanel(mmAction, gbConstraints);
+        createTitlePanel(title);
+        createButtonPanel(mmAction);
         
         addComponentListener(new ComponentAdapter()
         {
@@ -51,8 +55,9 @@ public class MainMenuScreen extends JPanel
         });
     }
     
-    private void createTitlePanel(String title, GridBagConstraints gbConstraints)
+    private void createTitlePanel(String title)
     {
+        GridBagConstraints gbConstraints = new GridBagConstraints();
         gbConstraints.anchor = GridBagConstraints.CENTER;
         gbConstraints.fill = GridBagConstraints.BOTH;
         gbConstraints.gridx = 1;
@@ -85,16 +90,11 @@ public class MainMenuScreen extends JPanel
         
         tPanel.add(tShadowPanel, gbConstraints);
         
-        add(tPanel, gbConstraints);
+        add(tPanel, new Rectangle(0,0, PROGRAM_WIDTH, PROGRAM_HEIGHT / 4));
     }
     
-    private void createButtonPanel(MainMenuAction mmAction, GridBagConstraints gbConstraints)
+    private void createButtonPanel(MainMenuAction mmAction)
     {
-        gbConstraints.anchor = GridBagConstraints.CENTER;
-        gbConstraints.fill = GridBagConstraints.BOTH;
-        gbConstraints.gridx = 1;
-        gbConstraints.gridy = 1;
-        
         JPanel bPanel = new JPanel(new GridBagLayout());
         bPanel.setOpaque(false);
         createSpacer(bPanel, 0);
@@ -113,7 +113,7 @@ public class MainMenuScreen extends JPanel
         
         buttonPanel = bPanel;
         
-        add(bPanel, gbConstraints);
+        add(bPanel, new Rectangle(0, PROGRAM_HEIGHT / 4, PROGRAM_WIDTH, 3 * PROGRAM_HEIGHT / 4));
         createSpacer(bPanel, 2);
     }
     
