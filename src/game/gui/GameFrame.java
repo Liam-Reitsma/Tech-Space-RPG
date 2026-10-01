@@ -2,6 +2,7 @@ package game.gui;
 
 import game.GameViewAction;
 import game.entities.player.ClassType;
+import game.gui.maingame.MainGameScreen;
 import game.gui.newgame.NewGameScreen;
 import game.gui.options.OptionsOverlay;
 import game.gui.options.OptionsPanel;
@@ -42,6 +43,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     private SavesOverlay savesOverlay;
     
     NewGameScreen newGameScreen;
+    MainGameScreen mainGameScreen;
     
     public GameFrame(String name)
     {
@@ -173,7 +175,11 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void openMainGameScreen()
     {
-    
+        mainGameScreen = new MainGameScreen();
+        getContentPane().removeAll();
+        getContentPane().add(mainGameScreen);
+        revalidate();
+        repaint();
     }
     
     @Override
