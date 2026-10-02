@@ -1,21 +1,18 @@
 package game.gui.options;
 
+import game.gui.common.scaledlayout.PercentageBounds;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class OptionsOverlay extends JPanel
 {
-    public OptionsOverlay(OptionsPanel optionsPanel, OptionsTitlePanel optionsTitlePanel, int programWidth, int programHeight)
+    public OptionsOverlay(OptionsPanel optionsPanel, OptionsTitlePanel optionsTitlePanel, LayoutManager2 layoutManager)
     {
-        JPanel overlay = new JPanel();
-        overlay.setLayout(new BorderLayout());
-        overlay.add(optionsTitlePanel, BorderLayout.NORTH);
-        overlay.add(optionsPanel, BorderLayout.CENTER);
-        setLayout(new GridBagLayout());
-        add(overlay, new GridBagConstraints());
+        setLayout(layoutManager);
+        add(optionsTitlePanel, new PercentageBounds(0, 0, 100, 20));
+        add(optionsPanel, new PercentageBounds(0, 20, 100, 80));
         
-        setPreferredSize(new Dimension(programWidth, programHeight));
-        setSize(getPreferredSize());
         setOpaque(false);
         setVisible(true);
     }
