@@ -1,4 +1,5 @@
 package game.gui.common;
+package game.gui.common.scaledlayout;
 
 import java.awt.*;
 import java.util.HashMap;

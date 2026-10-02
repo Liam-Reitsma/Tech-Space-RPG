@@ -1,4 +1,4 @@
-package game.gui.common;
+package game.gui.common.scaledlayout;
 
 public class PercentageBounds
 {
