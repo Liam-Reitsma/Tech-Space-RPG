@@ -5,7 +5,9 @@ import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
 
 import game.GameViewAction;
 import game.entities.player.ClassType;
+import game.gui.common.scaledlayout.PercentageBounds;
 import game.gui.common.scaledlayout.ScaledLayout;
+import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.gui.maingame.MainGameScreen;
 import game.gui.newgame.NewGameScreen;
 import game.gui.options.OptionsOverlay;
@@ -62,13 +64,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
             @Override
             public void componentResized(ComponentEvent e)
             {
-                for(Component component : getLayeredPane().getComponents())
-                {
-                    if(component instanceof JPanel panel)
-                    {
-                        panel.setSize(getLayeredPane().getSize());
-                    }
-                }
+                overlayContainer.setBounds(0, 0, getLayeredPane().getWidth(), getLayeredPane().getHeight());
             }
         }));
         
@@ -139,16 +135,9 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void openOptionsOverlay()
     {
-        createOptionsOverlay();
-        optionsOverlay.doLayout();
-        optionsOverlay.setVisible(true);
-    }
-    
-    private void createOptionsOverlay()
-    {
         optionsOverlay = new OptionsOverlay(new OptionsPanel(optionsAction), new OptionsTitlePanel(optionsAction),
                 new ScaledLayout(PROGRAM_WIDTH, PROGRAM_HEIGHT));
-        getLayeredPane().add(optionsOverlay, JLayeredPane.MODAL_LAYER);
+        overlayContainer.setOverlay(optionsOverlay, new PercentageBounds(null, 20, 20, ScaledLayoutAnchor.CENTER));
     }
     
     @Override

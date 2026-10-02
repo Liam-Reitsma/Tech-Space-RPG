@@ -15,5 +15,7 @@ public class OverlayContainer extends JPanel
     {
         removeAll();
         add(comp, constraints);
+        revalidate();
+        repaint();
     }
 }
