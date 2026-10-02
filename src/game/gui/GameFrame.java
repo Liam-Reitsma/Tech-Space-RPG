@@ -1,5 +1,8 @@
 package game.gui;
 
+import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
+import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
+
 import game.GameViewAction;
 import game.entities.player.ClassType;
 import game.gui.maingame.MainGameScreen;
@@ -31,9 +34,6 @@ import java.awt.event.ComponentEvent;
 public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAction, NewGameViewAction, OptionsViewAction
         , SavesViewAction, WorldViewAction
 {
-    private static final int programWidth = 1280;
-    private static final int programHeight = 720;
-    
     private MainMenuAction mainMenuAction;
     private NewGameAction newGameAction;
     private OptionsAction optionsAction;
@@ -49,7 +49,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     {
         super(name);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setPreferredSize(new Dimension(programWidth, programHeight));
+        getContentPane().setPreferredSize(new Dimension(PROGRAM_WIDTH, PROGRAM_HEIGHT));
         setLayout(new BorderLayout());
         
         getLayeredPane().addComponentListener((new ComponentAdapter()
@@ -117,7 +117,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     private void createSavesOverlay(String[] saveNames)
     {
         savesOverlay = new SavesOverlay(new SavesPanel(savesAction, saveNames), new SavesTitlePanel(savesAction),
-                programWidth, programHeight);
+                PROGRAM_WIDTH, PROGRAM_HEIGHT);
         getLayeredPane().add(savesOverlay, JLayeredPane.MODAL_LAYER);
     }
     
@@ -135,15 +135,15 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     public void openOptionsOverlay()
     {
         createOptionsOverlay();
-        optionsOverlay.setLocation((getLayeredPane().getWidth() - optionsOverlay.getWidth()) / 2,
-                (getLayeredPane().getHeight() - optionsOverlay.getHeight()) / 2);
+        optionsOverlay.setBounds(0, 0, getLayeredPane().getWidth(), getLayeredPane().getHeight());
+        optionsOverlay.doLayout();
         optionsOverlay.setVisible(true);
     }
     
     private void createOptionsOverlay()
     {
         optionsOverlay = new OptionsOverlay(new OptionsPanel(optionsAction), new OptionsTitlePanel(optionsAction),
-                programWidth, programHeight);
+                PROGRAM_WIDTH, PROGRAM_HEIGHT);
         getLayeredPane().add(optionsOverlay, JLayeredPane.MODAL_LAYER);
     }
     

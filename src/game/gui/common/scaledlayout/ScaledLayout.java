@@ -110,6 +110,9 @@ public class ScaledLayout implements LayoutManager2
         float yScale = (float)parent.getHeight() / panelHeight;
         float fontScale = Math.min(xScale, yScale);
         
+        if(parent.getWidth() <= 0 || parent.getHeight() <= 0)
+            return;
+        
         for(Entry<Component, Object> entry : baseBounds.entrySet())
         {
             Component component = entry.getKey();
