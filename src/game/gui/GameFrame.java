@@ -65,6 +65,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
             public void componentResized(ComponentEvent e)
             {
                 overlayContainer.setBounds(0, 0, getLayeredPane().getWidth(), getLayeredPane().getHeight());
+                overlayContainer.revalidate();
             }
         }));
         
