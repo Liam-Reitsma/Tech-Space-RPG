@@ -22,7 +22,11 @@ public class ScaledLayout implements LayoutManager2
     @Override
     public void addLayoutComponent(Component comp, Object constraints)
     {
-        if(constraints instanceof Rectangle rectangleBounds)
+        if(constraints == null)
+        {
+            baseBounds.put(comp, new PercentageBounds(0, 0, 100, 100));
+        }
+        else if(constraints instanceof Rectangle rectangleBounds)
         {
             baseBounds.put(comp, rectangleBounds);
         }
