@@ -32,4 +32,24 @@ public class LayoutBox
     public float getWidth() { return boxWidth; }
     
     public float getHeight() { return boxHeight; }
+    
+    public float getEffectiveWidth()
+    {
+        return parentBox != null ? parentBox.getEffectiveWidth() * boxWidth : boxWidth;
+    }
+    
+    public float getEffectiveX()
+    {
+        return parentBox != null ? parentBox.getEffectiveX() + parentBox.getEffectiveWidth() * xLocation : xLocation;
+    }
+    
+    public float getEffectiveHeight()
+    {
+        return parentBox != null ? parentBox.getEffectiveHeight() * boxHeight : boxHeight;
+    }
+    
+    public float getEffectiveY()
+    {
+        return parentBox != null ? parentBox.getEffectiveY() + parentBox.getEffectiveHeight() * yLocation : yLocation;
+    }
 }
