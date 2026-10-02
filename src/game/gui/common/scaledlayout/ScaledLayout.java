@@ -1,5 +1,6 @@
-package game.gui.common;
 package game.gui.common.scaledlayout;
+
+import game.gui.common.scaledlayout.factory.FontFitter;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -12,12 +13,14 @@ public class ScaledLayout implements LayoutManager2
     private final int panelHeight;
     
     private final Map<Component, Object> baseBounds;
+    private final Map<Component, Font> baseFonts;
     
     public ScaledLayout(int width, int height)
     {
         panelWidth = width;
         panelHeight = height;
         baseBounds = new HashMap<>();
+        baseFonts = new HashMap<>();
     }
     
     @Override
@@ -35,6 +38,25 @@ public class ScaledLayout implements LayoutManager2
         {
             baseBounds.put(comp, percentageBounds);
         }
+        else
+        {
+            return;
+        }
+        
+        registerFonts(comp);
+    }
+    
+    private void registerFonts(Component comp)
+    {
+        if(comp instanceof Container container)
+        {
+            for(Component component : container.getComponents())
+            {
+                registerFonts(component);
+            }
+        }
+        
+        if(comp.isFontSet()) baseFonts.put(comp, comp.getFont());
     }
     
     @Override
@@ -44,7 +66,24 @@ public class ScaledLayout implements LayoutManager2
     }
     
     @Override
-    public void removeLayoutComponent(Component comp) { baseBounds.remove(comp); }
+    public void removeLayoutComponent(Component comp)
+    {
+        baseBounds.remove(comp);
+        deregisterFonts(comp);
+    }
+    
+    private void deregisterFonts(Component comp)
+    {
+        if(comp instanceof Container container)
+        {
+            for(Component component : container.getComponents())
+            {
+                deregisterFonts(component);
+            }
+        }
+        
+        baseFonts.remove(comp);
+    }
     
     @Override
     public void invalidateLayout(Container target) { }
@@ -67,8 +106,9 @@ public class ScaledLayout implements LayoutManager2
     @Override
     public void layoutContainer(Container parent)
     {
-        float scaleX = (float)parent.getWidth() / panelWidth;
-        float scaleY = (float)parent.getHeight() / panelHeight;
+        float xScale = (float)parent.getWidth() / panelWidth;
+        float yScale = (float)parent.getHeight() / panelHeight;
+        float fontScale = Math.min(xScale, yScale);
         
         for(Entry<Component, Object> entry : baseBounds.entrySet())
         {
@@ -101,7 +141,34 @@ public class ScaledLayout implements LayoutManager2
             baseX = Math.clamp(baseX, 0, panelWidth - baseWidth);
             baseY = Math.clamp(baseY, 0, panelHeight - baseHeight);
             
-            component.setBounds(Math.round(scaleX * baseX), Math.round(scaleY * baseY), Math.round(scaleX * baseWidth), Math.round(scaleY * baseHeight));
+            component.setBounds(Math.round(xScale * baseX), Math.round(yScale * baseY), Math.round(xScale * baseWidth), Math.round(yScale * baseHeight));
+        }
+        
+        Map<Component, Font> scaledFonts = new HashMap<>();
+        
+        for(Entry<Component, Font> entry : baseFonts.entrySet())
+        {
+            Component component = entry.getKey();
+            Font baseFont = entry.getValue();
+            FontScaler.scaleFont(component, baseFont, fontScale);
+            scaledFonts.put(component, component.getFont());
+        }
+        
+        for(Component component : baseBounds.keySet())
+        {
+            if(component instanceof Container container)
+            {
+                container.doLayout();
+            }
+        }
+        
+        Map<Class<?>, Float> largestPossibleFonts = FontFitter.getFontFittingSizes(scaledFonts);
+        
+        for(Entry<Component, Font> entry : scaledFonts.entrySet())
+        {
+            Component component = entry.getKey();
+            
+            component.setFont(component.getFont().deriveFont(largestPossibleFonts.get(component.getClass())));
         }
     }
 }
