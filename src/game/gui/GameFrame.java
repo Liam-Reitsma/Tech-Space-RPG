@@ -5,6 +5,7 @@ import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
 
 import game.GameViewAction;
 import game.entities.player.ClassType;
+import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.maingame.MainGameScreen;
 import game.gui.newgame.NewGameScreen;
 import game.gui.options.OptionsOverlay;
@@ -39,6 +40,8 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     private OptionsAction optionsAction;
     private SavesAction savesAction;
     
+    private OverlayContainer overlayContainer;
+    
     private OptionsOverlay optionsOverlay;
     private SavesOverlay savesOverlay;
     
@@ -51,6 +54,8 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(new Dimension(PROGRAM_WIDTH, PROGRAM_HEIGHT));
         setLayout(new BorderLayout());
+        overlayContainer = new OverlayContainer(new ScaledLayout(PROGRAM_WIDTH, PROGRAM_HEIGHT));
+        getLayeredPane().add(overlayContainer, JLayeredPane.MODAL_LAYER);
         
         getLayeredPane().addComponentListener((new ComponentAdapter()
         {
@@ -135,7 +140,6 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     public void openOptionsOverlay()
     {
         createOptionsOverlay();
-        optionsOverlay.setBounds(0, 0, getLayeredPane().getWidth(), getLayeredPane().getHeight());
         optionsOverlay.doLayout();
         optionsOverlay.setVisible(true);
     }
@@ -143,7 +147,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     private void createOptionsOverlay()
     {
         optionsOverlay = new OptionsOverlay(new OptionsPanel(optionsAction), new OptionsTitlePanel(optionsAction),
-                PROGRAM_WIDTH, PROGRAM_HEIGHT);
+                new ScaledLayout(PROGRAM_WIDTH, PROGRAM_HEIGHT));
         getLayeredPane().add(optionsOverlay, JLayeredPane.MODAL_LAYER);
     }
     
