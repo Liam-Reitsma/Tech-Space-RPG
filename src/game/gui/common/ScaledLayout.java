@@ -7,24 +7,28 @@ import java.util.Map.Entry;
 
 public class ScaledLayout implements LayoutManager2
 {
-    private final int baseWidth;
-    private final int baseHeight;
+    private final int panelWidth;
+    private final int panelHeight;
     
-    private final Map<Component, Rectangle> baseRectangles;
+    private final Map<Component, Object> baseBounds;
     
     public ScaledLayout(int width, int height)
     {
-        baseWidth = width;
-        baseHeight = height;
-        baseRectangles = new HashMap<>();
+        panelWidth = width;
+        panelHeight = height;
+        baseBounds = new HashMap<>();
     }
     
     @Override
     public void addLayoutComponent(Component comp, Object constraints)
     {
-        if(constraints instanceof Rectangle rectangle)
+        if(constraints instanceof Rectangle rectangleBounds)
         {
-            baseRectangles.put(comp, rectangle);
+            baseBounds.put(comp, rectangleBounds);
+        }
+        else if(constraints instanceof PercentageBounds percentageBounds)
+        {
+            baseBounds.put(comp, percentageBounds);
         }
     }
     
@@ -35,64 +39,64 @@ public class ScaledLayout implements LayoutManager2
     }
     
     @Override
-    public void removeLayoutComponent(Component comp)
-    {
-        baseRectangles.remove(comp);
-    }
+    public void removeLayoutComponent(Component comp) { baseBounds.remove(comp); }
     
     @Override
-    public void invalidateLayout(Container target)
-    {
-    
-    }
+    public void invalidateLayout(Container target) { }
     
     @Override
-    public float getLayoutAlignmentX(Container target)
-    {
-        return 0.5f;
-    }
+    public float getLayoutAlignmentX(Container target) { return 0.5f; }
     
     @Override
-    public float getLayoutAlignmentY(Container target)
-    {
-        return 0.5f;
-    }
+    public float getLayoutAlignmentY(Container target) { return 0.5f; }
     
     @Override
-    public Dimension minimumLayoutSize(Container parent)
-    {
-        return new Dimension(0, 0);
-    }
+    public Dimension minimumLayoutSize(Container parent) { return new Dimension(0, 0); }
     
     @Override
-    public Dimension maximumLayoutSize(Container target)
-    {
-        return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
-    }
+    public Dimension maximumLayoutSize(Container target) { return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE); }
     
     @Override
-    public Dimension preferredLayoutSize(Container parent)
-    {
-        return new Dimension(baseWidth, baseHeight);
-    }
+    public Dimension preferredLayoutSize(Container parent) { return new Dimension(panelWidth, panelHeight); }
     
     @Override
     public void layoutContainer(Container parent)
     {
-        float scaleX = (float)parent.getWidth() / baseWidth;
-        float scaleY = (float)parent.getHeight() / baseHeight;
+        float scaleX = (float)parent.getWidth() / panelWidth;
+        float scaleY = (float)parent.getHeight() / panelHeight;
         
-        for(Entry<Component, Rectangle> entry : baseRectangles.entrySet())
+        for(Entry<Component, Object> entry : baseBounds.entrySet())
         {
             Component component = entry.getKey();
-            Rectangle baseRectangle = entry.getValue();
+            Object baseObjectBounds = entry.getValue();
             
-            int newX = Math.round(scaleX * baseRectangle.x);
-            int newY = Math.round(scaleY * baseRectangle.y);
-            int newWidth = Math.round(scaleX * baseRectangle.width);
-            int newHeight = Math.round(scaleY * baseRectangle.height);
+            int baseX = 0;
+            int baseY = 0;
+            int baseWidth = 0;
+            int baseHeight = 0;
             
-            component.setBounds(newX, newY, newWidth, newHeight);
+            if(baseObjectBounds instanceof Rectangle rectangleBounds)
+            {
+                baseX = rectangleBounds.x;
+                baseY = rectangleBounds.y;
+                baseWidth = rectangleBounds.width;
+                baseHeight = rectangleBounds.height;
+            }
+            else if(baseObjectBounds instanceof PercentageBounds percentageBounds)
+            {
+                LayoutBox box = percentageBounds.getOwnBox();
+                baseX = Math.round(box.getEffectiveX() * panelWidth);
+                baseY = Math.round(box.getEffectiveY() * panelHeight);
+                baseWidth = Math.round(box.getEffectiveWidth() * panelWidth);
+                baseHeight = Math.round(box.getEffectiveHeight() * panelHeight);
+            }
+            
+            baseWidth = Math.clamp(baseWidth, 0, panelWidth);
+            baseHeight = Math.clamp(baseHeight, 0, panelHeight);
+            baseX = Math.clamp(baseX, 0, panelWidth - baseWidth);
+            baseY = Math.clamp(baseY, 0, panelHeight - baseHeight);
+            
+            component.setBounds(Math.round(scaleX * baseX), Math.round(scaleY * baseY), Math.round(scaleX * baseWidth), Math.round(scaleY * baseHeight));
         }
     }
 }
