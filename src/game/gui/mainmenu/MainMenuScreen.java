@@ -3,23 +3,20 @@ package game.gui.mainmenu;
 import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
 import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
 
-import game.gui.common.ScaledLayout;
+import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.common.scaledlayout.PercentageBounds;
+import game.gui.common.scaledlayout.ScaledLayout;
+import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.mainmenu.MainMenuAction;
 import game.mainmenu.MainMenuState;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 public class MainMenuScreen extends JPanel
 {
     private static final Image MAIN_MENU_IMAGE = new ImageIcon("resources/images/Main Menu Background.png").getImage();
-    
-    private JPanel titlePanel;
-    private JPanel buttonPanel;
     
     public MainMenuScreen(String title, MainMenuAction mmAction)
     {
@@ -29,46 +26,10 @@ public class MainMenuScreen extends JPanel
         
         createTitlePanel(title);
         createButtonPanel(mmAction);
-        
-        addComponentListener(new ComponentAdapter()
-        {
-            @Override public void componentResized(ComponentEvent e)
-            {
-                for(Component component : buttonPanel.getComponents())
-                {
-                    if(component instanceof JButton button)
-                    {
-                        button.setFont(new Font(button.getFont().getFontName(), button.getFont().getStyle(),
-                                (int)Math.max(Math.clamp(80 - 30000 * Math.log1p(1.0 / getWidth()), 0, 80), button.getWidth() / 10.0)
-                        ));
-                        
-                    }
-                }
-                for(Component component : titlePanel.getComponents())
-                {
-                    if(component instanceof JLabel label)
-                    {
-                        label.setFont(new Font(label.getFont().getFontName(), label.getFont().getStyle(), getWidth() / 10));
-                    }
-                }
-            }
-        });
     }
     
     private void createTitlePanel(String title)
     {
-        GridBagConstraints gbConstraints = new GridBagConstraints();
-        gbConstraints.anchor = GridBagConstraints.CENTER;
-        gbConstraints.fill = GridBagConstraints.BOTH;
-        gbConstraints.gridx = 1;
-        gbConstraints.gridy = 0;
-        gbConstraints.weightx = 1;
-        gbConstraints.weighty = 1;
-        
-        JPanel tPanel = new JPanel();
-        tPanel.setOpaque(false);
-        tPanel.setLayout(new GridBagLayout());
-        
         JPanel tShadowPanel = new JPanel();
         tShadowPanel.setOpaque(false);
         tShadowPanel.setLayout(new OverlayLayout(tShadowPanel));
@@ -86,45 +47,19 @@ public class MainMenuScreen extends JPanel
         titleLabelShadow.setAlignmentX(CENTER_ALIGNMENT);
         tShadowPanel.add(titleLabelShadow, CENTER_ALIGNMENT);
         
-        titlePanel = tShadowPanel;
-        
-        tPanel.add(tShadowPanel, gbConstraints);
-        
-        add(tPanel, new Rectangle(0,0, PROGRAM_WIDTH, PROGRAM_HEIGHT / 4));
+        add(tShadowPanel, new PercentageBounds(0,0, 100, 40));
     }
     
     private void createButtonPanel(MainMenuAction mmAction)
     {
-        JPanel bPanel = new JPanel(new GridBagLayout());
-        bPanel.setOpaque(false);
-        createSpacer(bPanel, 0);
-        
-        GridBagConstraints buttonGBC = new GridBagConstraints();
-        buttonGBC.anchor = GridBagConstraints.CENTER;
-        buttonGBC.fill = GridBagConstraints.BOTH;
-        buttonGBC.insets = new Insets(0, 0, 15, 0);
+        LayoutBox buttonLayoutBox = new LayoutBox(0, 40, 100, 60);
         int i = 0;
         for(MainMenuState state : MainMenuState.values())
         {
-            buttonGBC.gridy = i++;
-            ActionListener stateListener = e -> state.execute(mmAction);
-            bPanel.add(new MainMenuButton(state.toString(), stateListener), buttonGBC);
+            LayoutBox buttonBox = new LayoutBox(buttonLayoutBox, 0, 25 * i++, 100, 25);
+            add(new MainMenuButton(state.toString(), e -> state.execute(mmAction)),
+                    new PercentageBounds(buttonBox, 30, 70, ScaledLayoutAnchor.CENTER));
         }
-        
-        buttonPanel = bPanel;
-        
-        add(bPanel, new Rectangle(0, PROGRAM_HEIGHT / 4, PROGRAM_WIDTH, 3 * PROGRAM_HEIGHT / 4));
-        createSpacer(bPanel, 2);
-    }
-    
-    private void createSpacer(JPanel panel, int gridX)
-    {
-        GridBagConstraints spacerConstraints = new GridBagConstraints();
-        spacerConstraints.gridx = gridX;
-        spacerConstraints.gridheight = GridBagConstraints.REMAINDER;
-        spacerConstraints.fill = GridBagConstraints.BOTH;
-        
-        panel.add(Box.createGlue(), spacerConstraints);
     }
     
     @Override
