@@ -14,8 +14,7 @@ public class AudioSliderUI extends BasicSliderUI
     
     private final Color barColour;
     private final float strokeSize;
-    private final int thumbHeight;
-    private final int thumbWidth;
+    private final float thumbSizeScale;
     private final int xBorderGap;
     private final int yBorderGap;
     
@@ -24,8 +23,7 @@ public class AudioSliderUI extends BasicSliderUI
         super(slider);
         barColour = colour;
         strokeSize = (barHeight + barWidth) / 2;
-        thumbHeight = (int)(barHeight * 120);
-        thumbWidth = (int)(barWidth * 120);
+        thumbSizeScale = barHeight * 4;
         xBorderGap = Math.round(barHeight * 70);
         yBorderGap = Math.round(barWidth * 5);
         
@@ -131,7 +129,8 @@ public class AudioSliderUI extends BasicSliderUI
     @Override
     public Dimension getThumbSize()
     {
-        return new Dimension(thumbWidth, thumbHeight);
+        int size = Math.round(slider.getHeight() * thumbSizeScale);
+        return new Dimension(size, size);
     }
     
     @Override
