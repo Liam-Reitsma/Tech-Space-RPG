@@ -74,33 +74,30 @@ public class LayoutBox
         return boxes;
     }
     
-    public LayoutBox getParentBox() { return parentBox; }
+    public LayoutBox insets(float inset)
+    {
+        return new LayoutBox(this, inset, inset, 100 - (2 * inset), 100 - (2 * inset));
+    }
     
-    public float getXLocation() { return xLocation; }
+    public LayoutBox insets(float widthInset, float heightInset)
+    {
+        return new LayoutBox(this, widthInset, heightInset, 100 - (2 * widthInset), 100 - (2 * heightInset));
+    }
     
-    public float getYLocation() { return yLocation; }
+    public LayoutBox insets(float left, float top, float right, float bottom)
+    {
+        return new LayoutBox(this, left, top, 100 - (left + right), 100 - (top + bottom));
+    }
     
     public float getWidth() { return boxWidth; }
     
     public float getHeight() { return boxHeight; }
     
-    public float getEffectiveWidth()
-    {
-        return parentBox != null ? parentBox.getEffectiveWidth() * boxWidth : boxWidth;
-    }
+    public float getEffectiveWidth() { return parentBox != null ? parentBox.getEffectiveWidth() * boxWidth : boxWidth; }
     
-    public float getEffectiveX()
-    {
-        return parentBox != null ? parentBox.getEffectiveX() + parentBox.getEffectiveWidth() * xLocation : xLocation;
-    }
+    public float getEffectiveX() { return parentBox != null ? parentBox.getEffectiveX() + parentBox.getEffectiveWidth() * xLocation : xLocation; }
     
-    public float getEffectiveHeight()
-    {
-        return parentBox != null ? parentBox.getEffectiveHeight() * boxHeight : boxHeight;
-    }
+    public float getEffectiveHeight() { return parentBox != null ? parentBox.getEffectiveHeight() * boxHeight : boxHeight; }
     
-    public float getEffectiveY()
-    {
-        return parentBox != null ? parentBox.getEffectiveY() + parentBox.getEffectiveHeight() * yLocation : yLocation;
-    }
+    public float getEffectiveY() { return parentBox != null ? parentBox.getEffectiveY() + parentBox.getEffectiveHeight() * yLocation : yLocation; }
 }
