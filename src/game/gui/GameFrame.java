@@ -136,9 +136,9 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void openOptionsOverlay()
     {
-        optionsOverlay = new OptionsOverlay(new OptionsPanel(optionsAction), new OptionsTitlePanel(new ScaledLayout(), optionsAction),
+        optionsOverlay = new OptionsOverlay(new OptionsPanel(new ScaledLayout(), optionsAction), new OptionsTitlePanel(new ScaledLayout(), optionsAction),
                 new ScaledLayout());
-        overlayContainer.setOverlay(optionsOverlay, new LayoutBox(null, 25, 45, ScaledLayoutAnchor.CENTER));
+        overlayContainer.setOverlay(optionsOverlay, new LayoutBox(null, 25, 55, ScaledLayoutAnchor.CENTER));
     }
     
     @Override
@@ -153,7 +153,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void closeOptionsScreen()
     {
-        getLayeredPane().remove(optionsOverlay);
+        overlayContainer.remove(optionsOverlay);
         optionsOverlay = null;
         
         revalidate();
