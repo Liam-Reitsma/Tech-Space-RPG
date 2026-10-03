@@ -82,7 +82,7 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void openNewGameScreen()
     {
-        newGameScreen = new NewGameScreen(newGameAction);
+        newGameScreen = new NewGameScreen(newGameAction, new ScaledLayout(PROGRAM_WIDTH, PROGRAM_HEIGHT));
         getContentPane().removeAll();
         getContentPane().add(newGameScreen);
         revalidate();
