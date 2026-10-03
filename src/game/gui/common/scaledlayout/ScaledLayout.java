@@ -14,7 +14,7 @@ public class ScaledLayout implements LayoutManager2
     
     private final boolean isAutomatic;
     
-    private final Map<Component, Object> baseBounds;
+    private final Map<Component, LayoutBox> baseBounds;
     private final Map<Component, Font> baseFonts;
     
     public ScaledLayout()
@@ -37,21 +37,11 @@ public class ScaledLayout implements LayoutManager2
     public void addLayoutComponent(Component comp, Object constraints)
     {
         if(constraints == null)
-        {
-            baseBounds.put(comp, new PercentageBounds(0, 0, 100, 100));
-        }
-        else if(constraints instanceof Rectangle rectangleBounds)
-        {
-            baseBounds.put(comp, rectangleBounds);
-        }
-        else if(constraints instanceof PercentageBounds percentageBounds)
-        {
-            baseBounds.put(comp, percentageBounds);
-        }
+            baseBounds.put(comp, new LayoutBox(0, 0, 100, 100));
+        else if(constraints instanceof LayoutBox layoutBox)
+            baseBounds.put(comp, layoutBox);
         else
-        {
             return;
-        }
         
         registerFonts(comp);
     }
@@ -116,38 +106,22 @@ public class ScaledLayout implements LayoutManager2
     @Override
     public void layoutContainer(Container parent)
     {
+        if(parent.getWidth() <= 0 || parent.getHeight() <= 0 || panelWidth <= 0 || panelHeight <= 0)
+            return;
+        
         float xScale = (float)parent.getWidth() / panelWidth;
         float yScale = (float)parent.getHeight() / panelHeight;
         float fontScale = Math.min(xScale, yScale);
         
-        if(parent.getWidth() <= 0 || parent.getHeight() <= 0)
-            return;
-        
-        for(Entry<Component, Object> entry : baseBounds.entrySet())
+        for(Entry<Component, LayoutBox> entry : baseBounds.entrySet())
         {
             Component component = entry.getKey();
-            Object baseObjectBounds = entry.getValue();
+            LayoutBox box = entry.getValue();
             
-            int baseX = 0;
-            int baseY = 0;
-            int baseWidth = 0;
-            int baseHeight = 0;
-            
-            if(baseObjectBounds instanceof Rectangle rectangleBounds)
-            {
-                baseX = rectangleBounds.x;
-                baseY = rectangleBounds.y;
-                baseWidth = rectangleBounds.width;
-                baseHeight = rectangleBounds.height;
-            }
-            else if(baseObjectBounds instanceof PercentageBounds percentageBounds)
-            {
-                LayoutBox box = percentageBounds.getOwnBox();
-                baseX = Math.round(box.getEffectiveX() * panelWidth);
-                baseY = Math.round(box.getEffectiveY() * panelHeight);
-                baseWidth = Math.round(box.getEffectiveWidth() * panelWidth);
-                baseHeight = Math.round(box.getEffectiveHeight() * panelHeight);
-            }
+            int baseX = Math.round(box.getEffectiveX() * panelWidth);
+            int baseY = Math.round(box.getEffectiveY() * panelHeight);
+            int baseWidth = Math.round(box.getEffectiveWidth() * panelWidth);
+            int baseHeight = Math.round(box.getEffectiveHeight() * panelHeight);
             
             baseWidth = Math.clamp(baseWidth, 0, panelWidth);
             baseHeight = Math.clamp(baseHeight, 0, panelHeight);
