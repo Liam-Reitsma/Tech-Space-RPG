@@ -42,13 +42,11 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     private OptionsAction optionsAction;
     private SavesAction savesAction;
     
-    private OverlayContainer overlayContainer;
-    
+    private final OverlayContainer overlayContainer;
     private OptionsOverlay optionsOverlay;
     private SavesOverlay savesOverlay;
-    
-    NewGameScreen newGameScreen;
-    MainGameScreen mainGameScreen;
+    private NewGameScreen newGameScreen;
+    private MainGameScreen mainGameScreen;
     
     public GameFrame(String name)
     {
@@ -110,23 +108,15 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void openLoadGameOverlay(String[] saveNames)
     {
-        createSavesOverlay(saveNames);
-        savesOverlay.setLocation((getLayeredPane().getWidth() - savesOverlay.getWidth()) / 2,
-                (getLayeredPane().getHeight() - savesOverlay.getHeight()) / 2);
-        savesOverlay.setVisible(true);
-    }
-    
-    private void createSavesOverlay(String[] saveNames)
-    {
-        savesOverlay = new SavesOverlay(new SavesPanel(savesAction, saveNames), new SavesTitlePanel(savesAction),
-                PROGRAM_WIDTH, PROGRAM_HEIGHT);
-        getLayeredPane().add(savesOverlay, JLayeredPane.MODAL_LAYER);
+        savesOverlay = new SavesOverlay(new ScaledLayout(), new SavesPanel(new ScaledLayout(), savesAction, saveNames),
+                new SavesTitlePanel(new ScaledLayout(), savesAction));
+        overlayContainer.setOverlay(savesOverlay, new LayoutBox(null, 25, 55, ScaledLayoutAnchor.CENTER));
     }
     
     @Override
     public void closeSavesScreen()
     {
-        getLayeredPane().remove(savesOverlay);
+        overlayContainer.remove(savesOverlay);
         savesOverlay = null;
         
         revalidate();
@@ -136,8 +126,8 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void openOptionsOverlay()
     {
-        optionsOverlay = new OptionsOverlay(new OptionsPanel(new ScaledLayout(), optionsAction), new OptionsTitlePanel(new ScaledLayout(), optionsAction),
-                new ScaledLayout());
+        optionsOverlay = new OptionsOverlay(new ScaledLayout(), new OptionsPanel(new ScaledLayout(), optionsAction),
+                new OptionsTitlePanel(new ScaledLayout(), optionsAction));
         overlayContainer.setOverlay(optionsOverlay, new LayoutBox(null, 25, 55, ScaledLayoutAnchor.CENTER));
     }
     

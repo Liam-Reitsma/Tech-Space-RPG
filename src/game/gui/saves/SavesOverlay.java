@@ -1,24 +1,19 @@
 package game.gui.saves;
 
+import game.gui.common.scaledlayout.LayoutBox;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class SavesOverlay extends JPanel
 {
-    public SavesOverlay(SavesPanel savesPanel, SavesTitlePanel savesTitlePanel, int programWidth, int programHeight)
+    public SavesOverlay(LayoutManager2 layoutManager2, SavesPanel savesPanel, SavesTitlePanel savesTitlePanel)
     {
-        JPanel overlay = new JPanel();
-        overlay.setLayout(new BorderLayout());
-        overlay.add(savesTitlePanel, BorderLayout.NORTH);
-        overlay.add(savesPanel, BorderLayout.CENTER);
+        setLayout(layoutManager2);
+        LayoutBox[] box = new LayoutBox().splitVertical(25, 75);
+        add(savesTitlePanel, box[0]);
+        add(savesPanel, box[1]);
         
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbConstraints = new GridBagConstraints();
-        gbConstraints.fill = GridBagConstraints.NONE;
-        add(overlay, gbConstraints);
-        
-        setPreferredSize(new Dimension(programWidth, programHeight));
-        setSize(getPreferredSize());
         setOpaque(false);
         setVisible(true);
     }

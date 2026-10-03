@@ -4,9 +4,13 @@ import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
 import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
 
 import game.gui.common.PanelButton;
+import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.common.scaledlayout.ScaledConstraint;
+import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.saves.SavesAction;
 
 import javax.swing.*;
+import javax.swing.SpringLayout.Constraints;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -23,31 +27,16 @@ public class SavesPanel extends JPanel
     private static final int SAVES_IMAGE_BORDER_WIDTH = (SAVES_BACKGROUND_IMAGE_TOTAL_WIDTH - SAVES_CONTENT_IMAGE.getWidth(null)) / 2;
     private static final int SAVES_IMAGE_BORDER_HEIGHT = (SAVES_BACKGROUND_IMAGE_TOTAL_HEIGHT - SAVES_CONTENT_IMAGE.getHeight(null)) / 2;
     
-    private static final int LIST_PREFERRED_WIDTH = 400;
-    private static final int LIST_PREFERRED_HEIGHT = 200;
-    
-    private static final int BUTTON_PREFERRED_WIDTH = 200;
-    private static final int BUTTON_PREFERRED_HEIGHT = 45;
-    
-    private static final int LABEL_FONT_SIZE = 120;
-    
-    public SavesPanel(SavesAction savesAction, String[] saveNames)
+    public SavesPanel(LayoutManager2 layoutManager2, SavesAction savesAction, String[] saveNames)
     {
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbConstraints = new GridBagConstraints();
+        super(layoutManager2);
         
-        setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+        LayoutBox[] box = new LayoutBox().splitVertical(80, 20);
         
         DefaultListModel<String> listModel = new DefaultListModel<>();
         JList<String> saveList = new JList<>(listModel);
         
-        createSaveList(saveNames, saveList, listModel);
-        
-        gbConstraints.anchor = GridBagConstraints.SOUTHEAST;
-        gbConstraints.fill = GridBagConstraints.BOTH;
-        gbConstraints.gridy = 1;
-        gbConstraints.weightx = 1.0;
-        gbConstraints.weighty = 1.0;
+        createSaveList(saveNames, saveList, listModel, box);
         
         ActionListener saveButtonListener = e ->
         {
@@ -59,57 +48,16 @@ public class SavesPanel extends JPanel
             }
         };
         PanelButton selectSaveButton = new PanelButton("Select", saveButtonListener);
-        selectSaveButton.resizeButton(200, 50);
-        add(selectSaveButton, gbConstraints);
+        add(selectSaveButton, box[1]);
         
         addMouseListener(new MouseAdapter() {});
-        addComponentListener(new ComponentAdapter()
-        {
-            @Override public void componentResized(ComponentEvent e)
-            {
-            Container parent = getParent();
-            
-            double panelWidth = parent.getWidth();
-            double panelHeight = parent.getHeight();
-            
-            for(Component component : getComponents())
-            {
-                if(component instanceof PanelButton button)
-                {
-                    button.resizeButton((float)((BUTTON_PREFERRED_WIDTH * panelWidth) / PROGRAM_WIDTH), ((float)(BUTTON_PREFERRED_HEIGHT * panelHeight) / PROGRAM_HEIGHT));
-                    button.setFont(button.getFont().deriveFont((float)(LABEL_FONT_SIZE / 3f * panelWidth) / PROGRAM_WIDTH));
-                }
-                else if(component instanceof JList<?> list)
-                {
-                    float fontSize = (float)(LABEL_FONT_SIZE / 2f * panelWidth) / PROGRAM_WIDTH;
-                    Font newFont = list.getFont().deriveFont(fontSize);
-                    list.setFont(newFont);
-                    
-                    int rowHeight = list.getFontMetrics(newFont).getHeight();
-                    list.setFixedCellHeight(rowHeight);
-                    
-                    int listWidth = (int) Math.round(LIST_PREFERRED_WIDTH * 1.5f * (panelWidth / PROGRAM_WIDTH));
-                    int listHeight = rowHeight * list.getModel().getSize();
-                    
-                    list.setPreferredSize(new Dimension(listWidth, listHeight));
-                }
-            }
-            
-            revalidate();
-            repaint();
-        }
-    });
+        
     }
     
-    private void createSaveList(String[] saveNames, JList<String> saveList, DefaultListModel<String> listModel)
+    private void createSaveList(String[] saveNames, JList<String> saveList, DefaultListModel<String> listModel, LayoutBox[] box)
     {
-        GridBagConstraints gbConstraints = new GridBagConstraints();
         
-        gbConstraints.gridx = 0;
-        gbConstraints.gridy = 0;
-        gbConstraints.weightx = 1;
-        
-        add(saveList, gbConstraints);
+        add(saveList, new LayoutBox(box[0], 40, 60, ScaledLayoutAnchor.CENTER));
         
         for(String save : saveNames)
         {

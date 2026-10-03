@@ -1,6 +1,9 @@
 package game.gui.saves;
 
 import game.gui.common.PanelCloseButton;
+import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.common.scaledlayout.ScaledConstraint;
+import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.saves.SavesAction;
 
 import javax.swing.*;
@@ -20,30 +23,20 @@ public class SavesTitlePanel extends JPanel
     private static final int SAVES_TITLE_IMAGE_BORDER_HEIGHT = (SAVES_TITLE_IMAGE_TOTAL_HEIGHT - SAVES_TITLE_CONTENT.getHeight(null)) / 2;
     
     private static final int LABEL_FONT_SIZE = 46;
-    public SavesTitlePanel(SavesAction saveSaction)
+    public SavesTitlePanel(LayoutManager2 layoutManager2, SavesAction saveSaction)
     {
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbConstraints = new GridBagConstraints();
-        
-        setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+        super(layoutManager2);
         
         ActionListener closeButtonListener = e -> saveSaction.requestCloseSaves();
         
-        gbConstraints.anchor = GridBagConstraints.WEST;
-        gbConstraints.fill = GridBagConstraints.NONE;
-        gbConstraints.gridx = 0;
-        gbConstraints.gridy = 0;
-        
+        LayoutBox[] box = new LayoutBox().splitHorizontal(50, 50);
         JLabel label = new JLabel("Save Games");
         label.setFont(new Font("Agency FB", Font.BOLD, LABEL_FONT_SIZE));
         label.setForeground(Color.WHITE);
-        add(label, gbConstraints);
+        add(label, box[0].insets(8, 0, 0, 0));
         
-        gbConstraints.anchor = GridBagConstraints.EAST;
-        gbConstraints.gridx = 1;
         PanelCloseButton selectSaveButton = new PanelCloseButton("X", closeButtonListener);
-        gbConstraints.weightx = 1;
-        add(selectSaveButton, gbConstraints);
+        add(selectSaveButton, new ScaledConstraint(1, new LayoutBox(box[1], 50, 50, ScaledLayoutAnchor.EAST), ScaledLayoutAnchor.CENTER));
         
         addMouseListener(new MouseAdapter() {});
     }
