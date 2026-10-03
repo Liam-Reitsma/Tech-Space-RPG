@@ -21,18 +21,24 @@ public class PanelCloseButton extends ConfirmButton
         setFocusPainted(false);
         setForeground(Color.white);
         
-        setHorizontalTextPosition(SwingConstants.CENTER);
-        setVerticalTextPosition(SwingConstants.CENTER);
-        
-        setHorizontalAlignment(SwingConstants.CENTER);
-        setVerticalAlignment(SwingConstants.CENTER);
-        
         normalImage = new ImageIcon("resources/images/Button_X_Normal.png").getImage();
         rolloverImage = new ImageIcon("resources/images/Button_X_Hover.png").getImage();
         pressedImage = new ImageIcon("resources/images/Button_X_Pressed.png").getImage();
+    }
+    
+    protected void paintComponent(Graphics g)
+    {
+        Image image;
         
-        setIcon(new ImageIcon(normalImage));
-        setRolloverIcon(new ImageIcon(rolloverImage));
-        setPressedIcon(new ImageIcon(pressedImage));
+        if(getModel().isPressed())
+            image = pressedImage;
+        else if(getModel().isRollover())
+            image = rolloverImage;
+        else
+            image = normalImage;
+        
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+        
+        super.paintComponent(g);
     }
 }
