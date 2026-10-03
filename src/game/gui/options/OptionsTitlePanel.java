@@ -1,6 +1,9 @@
 package game.gui.options;
 
 import game.gui.common.PanelCloseButton;
+import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.common.scaledlayout.ScaledConstraint;
+import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.options.OptionsAction;
 
 import javax.swing.*;
@@ -19,32 +22,25 @@ public class OptionsTitlePanel extends JPanel
     private static final int OPTIONS_TITLE_IMAGE_BORDER_WIDTH = (OPTIONS_TITLE_IMAGE_TOTAL_WIDTH - OPTIONS_TITLE_CONTENT.getWidth(null)) / 2;
     private static final int OPTIONS_TITLE_IMAGE_BORDER_HEIGHT = (OPTIONS_TITLE_IMAGE_TOTAL_HEIGHT - OPTIONS_TITLE_CONTENT.getHeight(null)) / 2;
     
-    private static final int LABEL_FONT_SIZE = 46;
+    private static final int LABEL_FONT_SIZE = 45;
     
-    public OptionsTitlePanel(OptionsAction optionsAction)
+    public OptionsTitlePanel(LayoutManager2 layoutManager, OptionsAction optionsAction)
     {
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbConstraints = new GridBagConstraints();
+        super(layoutManager);
         
         setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         
         ActionListener closeButtonListener = e -> optionsAction.requestCloseOptions();
-        
-        gbConstraints.anchor = GridBagConstraints.WEST;
-        gbConstraints.fill = GridBagConstraints.NONE;
-        gbConstraints.gridx = 0;
-        gbConstraints.gridy = 0;
+        LayoutBox mainBox = new LayoutBox(0, 0, 100, 100);
+        LayoutBox[] boxes = mainBox.splitHorizontal(50, 50);
         
         JLabel label = new JLabel("Options");
         label.setFont(new Font("Agency FB", Font.BOLD, LABEL_FONT_SIZE));
         label.setForeground(Color.WHITE);
-        add(label, gbConstraints);
+        add(label, boxes[0].insets(10, 0, 0, 0));
         
-        gbConstraints.anchor = GridBagConstraints.EAST;
-        gbConstraints.gridx = 1;
         PanelCloseButton applyResButton = new PanelCloseButton("X", closeButtonListener);
-        gbConstraints.weightx = 1;
-        add(applyResButton, gbConstraints);
+        add(applyResButton, new ScaledConstraint(1, new LayoutBox(boxes[1], 50, 50, ScaledLayoutAnchor.EAST), ScaledLayoutAnchor.CENTER));
         
         addMouseListener(new MouseAdapter() {});
     }
