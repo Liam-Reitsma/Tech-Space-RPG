@@ -1,6 +1,6 @@
 package game.gui.common.scaledlayout;
 
-public class LayoutBox
+public class LayoutBox implements ScaledLayoutConstraint
 {
     private final LayoutBox parentBox;
     
@@ -88,6 +88,9 @@ public class LayoutBox
     {
         return new LayoutBox(this, left, top, 100 - (left + right), 100 - (top + bottom));
     }
+    
+    @Override
+    public LayoutBox getBox() { return this; }
     
     public float getWidth() { return boxWidth; }
     
