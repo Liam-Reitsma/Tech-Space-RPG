@@ -11,7 +11,7 @@ public class OptionsOverlay extends JPanel
     {
         setLayout(layoutManager);
         LayoutBox overlayBox = new LayoutBox(0, 0, 100, 100);
-        LayoutBox[] boxes = overlayBox.splitVertical(3, 7);
+        LayoutBox[] boxes = overlayBox.splitVertical(22, 78);
         add(optionsTitlePanel, boxes[0]);
         add(optionsPanel, boxes[1]);
         
