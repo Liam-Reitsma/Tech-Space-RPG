@@ -9,16 +9,26 @@ import java.util.Map.Entry;
 
 public class ScaledLayout implements LayoutManager2
 {
-    private final int panelWidth;
-    private final int panelHeight;
+    private int panelWidth;
+    private int panelHeight;
+    
+    private final boolean isAutomatic;
     
     private final Map<Component, Object> baseBounds;
     private final Map<Component, Font> baseFonts;
+    
+    public ScaledLayout()
+    {
+        isAutomatic = true;
+        baseBounds = new HashMap<>();
+        baseFonts = new HashMap<>();
+    }
     
     public ScaledLayout(int width, int height)
     {
         panelWidth = width;
         panelHeight = height;
+        isAutomatic = false;
         baseBounds = new HashMap<>();
         baseFonts = new HashMap<>();
     }
@@ -144,6 +154,11 @@ public class ScaledLayout implements LayoutManager2
             baseX = Math.clamp(baseX, 0, panelWidth - baseWidth);
             baseY = Math.clamp(baseY, 0, panelHeight - baseHeight);
             
+            if(component instanceof Container container && container.getLayout() instanceof ScaledLayout scaledLayout)
+            {
+                scaledLayout.setReferenceSize(baseWidth, baseHeight);
+            }
+            
             component.setBounds(Math.round(xScale * baseX), Math.round(yScale * baseY), Math.round(xScale * baseWidth), Math.round(yScale * baseHeight));
         }
         
@@ -172,6 +187,15 @@ public class ScaledLayout implements LayoutManager2
             Component component = entry.getKey();
             
             component.setFont(component.getFont().deriveFont(largestPossibleFonts.get(component.getClass())));
+        }
+    }
+    
+    private void setReferenceSize(int width, int height)
+    {
+        if(isAutomatic)
+        {
+            panelWidth = width;
+            panelHeight = height;
         }
     }
 }
