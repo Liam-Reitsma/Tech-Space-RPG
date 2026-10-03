@@ -14,7 +14,7 @@ public class ScaledLayout implements LayoutManager2
     
     private final boolean isAutomatic;
     
-    private final Map<Component, LayoutBox> baseBounds;
+    private final Map<Component, ScaledLayoutConstraint> baseBounds;
     private final Map<Component, Font> baseFonts;
     
     public ScaledLayout()
@@ -36,12 +36,13 @@ public class ScaledLayout implements LayoutManager2
     @Override
     public void addLayoutComponent(Component comp, Object constraints)
     {
-        if(constraints == null)
-            baseBounds.put(comp, new LayoutBox(0, 0, 100, 100));
-        else if(constraints instanceof LayoutBox layoutBox)
-            baseBounds.put(comp, layoutBox);
-        else
-            return;
+        switch(constraints)
+        {
+            case null -> baseBounds.put(comp, new LayoutBox(0, 0, 100, 100));
+            case LayoutBox layoutBox -> baseBounds.put(comp, layoutBox);
+            case ScaledConstraint scaledConstraint -> baseBounds.put(comp, scaledConstraint);
+            default -> { return; }
+        }
         
         registerFonts(comp);
     }
@@ -113,16 +114,31 @@ public class ScaledLayout implements LayoutManager2
         float yScale = (float)parent.getHeight() / panelHeight;
         float fontScale = Math.min(xScale, yScale);
         
-        for(Entry<Component, LayoutBox> entry : baseBounds.entrySet())
+        for(Entry<Component, ScaledLayoutConstraint> entry : baseBounds.entrySet())
         {
             Component component = entry.getKey();
-            LayoutBox box = entry.getValue();
+            ScaledLayoutConstraint constraint = entry.getValue();
+            LayoutBox box = constraint.getBox();
             
             int baseX = Math.round(box.getEffectiveX() * panelWidth);
             int baseY = Math.round(box.getEffectiveY() * panelHeight);
             int baseWidth = Math.round(box.getEffectiveWidth() * panelWidth);
             int baseHeight = Math.round(box.getEffectiveHeight() * panelHeight);
             
+            if(baseHeight != 0 && constraint instanceof ScaledConstraint scaledConstraint)
+            {
+                int originalWidth = baseWidth;
+                int originalHeight = baseHeight;
+                
+                if((float)baseWidth / (float)baseHeight > scaledConstraint.getAspectRatio())
+                    baseWidth = Math.round(baseHeight * scaledConstraint.getAspectRatio());
+                else if((float)baseWidth / (float)baseHeight < scaledConstraint.getAspectRatio())
+                    baseHeight = Math.round(baseWidth / scaledConstraint.getAspectRatio());
+                
+                baseX += Math.round((originalWidth - baseWidth) * scaledConstraint.getAlignment().getXLocation());
+                baseY += Math.round((originalHeight - baseHeight) * scaledConstraint.getAlignment().getYLocation());
+            }
+
             baseWidth = Math.clamp(baseWidth, 0, panelWidth);
             baseHeight = Math.clamp(baseHeight, 0, panelHeight);
             baseX = Math.clamp(baseX, 0, panelWidth - baseWidth);
