@@ -9,6 +9,11 @@ public class LayoutBox implements ScaledLayoutConstraint
     private final float boxWidth;
     private final float boxHeight;
     
+    public LayoutBox()
+    {
+        this(null, 0, 0, 100, 100);
+    }
+    
     public LayoutBox(float x, float y, float width, float height)
     {
         this(null, x, y, width, height);
