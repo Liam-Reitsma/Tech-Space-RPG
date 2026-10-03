@@ -20,12 +20,6 @@ public class PanelButton extends ConfirmButton
         setFocusPainted(false);
         setForeground(Color.WHITE);
         
-        setHorizontalTextPosition(SwingConstants.CENTER);
-        setVerticalTextPosition(SwingConstants.CENTER);
-        
-        setHorizontalAlignment(SwingConstants.CENTER);
-        setVerticalAlignment(SwingConstants.CENTER);
-        
         setIconTextGap(0);
         
         normalImage = new ImageIcon("resources/images/Apply_Button.png").getImage();
@@ -42,5 +36,21 @@ public class PanelButton extends ConfirmButton
         setRolloverIcon(new ImageIcon(rolloverImage.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         setPressedIcon(new ImageIcon(pressedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         setFont(getFont().deriveFont(Math.min(fWidth, fHeight) * 0.75f));
+    }
+    
+    protected void paintComponent(Graphics g)
+    {
+        Image image;
+        
+        if(getModel().isPressed())
+            image = pressedImage;
+        else if(getModel().isRollover())
+            image = rolloverImage;
+        else
+            image = normalImage;
+        
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+        
+        super.paintComponent(g);
     }
 }
