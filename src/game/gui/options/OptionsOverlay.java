@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class OptionsOverlay extends JPanel
 {
-    public OptionsOverlay(OptionsPanel optionsPanel, OptionsTitlePanel optionsTitlePanel, LayoutManager2 layoutManager)
+    public OptionsOverlay(LayoutManager2 layoutManager, OptionsPanel optionsPanel, OptionsTitlePanel optionsTitlePanel)
     {
         setLayout(layoutManager);
         LayoutBox overlayBox = new LayoutBox(0, 0, 100, 100);
