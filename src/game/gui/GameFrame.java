@@ -5,7 +5,7 @@ import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
 
 import game.GameViewAction;
 import game.entities.player.ClassType;
-import game.gui.common.scaledlayout.PercentageBounds;
+import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.gui.maingame.MainGameScreen;
@@ -136,9 +136,9 @@ public class GameFrame extends JFrame implements GameViewAction, MainMenuViewAct
     @Override
     public void openOptionsOverlay()
     {
-        optionsOverlay = new OptionsOverlay(new OptionsPanel(optionsAction), new OptionsTitlePanel(optionsAction),
-                new ScaledLayout(PROGRAM_WIDTH, PROGRAM_HEIGHT));
-        overlayContainer.setOverlay(optionsOverlay, new PercentageBounds(null, 20, 20, ScaledLayoutAnchor.CENTER));
+        optionsOverlay = new OptionsOverlay(new OptionsPanel(optionsAction), new OptionsTitlePanel(new ScaledLayout(), optionsAction),
+                new ScaledLayout());
+        overlayContainer.setOverlay(optionsOverlay, new LayoutBox(null, 25, 45, ScaledLayoutAnchor.CENTER));
     }
     
     @Override

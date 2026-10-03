@@ -4,7 +4,6 @@ import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
 import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
 
 import game.gui.common.scaledlayout.LayoutBox;
-import game.gui.common.scaledlayout.PercentageBounds;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.mainmenu.MainMenuAction;
@@ -47,7 +46,7 @@ public class MainMenuScreen extends JPanel
         titleLabelShadow.setAlignmentX(CENTER_ALIGNMENT);
         tShadowPanel.add(titleLabelShadow, CENTER_ALIGNMENT);
         
-        add(tShadowPanel, new PercentageBounds(0,0, 100, 40));
+        add(tShadowPanel, new LayoutBox(0,0, 100, 40));
     }
     
     private void createButtonPanel(MainMenuAction mmAction)
@@ -58,7 +57,7 @@ public class MainMenuScreen extends JPanel
         {
             LayoutBox buttonBox = new LayoutBox(buttonLayoutBox, 0, 25 * i++, 100, 25);
             add(new MainMenuButton(state.toString(), e -> state.execute(mmAction)),
-                    new PercentageBounds(buttonBox, 30, 70, ScaledLayoutAnchor.CENTER));
+                    new LayoutBox(buttonBox, 30, 70, ScaledLayoutAnchor.CENTER));
         }
     }
     

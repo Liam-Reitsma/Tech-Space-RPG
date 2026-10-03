@@ -14,6 +14,11 @@ public class LayoutBox
         this(null, x, y, width, height);
     }
     
+    public LayoutBox(LayoutBox parent, float width, float height, ScaledLayoutAnchor alignment)
+    {
+        this(parent, (100 - width) * alignment.getXLocation(), (100 - height) * alignment.getYLocation(), width, height);
+    }
+    
     public LayoutBox(LayoutBox parent, float x, float y, float width, float height)
     {
         parentBox = parent;
