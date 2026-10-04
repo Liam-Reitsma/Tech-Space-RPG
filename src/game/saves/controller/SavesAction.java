@@ -1,4 +1,4 @@
-package game.saves;
+package game.saves.controller;
 
 public interface SavesAction
 {
