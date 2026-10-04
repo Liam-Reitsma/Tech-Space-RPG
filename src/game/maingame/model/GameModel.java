@@ -1,4 +1,4 @@
-package game;
+package game.maingame.model;
 
 import game.entities.player.Player;
 import game.world.Point;
