@@ -20,16 +20,17 @@ public class SavesPanel extends JPanel
     private static final int SAVES_IMAGE_BORDER_WIDTH = (SAVES_BACKGROUND_IMAGE_TOTAL_WIDTH - SAVES_CONTENT_IMAGE.getWidth(null)) / 2;
     private static final int SAVES_IMAGE_BORDER_HEIGHT = (SAVES_BACKGROUND_IMAGE_TOTAL_HEIGHT - SAVES_CONTENT_IMAGE.getHeight(null)) / 2;
     
+    private final DefaultListModel<String> listModel;
+    
     public SavesPanel(LayoutManager2 layoutManager2, SavesAction savesAction, String[] saveNames)
     {
         super(layoutManager2);
         
-        LayoutBox[] box = new LayoutBox().splitVertical(80, 20);
-        
-        DefaultListModel<String> listModel = new DefaultListModel<>();
+        LayoutBox[] boxes = new LayoutBox().splitVertical(80, 20);
+        listModel = new DefaultListModel<>();
         JList<String> saveList = new JList<>(listModel);
         
-        createSaveList(saveNames, saveList, listModel, box);
+        createSaveList(saveNames, saveList, listModel, boxes[0]);
         
         ActionListener saveButtonListener = e ->
         {
@@ -41,16 +42,16 @@ public class SavesPanel extends JPanel
             }
         };
         PanelButton selectSaveButton = new PanelButton("Select", saveButtonListener);
-        add(selectSaveButton, box[1]);
+        add(selectSaveButton, boxes[1]);
         
         addMouseListener(new MouseAdapter() {});
         
     }
     
-    private void createSaveList(String[] saveNames, JList<String> saveList, DefaultListModel<String> listModel, LayoutBox[] box)
+    private void createSaveList(String[] saveNames, JList<String> saveList, DefaultListModel<String> listModel, LayoutBox box)
     {
         
-        add(saveList, new LayoutBox(box[0], 40, 60, ScaledLayoutAnchor.CENTER));
+        add(saveList, new LayoutBox(box, 40, 60, ScaledLayoutAnchor.CENTER));
         
         for(String save : saveNames)
         {
@@ -76,6 +77,15 @@ public class SavesPanel extends JPanel
             
             return saveToDisplay;
         });
+    }
+    
+    public void updateSavesList(String[] saveNames)
+    {
+        listModel.removeAllElements();
+        for(String saveName : saveNames)
+        {
+            listModel.addElement(saveName);
+        }
     }
     
     @Override
