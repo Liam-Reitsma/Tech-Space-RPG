@@ -18,9 +18,9 @@ public class SavesController implements SavesAction
     }
     
     @Override
-    public String[] requestOpenSaves()
+    public void requestOpenSavesOverlay()
     {
-        return persistenceService.getSaveOptionNames();
+        savesViewAction.openSavesOverlay(persistenceService.getSaveOptionNames());
     }
     
     @Override
