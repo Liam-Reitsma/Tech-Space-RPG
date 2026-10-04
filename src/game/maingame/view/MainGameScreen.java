@@ -1,4 +1,4 @@
-package game.gui.maingame;
+package game.maingame.view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ public class MainGameScreen extends JPanel
     
     public MainGameScreen()
     {
-        //gay cunt
+    
     }
     
     public void paintComponent(Graphics g)
