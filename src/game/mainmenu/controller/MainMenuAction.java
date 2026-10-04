@@ -1,11 +1,10 @@
 package game.mainmenu.controller;
 
+import game.frame.controller.DisplayTarget;
+
 public interface MainMenuAction
 {
-    void requestOpenMainMenuScreen();
-    void requestOpenNewGameScreen();
-    void requestOpenSavesOverlay();
-    void requestOpenOptionsOverlay();
-    void requestCloseMainMenuScreen();
+    void requestOpenMainMenu();
+    void requestOpenDisplay(DisplayTarget display);
     void requestExitGame();
 }

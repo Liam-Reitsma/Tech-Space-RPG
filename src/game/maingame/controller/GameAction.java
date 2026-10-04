@@ -12,5 +12,4 @@ public interface GameAction
     void requestNewGame(Player newPlayer);
     void requestLoadGame(Player loadedPlayer, Map<Point, RuntimeRoom> loadedWorld);
     void requestGameUpdate();
-    void requestCloseGameScreen();
 }
