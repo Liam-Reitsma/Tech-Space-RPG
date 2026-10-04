@@ -1,13 +1,14 @@
 package game.mainmenu.view;
 
 import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.config.DisplayableScreen;
 import game.mainmenu.controller.MainMenuAction;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class MainMenuScreen extends JPanel implements MainMenuViewAction
+public class MainMenuScreen extends JPanel implements MainMenuViewAction, DisplayableScreen
 {
     private static final Image MAIN_MENU_IMAGE = new ImageIcon("resources/images/Main Menu Background.png").getImage();
     
@@ -69,6 +70,18 @@ public class MainMenuScreen extends JPanel implements MainMenuViewAction
     
     @Override
     public void closeMainMenuScreen()
+    {
+        setVisible(false);
+    }
+    
+    @Override
+    public void openDisplay()
+    {
+        setVisible(true);
+    }
+    
+    @Override
+    public void closeDisplay()
     {
         setVisible(false);
     }

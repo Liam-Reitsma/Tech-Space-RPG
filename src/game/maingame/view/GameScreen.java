@@ -1,9 +1,11 @@
 package game.maingame.view;
 
+import game.gui.config.DisplayableScreen;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class MainGameScreen extends JPanel
+public class GameScreen extends JPanel implements GameViewAction, DisplayableScreen
 {
     private final Image MAIN_BACKGROUND = new ImageIcon("resources/images/Main Game.png").getImage();
     
@@ -17,7 +19,7 @@ public class MainGameScreen extends JPanel
     private JButton southButon;
     private JButton westButton;
     
-    public MainGameScreen()
+    public GameScreen()
     {
     
     }
@@ -27,5 +29,35 @@ public class MainGameScreen extends JPanel
         super.paintComponent(g);
         
         g.drawImage(MAIN_BACKGROUND,0, 0, getWidth(), getHeight(), null);
+    }
+    
+    @Override
+    public void openMainGameScreen()
+    {
+        setVisible(true);
+    }
+    
+    @Override
+    public void updateMainGameScreen()
+    {
+    
+    }
+    
+    @Override
+    public void closeMainGameScreen()
+    {
+        setVisible(false);
+    }
+    
+    @Override
+    public void openDisplay()
+    {
+        setVisible(true);
+    }
+    
+    @Override
+    public void closeDisplay()
+    {
+        setVisible(false);
     }
 }

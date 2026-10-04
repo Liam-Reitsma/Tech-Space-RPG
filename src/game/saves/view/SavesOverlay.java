@@ -1,11 +1,12 @@
 package game.saves.view;
 
 import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.config.DisplayableOverlay;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SavesOverlay extends JPanel implements SavesViewAction
+public class SavesOverlay extends JPanel implements SavesViewAction, DisplayableOverlay
 {
     private final SavesPanel savesPanel;
     
@@ -29,6 +30,18 @@ public class SavesOverlay extends JPanel implements SavesViewAction
     
     @Override
     public void closeSaveOverlay()
+    {
+        setVisible(false);
+    }
+    
+    @Override
+    public void openDisplay()
+    {
+        setVisible(true);
+    }
+    
+    @Override
+    public void closeDisplay()
     {
         setVisible(false);
     }

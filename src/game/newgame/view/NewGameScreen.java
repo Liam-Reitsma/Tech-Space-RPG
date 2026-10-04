@@ -6,6 +6,7 @@ import game.gui.common.PicturePreview;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledConstraint;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
+import game.gui.config.DisplayableScreen;
 import game.newgame.controller.NewGameAction;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class NewGameScreen extends JPanel implements NewGameViewAction
+public class NewGameScreen extends JPanel implements NewGameViewAction, DisplayableScreen
 {
     private static final Image NEW_GAME_IMAGE = new ImageIcon("resources/images/New Game Background.png").getImage();
     
@@ -128,6 +129,18 @@ public class NewGameScreen extends JPanel implements NewGameViewAction
     
     @Override
     public void closeNewGameScreen()
+    {
+        setVisible(false);
+    }
+    
+    @Override
+    public void openDisplay()
+    {
+        setVisible(true);
+    }
+    
+    @Override
+    public void closeDisplay()
     {
         setVisible(false);
     }

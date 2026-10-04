@@ -1,11 +1,12 @@
 package game.options.view;
 
 import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.config.DisplayableOverlay;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class OptionsOverlay extends JPanel implements OptionsViewAction
+public class OptionsOverlay extends JPanel implements OptionsViewAction, DisplayableOverlay
 {
     public OptionsOverlay(LayoutManager2 layoutManager, OptionsPanel optionsPanel, OptionsTitlePanel optionsTitlePanel)
     {
@@ -26,6 +27,18 @@ public class OptionsOverlay extends JPanel implements OptionsViewAction
     
     @Override
     public void closeOptionsOverlay()
+    {
+        setVisible(false);
+    }
+    
+    @Override
+    public void openDisplay()
+    {
+        setVisible(true);
+    }
+    
+    @Override
+    public void closeDisplay()
     {
         setVisible(false);
     }
