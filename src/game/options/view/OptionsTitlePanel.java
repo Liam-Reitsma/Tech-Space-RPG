@@ -1,10 +1,10 @@
-package game.gui.options;
+package game.options.view;
 
 import game.gui.common.PanelCloseButton;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledConstraint;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
-import game.options.OptionsAction;
+import game.options.controller.OptionsAction;
 
 import javax.swing.*;
 import java.awt.*;

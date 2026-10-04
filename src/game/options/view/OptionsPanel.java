@@ -1,10 +1,10 @@
-package game.gui.options;
+package game.options.view;
 
 import game.gui.common.AudioSliderUI;
-import game.gui.DisplayResolution;
+import game.gui.config.DisplayResolution;
 import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
-import game.options.OptionsAction;
+import game.options.controller.OptionsAction;
 
 import javax.swing.*;
 import java.awt.*;
