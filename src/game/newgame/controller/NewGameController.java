@@ -1,9 +1,9 @@
 package game.newgame.controller;
 
-import game.GameAction;
+import game.maingame.controller.GameAction;
 import game.entities.player.ClassType;
 import game.entities.player.Player;
-import game.mainmenu.MainMenuAction;
+import game.mainmenu.controller.MainMenuAction;
 import game.newgame.view.NewGameViewAction;
 
 public class NewGameController implements NewGameAction

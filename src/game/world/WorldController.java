@@ -1,6 +1,6 @@
 package game.world;
 
-import game.GameModel;
+import game.maingame.model.GameModel;
 import game.Updatable;
 import game.entities.player.Player;
 import game.world.room.RuntimeRoom;

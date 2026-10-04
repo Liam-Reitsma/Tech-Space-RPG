@@ -1,6 +1,6 @@
 package game.saves.controller;
 
-import game.GameAction;
+import game.maingame.controller.GameAction;
 import game.persistence.PersistenceService;
 import game.saves.view.SavesViewAction;
 
