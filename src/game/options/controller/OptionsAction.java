@@ -4,7 +4,7 @@ import game.gui.config.DisplayResolution;
 
 public interface OptionsAction
 {
-    void requestOpenOptions();
+    void requestOpenOptionsOverlay();
     void requestResolutionChange(DisplayResolution resolution);
     void requestCloseOptions();
 }
