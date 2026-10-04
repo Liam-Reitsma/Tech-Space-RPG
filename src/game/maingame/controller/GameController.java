@@ -1,11 +1,12 @@
 package game.maingame.controller;
 
+import static game.frame.controller.DisplayTarget.MAIN_GAME;
+
 import game.Updatable;
 import game.entities.player.Player;
+import game.frame.controller.FrameAction;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
-import game.mainmenu.controller.MainMenuAction;
-import game.newgame.controller.NewGameAction;
 import game.world.Point;
 import game.world.WorldController;
 import game.world.room.RuntimeRoom;
@@ -18,20 +19,14 @@ public class GameController implements GameAction
 {
     private final List<Updatable> updatables;
     
-    private final MainMenuAction mainMenuAction;
-    private final NewGameAction newGameAction;
-    
+    private final FrameAction frameAction;
     private final WorldController worldController;
-    
     private final GameModel gameModel;
-    
     private final GameViewAction gameViewAction;
     
-    
-    public GameController(MainMenuAction mmAction, NewGameAction ngAction, WorldController wController, GameModel gModel, GameViewAction gvAction)
+    public GameController(FrameAction fAction, WorldController wController, GameModel gModel, GameViewAction gvAction)
     {
-        mainMenuAction = mmAction;
-        newGameAction = ngAction;
+        frameAction = fAction;
         
         updatables = new ArrayList<>();
         worldController = wController;
@@ -44,7 +39,7 @@ public class GameController implements GameAction
     @Override
     public void requestOpenGameScreen()
     {
-        gameViewAction.openMainGameScreen();
+        frameAction.display(MAIN_GAME);
     }
     
     @Override
@@ -64,8 +59,6 @@ public class GameController implements GameAction
         gameModel.setGame(player, world);
         
         requestOpenGameScreen();
-        mainMenuAction.requestCloseMainMenuScreen();
-        newGameAction.requestCloseNewGameScreen();
         
         gameViewAction.updateMainGameScreen();
         
@@ -79,11 +72,5 @@ public class GameController implements GameAction
         {
             controller.requestUpdate();
         }
-    }
-    
-    @Override
-    public void requestCloseGameScreen()
-    {
-        gameViewAction.closeMainGameScreen();
     }
 }

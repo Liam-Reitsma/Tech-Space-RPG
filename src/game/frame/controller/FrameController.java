@@ -2,7 +2,6 @@ package game.frame.controller;
 
 import game.frame.view.FrameViewAction;
 import game.gui.config.DisplayResolution;
-import game.gui.config.Displayable;
 
 public class FrameController implements FrameAction
 {
@@ -20,9 +19,9 @@ public class FrameController implements FrameAction
     }
     
     @Override
-    public void display(Displayable toDisplay)
+    public void display(DisplayTarget display)
     {
-        frameViewAction.display(toDisplay);
+        frameViewAction.display(display);
     }
     
     @Override

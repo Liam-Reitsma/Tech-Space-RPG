@@ -1,28 +1,30 @@
 package game.newgame.controller;
 
+import static game.frame.controller.DisplayTarget.NEW_GAME;
+
+import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
 import game.entities.player.ClassType;
 import game.entities.player.Player;
-import game.mainmenu.controller.MainMenuAction;
 import game.newgame.view.NewGameViewAction;
 
 public class NewGameController implements NewGameAction
 {
+    private final FrameAction frameAction;
     private final GameAction gameAction;
-    private final MainMenuAction mainMenuAction;
     private final NewGameViewAction newGameViewAction;
     
-    public NewGameController(GameAction gAction, MainMenuAction mmAction, NewGameViewAction ngViewAction)
+    public NewGameController(FrameAction fAction, GameAction gAction, NewGameViewAction ngViewAction)
     {
+        frameAction = fAction;
         gameAction = gAction;
-        mainMenuAction = mmAction;
         newGameViewAction = ngViewAction;
     }
     
     @Override
     public void requestOpenNewGameScreen()
     {
-        newGameViewAction.openNewGameScreen();
+        frameAction.display(NEW_GAME);
     }
     
     @Override
@@ -35,12 +37,5 @@ public class NewGameController implements NewGameAction
     public void requestConfirmCreation(String name, ClassType classType)
     {
         gameAction.requestNewGame(new Player(name, classType));
-    }
-    
-    @Override
-    public void requestCloseNewGameScreen()
-    {
-        mainMenuAction.requestOpenMainMenuScreen();
-        newGameViewAction.closeNewGameScreen();
     }
 }

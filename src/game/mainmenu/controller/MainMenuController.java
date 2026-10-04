@@ -1,57 +1,29 @@
 package game.mainmenu.controller;
 
+import static game.frame.controller.DisplayTarget.MAIN_MENU;
+
+import game.frame.controller.DisplayTarget;
 import game.frame.controller.FrameAction;
-import game.mainmenu.view.MainMenuViewAction;
-import game.newgame.controller.NewGameAction;
-import game.options.controller.OptionsAction;
-import game.saves.controller.SavesAction;
 
 public class MainMenuController implements MainMenuAction
 {
     private final FrameAction frameAction;
-    private final NewGameAction newGameAction;
-    private final OptionsAction optionsAction;
-    private final SavesAction savesAction;
-    private final MainMenuViewAction mmViewAction;
     
-    public MainMenuController(FrameAction fAction, NewGameAction ngAction, OptionsAction oAction, SavesAction sAction, MainMenuViewAction mmvAction)
+    public MainMenuController(FrameAction fAction)
     {
         frameAction = fAction;
-        newGameAction = ngAction;
-        optionsAction = oAction;
-        savesAction = sAction;
-        mmViewAction = mmvAction;
     }
     
     @Override
-    public void requestOpenMainMenuScreen()
+    public void requestOpenMainMenu()
     {
-        mmViewAction.openMainMenuScreen();
+        frameAction.display(MAIN_MENU);
     }
     
     @Override
-    public void requestOpenNewGameScreen()
+    public void requestOpenDisplay(DisplayTarget display)
     {
-        newGameAction.requestOpenNewGameScreen();
-        mmViewAction.closeMainMenuScreen();
-    }
-    
-    @Override
-    public void requestOpenSavesOverlay()
-    {
-        savesAction.requestOpenSavesOverlay();
-    }
-    
-    @Override
-    public void requestOpenOptionsOverlay()
-    {
-        optionsAction.requestOpenOptionsOverlay();
-    }
-    
-    @Override
-    public void requestCloseMainMenuScreen()
-    {
-        mmViewAction.closeMainMenuScreen();
+        frameAction.display(display);
     }
     
     @Override

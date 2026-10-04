@@ -1,24 +1,23 @@
 package game.options.controller;
 
+import static game.frame.controller.DisplayTarget.OPTIONS;
+
 import game.frame.controller.FrameAction;
 import game.gui.config.DisplayResolution;
-import game.options.view.OptionsViewAction;
 
 public class OptionsController implements OptionsAction
 {
-    private final OptionsViewAction optionsViewAction;
     private final FrameAction frameAction;
     
-    public OptionsController(FrameAction fAction, OptionsViewAction oViewAction)
+    public OptionsController(FrameAction fAction)
     {
-        optionsViewAction = oViewAction;
         frameAction = fAction;
     }
     
     @Override
     public void requestOpenOptionsOverlay()
     {
-        optionsViewAction.openOptionsOverlay();
+        frameAction.display(OPTIONS);
     }
     
     @Override
@@ -30,6 +29,6 @@ public class OptionsController implements OptionsAction
     @Override
     public void requestCloseOptions()
     {
-        optionsViewAction.closeOptionsOverlay();
+        frameAction.closeOverlay();
     }
 }
