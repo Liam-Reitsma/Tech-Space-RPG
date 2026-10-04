@@ -1,20 +1,13 @@
-package game.gui.saves;
-
-import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
-import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
+package game.saves.view;
 
 import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
-import game.gui.common.scaledlayout.ScaledConstraint;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
-import game.saves.SavesAction;
+import game.saves.controller.SavesAction;
 
 import javax.swing.*;
-import javax.swing.SpringLayout.Constraints;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 
 public class SavesPanel extends JPanel

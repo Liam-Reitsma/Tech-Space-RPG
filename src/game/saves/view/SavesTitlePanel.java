@@ -1,10 +1,10 @@
-package game.gui.saves;
+package game.saves.view;
 
 import game.gui.common.PanelCloseButton;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledConstraint;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
-import game.saves.SavesAction;
+import game.saves.controller.SavesAction;
 
 import javax.swing.*;
 import java.awt.*;
