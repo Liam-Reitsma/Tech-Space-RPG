@@ -2,7 +2,7 @@ package game.saves.controller;
 
 public interface SavesAction
 {
-    String[] requestOpenSaves();
+    void requestOpenSavesOverlay();
     void requestSelectSave(String saveName);
     void requestCloseSaves();
 }
