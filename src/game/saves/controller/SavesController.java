@@ -1,7 +1,8 @@
-package game.saves;
+package game.saves.controller;
 
 import game.GameAction;
 import game.persistence.PersistenceService;
+import game.saves.view.SavesViewAction;
 
 public class SavesController implements SavesAction
 {
@@ -9,11 +10,11 @@ public class SavesController implements SavesAction
     private final PersistenceService persistenceService;
     private final SavesViewAction savesViewAction;
     
-    public SavesController(GameAction gAction, PersistenceService pService, SavesViewAction svAction)
+    public SavesController(GameAction gAction, PersistenceService pService, SavesViewAction sViewAction)
     {
         gameAction = gAction;
         persistenceService = pService;
-        savesViewAction = svAction;
+        savesViewAction = sViewAction;
     }
     
     @Override
@@ -26,14 +27,11 @@ public class SavesController implements SavesAction
     public void requestSelectSave(String saveName)
     {
         gameAction.requestLoadGame(persistenceService.loadSavedPlayer(saveName), persistenceService.loadSavedWorld());
-        
-        savesViewAction.closeSavesScreen();
-        savesViewAction.openMainGameScreen();
     }
     
     @Override
     public void requestCloseSaves()
     {
-        savesViewAction.closeSavesScreen();
+        savesViewAction.closeSaveOverlay();
     }
 }
