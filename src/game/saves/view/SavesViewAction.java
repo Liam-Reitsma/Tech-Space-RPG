@@ -2,6 +2,6 @@ package game.saves.view;
 
 public interface SavesViewAction
 {
-    void openSaveOverlay();
+    void openSavesOverlay(String[] saveNames);
     void closeSaveOverlay();
 }
