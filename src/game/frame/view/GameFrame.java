@@ -67,6 +67,16 @@ public class GameFrame extends JFrame implements FrameViewAction
     }
     
     @Override
+    public void closeOverlay()
+    {
+        if(currentDisplayedOverlay != null)
+        {
+            currentDisplayedOverlay.closeDisplay();
+            currentDisplayedOverlay = null;
+        }
+    }
+    
+    @Override
     public void resizeGameFrame(DisplayResolution resolution)
     {
         getContentPane().setPreferredSize(new Dimension(resolution.getWidth(), resolution.getHeight()));
