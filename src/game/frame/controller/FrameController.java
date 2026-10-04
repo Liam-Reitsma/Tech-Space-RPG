@@ -26,6 +26,12 @@ public class FrameController implements FrameAction
     }
     
     @Override
+    public void closeOverlay()
+    {
+        frameViewAction.closeOverlay();
+    }
+    
+    @Override
     public void requestCloseGame()
     {
         frameViewAction.closeGameFrame();
