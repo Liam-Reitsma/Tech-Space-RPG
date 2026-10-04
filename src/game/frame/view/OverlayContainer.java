@@ -1,4 +1,4 @@
-package game.gui;
+package game.frame.view;
 
 import javax.swing.*;
 import java.awt.*;
