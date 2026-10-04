@@ -4,6 +4,7 @@ import game.gui.config.DisplayResolution;
 
 public interface FrameViewAction
 {
-    public void resizeGameFrame(DisplayResolution resolution);
-    public void closeGameFrame();
+    void openGameScreen();
+    void resizeGameFrame(DisplayResolution resolution);
+    void closeGameFrame();
 }
