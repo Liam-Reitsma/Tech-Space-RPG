@@ -1,4 +1,4 @@
-package game.gui.mainmenu;
+package game.mainmenu.view;
 
 import javax.swing.*;
 import java.awt.*;
