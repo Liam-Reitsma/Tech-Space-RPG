@@ -7,5 +7,6 @@ public interface FrameAction
 {
     void requestResolutionChange(DisplayResolution resolution);
     void display(Displayable displayable);
+    void closeOverlay();
     void requestCloseGame();
 }
