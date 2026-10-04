@@ -1,4 +1,4 @@
-package game.gui.newgame;
+package game.newgame.view;
 
 import game.entities.player.ClassType;
 import game.gui.common.PanelButton;
@@ -6,14 +6,14 @@ import game.gui.common.PicturePreview;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledConstraint;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
-import game.newgame.NewGameAction;
+import game.newgame.controller.NewGameAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class NewGameScreen extends JPanel
+public class NewGameScreen extends JPanel implements NewGameViewAction
 {
     private static final Image NEW_GAME_IMAGE = new ImageIcon("resources/images/New Game Background.png").getImage();
     
@@ -38,7 +38,7 @@ public class NewGameScreen extends JPanel
     private void createPicturePanel(LayoutBox characterPreviewBox)
     {
         picturePreview = new PicturePreview();
-        updateCharacter(new ImageIcon(ClassType.values()[0].getImagePath()).getImage(), ClassType.values()[0].getStartingDescription());
+        newGameAction.requestCharacterChange(ClassType.values()[0]);
         
         add(picturePreview, new ScaledConstraint(1, characterPreviewBox, ScaledLayoutAnchor.CENTER));
     }
@@ -100,15 +100,9 @@ public class NewGameScreen extends JPanel
     {
         LayoutBox[] boxes = buttonBox.splitHorizontal(50, 50);
         
-        add(new PanelButton("Back", e ->  newGameAction.requestGoBack()), boxes[0]);
+        add(new PanelButton("Back", e ->  newGameAction.requestCloseNewGameScreen()), boxes[0]);
         
         add(new PanelButton("Confirm", e -> newGameAction.requestConfirmCreation(nameTextField.getText(), (ClassType)classComboBox.getSelectedItem())), boxes[1]);
-    }
-    
-    public void updateCharacter(Image classImage, String startingDescription)
-    {
-        picturePreview.setImage(classImage);
-        classDescriptionTextArea.setText(startingDescription);
     }
     
     @Override
@@ -117,5 +111,24 @@ public class NewGameScreen extends JPanel
         super.paintComponent(g);
         
         g.drawImage(NEW_GAME_IMAGE, 0, 0, getWidth(), getHeight(), null);
+    }
+    
+    @Override
+    public void openNewGameScreen()
+    {
+        setVisible(true);
+    }
+    
+    @Override
+    public void changeCharacterPanel(ClassType classType)
+    {
+        picturePreview.setImage(new ImageIcon(classType.getImagePath()).getImage());
+        classDescriptionTextArea.setText(classType.getStartingDescription());
+    }
+    
+    @Override
+    public void closeNewGameScreen()
+    {
+        setVisible(false);
     }
 }
