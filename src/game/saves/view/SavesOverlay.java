@@ -7,19 +7,23 @@ import java.awt.*;
 
 public class SavesOverlay extends JPanel implements SavesViewAction
 {
-    public SavesOverlay(LayoutManager2 layoutManager2, SavesPanel savesPanel, SavesTitlePanel savesTitlePanel)
+    private final SavesPanel savesPanel;
+    
+    public SavesOverlay(LayoutManager2 layoutManager2, SavesPanel sPanel, SavesTitlePanel savesTitlePanel)
     {
         setLayout(layoutManager2);
         LayoutBox[] box = new LayoutBox().splitVertical(25, 75);
         add(savesTitlePanel, box[0]);
+        savesPanel = sPanel;
         add(savesPanel, box[1]);
         
         setOpaque(false);
     }
     
     @Override
-    public void openSaveOverlay()
+    public void openSavesOverlay(String[] saveNames)
     {
+        savesPanel.updateSavesList(saveNames);
         setVisible(true);
     }
     
