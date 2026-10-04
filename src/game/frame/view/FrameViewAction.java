@@ -1,11 +1,11 @@
 package game.frame.view;
 
+import game.frame.controller.DisplayTarget;
 import game.gui.config.DisplayResolution;
-import game.gui.config.Displayable;
 
 public interface FrameViewAction
 {
-    void display(Displayable displayable);
+    void display(DisplayTarget display);
     void closeOverlay();
     void resizeGameFrame(DisplayResolution resolution);
     void closeGameFrame();
