@@ -18,7 +18,7 @@ public class OptionsController implements OptionsAction
     @Override
     public void requestOpenOptions()
     {
-        optionsViewAction.openOptionsScreen();
+        optionsViewAction.openOptionsOverlay();
     }
     
     @Override
@@ -30,6 +30,6 @@ public class OptionsController implements OptionsAction
     @Override
     public void requestCloseOptions()
     {
-        optionsViewAction.closeOptionsScreen();
+        optionsViewAction.closeOptionsOverlay();
     }
 }

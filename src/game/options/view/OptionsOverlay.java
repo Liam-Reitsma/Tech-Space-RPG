@@ -19,13 +19,13 @@ public class OptionsOverlay extends JPanel implements OptionsViewAction
     }
     
     @Override
-    public void openOptionsScreen()
+    public void openOptionsOverlay()
     {
         setVisible(true);
     }
     
     @Override
-    public void closeOptionsScreen()
+    public void closeOptionsOverlay()
     {
         setVisible(false);
     }

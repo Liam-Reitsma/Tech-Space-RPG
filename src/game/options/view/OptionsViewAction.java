@@ -2,6 +2,6 @@ package game.options.view;
 
 public interface OptionsViewAction
 {
-    void openOptionsScreen();
-    void closeOptionsScreen();
+    void openOptionsOverlay();
+    void closeOptionsOverlay();
 }
