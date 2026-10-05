@@ -1,9 +1,11 @@
 package game.frame.view;
 
-import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
-import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
+import static game.gui.config.GUIConfig.*;
 
 import game.frame.controller.DisplayTarget;
+import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.common.scaledlayout.ScaledLayout;
+import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.gui.config.DisplayResolution;
 import game.gui.config.Displayable;
 import game.gui.config.DisplayableOverlay;
@@ -22,19 +24,17 @@ public class GameFrame extends JFrame implements FrameViewAction
     private Displayable currentDisplayedScreen;
     private Displayable currentDisplayedOverlay;
     
-    private final Map<DisplayTarget, Displayable> displayMap;
+    private Map<DisplayTarget, Displayable> displayMap;
     
-    public GameFrame(String name, OverlayContainer oContainer, Map<DisplayTarget, Displayable> map)
+    public GameFrame(String name, OverlayContainer oContainer)
     {
         super(name);
         
         overlayContainer = oContainer;
         
-        displayMap = map;
-        
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(new Dimension(PROGRAM_WIDTH, PROGRAM_HEIGHT));
-        setLayout(new BorderLayout());
+        setLayout(new ScaledLayout(PROGRAM_WIDTH, PROGRAM_HEIGHT));
         getLayeredPane().add(overlayContainer, JLayeredPane.MODAL_LAYER);
         
         getLayeredPane().addComponentListener((new ComponentAdapter()
@@ -49,6 +49,20 @@ public class GameFrame extends JFrame implements FrameViewAction
         
         pack();
         setLocationRelativeTo(null);
+    }
+    
+    public void registerDisplay(Map<DisplayTarget, Displayable> map)
+    {
+        displayMap = map;
+        
+        for(Displayable display : displayMap.values())
+        {
+            if(display instanceof DisplayableOverlay)
+                overlayContainer.add(display.getDisplay(), new LayoutBox(null, 35, 70, ScaledLayoutAnchor.CENTER));
+            else if(display instanceof DisplayableScreen)
+                add(display.getDisplay(), new LayoutBox());
+        }
+        revalidate();
     }
     
     @Override

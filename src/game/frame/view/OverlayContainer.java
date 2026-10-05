@@ -1,13 +1,17 @@
 package game.frame.view;
 
+import static game.gui.config.GUIConfig.*;
+
+import game.gui.common.scaledlayout.ScaledLayout;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class OverlayContainer extends JPanel
 {
-    public OverlayContainer(LayoutManager2 layoutManager)
+    public OverlayContainer()
     {
-        setLayout(layoutManager);
+        setLayout(new ScaledLayout(PROGRAM_WIDTH, PROGRAM_HEIGHT));
         setOpaque(false);
     }
     
