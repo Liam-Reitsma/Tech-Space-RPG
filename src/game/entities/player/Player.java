@@ -6,6 +6,7 @@ import game.entities.*;
 import game.items.*;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
+import game.world.Direction;
 import game.world.Point;
 
 import java.util.*;
@@ -187,6 +188,11 @@ public class Player extends Entities implements Persistable
     public void removeFromInventory(Item item, boolean removeWholeStack)
     {
         inventory.removeFromInventory(item, removeWholeStack);
+    }
+    
+    public void movePoint(Direction direction)
+    {
+        point.calculateNewPoint(direction);
     }
     
     public Inventory getInventory()

@@ -86,23 +86,18 @@ public class RewardController implements Loopable<Player, Persistable, RewardRes
         }
         else if(item instanceof Weapon weapon)
         {
-            if(player.addToInventory(weapon) == PlayerErrors.MAX_INVENTORY_REACHED) return new RewardResult(INVENTORY_FULL);
-            player.equipWeapon(weapon);
-            consoleH.printLine("The damage value is: " + player.attack());
-            player.unequipWeapon();
-            player.removeFromInventory(weapon);
+//            if(player.addToInventory(weapon) == PlayerErrors.MAX_INVENTORY_REACHED) return new RewardResult(INVENTORY_FULL);
+//            player.equipWeapon(weapon);
+//            consoleH.printLine("The damage value is: " + player.attack());
+//            player.unequipWeapon();
+//            player.removeFromInventory(weapon);
         }
         
         Optional<Integer> confirm = consoleH.confirmInput("Would you like to pick up the item?", "1.Yes\n2.No", "\n").getInput();
         if(confirm.isEmpty()) return new RewardResult(CANNOT_ADD_ITEM);
         else if(confirm.get() == 2) return new RewardResult(ITEM_DISCARDED);
         
-        PlayerErrors error = player.addToInventory(item);
-        return switch(error)
-        {
-            case SUCCESS -> new RewardResult(SUCCESS);
-            case MAX_INVENTORY_REACHED -> new RewardResult(INVENTORY_FULL);
-            default -> new RewardResult(CANNOT_ADD_ITEM);
-        };
+        player.addToInventory(item);
+        return new RewardResult(SUCCESS);
     }
 }
