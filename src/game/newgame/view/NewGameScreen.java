@@ -5,6 +5,7 @@ import game.gui.common.PanelButton;
 import game.gui.common.PicturePreview;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledConstraint;
+import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.gui.config.DisplayableScreen;
 import game.newgame.controller.NewGameAction;
@@ -25,10 +26,10 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
     private JComboBox<ClassType> classComboBox;
     private JTextArea classDescriptionTextArea;
     
-    public NewGameScreen(NewGameAction ngAction, LayoutManager2 layoutManager)
+    public NewGameScreen(NewGameAction ngAction)
     {
+        setLayout(new ScaledLayout());
         newGameAction = ngAction;
-        setLayout(layoutManager);
         
         LayoutBox[] boxes = new LayoutBox().splitHorizontal(50, 50);
         
@@ -39,7 +40,6 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
     private void createPicturePanel(LayoutBox characterPreviewBox)
     {
         picturePreview = new PicturePreview();
-        newGameAction.requestCharacterChange(ClassType.values()[0]);
         
         add(picturePreview, new ScaledConstraint(1, characterPreviewBox, ScaledLayoutAnchor.CENTER));
     }
@@ -122,9 +122,17 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
     }
     
     @Override
+    public JPanel getDisplay()
+    {
+        setVisible(false);
+        return this;
+    }
+    
+    @Override
     public void openDisplay()
     {
         setVisible(true);
+        changeCharacterPanel(ClassType.values()[0]);
     }
     
     @Override

@@ -1,13 +1,15 @@
 package game.maingame.view;
 
+import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.config.DisplayableScreen;
+import game.maingame.controller.GameAction;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GameScreen extends JPanel implements GameViewAction, DisplayableScreen
 {
-    private final Image MAIN_BACKGROUND = new ImageIcon("resources/images/Main Game.png").getImage();
+    private static final Image MAIN_BACKGROUND = new ImageIcon("resources/images/Main Game.png").getImage();
     
     private JPanel combatPanel;
     private JPanel mapPanel;
@@ -19,9 +21,13 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     private JButton southButon;
     private JButton westButton;
     
-    public GameScreen()
-    {
+    private final GameAction gameAction;
     
+    public GameScreen(GameAction gAction)
+    {
+        setLayout(new ScaledLayout());
+        
+        gameAction = gAction;
     }
     
     public void paintComponent(Graphics g)
@@ -35,6 +41,13 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     public void updateMainGameScreen()
     {
     
+    }
+    
+    @Override
+    public JPanel getDisplay()
+    {
+        setVisible(false);
+        return this;
     }
     
     @Override

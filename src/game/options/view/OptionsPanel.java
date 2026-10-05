@@ -1,6 +1,7 @@
 package game.options.view;
 
 import game.gui.common.AudioSliderUI;
+import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.config.DisplayResolution;
 import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
@@ -23,11 +24,11 @@ public class OptionsPanel extends JPanel
     
     private static final int LABEL_FONT_SIZE = 36;
     
-    OptionsAction optionsAction;
+    private final OptionsAction optionsAction;
     
-    public OptionsPanel(LayoutManager2 layoutManager, OptionsAction oAction)
+    public OptionsPanel(OptionsAction oAction)
     {
-        super(layoutManager);
+        setLayout(new ScaledLayout());
         
         optionsAction = oAction;
         

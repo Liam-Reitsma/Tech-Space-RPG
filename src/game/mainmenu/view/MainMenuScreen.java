@@ -1,7 +1,10 @@
 package game.mainmenu.view;
 
+import static game.gui.common.scaledlayout.ScaledLayoutAnchor.CENTER;
+
 import game.frame.controller.DisplayTarget;
 import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.config.DisplayableScreen;
 import game.mainmenu.controller.MainMenuAction;
 import game.mainmenu.controller.MainMenuOption;
@@ -16,9 +19,9 @@ public class MainMenuScreen extends JPanel implements DisplayableScreen
     
     private final MainMenuAction mainMenuAction;
     
-    public MainMenuScreen(String title, MainMenuAction mmAction, LayoutManager2 layoutManager)
+    public MainMenuScreen(String title, MainMenuAction mmAction)
     {
-        super(layoutManager);
+        setLayout(new ScaledLayout());
         mainMenuAction = mmAction;
         LayoutBox[] boxes = new LayoutBox().splitVertical(40, 60);
         
@@ -55,7 +58,7 @@ public class MainMenuScreen extends JPanel implements DisplayableScreen
         int i = 0;
         for(MainMenuOption option : MainMenuOption.values())
         {
-            add(new MainMenuButton(option.toString(), e -> mainMenuAction.requestOpenDisplay(option)), boxes[i++]);
+            add(new MainMenuButton(option.toString(), e -> mainMenuAction.requestOpenDisplay(option)), new LayoutBox(boxes[i++], 30, 70, CENTER));
         }
     }
     
@@ -64,6 +67,13 @@ public class MainMenuScreen extends JPanel implements DisplayableScreen
     {
         super.paintComponent(g);
         g.drawImage(MAIN_MENU_IMAGE, 0, 0, getWidth(), getHeight(), null);
+    }
+    
+    @Override
+    public JPanel getDisplay()
+    {
+        setVisible(false);
+        return this;
     }
     
     @Override

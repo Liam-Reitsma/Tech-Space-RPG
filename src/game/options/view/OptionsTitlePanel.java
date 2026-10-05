@@ -3,6 +3,7 @@ package game.options.view;
 import game.gui.common.PanelCloseButton;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledConstraint;
+import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.options.controller.OptionsAction;
 
@@ -24,9 +25,9 @@ public class OptionsTitlePanel extends JPanel
     
     private static final int LABEL_FONT_SIZE = 45;
     
-    public OptionsTitlePanel(LayoutManager2 layoutManager, OptionsAction optionsAction)
+    public OptionsTitlePanel(OptionsAction optionsAction)
     {
-        super(layoutManager);
+        setLayout(new ScaledLayout());
         
         setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         

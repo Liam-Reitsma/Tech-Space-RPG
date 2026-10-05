@@ -2,6 +2,7 @@ package game.saves.view;
 
 import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.saves.controller.SavesAction;
 
@@ -22,15 +23,15 @@ public class SavesPanel extends JPanel
     
     private final DefaultListModel<String> listModel;
     
-    public SavesPanel(LayoutManager2 layoutManager2, SavesAction savesAction, String[] saveNames)
+    public SavesPanel(SavesAction savesAction)
     {
-        super(layoutManager2);
+        setLayout(new ScaledLayout());
         
         LayoutBox[] boxes = new LayoutBox().splitVertical(80, 20);
         listModel = new DefaultListModel<>();
         JList<String> saveList = new JList<>(listModel);
         
-        createSaveList(saveNames, saveList, listModel, boxes[0]);
+        createSaveList(saveList, boxes[0]);
         
         ActionListener saveButtonListener = e ->
         {
@@ -48,15 +49,9 @@ public class SavesPanel extends JPanel
         
     }
     
-    private void createSaveList(String[] saveNames, JList<String> saveList, DefaultListModel<String> listModel, LayoutBox box)
+    private void createSaveList(JList<String> saveList, LayoutBox box)
     {
-        
         add(saveList, new LayoutBox(box, 40, 60, ScaledLayoutAnchor.CENTER));
-        
-        for(String save : saveNames)
-        {
-            listModel.addElement(save);
-        }
         
         saveList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         

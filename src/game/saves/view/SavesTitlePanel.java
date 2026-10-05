@@ -3,6 +3,7 @@ package game.saves.view;
 import game.gui.common.PanelCloseButton;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledConstraint;
+import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.saves.controller.SavesAction;
 
@@ -23,9 +24,9 @@ public class SavesTitlePanel extends JPanel
     private static final int SAVES_TITLE_IMAGE_BORDER_HEIGHT = (SAVES_TITLE_IMAGE_TOTAL_HEIGHT - SAVES_TITLE_CONTENT.getHeight(null)) / 2;
     
     private static final int LABEL_FONT_SIZE = 46;
-    public SavesTitlePanel(LayoutManager2 layoutManager2, SavesAction saveSaction)
+    public SavesTitlePanel(SavesAction saveSaction)
     {
-        super(layoutManager2);
+        setLayout(new ScaledLayout());
         
         ActionListener closeButtonListener = e -> saveSaction.requestCloseSaves();
         
