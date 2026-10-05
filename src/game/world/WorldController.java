@@ -1,6 +1,6 @@
 package game.world;
 
-import game.GameModel;
+import game.maingame.model.GameModel;
 import game.Updatable;
 import game.entities.player.Player;
 import game.world.room.RuntimeRoom;
@@ -14,13 +14,13 @@ public class WorldController implements WorldAction, Updatable
     private final GameModel gameModel;
     private final WorldModel worldModel;
     
-    public WorldController(GameModel gModel, WorldViewAction wvAction)
+    public WorldController(GameModel gModel)
     {
-        worldViewAction = wvAction;
-        
         gameModel = gModel;
         worldModel = new WorldModel();
     }
+    
+    public void setWorldViewAction(WorldViewAction wvAction) { worldViewAction = wvAction; }
     
     @Override
     public Map<Point, RuntimeRoom> requestGenerateWorld()
