@@ -5,12 +5,14 @@ import game.gui.config.DisplayResolution;
 
 public class FrameController implements FrameAction
 {
-    private final FrameViewAction frameViewAction;
+    private FrameViewAction frameViewAction;
     
-    public FrameController(FrameViewAction fViewAction)
+    public FrameController()
     {
-        frameViewAction = fViewAction;
+    
     }
+    
+    public void setFrameViewAction(FrameViewAction fvAction) { frameViewAction = fvAction; }
     
     @Override
     public void requestResolutionChange(DisplayResolution resolution)

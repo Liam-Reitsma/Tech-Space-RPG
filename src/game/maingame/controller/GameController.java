@@ -19,22 +19,25 @@ public class GameController implements GameAction
 {
     private final List<Updatable> updatables;
     
-    private final FrameAction frameAction;
-    private final WorldController worldController;
     private final GameModel gameModel;
-    private final GameViewAction gameViewAction;
     
-    public GameController(FrameAction fAction, WorldController wController, GameModel gModel, GameViewAction gvAction)
+    private final FrameAction frameAction;
+    private final WorldController worldController; //TODO: WorldAction
+    
+    private GameViewAction gameViewAction;
+    
+    public GameController(GameModel gModel, FrameAction fAction, WorldController wController)
     {
+        gameModel = gModel;
+        
         frameAction = fAction;
         
         updatables = new ArrayList<>();
         worldController = wController;
         updatables.add(wController);
-        
-        gameModel = gModel;
-        gameViewAction = gvAction;
     }
+    
+    public void setGameViewAction(GameViewAction gvAction) { gameViewAction = gvAction; }
     
     @Override
     public void requestOpenGameScreen()

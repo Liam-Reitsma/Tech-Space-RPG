@@ -14,13 +14,13 @@ public class WorldController implements WorldAction, Updatable
     private final GameModel gameModel;
     private final WorldModel worldModel;
     
-    public WorldController(GameModel gModel, WorldViewAction wvAction)
+    public WorldController(GameModel gModel)
     {
-        worldViewAction = wvAction;
-        
         gameModel = gModel;
         worldModel = new WorldModel();
     }
+    
+    public void setWorldViewAction(WorldViewAction wvAction) { worldViewAction = wvAction; }
     
     @Override
     public Map<Point, RuntimeRoom> requestGenerateWorld()

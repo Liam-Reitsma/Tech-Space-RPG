@@ -5,24 +5,31 @@ import static game.frame.controller.DisplayTarget.SAVES;
 import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
 import game.persistence.PersistenceService;
+import game.saves.view.SavesViewAction;
 
 public class SavesController implements SavesAction
 {
+    private final PersistenceService persistenceService;
+    
     private final FrameAction frameAction;
     private final GameAction gameAction;
     
-    private final PersistenceService persistenceService;
+    private SavesViewAction savesViewAction;
     
-    public SavesController(FrameAction fAction, GameAction gAction, PersistenceService pService)
+    public SavesController(PersistenceService pService, FrameAction fAction, GameAction gAction)
     {
+        persistenceService = pService;
+        
         frameAction = fAction;
         gameAction = gAction;
-        persistenceService = pService;
     }
+    
+    public void setSavesViewAction(SavesViewAction sVAction) { savesViewAction = sVAction; }
     
     @Override
     public void requestOpenSavesOverlay()
     {
+        savesViewAction.updateSavesList(persistenceService.getSaveOptionNames());
         frameAction.display(SAVES);
     }
     

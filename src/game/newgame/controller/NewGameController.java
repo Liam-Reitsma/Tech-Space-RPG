@@ -12,14 +12,16 @@ public class NewGameController implements NewGameAction
 {
     private final FrameAction frameAction;
     private final GameAction gameAction;
-    private final NewGameViewAction newGameViewAction;
     
-    public NewGameController(FrameAction fAction, GameAction gAction, NewGameViewAction ngViewAction)
+    private NewGameViewAction newGameViewAction;
+    
+    public NewGameController(FrameAction fAction, GameAction gAction)
     {
         frameAction = fAction;
         gameAction = gAction;
-        newGameViewAction = ngViewAction;
     }
+    
+    public void setNewGameViewAction(NewGameViewAction ngVAction) { newGameViewAction = ngVAction; }
     
     @Override
     public void requestOpenNewGameScreen()
