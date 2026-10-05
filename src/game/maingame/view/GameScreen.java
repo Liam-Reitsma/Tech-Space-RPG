@@ -32,21 +32,9 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     }
     
     @Override
-    public void openMainGameScreen()
-    {
-        setVisible(true);
-    }
-    
-    @Override
     public void updateMainGameScreen()
     {
     
-    }
-    
-    @Override
-    public void closeMainGameScreen()
-    {
-        setVisible(false);
     }
     
     @Override

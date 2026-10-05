@@ -6,7 +6,7 @@ import game.gui.config.DisplayableOverlay;
 import javax.swing.*;
 import java.awt.*;
 
-public class OptionsOverlay extends JPanel implements OptionsViewAction, DisplayableOverlay
+public class OptionsOverlay extends JPanel implements DisplayableOverlay
 {
     public OptionsOverlay(LayoutManager2 layoutManager, OptionsPanel optionsPanel, OptionsTitlePanel optionsTitlePanel)
     {
@@ -17,18 +17,6 @@ public class OptionsOverlay extends JPanel implements OptionsViewAction, Display
         add(optionsPanel, boxes[1]);
         
         setOpaque(false);
-    }
-    
-    @Override
-    public void openOptionsOverlay()
-    {
-        setVisible(true);
-    }
-    
-    @Override
-    public void closeOptionsOverlay()
-    {
-        setVisible(false);
     }
     
     @Override

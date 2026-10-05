@@ -6,7 +6,7 @@ import game.gui.config.DisplayableOverlay;
 import javax.swing.*;
 import java.awt.*;
 
-public class SavesOverlay extends JPanel implements SavesViewAction, DisplayableOverlay
+public class SavesOverlay extends JPanel implements DisplayableOverlay
 {
     private final SavesPanel savesPanel;
     
@@ -19,19 +19,6 @@ public class SavesOverlay extends JPanel implements SavesViewAction, Displayable
         add(savesPanel, box[1]);
         
         setOpaque(false);
-    }
-    
-    @Override
-    public void openSavesOverlay(String[] saveNames)
-    {
-        savesPanel.updateSavesList(saveNames);
-        setVisible(true);
-    }
-    
-    @Override
-    public void closeSaveOverlay()
-    {
-        setVisible(false);
     }
     
     @Override

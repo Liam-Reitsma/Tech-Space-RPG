@@ -101,7 +101,7 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
     {
         LayoutBox[] boxes = buttonBox.splitHorizontal(50, 50);
         
-        add(new PanelButton("Back", e ->  newGameAction.requestCloseNewGameScreen()), boxes[0]);
+        add(new PanelButton("Back", e ->  newGameAction.requestMainMenuScreen()), boxes[0]);
         
         add(new PanelButton("Confirm", e -> newGameAction.requestConfirmCreation(nameTextField.getText(), (ClassType)classComboBox.getSelectedItem())), boxes[1]);
     }
@@ -115,22 +115,10 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
     }
     
     @Override
-    public void openNewGameScreen()
-    {
-        setVisible(true);
-    }
-    
-    @Override
     public void changeCharacterPanel(ClassType classType)
     {
         picturePreview.setImage(new ImageIcon(classType.getImagePath()).getImage());
         classDescriptionTextArea.setText(classType.getStartingDescription());
-    }
-    
-    @Override
-    public void closeNewGameScreen()
-    {
-        setVisible(false);
     }
     
     @Override
