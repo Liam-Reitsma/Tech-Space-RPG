@@ -2,7 +2,6 @@ package game.mainmenu.controller;
 
 import static game.frame.controller.DisplayTarget.MAIN_MENU;
 
-import game.frame.controller.DisplayTarget;
 import game.frame.controller.FrameAction;
 
 public class MainMenuController implements MainMenuAction
@@ -21,9 +20,9 @@ public class MainMenuController implements MainMenuAction
     }
     
     @Override
-    public void requestOpenDisplay(DisplayTarget display)
+    public void requestOpenDisplay(MainMenuOption mainMenuOption)
     {
-        frameAction.display(display);
+        frameAction.display(mainMenuOption.getDisplayTarget());
     }
     
     @Override
