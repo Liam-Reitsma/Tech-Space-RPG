@@ -1,14 +1,16 @@
 package game.mainmenu.view;
 
+import game.frame.controller.DisplayTarget;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.config.DisplayableScreen;
 import game.mainmenu.controller.MainMenuAction;
+import game.mainmenu.controller.MainMenuOption;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class MainMenuScreen extends JPanel implements MainMenuViewAction, DisplayableScreen
+public class MainMenuScreen extends JPanel implements DisplayableScreen
 {
     private static final Image MAIN_MENU_IMAGE = new ImageIcon("resources/images/Main Menu Background.png").getImage();
     
@@ -49,10 +51,12 @@ public class MainMenuScreen extends JPanel implements MainMenuViewAction, Displa
     private void createButtonPanel(LayoutBox box)
     {
         LayoutBox[] boxes = box.splitVertical(25, 25, 25, 25);
-        add(new MainMenuButton("New Game", e -> mainMenuAction.requestOpenNewGameScreen()), boxes[0]);
-        add(new MainMenuButton("Load Game", e -> mainMenuAction.requestOpenSavesOverlay()), boxes[1]);
-        add(new MainMenuButton("Options", e -> mainMenuAction.requestOpenOptionsOverlay()), boxes[2]);
-        add(new MainMenuButton("Exit Game", e -> mainMenuAction.requestExitGame()), boxes[3]);
+        
+        int i = 0;
+        for(MainMenuOption option : MainMenuOption.values())
+        {
+            add(new MainMenuButton(option.toString(), e -> mainMenuAction.requestOpenDisplay(option)), boxes[i++]);
+        }
     }
     
     @Override
@@ -60,18 +64,6 @@ public class MainMenuScreen extends JPanel implements MainMenuViewAction, Displa
     {
         super.paintComponent(g);
         g.drawImage(MAIN_MENU_IMAGE, 0, 0, getWidth(), getHeight(), null);
-    }
-    
-    @Override
-    public void openMainMenuScreen()
-    {
-        setVisible(true);
-    }
-    
-    @Override
-    public void closeMainMenuScreen()
-    {
-        setVisible(false);
     }
     
     @Override
