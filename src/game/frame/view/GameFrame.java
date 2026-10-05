@@ -3,6 +3,7 @@ package game.frame.view;
 import static game.gui.config.GUIConfig.PROGRAM_HEIGHT;
 import static game.gui.config.GUIConfig.PROGRAM_WIDTH;
 
+import game.frame.controller.DisplayTarget;
 import game.gui.config.DisplayResolution;
 import game.gui.config.Displayable;
 import game.gui.config.DisplayableOverlay;
@@ -12,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.Map;
 
 public class GameFrame extends JFrame implements FrameViewAction
 {
@@ -20,11 +22,15 @@ public class GameFrame extends JFrame implements FrameViewAction
     private Displayable currentDisplayedScreen;
     private Displayable currentDisplayedOverlay;
     
-    public GameFrame(String name, OverlayContainer oContainer)
+    private final Map<DisplayTarget, Displayable> displayMap;
+    
+    public GameFrame(String name, OverlayContainer oContainer, Map<DisplayTarget, Displayable> map)
     {
         super(name);
         
         overlayContainer = oContainer;
+        
+        displayMap = map;
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(new Dimension(PROGRAM_WIDTH, PROGRAM_HEIGHT));
@@ -46,24 +52,24 @@ public class GameFrame extends JFrame implements FrameViewAction
     }
     
     @Override
-    public void display(Displayable display)
+    public void display(DisplayTarget display)
     {
-        if(display instanceof DisplayableOverlay)
+        Displayable displayScreen = displayMap.get(display);
+        
+        if(displayScreen instanceof DisplayableOverlay overlay)
         {
             if(currentDisplayedOverlay != null)
                 currentDisplayedOverlay.closeDisplay();
-            
-            currentDisplayedOverlay = display;
+            currentDisplayedOverlay = overlay;
         }
-        else if(display instanceof DisplayableScreen)
+        else if(displayScreen instanceof DisplayableScreen screen)
         {
             if(currentDisplayedScreen != null)
                 currentDisplayedScreen.closeDisplay();
-            
-            currentDisplayedScreen = display;
+            currentDisplayedScreen = screen;
         }
         
-        display.openDisplay();
+        displayScreen.openDisplay();
     }
     
     @Override
