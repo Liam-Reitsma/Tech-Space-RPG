@@ -1,42 +1,74 @@
 package game;
 
-import game.combat.CombatController;
-import game.entities.player.PlayerController;
-import game.mainmenu.MainMenuController;
-import game.persistence.SaveFile;
-import game.persistence.PersistenceController;
-import game.reward.RewardController;
-import game.world.RoomController;
+import static game.frame.controller.DisplayTarget.*;
+
+import game.frame.controller.DisplayTarget;
+import game.frame.controller.FrameController;
+import game.frame.view.GameFrame;
+import game.frame.view.OverlayContainer;
+import game.gui.config.Displayable;
+import game.maingame.controller.GameController;
+import game.maingame.model.GameModel;
+import game.maingame.view.GameScreen;
+import game.mainmenu.controller.MainMenuController;
+import game.mainmenu.view.MainMenuScreen;
+import game.newgame.controller.NewGameController;
+import game.newgame.view.NewGameScreen;
+import game.options.controller.OptionsController;
+import game.options.view.OptionsOverlay;
+import game.persistence.DBManager;
+import game.persistence.PersistenceService;
+import game.saves.controller.SavesController;
+import game.saves.view.SavesOverlay;
 import game.world.WorldController;
 
-import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main
 {
     public static void main(String[] args)
     {
-        Scanner scanner = new Scanner(System.in);
-        ConsoleHandler consoleH = new ConsoleHandler(scanner);
-        SaveFile saveFile = new SaveFile();
-        CombatController combatC = new CombatController(consoleH);
-        MainMenuController mainMenuC = new MainMenuController(consoleH);
-        PersistenceController persistenceC = new PersistenceController(consoleH, saveFile);
-        PlayerController playerC = new PlayerController(consoleH);
-        RewardController rewardC = new RewardController(consoleH);
-        RoomController roomC = new RoomController(consoleH);
-        WorldController worldC = new WorldController(consoleH);
+        DBManager dbManager = new DBManager();
+        PersistenceService persistenceService = new PersistenceService(dbManager);
+        GameModel gameModel = new GameModel();
         
-        GameController gameController = new GameController(combatC, mainMenuC, persistenceC, playerC, rewardC, roomC, worldC);
+        FrameController frameController = new FrameController();
+        MainMenuController mainMenuController = new MainMenuController(frameController);
+        OptionsController optionsController = new OptionsController(frameController);
+        WorldController worldController = new WorldController(gameModel);
+        GameController gameController = new GameController(gameModel, frameController, worldController);
+        NewGameController newGameController = new NewGameController(frameController, gameController);
+        SavesController savesController = new SavesController(persistenceService, frameController, gameController);
         
-        consoleH.printLine(intro);
+        OverlayContainer overlayContainer = new OverlayContainer();
+        GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);
+        Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
+        GameScreen gameScreen = new GameScreen(gameController);
+        MainMenuScreen mainMenuScreen = new MainMenuScreen("Tech Space RPG", mainMenuController);
+        NewGameScreen newGameScreen = new NewGameScreen(newGameController);
+        OptionsOverlay optionsOverlay = new OptionsOverlay(optionsController);
+        SavesOverlay savesOverlay = new SavesOverlay(savesController);
         
-        int exitValue = gameController.start();
-        if(exitValue == 8) consoleH.printLine("You cannot load a dead character");
-        scanner.close();
-        System.exit(exitValue);
+        displayMap.put(MAIN_GAME, gameScreen);
+        displayMap.put(MAIN_MENU, mainMenuScreen);
+        displayMap.put(NEW_GAME, newGameScreen);
+        displayMap.put(OPTIONS, optionsOverlay);
+        displayMap.put(SAVES, savesOverlay);
+        
+        gameFrame.registerDisplay(displayMap);
+        
+        frameController.setFrameViewAction(gameFrame);
+        //worldController.setWorldViewAction(worldPanel);
+        gameController.setGameViewAction(gameScreen);
+        newGameController.setNewGameViewAction(newGameScreen);
+        savesController.setSavesViewAction(savesOverlay);
+        
+        //persistenceService.createNewGame("test", "testGuy", ClassType.GUARDIAN);
+        frameController.display(MAIN_MENU);
+        gameFrame.setVisible(true);
+        
+        //dbManager.closeSQLConnection();
+        //System.exit(0);
     }
-    
-    private static final String intro =
-    "Welcome to Tech Space.\nUse '~' whenever you wish to go back." +
-        "Select an Option:";
 }

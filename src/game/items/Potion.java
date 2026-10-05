@@ -1,5 +1,6 @@
 package game.items;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class Potion extends Item
@@ -34,5 +35,20 @@ public class Potion extends Item
     public String toString()
     {
         return potionType.toString();
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(potionType);
+    }
+    
+    @Override
+    public boolean equals(Object object)
+    {
+        if(this == object) return true;
+        if(!(object instanceof Potion potion)) return false;
+        
+        return potionType == potion.potionType;
     }
 }

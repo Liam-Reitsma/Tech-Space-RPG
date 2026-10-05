@@ -118,24 +118,24 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
      * If the {@link Player} chooses to go back by using "~" it returns USER_WENT_BACK. If not, it sets the {@link Player} selected {@link Potion} to the {@link Player}'s choice and returns SUCCESS.*/
     private CombatErrors getPotionToUse(Player player)
     {
-        Potion[] potions = player.getPotionsInInventory().getResultArray();
-        if(potions.length == 0) return NO_POTION_TO_USE;
-        StringBuilder potionOptions = new StringBuilder();
-        String potionString = Arrays.toString(potions);
-        String potionsSplit = potionString.substring(1, potionString.length() - 1);
-        int i = 1;
-        
-        for(String potion : potionsSplit.split(", "))
-        {
-            potionOptions.append(i++).append(". ").append(potion).append(", ");
-        }
-
-        potionOptions.delete(potionOptions.length() - ", ".length(), potionOptions.length());
-
-        Optional<Integer> choice = consoleH.confirmInput("Which potion would you like to use?", potionOptions.toString(), ", ").getInput();
-        if(choice.isEmpty()) return USER_WENT_BACK;
-        
-        player.setSelectedPotion(potions[choice.get() - 1]);
+//        Potion[] potions = player.getPotionsInInventory().getResultArray();
+//        if(potions.length == 0) return NO_POTION_TO_USE;
+//        StringBuilder potionOptions = new StringBuilder();
+//        String potionString = Arrays.toString(potions);
+//        String potionsSplit = potionString.substring(1, potionString.length() - 1);
+//        int i = 1;
+//
+//        for(String potion : potionsSplit.split(", "))
+//        {
+//            potionOptions.append(i++).append(". ").append(potion).append(", ");
+//        }
+//
+//        potionOptions.delete(potionOptions.length() - ", ".length(), potionOptions.length());
+//
+//        Optional<Integer> choice = consoleH.confirmInput("Which potion would you like to use?", potionOptions.toString(), ", ").getInput();
+//        if(choice.isEmpty()) return USER_WENT_BACK;
+//
+//        player.setSelectedPotion(potions[choice.get() - 1]);
         return SUCCESS;
     }
 

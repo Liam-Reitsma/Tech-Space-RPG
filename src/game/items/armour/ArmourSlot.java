@@ -1,6 +1,8 @@
 package game.items.armour;
 
-public enum ArmourSlot
+import game.items.EquipSlot;
+
+public enum ArmourSlot implements EquipSlot
 {
     HEAD  (0.20f),
     CHEST (0.40f),
@@ -33,5 +35,15 @@ public enum ArmourSlot
             case 6 -> BOOTS;
             default -> null;
         };
+    }
+    
+    public static ArmourSlot parse(String slot)
+    {
+        for(ArmourSlot armourSlot : ArmourSlot.values())
+        {
+            if(armourSlot.toString().equalsIgnoreCase(slot)) return armourSlot;
+        }
+        
+        return null;
     }
 }

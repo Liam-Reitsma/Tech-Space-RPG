@@ -1,11 +1,15 @@
 package game.items.weapon;
 
 import game.entities.StatType;
+import game.items.EquipSlot;
 import game.items.EquippableItem;
+
+import java.util.Objects;
 
 public class Weapon extends EquippableItem
 {
-    private WeaponType weaponType;
+    private final WeaponType weaponType;
+    private final WeaponSlot weaponSlot;
     
     private int level;
     
@@ -13,21 +17,37 @@ public class Weapon extends EquippableItem
     {
         name = type.toString();
         weaponType = type;
+        weaponSlot = type.getWeaponSlot();
         level = playerLevel;
     }
 
-    public Weapon(String[] data)
-    {
-        loadSaveInfo(data);
-    }
-
-    public float calculateDamage(int stat) { return weaponType.calculateDamage(stat); }
+    public float calculateDamage(int stat) { return weaponType.calculateDamage(stat, level); }
     
     public int calculateStatReq() { return weaponType.calculateStatReq(level); }
     
     public boolean canUseWeapon(int statValue) { return weaponType.canUseWeapon(statValue, level); }
     
+    public int getLevel() { return level; }
+    
     public StatType getScalingStat() { return weaponType.getScalingStat(); }
     
     public WeaponType getWeaponType() { return weaponType; }
+    
+    @Override
+    public EquipSlot getEquipSlot() { return weaponSlot; }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(weaponType, weaponSlot, level);
+    }
+    
+    @Override
+    public boolean equals(Object object)
+    {
+        if(object == null) return false;
+        if(!(object instanceof Weapon weapon)) return false;
+        
+        return weaponType == weapon.weaponType && weaponSlot == weapon.weaponSlot && level == weapon.level;
+    }
 }

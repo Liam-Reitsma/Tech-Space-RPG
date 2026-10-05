@@ -1,20 +1,18 @@
 package game.entities.player;
 
 import static game.entities.StatType.*;
-import static game.entities.player.PlayerErrors.*;
 
 import game.entities.*;
 import game.items.*;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
+import game.world.Point;
 
 import java.util.*;
 
 /** Player extends Entities and implements Persistable. It holds all the methods that apply to the {@link Player}*/
 public class Player extends Entities implements Persistable
 {
-    @SaveExclude
-    private static final int MAXIMUM_INVENTORY_SIZE = 20;
     @SaveExclude
     private static final int STARTING_LEVEL_XP = 15;
     @SaveExclude
@@ -25,9 +23,9 @@ public class Player extends Entities implements Persistable
     private int xp;
     private int gold;
     
-    private Potion selectedPotion;
-    
-    private Map<StatType, Integer> statTypeMap;
+    private final Point point;
+    private final ClassType classType;
+    private final Map<StatType, Integer> statTypeMap;
     
     @SaveExclude
     private float maximumHealth;
@@ -39,11 +37,7 @@ public class Player extends Entities implements Persistable
     private float armourMultiplier;
     
     @SaveExclude
-    private List<Item> inventory;
-    @SaveExclude
-    private List<Armour> equippedArmourPieces;
-    @SaveExclude
-    private Weapon equippedWeapon;
+    private final Inventory inventory;
 
     /** Used when creating character at the start of a new game.*/
     public Player(String playerName, ClassType type)
@@ -52,8 +46,9 @@ public class Player extends Entities implements Persistable
         xp = 0;
         gold = 0;
         name = playerName;
-        
-        selectedPotion = null;
+        classType = type;
+        point = new Point(0, 0);
+        inventory = new Inventory();
         
         statTypeMap = new HashMap<>();
         statTypeMap.put(STR, type.getStatStrength());
@@ -66,48 +61,44 @@ public class Player extends Entities implements Persistable
         
         health = maximumHealth;
         
-        equippedWeapon = new Weapon(type.getStartingWeapon(), level);
-        equippedWeapon.equip();
-        
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
 
     /** Used when loading an existing character.*/
-    public Player(String[] data)
+    public Player(Object[] playerData, Object[] statData)
     {
-        loadSaveInfo(data);
+        int i = -1;
+        name = (String)playerData[++i];
+        level = (int)playerData[++i];
+        health = (float)playerData[++i];
+        xp = (int)playerData[++i];
+        gold = (int)playerData[++i];
+        classType = ClassType.parseClassType((String)playerData[++i]);
+        point = new Point((int)playerData[++i], (int)playerData[++i]);
+
+        inventory = new Inventory();
+        
+        i = -1;
+        statTypeMap = new HashMap<>();
+        statTypeMap.put(STR, (int)statData[++i]);
+        statTypeMap.put(DEX, (int)statData[++i]);
+        statTypeMap.put(INT, (int)statData[++i]);
+        
         maximumHealth = 100 * (1 + statTypeMap.get(STR) * 0.05f);
         armourPenetration = statTypeMap.get(DEX) * 0.005f;
         damageMultiplier = 1 + statTypeMap.get(INT) * 0.006f;
         armourMultiplier = 1 + statTypeMap.get(INT) * 0.003f;
+        
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
     
-    public void setWeapon(Weapon weapon) { equippedWeapon = weapon; }
-    
-    public void setInventory(List<Item> newInventory)
-    {
-        if(newInventory == null) inventory = new ArrayList<>();
-        else inventory = newInventory;
-    }
-    
-    public void setEquippedArmourPieces(List<Armour> newEquipped)
-    {
-        if(newEquipped == null) equippedArmourPieces = new ArrayList<>();
-        else equippedArmourPieces = newEquipped;
-    }
-    
-    public void setSelectedPotion(Potion potion)
-    {
-        selectedPotion = potion;
-    }
-
     /** First checks for equipped weapon and if there is no weapon equipped, it returns the strength value of {@link Player}. Otherwise, it gets the equipped weapons damage by using calculateDamage() and multiplying by the {@link Player} damage multiplier field. It is then rounded to 4 decimal places.*/
     @Override
     public float attack()
     {
-        if(equippedWeapon == null) return statTypeMap.get(STR);
-        return Math.round(damageMultiplier * equippedWeapon.calculateDamage(statTypeMap.get(equippedWeapon.getScalingStat())) * 10000f) / 10000f;
+        Weapon weapon = inventory.getEquippedWeapon();
+        if(weapon != null) return Math.round((damageMultiplier * weapon.calculateDamage(statTypeMap.get(weapon.getScalingStat())) * 10000f) / 10000f);
+        return statTypeMap.get(STR);
     }
     
     public void healing(int healAmount)
@@ -130,7 +121,7 @@ public class Player extends Entities implements Persistable
     public void takeDamage(float damage, float armourPen)
     {
         float totalArmour = 0;
-        for(Armour armour : equippedArmourPieces)
+        for(Armour armour : inventory.getEquippedArmour())
         {
             totalArmour += (1 - totalArmour) * Math.min(armour.calculateProtection() * armourMultiplier, 1);
         }
@@ -177,148 +168,30 @@ public class Player extends Entities implements Persistable
         statTypeMap.put(stat, statTypeMap.get(stat) + 1);
         recalculateStats();
     }
-
-    /** Checks for {@link Weapon} in the inventory and adds it to a weapons array and returns a SUCCESS with the weapons array, however, if there are no weapons in the inventory, it returns a NO_WEAPON_AVAILABLE with an empty array.*/
-    public PlayerResult<Weapon> getWeaponsInInventory()
+    
+    public void equipItem(EquippableItem item)
     {
-        Weapon[] inventoryWeapons = new Weapon[10];
-        Weapon[] weapons;
-        int i = 0;
-        for(Item item : getInventory())
-        {
-            if(item instanceof Weapon weapon) inventoryWeapons[i++] = weapon;
-        }
-        if(i == 0) return new PlayerResult<>(NO_WEAPON_AVAILABLE, new Weapon[0]);
-        weapons = new Weapon[i];
-        i = 0;
-        
-        for(Weapon weapon : inventoryWeapons)
-        {
-            if(weapon == null) continue;
-            weapons[i++] = weapon;
-        }
-        
-        return new PlayerResult<>(SUCCESS, weapons);
+        inventory.equipItem(item);
     }
     
-    public PlayerErrors equipWeapon(Weapon weapon)
+    public void unequipItem(EquippableItem item)
     {
-        if(weapon == null) return NO_WEAPON_GIVEN;
-        if(!inventory.contains(weapon)) return NO_WEAPON_AVAILABLE;
-        else
-        {
-            if(equippedWeapon != null)
-            {
-                equippedWeapon.unequip();
-                inventory.add(equippedWeapon);
-            }
-            
-            equippedWeapon = weapon;
-            inventory.remove(weapon);
-            weapon.equip();
-            return SUCCESS;
-        }
+        inventory.unequipItem(item);
     }
     
-    public PlayerErrors unequipWeapon()
+    public void addToInventory(Item item)
     {
-        if(equippedWeapon == null) return NO_WEAPON_EQUIPPED;
-        inventory.add(equippedWeapon);
-        equippedWeapon.unequip();
-        equippedWeapon = null;
-        return SUCCESS;
-    }
-
-    /** Checks for {@link Armour} in the inventory and adds it to an armours array and returns a SUCCESS with the armours array, however, if there are no armours in the inventory, it returns a NO_ARMOUR_AVAILABLE with an empty array.*/
-    public PlayerResult<Armour> getArmourInInventory()
-    {
-        Armour[] inventoryArmours = new Armour[10];
-        Armour[] armours;
-        int i = 0;
-        for(Item item : getInventory())
-        {
-            if(item instanceof Armour armour) inventoryArmours[i++] = armour;
-        }
-        if(i == 0) return new PlayerResult<>(NO_ARMOUR_AVAILABLE, new Armour[0]);
-        armours = new Armour[i];
-        i = 0;
-        
-        for(Armour armour : inventoryArmours)
-        {
-            if(armour == null) continue;
-            armours[i++] = armour;
-        }
-        
-        return new PlayerResult<>(SUCCESS, armours);
+        inventory.addToInventory(item);
     }
     
-    public PlayerErrors equipArmour(Armour armour)
+    public void removeFromInventory(Item item, boolean removeWholeStack)
     {
-        if(!inventory.contains(armour)) return NO_ARMOUR_AVAILABLE;
-        else
-        {
-            for(Armour equippedArmour : equippedArmourPieces)
-            {
-                if(armour.getArmourSlot() == equippedArmour.getArmourSlot())
-                {
-                    equippedArmour.unequip();
-                    inventory.add(equippedArmour);
-                }
-            }
-            
-            equippedArmourPieces.add(armour);
-            inventory.remove(armour);
-            armour.equip();
-            return SUCCESS;
-        }
+        inventory.removeFromInventory(item, removeWholeStack);
     }
     
-    public PlayerErrors unequipArmour(Armour armour)
+    public Inventory getInventory()
     {
-        if(equippedArmourPieces.isEmpty()) return NO_ARMOUR_EQUIPPED;
-        if(!equippedArmourPieces.contains(armour)) return NO_SLOT_ARMOUR_EQUIPPED;
-        equippedArmourPieces.remove(armour);
-        armour.unequip();
-        inventory.add(armour);
-        return SUCCESS;
-    }
-
-    /** Checks for {@link Potion} in the inventory and adds it to a potions array and returns a SUCCESS with the potions array, however, if there are no potions in the inventory, it returns a NO_POTION_AVAILABLE with an empty array.*/
-    public PlayerResult<Potion> getPotionsInInventory()
-    {
-        Potion[] inventoryPotions = new Potion[10];
-        Potion[] potions;
-        int i = 0;
-        for(Item item : getInventory())
-        {
-            if(item instanceof Potion potion) inventoryPotions[i++] = potion;
-        }
-        if(i == 0) return new PlayerResult<>(NO_POTION_AVAILABLE, new Potion[0]);
-        potions = new Potion[i];
-        i = 0;
-        
-        for(Potion potion : inventoryPotions)
-        {
-            if(potion == null) continue;
-            potions[i++] = potion;
-        }
-        
-        return new PlayerResult<>(SUCCESS, potions);
-    }
-    
-    public PlayerErrors addToInventory(Item item)
-    {
-        if(item == null) return NO_ITEM_GIVEN;
-        else if(inventory.size() >= MAXIMUM_INVENTORY_SIZE) return MAX_INVENTORY_REACHED;
-        inventory.add(item);
-        return SUCCESS;
-    }
-    
-    public PlayerErrors removeFromInventory(Item item)
-    {
-        if(!inventory.contains(item)) return ITEM_MISSING;
-        inventory.remove(item);
-        return SUCCESS;
+        return inventory;
     }
     
     public int getXP() { return xp; }
@@ -327,19 +200,17 @@ public class Player extends Entities implements Persistable
     
     public int getGold() { return gold; }
     
+    public int getSTR() { return statTypeMap.get(STR); }
+    
+    public int getDEX() { return statTypeMap.get(DEX); }
+    
+    public int getINT() { return statTypeMap.get(INT); }
+    
     public float getMaximumHealth() { return maximumHealth; }
     
     public float getArmourPenetration() { return armourPenetration; }
     
-    public Weapon getEquippedWeapon() { return equippedWeapon; }
+    public Point getPoint() { return point; }
     
-    public List<Item> getInventory() { return inventory; }
-    
-    public List<Armour> getEquippedArmour() { return equippedArmourPieces; }
-    
-    public PlayerResult<Potion> getSelectedPotion()
-    {
-        if(selectedPotion == null) return new PlayerResult<>(NO_POTION_SELECTED, new Potion[0]);
-        return new PlayerResult<>(SUCCESS, new Potion[]{selectedPotion});
-    }
+    public ClassType getClassType() { return classType; }
 }

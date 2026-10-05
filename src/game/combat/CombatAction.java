@@ -24,10 +24,10 @@ public enum CombatAction implements Actionable
             {
                 StringBuilder message = new StringBuilder();
                 CombatOutcome outcome = NOTHING;
-                String equippedWeaponName = player.getEquippedWeapon() == null ? "fists" : player.getEquippedWeapon().getName();
+//                String equippedWeaponName = player.getEquippedWeapon() == null ? "fists" : player.getEquippedWeapon().getName();
                 float damage = player.attack();
                 enemy.takeDamage(damage, player.getArmourPenetration());
-                message.append("You used ").append(equippedWeaponName).append(" to attack ").append(enemy.getName()).append("!\n");
+//                message.append("You used ").append(equippedWeaponName).append(" to attack ").append(enemy.getName()).append("!\n");
                 message.append("You dealt ").append(damage).append("!\n");
                 if(enemy.getHealth() <= 0) outcome = WIN;
                 
@@ -50,13 +50,13 @@ public enum CombatAction implements Actionable
             @Override
             public ActionResult doAction(Player player, Enemy enemy)
             {
-                PlayerResult<Potion> result = player.getSelectedPotion();
-                if(result.getError() != PlayerErrors.SUCCESS) return new ActionResult(USER_WENT_BACK, "No potion was selected!");
-                Potion potionUsed = result.getResultArray()[0];
-                if(player.removeFromInventory(potionUsed) != PlayerErrors.SUCCESS) return new ActionResult(USER_WENT_BACK, "Something went wrong!");
-                player.healing(potionUsed.use());
-                player.setSelectedPotion(null);
-                return new ActionResult(NOTHING, "You healed for " + potionUsed.use() + "hp!");
+//                PlayerResult<Potion> result = player.getSelectedPotion();
+//                if(result.getError() != PlayerErrors.SUCCESS) return new ActionResult(USER_WENT_BACK, "No potion was selected!");
+//                Potion potionUsed = result.getResultArray()[0];
+//                if(player.removeFromInventory(potionUsed) != PlayerErrors.SUCCESS) return new ActionResult(USER_WENT_BACK, "Something went wrong!");
+//                player.healing(potionUsed.use());
+//                player.setSelectedPotion(null);
+                return new ActionResult(NOTHING, "You healed for " + 10 + "hp!");
             }
         };
     /** Returns enum values as first letter capitalised and lowercase for rest by overriding the default toString().*/

@@ -1,8 +1,10 @@
 package game.entities;
 
+import game.world.room.RoomContent;
+
 /** Enemy extends Entities and implements Persistable. It holds the logic that applies to the {@link Enemy}.
  * It is also important to note that the {@link Enemy} scales to the Player's level but the armour is capped at 0.7.*/
-public class Enemy extends Entities implements Persistable
+public class Enemy extends Entities implements Persistable, RoomContent
 {
     private int gold;
     private int xp;
