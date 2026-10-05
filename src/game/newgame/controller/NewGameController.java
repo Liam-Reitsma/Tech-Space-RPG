@@ -1,6 +1,6 @@
 package game.newgame.controller;
 
-import static game.frame.controller.DisplayTarget.NEW_GAME;
+import static game.frame.controller.DisplayTarget.*;
 
 import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
@@ -37,5 +37,11 @@ public class NewGameController implements NewGameAction
     public void requestConfirmCreation(String name, ClassType classType)
     {
         gameAction.requestNewGame(new Player(name, classType));
+    }
+    
+    @Override
+    public void requestMainMenuScreen()
+    {
+        frameAction.display(MAIN_MENU);
     }
 }
