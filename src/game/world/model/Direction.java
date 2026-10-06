@@ -1,4 +1,4 @@
-package game.world;
+package game.world.model;
 
 public enum Direction
 {

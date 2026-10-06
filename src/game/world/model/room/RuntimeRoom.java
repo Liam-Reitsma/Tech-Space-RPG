@@ -1,7 +1,7 @@
-package game.world.room;
+package game.world.model.room;
 
 import game.entities.Persistable;
-import game.world.Point;
+import game.world.model.Point;
 
 public class RuntimeRoom implements Persistable
 {

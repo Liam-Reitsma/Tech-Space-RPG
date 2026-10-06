@@ -1,6 +1,6 @@
 package game.entities;
 
-import game.world.Point;
+import game.world.model.Point;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

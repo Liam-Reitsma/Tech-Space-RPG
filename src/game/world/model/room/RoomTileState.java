@@ -1,4 +1,4 @@
-package game.world.room;
+package game.world.model.room;
 
 public enum RoomTileState
 {

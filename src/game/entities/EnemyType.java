@@ -1,8 +1,8 @@
 package game.entities;
 
-import static game.world.room.RoomType.*;
+import static game.world.model.room.RoomType.*;
 
-import game.world.room.RoomType;
+import game.world.model.room.RoomType;
 
 /** Enum with all the Enemy types that the Player can encounter*/
 public enum EnemyType

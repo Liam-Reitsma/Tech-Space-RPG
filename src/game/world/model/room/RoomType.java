@@ -1,4 +1,4 @@
-package game.world.room;
+package game.world.model.room;
 
 import java.util.Random;
 

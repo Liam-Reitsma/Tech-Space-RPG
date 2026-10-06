@@ -7,9 +7,9 @@ import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
-import game.world.Point;
-import game.world.WorldController;
-import game.world.room.RuntimeRoom;
+import game.world.model.Point;
+import game.world.controller.WorldController;
+import game.world.model.room.RuntimeRoom;
 
 import java.util.ArrayList;
 import java.util.List;

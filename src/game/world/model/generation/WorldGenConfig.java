@@ -1,4 +1,4 @@
-package game.world.generation;
+package game.world.model.generation;
 
 public class WorldGenConfig
 {
