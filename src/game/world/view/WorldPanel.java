@@ -14,6 +14,8 @@ import java.util.Arrays;
 
 public class WorldPanel extends JPanel implements WorldViewAction
 {
+    private static final Image MAP_IMAGE = new ImageIcon("resources/images/World Map.png").getImage();
+    
     private final WorldAction worldAction;
     private JPanel[][] roomTiles;
     
@@ -47,6 +49,7 @@ public class WorldPanel extends JPanel implements WorldViewAction
             for(int col = 0; col < arrayMaxRange; col++)
             {
                 JPanel tile = new JPanel();
+                tile.setBorder(BorderFactory.createRaisedBevelBorder());
                 roomTiles[row][col] = tile;
                 
                 add(tile, grid[row][col].insets(5));
@@ -91,5 +94,12 @@ public class WorldPanel extends JPanel implements WorldViewAction
     public void updateAvailableMovementsPanel(Direction[] directions)
     {
     
+    }
+    
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        g.drawImage(MAP_IMAGE, 0, 0, getWidth(), getHeight(), this);
     }
 }
