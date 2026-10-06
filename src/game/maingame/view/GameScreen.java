@@ -5,6 +5,8 @@ import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.gui.config.DisplayableScreen;
 import game.maingame.controller.GameAction;
+import game.world.view.WorldPanel;
+import game.world.view.WorldViewAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +27,7 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     
     private JTextPane logPane;
     private JTextPane statsPane;
-    private JPanel worldMap;
+    private WorldPanel worldMap;
     private JPanel buttonPanel;
     
     private JButton northButton;
@@ -37,11 +39,13 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     private JButton loadGameButton;
     private JButton exitGameButton;
     
+    private final WorldPanel worldPanel;
     private final GameAction gameAction;
     
-    public GameScreen(GameAction gAction)
+    public GameScreen(WorldPanel wPanel, GameAction gAction)
     {
         setLayout(new ScaledLayout());
+        worldPanel = wPanel;
         
         LayoutBox[] boxes = new LayoutBox().splitVertical(90, 10);
         
@@ -96,8 +100,8 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
         
         LayoutBox worldBox = boxes[0];
         worldBackdrop = new JPanel(new ScaledLayout());
-        worldMap = new JPanel(new ScaledLayout());
-        worldBackdrop.add(worldMap, worldBox.insets(15));
+        worldMap = worldPanel;
+        worldBackdrop.add(worldMap, new LayoutBox().insets(5));
         add(worldBackdrop, worldBox);
         
         LayoutBox movementBox = boxes[1];
