@@ -5,6 +5,6 @@ import game.world.model.room.RoomState;
 
 public interface WorldViewAction
 {
-    void updateWorldMapPanel(RoomState[][] roomState);
+    void updateWorldMapPanel(RoomState[][] roomStates);
     void updateAvailableMovementsPanel(Direction[] directions);
 }
