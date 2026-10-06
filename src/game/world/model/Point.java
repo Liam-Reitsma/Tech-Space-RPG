@@ -1,4 +1,4 @@
-package game.world;
+package game.world.model;
 
 import java.util.Objects;
 

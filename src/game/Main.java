@@ -20,7 +20,7 @@ import game.persistence.DBManager;
 import game.persistence.PersistenceService;
 import game.saves.controller.SavesController;
 import game.saves.view.SavesOverlay;
-import game.world.WorldController;
+import game.world.controller.WorldController;
 
 import java.util.HashMap;
 import java.util.Map;

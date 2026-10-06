@@ -1,6 +1,7 @@
-package game.world;
+package game.world.view;
 
-import game.world.room.RoomState;
+import game.world.model.Direction;
+import game.world.model.room.RoomState;
 
 public interface WorldViewAction
 {

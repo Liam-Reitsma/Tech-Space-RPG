@@ -1,7 +1,7 @@
-package game.world.generation;
+package game.world.model.generation;
 
-import game.world.Direction;
-import game.world.Point;
+import game.world.model.Direction;
+import game.world.model.Point;
 
 public class GenerationRoom
 {

@@ -1,9 +1,13 @@
-package game.world;
+package game.world.controller;
 
 import game.maingame.model.GameModel;
 import game.Updatable;
 import game.entities.player.Player;
-import game.world.room.RuntimeRoom;
+import game.world.model.Direction;
+import game.world.model.Point;
+import game.world.model.WorldModel;
+import game.world.view.WorldViewAction;
+import game.world.model.room.RuntimeRoom;
 
 import java.util.Map;
 

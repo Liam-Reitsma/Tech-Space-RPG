@@ -6,8 +6,8 @@ import game.entities.*;
 import game.items.*;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
-import game.world.Direction;
-import game.world.Point;
+import game.world.model.Direction;
+import game.world.model.Point;
 
 import java.util.*;
 
