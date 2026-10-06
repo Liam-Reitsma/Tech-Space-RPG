@@ -118,8 +118,10 @@ public class WorldModel
         return roomMap;
     }
     
-    public RuntimeRoom getNextRoom(Map<Point, RuntimeRoom> world,Point playerLocation, Direction direction)
+    public RuntimeRoom moveNextRoom(Map<Point, RuntimeRoom> world, Point playerLocation, Direction direction)
     {
-        return world.get(playerLocation.calculateNewPoint(direction));
+        RuntimeRoom room = world.get(playerLocation.calculateNewPoint(direction));
+        room.setCurrent();
+        return room;
     }
 }
