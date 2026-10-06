@@ -78,52 +78,44 @@ public class WorldModel
         return directions.toArray(new Direction[0]);
     }
     
-    public RoomState[][] getSurroundingRoomStates(Map<Point, RuntimeRoom> world, Point playerPoint)
+    public RuntimeRoom[][] updateWorldInfo(Map<Point, RuntimeRoom> world, Point playerPoint)
     {
-        RoomState[][] roomStateMap = new RoomState[VIEWABLE_RANGE][VIEWABLE_RANGE];
-        Point newPoint = getTopLeftPoint(playerPoint);
+        RuntimeRoom[][] roomMap = new RuntimeRoom[MAX_RANGE * 2 + 1][MAX_RANGE * 2 + 1];
         
-        for(int i = 0; i < roomStateMap.length; i++)
+        for(int y = 0; y < MAX_RANGE * 2 + 1; y++)
         {
-            for(int j = 0; j < roomStateMap[0].length; j++)
+            for(int x = 0; x < MAX_RANGE * 2 + 1; x++)
             {
-                if(isPointOutOfBounds(newPoint) || !world.containsKey(newPoint)) roomStateMap[i][j] = new RoomState(RoomTileState.WALL);
-                else roomStateMap[i][j] = world.get(newPoint).getRoomState();
-                
-                newPoint = getNextPoint(newPoint, true);
+                Point point = new Point(x - MAX_RANGE, y - MAX_RANGE);
+                if(world.containsKey(point))
+                    roomMap[y][x] = world.get(point);
+                else
+                    roomMap[y][x] = new RuntimeRoom(point, new RoomState(RoomTileState.WALL, EMPTY));
             }
-            
-            newPoint = getNextPoint(newPoint, false);
         }
         
-        roomStateMap[VIEWABLE_RANGE / 2][VIEWABLE_RANGE / 2] = new RoomState(RoomTileState.CURRENT);
+        int viewingYLowRange = playerPoint.getY() + MAX_RANGE - (VIEWABLE_RANGE / 2);
+        int viewingYTopRange = playerPoint.getY() + MAX_RANGE + 1 + (VIEWABLE_RANGE / 2);
         
-        return roomStateMap;
-    }
-    
-    private Point getTopLeftPoint(Point point)
-    {
-        int x = point.getX();
-        int y = point.getY();
+        int viewingXLowRange = playerPoint.getX() + MAX_RANGE - (VIEWABLE_RANGE / 2);
+        int viewingXTopRange = playerPoint.getX() + MAX_RANGE + 1 + (VIEWABLE_RANGE / 2);
         
-        return new Point(x - VIEWABLE_RANGE / 2, y + VIEWABLE_RANGE / 2);
-    }
-    
-    private Point getNextPoint(Point currentPoint, boolean moveX)
-    {
-        int x = currentPoint.getX();
-        int y = currentPoint.getY();
+        for(int y = viewingYLowRange; y < viewingYTopRange; y++)
+        {
+            for(int x = viewingXLowRange; x < viewingXTopRange; x++)
+            {
+                if(y < 0 || y >= MAX_RANGE * 2 + 1)
+                    continue;
+                if(x < 0 || x >= MAX_RANGE * 2 + 1)
+                    continue;
+
+                roomMap[y][x].setSeen();
+            }
+        }
         
-        if(moveX) return new Point(x + 1, y);
-        else return new Point(x - VIEWABLE_RANGE, y - 1);
-    }
-    
-    private boolean isPointOutOfBounds(Point point)
-    {
-        if(point.getX() < -MAX_RANGE || point.getX() > MAX_RANGE) return true;
-        if(point.getY() < -MAX_RANGE || point.getY() > MAX_RANGE) return true;
+        roomMap[playerPoint.getY() + MAX_RANGE][playerPoint.getX() + MAX_RANGE].setCurrent();
         
-        return false;
+        return roomMap;
     }
     
     public RuntimeRoom getNextRoom(Map<Point, RuntimeRoom> world,Point playerLocation, Direction direction)

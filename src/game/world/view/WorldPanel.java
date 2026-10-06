@@ -1,12 +1,12 @@
 package game.world.view;
 
-import static game.world.model.WorldModel.VIEWABLE_RANGE;
+import static game.world.model.generation.WorldGenConfig.MAX_RANGE;
 
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.world.controller.WorldAction;
 import game.world.model.Direction;
-import game.world.model.room.RoomState;
+import game.world.model.room.RuntimeRoom;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,6 @@ public class WorldPanel extends JPanel implements WorldViewAction
     public WorldPanel(WorldAction wAction)
     {
         setLayout(new ScaledLayout());
-        setBackground(Color.WHITE);
         setOpaque(true);
         worldAction = wAction;
         createWorldGrid();
@@ -28,9 +27,10 @@ public class WorldPanel extends JPanel implements WorldViewAction
     
     private void createWorldGrid()
     {
+        int arrayMaxRange = MAX_RANGE * 2 + 1;
         LayoutBox mainBox = new LayoutBox();
-        LayoutBox[][] grid = new LayoutBox[VIEWABLE_RANGE][VIEWABLE_RANGE];
-        float[] splitArray = new float[VIEWABLE_RANGE];
+        LayoutBox[][] grid = new LayoutBox[arrayMaxRange][arrayMaxRange];
+        float[] splitArray = new float[arrayMaxRange];
         Arrays.fill(splitArray, 1);
         
         LayoutBox[] verticalBoxes = mainBox.splitVertical(splitArray);
@@ -40,33 +40,48 @@ public class WorldPanel extends JPanel implements WorldViewAction
         {
             grid[i++] = box.splitHorizontal(splitArray);
         }
-        roomTiles = new JPanel[VIEWABLE_RANGE][VIEWABLE_RANGE];
+        roomTiles = new JPanel[arrayMaxRange][arrayMaxRange];
         
-        for(int row = 0; row < VIEWABLE_RANGE; row++)
+        for(int row = 0; row < arrayMaxRange; row++)
         {
-            for(int col = 0; col < VIEWABLE_RANGE; col++)
+            for(int col = 0; col < arrayMaxRange; col++)
             {
                 JPanel tile = new JPanel();
                 roomTiles[row][col] = tile;
                 
-                add(tile, grid[row][col].insets(4));
+                add(tile, grid[row][col].insets(5));
             }
         }
     }
     
     @Override
-    public void updateWorldMapPanel(RoomState[][] roomStates)
+    public void updateWorldMapPanel(RuntimeRoom[][] rooms)
     {
-        for(int row = 0; row < VIEWABLE_RANGE; row++)
+        for(int row = 0; row < rooms.length; row++)
         {
-            for(int col = 0; col < VIEWABLE_RANGE; col++)
+            for(int col = 0; col < rooms[row].length; col++)
             {
-                switch(roomStates[row][col].getRoomTileState())
+                if(!rooms[row][col].isSeen())
+                    roomTiles[row][col].setOpaque(false);
+                else
                 {
-                    case WALL -> roomTiles[row][col].setBackground(Color.BLACK);
-                    case COMPLETED -> roomTiles[row][col].setBackground(Color.GREEN);
-                    case FLED, UNVISITED -> roomTiles[row][col].setBackground(Color.GRAY);
-                    case CURRENT -> roomTiles[row][col].setBackground(Color.CYAN);
+                    switch(rooms[row][col].getRoomState().getRoomTileState())
+                    {
+                        case WALL -> roomTiles[row][col].setBackground(Color.BLACK);
+                        case COMPLETED -> roomTiles[row][col].setBackground(Color.GREEN);
+                        case CURRENT -> roomTiles[row][col].setBackground(Color.CYAN);
+                        default ->
+                        {
+                            switch(rooms[row][col].getRoomState().getRoomType())
+                            {
+                                case COMBAT -> roomTiles[row][col].setBackground(Color.RED);
+                                case BOSS -> roomTiles[row][col].setBackground(Color.MAGENTA);
+                                case MINIBOSS -> roomTiles[row][col].setBackground(Color.PINK);
+                                case CHEST -> roomTiles[row][col].setBackground(Color.YELLOW);
+                                default -> roomTiles[row][col].setBackground(Color.GRAY);
+                            }
+                        }
+                    }
                 }
             }
         }

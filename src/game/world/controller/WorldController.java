@@ -44,6 +44,6 @@ public class WorldController implements WorldAction, Updatable
         Player player = gameModel.getPlayer();
         Map<Point, RuntimeRoom> world = gameModel.getWorld();
         worldViewAction.updateAvailableMovementsPanel(worldModel.getPossibleDirections(world, player.getPoint()));
-        worldViewAction.updateWorldMapPanel(worldModel.getSurroundingRoomStates(world, player.getPoint()));
+        worldViewAction.updateWorldMapPanel(worldModel.updateWorldInfo(world, player.getPoint()));
     }
 }
