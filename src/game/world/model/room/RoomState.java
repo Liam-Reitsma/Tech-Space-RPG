@@ -25,11 +25,13 @@ public class RoomState
         roomType = type;
     }
     
-    public void setCompleted() { roomTileState = COMPLETED; }
-    
     public boolean isCompleted() { return roomTileState == COMPLETED; }
     
+    public void setCompleted() { roomTileState = COMPLETED; }
+    
     public RoomTileState getRoomTileState() { return roomTileState; }
+    
+    public void setCurrent() { roomTileState = CURRENT; }
     
     public RoomType getRoomType() { return roomType; }
     
