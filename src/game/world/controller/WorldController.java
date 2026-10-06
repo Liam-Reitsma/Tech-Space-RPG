@@ -36,7 +36,6 @@ public class WorldController implements WorldAction, Updatable
     public void requestMoveNextRoom(Direction direction)
     {
         gameModel.getPlayer().movePoint(direction);
-        requestUpdate();
     }
     
     @Override
