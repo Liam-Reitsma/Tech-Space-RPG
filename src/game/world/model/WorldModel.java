@@ -14,7 +14,7 @@ import java.util.*;
 
 public class WorldModel
 {
-    private static final int VIEWABLE_RANGE = 5;
+    public static final int VIEWABLE_RANGE = 5;
     
     private final Random random;
     private final WorldGenerator worldGenerator;
@@ -81,7 +81,6 @@ public class WorldModel
     public RoomState[][] getSurroundingRoomStates(Map<Point, RuntimeRoom> world, Point playerPoint)
     {
         RoomState[][] roomStateMap = new RoomState[VIEWABLE_RANGE][VIEWABLE_RANGE];
-        
         Point newPoint = getTopLeftPoint(playerPoint);
         
         for(int i = 0; i < roomStateMap.length; i++)
@@ -96,6 +95,8 @@ public class WorldModel
             
             newPoint = getNextPoint(newPoint, false);
         }
+        
+        roomStateMap[VIEWABLE_RANGE / 2][VIEWABLE_RANGE / 2] = new RoomState(RoomTileState.CURRENT);
         
         return roomStateMap;
     }
