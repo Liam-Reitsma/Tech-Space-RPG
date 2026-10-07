@@ -1,12 +1,12 @@
 package game.world.model;
 
+import static game.world.model.room.RoomTileState.WALL;
 import static game.world.model.room.RoomType.*;
 import static game.world.model.generation.WorldGenConfig.MAX_RANGE;
 
 import game.world.model.generation.GenerationRoom;
 import game.world.model.generation.WorldGenerator;
 import game.world.model.room.RoomState;
-import game.world.model.room.RoomTileState;
 import game.world.model.room.RoomType;
 import game.world.model.room.RuntimeRoom;
 
@@ -41,6 +41,15 @@ public class WorldModel
             else world.put(point, new RuntimeRoom(point, new RoomState(COMBAT)));
         }
         
+        for(int y = 0; y < MAX_RANGE * 2 + 1; y++)
+        {
+            for(int x = 0; x < MAX_RANGE * 2 + 1; x++)
+            {
+                Point point = new Point(x - MAX_RANGE, (-y) + MAX_RANGE);
+                world.put(point, world.getOrDefault(point, new RuntimeRoom(point, new RoomState(WALL))));
+            }
+        }
+        
         return world;
     }
     
@@ -72,7 +81,7 @@ public class WorldModel
         
         for(Point orthogonalPoint : Point.getOrthogonalPoints(playerLocation))
         {
-            if(world.containsKey(orthogonalPoint)) directions.add(orthogonalPoint.returnRelativeDirection(playerLocation));
+            if(world.containsKey(orthogonalPoint) && world.get(orthogonalPoint).getRoomState().getRoomTileState() != WALL) directions.add(orthogonalPoint.returnRelativeDirection(playerLocation));
         }
         
         return directions.toArray(new Direction[0]);
@@ -86,16 +95,12 @@ public class WorldModel
         {
             for(int x = 0; x < MAX_RANGE * 2 + 1; x++)
             {
-                Point point = new Point(x - MAX_RANGE, y - MAX_RANGE);
-                if(world.containsKey(point))
-                    roomMap[y][x] = world.get(point);
-                else
-                    roomMap[y][x] = new RuntimeRoom(point, new RoomState(RoomTileState.WALL, EMPTY));
+                roomMap[y][x] = world.get(new Point(x - MAX_RANGE, (-y) + MAX_RANGE));
             }
         }
         
-        int viewingYLowRange = playerPoint.getY() + MAX_RANGE - (VIEWABLE_RANGE / 2);
-        int viewingYTopRange = playerPoint.getY() + MAX_RANGE + 1 + (VIEWABLE_RANGE / 2);
+        int viewingYLowRange = (-playerPoint.getY()) + MAX_RANGE - (VIEWABLE_RANGE / 2);
+        int viewingYTopRange = (-playerPoint.getY()) + MAX_RANGE + 1 + (VIEWABLE_RANGE / 2);
         
         int viewingXLowRange = playerPoint.getX() + MAX_RANGE - (VIEWABLE_RANGE / 2);
         int viewingXTopRange = playerPoint.getX() + MAX_RANGE + 1 + (VIEWABLE_RANGE / 2);
@@ -113,15 +118,6 @@ public class WorldModel
             }
         }
         
-        roomMap[playerPoint.getY() + MAX_RANGE][playerPoint.getX() + MAX_RANGE].setCurrent();
-        
         return roomMap;
-    }
-    
-    public RuntimeRoom moveNextRoom(Map<Point, RuntimeRoom> world, Point playerLocation, Direction direction)
-    {
-        RuntimeRoom room = world.get(playerLocation.calculateNewPoint(direction));
-        room.setCurrent();
-        return room;
     }
 }
