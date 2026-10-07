@@ -4,6 +4,13 @@ import java.util.Random;
 
 public enum RoomType
 {
+    WALL(false, new String[]{
+            "How did you get here?",
+            "He's in the walls!",
+            "How did you get into the backrooms?",
+            "Did bro just vent?",
+            "Nice any% route, bro!",
+    }),
     COMBAT(true, new String[] {
             "As the door opens, a lone figure turns towards you and raises their weapon.",
             "A single hostile steps into view from the far side of the room.",

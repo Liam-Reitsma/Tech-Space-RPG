@@ -1,6 +1,5 @@
 package game.world.model;
 
-import static game.world.model.room.RoomTileState.WALL;
 import static game.world.model.room.RoomType.*;
 import static game.world.model.generation.WorldGenConfig.MAX_RANGE;
 
@@ -81,7 +80,7 @@ public class WorldModel
         
         for(Point orthogonalPoint : Point.getOrthogonalPoints(playerLocation))
         {
-            if(world.containsKey(orthogonalPoint) && world.get(orthogonalPoint).getRoomState().getRoomTileState() != WALL) directions.add(orthogonalPoint.returnRelativeDirection(playerLocation));
+            if(world.containsKey(orthogonalPoint) && world.get(orthogonalPoint).getRoomState().getRoomType() != WALL) directions.add(orthogonalPoint.returnRelativeDirection(playerLocation));
         }
         
         return directions.toArray(new Direction[0]);
