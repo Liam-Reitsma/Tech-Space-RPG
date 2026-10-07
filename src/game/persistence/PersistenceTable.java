@@ -36,7 +36,7 @@ public enum PersistenceTable
             "BOOTS", "VARCHAR(50)"
             ),
     STORED_WEAPONS
-            (new String[]{"SAVE_NAME", "WEAPON_SLOT", "WEAPON_TYPE"},
+            (new String[]{"SAVE_NAME", "WEAPON_SLOT", "WEAPON_TYPE", "LEVEL"},
             "SAVE_NAME", "VARCHAR(50)",
             "WEAPON_SLOT", "VARCHAR(25)",
             "WEAPON_TYPE", "VARCHAR(25)",
