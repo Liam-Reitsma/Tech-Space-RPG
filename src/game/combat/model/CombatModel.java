@@ -1,9 +1,10 @@
 package game.combat.model;
 
 import game.combat.ActionResult;
-import game.combat.CombatOutcome;
 import game.entities.Enemy;
 import game.entities.player.Player;
+import game.items.Potion;
+import game.items.PotionType;
 import game.maingame.model.GameModel;
 
 import static game.combat.CombatOutcome.*;
@@ -52,18 +53,10 @@ public class CombatModel
             return new ActionResult(WIN, playerAttackResult + "The enemy has been defeated!");
         }
 
-        String enemyAttackResult = enemyAttack(player);
-        if(player.getHealth() <= 0)
-        {
-            endCombat();
-            return new ActionResult(LOSE, playerAttackResult + "\n" + enemyAttackResult + "You have been defeated!");
-        }
-
-        return new ActionResult(ONGOING, playerAttackResult + "\n" + enemyAttackResult);
-
+        return enemyTurn(player, playerAttackResult);
     }
 
-    private String enemyAttack(Player player)
+    private ActionResult enemyTurn(Player player, String playerResult)
     {
         float oldPlayerHealth = player.getHealth();
         float enemyDamage = currentEnemy.attack();
@@ -72,17 +65,31 @@ public class CombatModel
         String resultText = "Enemy inflicted " + Math.round(oldPlayerHealth - player.getHealth()) + " to the player.\n" +
                 "Player has " + Math.round(player.getHealth()) + " health.\n";
 
-        return resultText;
+        if(player.getHealth() <= 0)
+        {
+            endCombat();
+            return new ActionResult(LOSE, playerResult + "\n" + resultText + "You have been defeated!");
+        }
+        return new ActionResult(ONGOING, playerResult + "\n" + resultText);
     }
 
-    public String heal()
+    public ActionResult heal(PotionType potionType)
     {
-//        int healingAmount = potion.use();
-//        player.healing(healingAmount);
-//
-//        combatViewAction.updateCombatTextPane(String.format("Healing %d points", healingAmount));
+        Player player = gameModel.getPlayer();
+        float oldPlayerHealth = player.getHealth();
+        Potion potion = new Potion(potionType);
+        //TODO Change the getItemCount method to check whether the item is in the inventory
+        int potionCount = player.getInventory().getItemCount(potion);
 
-        return "";
+        if(potionCount == 0) return new ActionResult(ONGOING, "No potions " + potionType + " in inventory!");
+
+        player.healing(potion.use());
+        player.removeFromInventory(potion, false);
+
+        String playerHealString =  "Player has healed for " + Math.round(player.getHealth() - oldPlayerHealth) + " hp.\n" +
+                "Player has " + Math.round(player.getHealth()) + " health.\n";
+
+        return enemyTurn(player, playerHealString);
     }
 
     public ActionResult run()

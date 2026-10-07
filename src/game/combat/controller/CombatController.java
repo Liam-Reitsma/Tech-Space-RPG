@@ -5,6 +5,7 @@ import game.combat.ActionResult;
 import game.combat.model.CombatModel;
 import game.combat.view.CombatViewAction;
 import game.entities.Enemy;
+import game.items.PotionType;
 
 import static game.combat.CombatOutcome.ONGOING;
 
@@ -36,9 +37,10 @@ public class CombatController implements CombatAction, Updatable
     }
 
     @Override
-    public void requestHeal()
+    public void requestHeal(PotionType potionType)
     {
-        combatModel.heal();
+        if(combatModel.notInCombat()) return;
+        showResult(combatModel.heal(potionType));
     }
 
     @Override

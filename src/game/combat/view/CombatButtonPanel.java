@@ -3,6 +3,7 @@ package game.combat.view;
 import game.combat.controller.CombatAction;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
+import game.items.PotionType;
 
 import javax.swing.*;
 
@@ -24,11 +25,13 @@ public class CombatButtonPanel extends JPanel
 
         fightButton.addActionListener(e -> combatAction.requestAttack());
 
-        healthButton.addActionListener(e -> combatAction.requestHeal());
+        //TODO Change to an actual potion selection
+        healthButton.addActionListener(e -> combatAction.requestHeal(PotionType.SMALL_HEALTH));
 
         runButton.addActionListener(e -> combatAction.requestRun());
 
         setButtonEnabled(false);
+
         add(fightButton, verticalBoxes[0]);
         add(healthButton, verticalBoxes[1]);
         add(runButton, verticalBoxes[2]);
