@@ -26,7 +26,7 @@ public enum PersistenceTable
     EQUIPPED_ITEMS
             (new String[]{"SAVE_NAME"},
             "SAVE_NAME", "VARCHAR(50)",
-            "WEAPON", "VARCHAR(25)",
+            "WEAPON_TYPE", "VARCHAR(25)",
             "WEAPON_LEVEL", "INT",
             "HEAD", "VARCHAR(50)",
             "CHEST", "VARCHAR(50)",
