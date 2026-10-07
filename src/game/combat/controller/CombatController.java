@@ -1,9 +1,12 @@
 package game.combat.controller;
 
 import game.Updatable;
+import game.combat.ActionResult;
 import game.combat.model.CombatModel;
 import game.combat.view.CombatViewAction;
-import game.items.Potion;
+import game.entities.Enemy;
+
+import static game.combat.CombatOutcome.ONGOING;
 
 public class CombatController implements CombatAction, Updatable
 {
@@ -16,31 +19,39 @@ public class CombatController implements CombatAction, Updatable
         combatModel = cModel;
     }
 
-    public void setCombatViewAction(CombatViewAction cvAction)
+    public void setCombatViewAction(CombatViewAction cvAction) { combatViewAction = cvAction;}
+
+    public void startCombat(Enemy enemy)
     {
-        combatViewAction = cvAction;
+        combatModel.startCombat(enemy);
+        combatViewAction.setActionEnabled(true);
+        combatViewAction.displayMessage(enemy.getName() + " has appeared!");
     }
 
+    @Override
     public void requestAttack()
     {
-        String combatResult = combatModel.playerAttack();
-
-        combatViewAction.displayMessage(combatResult);
+        if(combatModel.notInCombat()) return;
+        showResult(combatModel.attack());
     }
 
+    @Override
     public void requestHeal()
     {
         combatModel.heal();
     }
 
-    public void requestUsePotion(Potion potion)
-    {
-        combatModel.heal();
-    }
-
+    @Override
     public void requestRun()
     {
-        combatViewAction.displayMessage("Player has ran away.");
+        if(combatModel.notInCombat()) return;
+        showResult(combatModel.run());
+    }
+
+    private void showResult(ActionResult combatResult)
+    {
+        if(combatResult.getOutcome() != ONGOING) combatViewAction.setActionEnabled(false);
+        combatViewAction.displayMessage(combatResult.getMessage());
     }
 
     @Override

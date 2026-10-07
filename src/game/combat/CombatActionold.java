@@ -18,7 +18,7 @@ public enum CombatActionold implements Actionable
             public ActionResult doAction(Player player, Enemy enemy)
             {
                 StringBuilder message = new StringBuilder();
-                CombatOutcome outcome = NOTHING;
+                CombatOutcome outcome = ONGOING;
 //                String equippedWeaponName = player.getEquippedWeapon() == null ? "fists" : player.getEquippedWeapon().getName();
                 float damage = player.attack();
                 enemy.takeDamage(damage, player.getArmourPenetration());
@@ -51,7 +51,7 @@ public enum CombatActionold implements Actionable
 //                if(player.removeFromInventory(potionUsed) != PlayerErrors.SUCCESS) return new ActionResult(USER_WENT_BACK, "Something went wrong!");
 //                player.healing(potionUsed.use());
 //                player.setSelectedPotion(null);
-                return new ActionResult(NOTHING, "You healed for " + 10 + "hp!");
+                return new ActionResult(ONGOING, "You healed for " + 10 + "hp!");
             }
         };
     /** Returns enum values as first letter capitalised and lowercase for rest by overriding the default toString().*/

@@ -5,7 +5,7 @@ public class ActionResult
     private final CombatOutcome outcome;
     private final String message;
     
-    ActionResult(CombatOutcome combatOutcome, String stringMessage)
+    public ActionResult(CombatOutcome combatOutcome, String stringMessage)
     {
         outcome = combatOutcome;
         message = stringMessage;

@@ -28,8 +28,16 @@ public class CombatButtonPanel extends JPanel
 
         runButton.addActionListener(e -> combatAction.requestRun());
 
+        setButtonEnabled(false);
         add(fightButton, verticalBoxes[0]);
         add(healthButton, verticalBoxes[1]);
         add(runButton, verticalBoxes[2]);
+    }
+
+    public void setButtonEnabled(boolean enabled)
+    {
+        fightButton.setEnabled(enabled);
+        healthButton.setEnabled(enabled);
+        runButton.setEnabled(enabled);
     }
 }
