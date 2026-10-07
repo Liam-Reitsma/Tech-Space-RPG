@@ -28,7 +28,7 @@ public class WorldDAO
         dbManager = db;
     }
     
-    public void insertWorld(String saveName, Map<Point, RuntimeRoom> world)
+    public boolean insertWorld(String saveName, Map<Point, RuntimeRoom> world)
     {
         for(Entry<Point, RuntimeRoom> worldEntry : world.entrySet())
         {
@@ -40,28 +40,31 @@ public class WorldDAO
                             roomEntry.getRoomState().getRoomTileState().name(), roomEntry.getRoomState().getRoomType().name()
                     };
             
-            dbManager.addEntryDB(buildInsertIntoSQL(TABLE_NAME, COLUMNS), args);
+            if(!dbManager.updateDB(buildInsertIntoSQL(TABLE_NAME, COLUMNS), args))
+                return false;
         }
-    }
-    
-    public void updateMap(String saveName, Map<Point, RuntimeRoom> world)
-    {
-        dbManager.deleteEntryDB(buildDeleteAllRowSQL(TABLE_NAME, SAVE_NAME_COLUMN), saveName);
         
-        insertWorld(saveName, world);
+        return true;
     }
     
-    public void updateRoomStatus(String saveName, RuntimeRoom room)
+    public boolean updateMap(String saveName, Map<Point, RuntimeRoom> world)
+    {
+        if(!dbManager.updateDB(buildDeleteAllRowSQL(TABLE_NAME, SAVE_NAME_COLUMN), saveName))
+            return false;
+        
+        return insertWorld(saveName, world);
+    }
+    
+    public boolean updateRoomStatus(String saveName, RuntimeRoom room)
     {
         Object[] args = new Object[]
                 {
-                        saveName, room.getPoint().getX(), room.getPoint().getY(),
+                        room.getRoomState().getRoomTileState().name(), saveName, room.getPoint().getX(), room.getPoint().getY(),
                 };
         String[] primaryKeys = ROOMS.getPrimaryKeys();
         String columnName = "ROOM_TILE_STATE";
-        String newCellValue = room.getRoomState().getRoomTileState().name();
         
-        dbManager.updateCellEntryDB(buildUpdateRowSQL(TABLE_NAME, columnName, primaryKeys), newCellValue, args);
+        return dbManager.updateDB(buildUpdateRowSQL(TABLE_NAME, columnName, primaryKeys), args);
     }
     
     public Map<Point, RuntimeRoom> loadSavedWorld(String saveName)

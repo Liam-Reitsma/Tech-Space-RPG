@@ -8,7 +8,6 @@ import game.entities.player.Player;
 import game.persistence.DBManager;
 import game.world.model.Point;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public class PlayerDAO
         dbManager = db;
     }
     
-    public void insertPlayer(String saveName, Player player)
+    public boolean insertPlayer(String saveName, Player player)
     {
         Object[] playerArgs = new Object[]
                 {
@@ -35,33 +34,32 @@ public class PlayerDAO
                         player.getHealth(), player.getXP(), player.getGold(),
                         player.getClassType().name(), player.getPoint().getX(), player.getPoint().getY()
                 };
-        dbManager.addEntryDB(buildInsertIntoSQL(PLAYER_TABLE_NAME, PLAYER_COLUMNS), playerArgs);
+        if(!dbManager.updateDB(buildInsertIntoSQL(PLAYER_TABLE_NAME, PLAYER_COLUMNS), playerArgs))
+            return false;
         
         Object[] statArgs = new Object[]
                 {
                         saveName, player.getSTR(), player.getDEX(), player.getINT()
                 };
-        dbManager.addEntryDB(buildInsertIntoSQL(STATS_TABLE_NAME, STATS_COLUMNS), statArgs);
+        return dbManager.updateDB(buildInsertIntoSQL(STATS_TABLE_NAME, STATS_COLUMNS), statArgs);
     }
     
-    public void updatePlayer(String saveName, Player player)
+    public boolean updatePlayer(String saveName, Player player)
     {
         Object[] args = new Object[]
                 {
-                        player.getName(), player.getLevel(),
-                        player.getHealth(), player.getXP(), player.getGold(),
-                        player.getClassType().name(), player.getPoint().getX(), player.getPoint().getY()
+                        player.getName(), player.getLevel(), player.getHealth(), player.getXP(), player.getGold(),
+                        player.getClassType().name(), player.getPoint().getX(), player.getPoint().getY(), saveName
                 };
-        dbManager.updateEntryDB(buildUpdateTableSQL(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN,
-                Arrays.copyOfRange(PLAYER_COLUMNS, 1, PLAYER_COLUMNS.length)), saveName, args);
+        if(!dbManager.updateDB(buildUpdateTableSQL(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN, PLAYER_COLUMNS), args))
+            return false;
         
         args = new Object[]
                 {
-                        player.getSTR(), player.getDEX(), player.getINT()
+                        player.getSTR(), player.getDEX(), player.getINT(), saveName
                 };
         
-        dbManager.updateEntryDB(buildUpdateTableSQL(STATS_TABLE_NAME, SAVE_NAME_COLUMN,
-                Arrays.copyOfRange(STATS_COLUMNS, 1, STATS_COLUMNS.length)), saveName, args);
+        return dbManager.updateDB(buildUpdateTableSQL(STATS_TABLE_NAME, SAVE_NAME_COLUMN, STATS_COLUMNS), args);
     }
     
     public Player loadSavedPlayer(String saveName)

@@ -86,101 +86,18 @@ public class DBManager
         return result;
     }
     
-    public void addEntryDB(String templateSQL, Object... args)
+    public boolean updateDB(String templateSQL, Object... args)
     {
-        //TODO Add return value & meaning to inform caller result.
-        int i = 0;
-        
         try(PreparedStatement ps = connection.prepareStatement(templateSQL))
         {
-            for(Object object : args)
-            {
-                ps.setObject(++i, object);
-            }
+            for(int i = 1; i <= args.length; i++)
+                ps.setObject(i, args[i - 1]);
             
             ps.executeUpdate();
+            return true;
         } catch(SQLException e)
         {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void updateEntryDB(String templateSQL, String saveName, Object... args)
-    {
-        //TODO Add return value & meaning to inform caller result.
-        
-        int i = 0;
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            for(Object object : args)
-            {
-                ps.setObject(++i, object);
-            }
-            ps.setObject(++i, saveName);
-            
-            ps.executeUpdate();
-        } catch(SQLException e)
-        {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void updateCellEntryDB(String templateSQL, Object newCellValue, Object... args)
-    {
-        //TODO Add return value & meaning to inform caller result.
-        
-        int i = 0;
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            ps.setObject(++i, newCellValue);
-            
-            for(Object object : args)
-            {
-                ps.setObject(++i, object);
-            }
-            
-            ps.executeUpdate();
-        } catch(SQLException e)
-        {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void deleteEntryDB(String templateSQL, String saveName)
-    {
-        //TODO Add return value & meaning to inform caller result.
-        
-        int i = 0;
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            ps.setObject(++i, saveName);
-            
-            ps.executeUpdate();
-        } catch(SQLException e)
-        {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void deleteSingleEntryDB(String templateSQL, Object... args)
-    {
-        //TODO Add return value & meaning to inform caller result.
-        int i = 0;
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            for(Object object : args)
-            {
-                ps.setObject(++i, object);
-            }
-            
-            ps.executeUpdate();
-        } catch(SQLException e)
-        {
-            System.out.println(e.getMessage());
+            return false;
         }
     }
     
