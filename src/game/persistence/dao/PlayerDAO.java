@@ -3,10 +3,14 @@ package game.persistence.dao;
 import static game.persistence.PersistenceTable.*;
 import static game.persistence.SQLCommandFactory.*;
 
+import game.entities.player.ClassType;
 import game.entities.player.Player;
 import game.persistence.DBManager;
+import game.world.model.Point;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class PlayerDAO
 {
@@ -62,9 +66,27 @@ public class PlayerDAO
     
     public Player loadSavedPlayer(String saveName)
     {
-        //TODO: Replace Player Object[] loading with column-name-based mapping (e.g. Map<String, Object>) so loading does not depend on database column order.
-        Object[] playerData = dbManager.queryDB(buildSelectSQL(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
-        Object[] statsData = dbManager.queryDB(buildSelectSQL(STATS_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
-        return new Player(playerData, statsData);
+        List<Map<String, Object>> playerDataList = dbManager.queryDB(buildSelectSQL(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
+        List<Map<String, Object>> statsDataList = dbManager.queryDB(buildSelectSQL(STATS_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
+        if(playerDataList == null || statsDataList == null)
+            return null;
+        if(playerDataList.isEmpty() || statsDataList.isEmpty())
+            return null;
+        
+        Map<String, Object> playerData = playerDataList.getFirst();
+        Map<String, Object> statsData = statsDataList.getFirst();
+        
+        String name = playerData.get("NAME").toString();
+        int level = (int)playerData.get("LEVEL");
+        float health = (float)playerData.get("HEALTH");
+        int xp = (int)playerData.get("XP");
+        int gold = (int)playerData.get("GOLD");
+        ClassType classType = ClassType.valueOf(playerData.get("CLASS_TYPE").toString());
+        Point point = new Point((int)playerData.get("CURRENT_X"), (int)playerData.get("CURRENT_Y"));
+        int strength = (int)statsData.get("STRENGTH");
+        int dexterity = (int)statsData.get("DEXTERITY");
+        int intelligence = (int)statsData.get("INTELLIGENCE");
+        
+        return new Player(name, level, health, xp, gold, classType, point, strength, dexterity, intelligence);
     }
 }

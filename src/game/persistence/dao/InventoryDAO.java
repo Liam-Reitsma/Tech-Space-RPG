@@ -16,6 +16,7 @@ import game.persistence.DBManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class InventoryDAO
 {
@@ -213,26 +214,22 @@ public class InventoryDAO
     
     public EquippableItem[] loadEquippedItems(String saveName)
     {
-        //TODO: Replace type/string-parsing based loading for Weapon, Armour, WeaponType, ArmourType, etc. with explicit column-name mapping so each saved
-        //      field is reconstructed from its intended database column.
-        
+        List<Map<String, Object>> itemDataList = dbManager.queryDB(buildSelectSQL(EQUIPPED_ITEMS.name(), SAVE_NAME_COLUMN), saveName);
         List<EquippableItem> equippableItems = new ArrayList<>();
+        if(itemDataList == null)
+            return null;
+        if(itemDataList.isEmpty())
+            return new EquippableItem[0];
         
-        WeaponType weaponType = WeaponType.RUSTED_KNIFE;
-        int weaponLevel = 0;
-        for(Object datum : dbManager.queryDB(buildSelectSQL(EQUIPPED_ITEMS.name(), SAVE_NAME_COLUMN), saveName))
-        {
-            if(datum == null)
-                continue;
-            if(datum instanceof Integer level)
-                weaponLevel = level;
-            else if(WeaponType.parseWeaponType((String)datum) instanceof WeaponType type)
-                weaponType = type;
-            else
-                equippableItems.add(new Armour((String)datum));
-        }
+        Map<String, Object> itemData = itemDataList.getFirst();
         
-        equippableItems.add(new Weapon(weaponType, weaponLevel));
+        equippableItems.add(new Weapon(WeaponType.valueOf(itemData.get("WEAPON_TYPE").toString()), (int)itemData.get("WEAPON_LEVEL")));
+        equippableItems.add(new Armour(itemData.get("HEAD").toString()));
+        equippableItems.add(new Armour(itemData.get("CHEST").toString()));
+        equippableItems.add(new Armour(itemData.get("ARMS").toString()));
+        equippableItems.add(new Armour(itemData.get("THIGHS").toString()));
+        equippableItems.add(new Armour(itemData.get("SHINS").toString()));
+        equippableItems.add(new Armour(itemData.get("BOOTS").toString()));
         
         return equippableItems.toArray(new EquippableItem[0]);
     }

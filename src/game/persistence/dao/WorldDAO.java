@@ -5,9 +5,13 @@ import static game.persistence.SQLCommandFactory.*;
 
 import game.persistence.DBManager;
 import game.world.model.Point;
+import game.world.model.room.RoomState;
+import game.world.model.room.RoomTileState;
+import game.world.model.room.RoomType;
 import game.world.model.room.RuntimeRoom;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -62,12 +66,18 @@ public class WorldDAO
     
     public Map<Point, RuntimeRoom> loadSavedWorld(String saveName)
     {
-        Object[][] loadedRoomsList = dbManager.queryRoomDB(buildSelectSQL(TABLE_NAME, SAVE_NAME_COLUMN), saveName);
+        List<Map<String, Object>> roomDataList = dbManager.queryDB(buildSelectSQL(TABLE_NAME, SAVE_NAME_COLUMN), saveName);
         Map<Point, RuntimeRoom> world = new HashMap<>();
+        if(roomDataList == null)
+            return null;
+        if(roomDataList.isEmpty())
+            return new HashMap<>();
         
-        for(Object[] loadedRoom : loadedRoomsList)
+        for(Map<String, Object> roomData : roomDataList)
         {
-            RuntimeRoom room = new RuntimeRoom(loadedRoom);
+            Point point = new Point((int)roomData.get("X_POINT"), (int)roomData.get("Y_POINT"));
+            RoomState roomState = new RoomState(RoomTileState.valueOf(roomData.get("ROOM_TILE_STATE").toString()), RoomType.valueOf(roomData.get("ROOM_TYPE").toString()));
+            RuntimeRoom room = new RuntimeRoom(point, roomState);
             world.put(room.getPoint(), room);
         }
         
