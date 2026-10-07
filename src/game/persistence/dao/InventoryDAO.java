@@ -5,13 +5,17 @@ import static game.persistence.SQLCommandFactory.*;
 
 import game.entities.player.Inventory;
 import game.entities.player.Player;
+import game.items.EquippableItem;
 import game.items.Item;
 import game.items.Potion;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
+import game.items.weapon.WeaponType;
 import game.persistence.DBManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class InventoryDAO
 {
@@ -205,5 +209,31 @@ public class InventoryDAO
                         POTION_COLUMNS[POTION_COLUMNS.length - 1], POTION_COLUMNS), newCount, args);
             }
         }
+    }
+    
+    public EquippableItem[] loadEquippedItems(String saveName)
+    {
+        //TODO: Replace type/string-parsing based loading for Weapon, Armour, WeaponType, ArmourType, etc. with explicit column-name mapping so each saved
+        //      field is reconstructed from its intended database column.
+        
+        List<EquippableItem> equippableItems = new ArrayList<>();
+        
+        WeaponType weaponType = WeaponType.RUSTED_KNIFE;
+        int weaponLevel = 0;
+        for(Object datum : dbManager.queryDB(buildSelectSQL(EQUIPPED_ITEMS.name(), SAVE_NAME_COLUMN), saveName))
+        {
+            if(datum == null)
+                continue;
+            if(datum instanceof Integer level)
+                weaponLevel = level;
+            else if(WeaponType.parseWeaponType((String)datum) instanceof WeaponType type)
+                weaponType = type;
+            else
+                equippableItems.add(new Armour((String)datum));
+        }
+        
+        equippableItems.add(new Weapon(weaponType, weaponLevel));
+        
+        return equippableItems.toArray(new EquippableItem[0]);
     }
 }
