@@ -11,7 +11,6 @@ public class GameModel
     private Player player;
     private Map<Point, RuntimeRoom> world;
     
-    
     public GameModel()
     {
     

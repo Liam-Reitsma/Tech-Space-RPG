@@ -35,8 +35,10 @@ public class WorldController implements WorldAction, Updatable
     @Override
     public void requestMoveNextRoom(Direction direction)
     {
+        gameModel.getWorld().get(gameModel.getPlayer().getPoint()).setCompleted(); //TODO Move to Combat Controller
         gameModel.getPlayer().movePoint(direction);
-        requestUpdate();
+        gameModel.getWorld().get(gameModel.getPlayer().getPoint()).setCurrent();
+        requestUpdate(); //TODO Remove when wired in update in GameController
     }
     
     @Override
@@ -45,6 +47,7 @@ public class WorldController implements WorldAction, Updatable
         Player player = gameModel.getPlayer();
         Map<Point, RuntimeRoom> world = gameModel.getWorld();
         worldViewAction.updateAvailableMovementsPanel(worldModel.getPossibleDirections(world, player.getPoint()));
-        worldViewAction.updateWorldMapPanel(worldModel.getSurroundingRoomStates(world, player.getPoint()));
+        RuntimeRoom[][] rooms = worldModel.updateWorldInfo(world, player.getPoint());
+        worldViewAction.updateWorldMapPanel(rooms);
     }
 }

@@ -21,6 +21,9 @@ import game.persistence.PersistenceService;
 import game.saves.controller.SavesController;
 import game.saves.view.SavesOverlay;
 import game.world.controller.WorldController;
+import game.world.view.WorldMapPanel;
+import game.world.view.WorldMovementPanel;
+import game.world.view.WorldPanel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +36,8 @@ public class Main
         PersistenceService persistenceService = new PersistenceService(dbManager);
         GameModel gameModel = new GameModel();
         
+        Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
+        
         FrameController frameController = new FrameController();
         MainMenuController mainMenuController = new MainMenuController(frameController);
         OptionsController optionsController = new OptionsController(frameController);
@@ -43,12 +48,16 @@ public class Main
         
         OverlayContainer overlayContainer = new OverlayContainer();
         GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);
-        Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
-        GameScreen gameScreen = new GameScreen(gameController);
         MainMenuScreen mainMenuScreen = new MainMenuScreen("Tech Space RPG", mainMenuController);
         NewGameScreen newGameScreen = new NewGameScreen(newGameController);
         OptionsOverlay optionsOverlay = new OptionsOverlay(optionsController);
         SavesOverlay savesOverlay = new SavesOverlay(savesController);
+        
+        WorldMapPanel worldMapPanel = new WorldMapPanel();
+        WorldMovementPanel worldMovementPanel = new WorldMovementPanel(worldController);
+        WorldPanel worldPanel = new WorldPanel(worldMapPanel, worldMovementPanel);
+        
+        GameScreen gameScreen = new GameScreen(worldPanel, gameController);
         
         displayMap.put(MAIN_GAME, gameScreen);
         displayMap.put(MAIN_MENU, mainMenuScreen);
@@ -59,7 +68,7 @@ public class Main
         gameFrame.registerDisplay(displayMap);
         
         frameController.setFrameViewAction(gameFrame);
-        //worldController.setWorldViewAction(worldPanel);
+        worldController.setWorldViewAction(worldPanel);
         gameController.setGameViewAction(gameScreen);
         newGameController.setNewGameViewAction(newGameScreen);
         savesController.setSavesViewAction(savesOverlay);
