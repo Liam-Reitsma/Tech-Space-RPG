@@ -21,6 +21,8 @@ import game.persistence.PersistenceService;
 import game.saves.controller.SavesController;
 import game.saves.view.SavesOverlay;
 import game.world.controller.WorldController;
+import game.world.view.WorldMapPanel;
+import game.world.view.WorldMovementPanel;
 import game.world.view.WorldPanel;
 
 import java.util.HashMap;
@@ -51,7 +53,9 @@ public class Main
         OptionsOverlay optionsOverlay = new OptionsOverlay(optionsController);
         SavesOverlay savesOverlay = new SavesOverlay(savesController);
         
-        WorldPanel worldPanel = new WorldPanel(worldController);
+        WorldMapPanel worldMapPanel = new WorldMapPanel();
+        WorldMovementPanel worldMovementPanel = new WorldMovementPanel(worldController);
+        WorldPanel worldPanel = new WorldPanel(worldMapPanel, worldMovementPanel);
         
         GameScreen gameScreen = new GameScreen(worldPanel, gameController);
         
