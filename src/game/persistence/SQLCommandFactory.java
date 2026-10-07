@@ -92,6 +92,15 @@ public class SQLCommandFactory
         return sql.toString();
     }
     
+    public static String buildSelectSQLNoConstraint(String tableName, String columnName)
+    {
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT * FROM ").append(tableName);
+        
+        return sql.toString();
+    }
+    
     public static String buildSelectSQL(String tableName, String columnName)
     {
         StringBuilder sql = new StringBuilder();
