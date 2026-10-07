@@ -3,8 +3,8 @@ package game.persistence;
 import game.entities.player.ClassType;
 import game.entities.player.Player;
 import game.items.Item;
-import game.world.Point;
-import game.world.room.RuntimeRoom;
+import game.world.model.Point;
+import game.world.model.room.RuntimeRoom;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package game.world;
+package game.world.model;
 
 import java.util.Objects;
 
@@ -19,15 +19,15 @@ public class Point
     
     public Direction returnRelativeDirection(Point otherPoint)
     {
-        if(this.x == otherPoint.x && this.y < otherPoint.y) return Direction.NORTH;
-        if(this.x == otherPoint.x && this.y > otherPoint.y) return Direction.SOUTH;
-        if(this.x < otherPoint.x && this.y == otherPoint.y) return Direction.EAST;
-        if(this.x > otherPoint.x && this.y == otherPoint.y) return Direction.WEST;
+        if(this.x == otherPoint.x && this.y > otherPoint.y) return Direction.NORTH;
+        if(this.x == otherPoint.x && this.y < otherPoint.y) return Direction.SOUTH;
+        if(this.x > otherPoint.x && this.y == otherPoint.y) return Direction.EAST;
+        if(this.x < otherPoint.x && this.y == otherPoint.y) return Direction.WEST;
         
         return null;
     }
     
-    public Point calculateNewPoint(Direction direction)
+    public Point move(Direction direction)
     {
         if(direction == Direction.NORTH) return new Point(getX(), getY() + 1);
         if(direction == Direction.SOUTH) return new Point(getX(), getY() - 1);

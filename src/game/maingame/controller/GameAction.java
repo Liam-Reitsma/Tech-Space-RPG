@@ -1,8 +1,8 @@
 package game.maingame.controller;
 
 import game.entities.player.Player;
-import game.world.Point;
-import game.world.room.RuntimeRoom;
+import game.world.model.Point;
+import game.world.model.room.RuntimeRoom;
 
 import java.util.Map;
 

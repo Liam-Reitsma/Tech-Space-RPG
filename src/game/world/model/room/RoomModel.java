@@ -1,6 +1,6 @@
-package game.world.room;
+package game.world.model.room;
 
-import static game.world.room.RoomType.*;
+import static game.world.model.room.RoomType.*;
 
 import game.entities.Enemy;
 import game.entities.EnemyType;

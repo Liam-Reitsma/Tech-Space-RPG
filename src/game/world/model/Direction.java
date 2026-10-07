@@ -1,12 +1,19 @@
-package game.world;
+package game.world.model;
+
+import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 
 public enum Direction
 {
-    NORTH, EAST, SOUTH, WEST;
+    NORTH(ScaledLayoutAnchor.NORTH),
+    EAST(ScaledLayoutAnchor.EAST),
+    SOUTH(ScaledLayoutAnchor.SOUTH),
+    WEST(ScaledLayoutAnchor.WEST);
     
-    Direction()
+    private final ScaledLayoutAnchor anchor;
+    
+    Direction(ScaledLayoutAnchor direction)
     {
-    
+        anchor = direction;
     }
     
     public Direction left()
@@ -41,6 +48,8 @@ public enum Direction
             case WEST -> EAST;
         };
     }
+    
+    public ScaledLayoutAnchor getAnchor() { return anchor; }
     
     @Override
     public String toString() { return name().charAt(0) + name().substring(1).toLowerCase(); }

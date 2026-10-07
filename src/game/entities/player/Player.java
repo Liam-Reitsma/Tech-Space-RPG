@@ -6,8 +6,8 @@ import game.entities.*;
 import game.items.*;
 import game.items.armour.Armour;
 import game.items.weapon.Weapon;
-import game.world.Direction;
-import game.world.Point;
+import game.world.model.Direction;
+import game.world.model.Point;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ public class Player extends Entities implements Persistable
     private int xp;
     private int gold;
     
-    private final Point point;
+    private Point point;
     private final ClassType classType;
     private final Map<StatType, Integer> statTypeMap;
     
@@ -192,7 +192,7 @@ public class Player extends Entities implements Persistable
     
     public void movePoint(Direction direction)
     {
-        point.calculateNewPoint(direction);
+        point = point.move(direction);
     }
     
     public Inventory getInventory()

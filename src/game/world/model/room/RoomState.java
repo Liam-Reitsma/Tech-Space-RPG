@@ -1,6 +1,6 @@
-package game.world.room;
+package game.world.model.room;
 
-import static game.world.room.RoomTileState.*;
+import static game.world.model.room.RoomTileState.*;
 
 public class RoomState
 {
@@ -25,11 +25,13 @@ public class RoomState
         roomType = type;
     }
     
-    public void setCompleted() { roomTileState = COMPLETED; }
-    
     public boolean isCompleted() { return roomTileState == COMPLETED; }
     
+    public void setCompleted() { roomTileState = COMPLETED; }
+    
     public RoomTileState getRoomTileState() { return roomTileState; }
+    
+    public void setCurrent() { roomTileState = CURRENT; }
     
     public RoomType getRoomType() { return roomType; }
     

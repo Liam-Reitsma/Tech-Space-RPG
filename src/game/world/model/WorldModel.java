@@ -1,20 +1,20 @@
-package game.world;
+package game.world.model;
 
-import static game.world.room.RoomType.*;
-import static game.world.generation.WorldGenConfig.MAX_RANGE;
+import static game.world.model.room.RoomTileState.WALL;
+import static game.world.model.room.RoomType.*;
+import static game.world.model.generation.WorldGenConfig.MAX_RANGE;
 
-import game.world.generation.GenerationRoom;
-import game.world.generation.WorldGenerator;
-import game.world.room.RoomState;
-import game.world.room.RoomTileState;
-import game.world.room.RoomType;
-import game.world.room.RuntimeRoom;
+import game.world.model.generation.GenerationRoom;
+import game.world.model.generation.WorldGenerator;
+import game.world.model.room.RoomState;
+import game.world.model.room.RoomType;
+import game.world.model.room.RuntimeRoom;
 
 import java.util.*;
 
 public class WorldModel
 {
-    private static final int VIEWABLE_RANGE = 5;
+    public static final int VIEWABLE_RANGE = 5;
     
     private final Random random;
     private final WorldGenerator worldGenerator;
@@ -39,6 +39,15 @@ public class WorldModel
             else if(chance < 25 && checkRoomToBuild(world, point, CHEST)) world.put(point, new RuntimeRoom(point, new RoomState(CHEST)));
             else if(chance < 40 && checkRoomToBuild(world, point, EMPTY)) world.put(point, new RuntimeRoom(point, new RoomState(EMPTY)));
             else world.put(point, new RuntimeRoom(point, new RoomState(COMBAT)));
+        }
+        
+        for(int y = 0; y < MAX_RANGE * 2 + 1; y++)
+        {
+            for(int x = 0; x < MAX_RANGE * 2 + 1; x++)
+            {
+                Point point = new Point(x - MAX_RANGE, (-y) + MAX_RANGE);
+                world.put(point, world.getOrDefault(point, new RuntimeRoom(point, new RoomState(WALL))));
+            }
         }
         
         return world;
@@ -72,61 +81,43 @@ public class WorldModel
         
         for(Point orthogonalPoint : Point.getOrthogonalPoints(playerLocation))
         {
-            if(world.containsKey(orthogonalPoint)) directions.add(orthogonalPoint.returnRelativeDirection(playerLocation));
+            if(world.containsKey(orthogonalPoint) && world.get(orthogonalPoint).getRoomState().getRoomTileState() != WALL) directions.add(orthogonalPoint.returnRelativeDirection(playerLocation));
         }
         
         return directions.toArray(new Direction[0]);
     }
     
-    public RoomState[][] getSurroundingRoomStates(Map<Point, RuntimeRoom> world, Point playerPoint)
+    public RuntimeRoom[][] updateWorldInfo(Map<Point, RuntimeRoom> world, Point playerPoint)
     {
-        RoomState[][] roomStateMap = new RoomState[VIEWABLE_RANGE][VIEWABLE_RANGE];
+        RuntimeRoom[][] roomMap = new RuntimeRoom[MAX_RANGE * 2 + 1][MAX_RANGE * 2 + 1];
         
-        Point newPoint = getTopLeftPoint(playerPoint);
-        
-        for(int i = 0; i < roomStateMap.length; i++)
+        for(int y = 0; y < MAX_RANGE * 2 + 1; y++)
         {
-            for(int j = 0; j < roomStateMap[0].length; j++)
+            for(int x = 0; x < MAX_RANGE * 2 + 1; x++)
             {
-                if(isPointOutOfBounds(newPoint) || !world.containsKey(newPoint)) roomStateMap[i][j] = new RoomState(RoomTileState.WALL);
-                else roomStateMap[i][j] = world.get(newPoint).getRoomState();
-                
-                newPoint = getNextPoint(newPoint, true);
+                roomMap[y][x] = world.get(new Point(x - MAX_RANGE, (-y) + MAX_RANGE));
             }
-            
-            newPoint = getNextPoint(newPoint, false);
         }
         
-        return roomStateMap;
-    }
-    
-    private Point getTopLeftPoint(Point point)
-    {
-        int x = point.getX();
-        int y = point.getY();
+        int viewingYLowRange = (-playerPoint.getY()) + MAX_RANGE - (VIEWABLE_RANGE / 2);
+        int viewingYTopRange = (-playerPoint.getY()) + MAX_RANGE + 1 + (VIEWABLE_RANGE / 2);
         
-        return new Point(x - VIEWABLE_RANGE / 2, y + VIEWABLE_RANGE / 2);
-    }
-    
-    private Point getNextPoint(Point currentPoint, boolean moveX)
-    {
-        int x = currentPoint.getX();
-        int y = currentPoint.getY();
+        int viewingXLowRange = playerPoint.getX() + MAX_RANGE - (VIEWABLE_RANGE / 2);
+        int viewingXTopRange = playerPoint.getX() + MAX_RANGE + 1 + (VIEWABLE_RANGE / 2);
         
-        if(moveX) return new Point(x + 1, y);
-        else return new Point(x - VIEWABLE_RANGE, y - 1);
-    }
-    
-    private boolean isPointOutOfBounds(Point point)
-    {
-        if(point.getX() < -MAX_RANGE || point.getX() > MAX_RANGE) return true;
-        if(point.getY() < -MAX_RANGE || point.getY() > MAX_RANGE) return true;
+        for(int y = viewingYLowRange; y < viewingYTopRange; y++)
+        {
+            for(int x = viewingXLowRange; x < viewingXTopRange; x++)
+            {
+                if(y < 0 || y >= MAX_RANGE * 2 + 1)
+                    continue;
+                if(x < 0 || x >= MAX_RANGE * 2 + 1)
+                    continue;
+
+                roomMap[y][x].setSeen();
+            }
+        }
         
-        return false;
-    }
-    
-    public RuntimeRoom getNextRoom(Map<Point, RuntimeRoom> world,Point playerLocation, Direction direction)
-    {
-        return world.get(playerLocation.calculateNewPoint(direction));
+        return roomMap;
     }
 }

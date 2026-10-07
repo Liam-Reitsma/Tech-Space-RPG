@@ -2,9 +2,9 @@ package game.maingame.view;
 
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
-import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 import game.gui.config.DisplayableScreen;
 import game.maingame.controller.GameAction;
+import game.world.view.WorldPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,6 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     
     private JTextPane logPane;
     private JTextPane statsPane;
-    private JPanel worldMap;
     private JPanel buttonPanel;
     
     private JButton northButton;
@@ -37,11 +36,13 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     private JButton loadGameButton;
     private JButton exitGameButton;
     
+    private final WorldPanel worldPanel;
     private final GameAction gameAction;
     
-    public GameScreen(GameAction gAction)
+    public GameScreen(WorldPanel wPanel, GameAction gAction)
     {
         setLayout(new ScaledLayout());
+        worldPanel = wPanel;
         
         LayoutBox[] boxes = new LayoutBox().splitVertical(90, 10);
         
@@ -92,28 +93,7 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     
     private void createWorldPane(LayoutBox box)
     {
-        LayoutBox[] boxes = box.splitVertical(50, 50);
-        
-        LayoutBox worldBox = boxes[0];
-        worldBackdrop = new JPanel(new ScaledLayout());
-        worldMap = new JPanel(new ScaledLayout());
-        worldBackdrop.add(worldMap, worldBox.insets(15));
-        add(worldBackdrop, worldBox);
-        
-        LayoutBox movementBox = boxes[1];
-        LayoutBox buttonBox = new LayoutBox().insets(15);
-        buttonPanel = new JPanel(new ScaledLayout());
-        northButton = new JButton("North");
-        eastButton = new JButton("East");
-        southButton = new JButton("South");
-        westButton = new JButton("West");
-        
-        buttonPanel.add(northButton, new LayoutBox(buttonBox, 30, 30, ScaledLayoutAnchor.NORTH));
-        buttonPanel.add(eastButton, new LayoutBox(buttonBox, 30, 30, ScaledLayoutAnchor.EAST));
-        buttonPanel.add(southButton, new LayoutBox(buttonBox, 30, 30, ScaledLayoutAnchor.SOUTH));
-        buttonPanel.add(westButton, new LayoutBox(buttonBox, 30, 30, ScaledLayoutAnchor.WEST));
-        
-        add(buttonPanel, movementBox);
+        add(worldPanel, box);
     }
     
     private void createBottomMenu(LayoutBox box)
