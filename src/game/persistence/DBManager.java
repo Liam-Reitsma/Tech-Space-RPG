@@ -49,41 +49,33 @@ public class DBManager
         }
     }
     
-    public void createTable(String tableName, String sql)
+    public boolean createTable(String tableName, String sql)
     {
-        if(tableExists(tableName)) return;
+        if(tableExists(tableName)) return true;
         
-        Connection conn = connection;
-        
-        try(Statement statement = conn.createStatement())
+        try(Statement statement = connection.createStatement())
         {
             statement.executeUpdate(sql);
+            return true;
         } catch(SQLException e)
         {
-            //change for an actual error.
-            System.out.println(e.getMessage());
+            return false;
         }
     }
     
     private boolean tableExists(String tableName)
     {
-        boolean result = false;
-        
         try
         {
-            DatabaseMetaData metadata = connection.getMetaData();
-            ResultSet tables = metadata.getTables(null, null, tableName.toUpperCase(), null);
-            
-            result = tables.next();
-            
-            tables.close();
+            try(ResultSet tables = connection.getMetaData().getTables(null, null, tableName.toUpperCase(), null))
+            {
+                return tables.next();
+            }
         }
-        catch(SQLException ex)
+        catch(SQLException e)
         {
-            System.out.println(ex.getMessage());
+            return false;
         }
-        
-        return result;
     }
     
     public boolean updateDB(String templateSQL, Object... args)
@@ -140,17 +132,14 @@ public class DBManager
     {
         try
         {
-            Connection conn = connection;
-            Statement statement = conn.createStatement();
-            
-            DatabaseMetaData metadata = connection.getMetaData();
-            ResultSet tables = metadata.getTables(null, null, tableName.toUpperCase(), null);
-            if(tables.next())
+            try(Statement statement = connection.createStatement())
             {
-                statement.execute("DROP TABLE " + tableName);
+                try(ResultSet tables = connection.getMetaData().getTables(null, null, tableName.toUpperCase(), null))
+                {
+                    if(tables.next())
+                        statement.execute("DROP TABLE " + tableName);
+                }
             }
-            
-            tables.close();
         } catch(SQLException ex)
         {
             System.out.println(ex.getMessage());
