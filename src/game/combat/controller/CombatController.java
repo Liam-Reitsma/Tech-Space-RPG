@@ -25,14 +25,7 @@ public class CombatController implements CombatAction, Updatable
     {
         String combatResult = combatModel.playerAttack();
 
-        combatViewAction.updateCombatTextPane(combatResult);
-    }
-
-    public void requestAttackPlayer()
-    {
-        String resultText = combatModel.enemyAttack();
-
-        combatViewAction.updateCombatTextPane(resultText);
+        combatViewAction.displayMessage(combatResult);
     }
 
     public void requestHeal()
@@ -47,7 +40,7 @@ public class CombatController implements CombatAction, Updatable
 
     public void requestRun()
     {
-        combatViewAction.updateCombatTextPane("Player has ran away.");
+        combatViewAction.displayMessage("Player has ran away.");
     }
 
     @Override
