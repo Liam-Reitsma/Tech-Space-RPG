@@ -72,8 +72,36 @@ public class PlayerDAO
             return null;
         
         Map<String, Object> playerData = playerDataList.getFirst();
-        Map<String, Object> statsData = statsDataList.getFirst();
         
+        return loadPlayer(playerData, statsDataList);
+    }
+    
+    public Player[] getAllSaves()
+    {
+        List<Map<String, Object>> playerDataList = dbManager.queryDB(buildSelectSQLNoConstraint(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN));
+        List<Map<String, Object>> statsDataList = dbManager.queryDB(buildSelectSQLNoConstraint(STATS_TABLE_NAME, SAVE_NAME_COLUMN));
+        if(playerDataList == null || statsDataList == null)
+            return null;
+        if(playerDataList.isEmpty() || statsDataList.isEmpty() || playerDataList.size() != statsDataList.size())
+            return new Player[0];
+        
+        Player[] players = new Player[playerDataList.size()];
+        
+        int i = 0;
+        for(Map<String, Object> playerData : playerDataList)
+        {
+            Player result = loadPlayer(playerData, statsDataList);
+            if(result == null)
+                return null;
+            
+            players[i++] = result;
+        }
+        
+        return players;
+    }
+    
+    private Player loadPlayer(Map<String, Object> playerData, List<Map<String, Object>> statsDataList)
+    {
         String name = playerData.get("NAME").toString();
         int level = (int)playerData.get("LEVEL");
         float health = (float)playerData.get("HEALTH");
@@ -81,9 +109,25 @@ public class PlayerDAO
         int gold = (int)playerData.get("GOLD");
         ClassType classType = ClassType.valueOf(playerData.get("CLASS_TYPE").toString());
         Point point = new Point((int)playerData.get("CURRENT_X"), (int)playerData.get("CURRENT_Y"));
-        int strength = (int)statsData.get("STRENGTH");
-        int dexterity = (int)statsData.get("DEXTERITY");
-        int intelligence = (int)statsData.get("INTELLIGENCE");
+        int strength = 0;
+        int dexterity = 0;
+        int intelligence = 0;
+        
+        boolean statsFound = false;
+        
+        for(Map<String, Object> statsData : statsDataList)
+        {
+            if(!playerData.get("SAVE_NAME").toString().equalsIgnoreCase(statsData.get("SAVE_NAME").toString()))
+                continue;
+            strength = (int)statsData.get("STRENGTH");
+            dexterity = (int)statsData.get("DEXTERITY");
+            intelligence = (int)statsData.get("INTELLIGENCE");
+            statsFound = true;
+            break;
+        }
+        
+        if(!statsFound)
+            return null;
         
         return new Player(name, level, health, xp, gold, classType, point, strength, dexterity, intelligence);
     }
