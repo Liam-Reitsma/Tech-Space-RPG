@@ -6,7 +6,7 @@ import game.entities.player.Player;
 public interface Actionable
 {
     /**
-     * Performs a player action dependent on {@link CombatAction}.
+     * Performs a player action dependent on {@link CombatActionold}.
      * @param player the {@link Player} object.
      * @param enemy the {@link Enemy} object.
      * @return {@link ActionResult}

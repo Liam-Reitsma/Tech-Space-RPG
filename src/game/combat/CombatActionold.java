@@ -3,17 +3,12 @@ package game.combat;
 import static game.combat.CombatOutcome.*;
 
 import game.entities.player.Player;
-import game.entities.player.PlayerErrors;
-import game.entities.player.PlayerResult;
-import game.items.*;
 import game.entities.*;
-
-import java.util.*;
 
 /**
  * Actions that {@link Player} can perform when in battle.
  */
-public enum CombatAction implements Actionable
+public enum CombatActionold implements Actionable
 {
     /** Gets the {@link Player} weapon to display, then uses player.attack() to calculate and apply damage to the {@link Enemy}.
      * When the {@link Enemy} health reaches 0, it will return a WIN outcome and ends this encounter.*/
@@ -68,7 +63,7 @@ public enum CombatAction implements Actionable
     {
         StringBuilder result = new StringBuilder();
         int i = 1;
-        for(CombatAction action : CombatAction.values())
+        for(CombatActionold action : CombatActionold.values())
         {
             result.append(i++).append(". ").append(action.toString()).append("\n");
         }
