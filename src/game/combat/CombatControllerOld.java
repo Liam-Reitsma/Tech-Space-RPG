@@ -1,6 +1,6 @@
 package game.combat;
 
-import static game.combat.CombatAction.*;
+import static game.combat.CombatActionold.*;
 import static game.combat.CombatErrors.USER_WENT_BACK;
 import static game.combat.CombatErrors.SUCCESS;
 import static game.combat.CombatErrors.NO_POTION_TO_USE;
@@ -12,7 +12,6 @@ import game.entities.*;
 import game.entities.player.Player;
 import game.items.Potion;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /** CombatController implements {@link Loopable} by taking the {@link Player}, {@link Enemy} and the {@link CombatResult}.
@@ -20,11 +19,11 @@ import java.util.Optional;
  * If it is the {@link Player}'s turn, then it checks and performs the {@link Player}'s choice of action, while checking for errors.
  * If it is the {@link Enemy}'s turn, then it calculates and applies the damage to the {@link Player}.
  * */
-public class CombatController implements Loopable<Player, Enemy, CombatResult>
+public class CombatControllerOld implements Loopable<Player, Enemy, CombatResult>
 {
     private final ConsoleHandler consoleH;
 
-    public CombatController(ConsoleHandler cH)
+    public CombatControllerOld(ConsoleHandler cH)
     {
         consoleH = cH;
     }
@@ -66,12 +65,12 @@ public class CombatController implements Loopable<Player, Enemy, CombatResult>
      * Otherwise, it performs the chosen action and returns the outcome of it.*/
     private CombatOutcome playerTurn(Player player, Enemy enemy)
     {
-        Optional<CombatAction> action;
+        Optional<CombatActionold> action;
         do
         {
             do
             {
-                action = consoleH.confirmInputInteger("What would you like to do?", CombatAction.optionsToString(), CombatAction.class).getInput();
+                action = consoleH.confirmInputInteger("What would you like to do?", CombatActionold.optionsToString(), CombatActionold.class).getInput();
                 if(action.isEmpty())
                 {
                     consoleH.printLine("You cannot return here. Please choose an option");

@@ -1,0 +1,37 @@
+package game.combat.view;
+
+import game.combat.controller.CombatAction;
+import game.gui.common.scaledlayout.LayoutBox;
+import game.gui.common.scaledlayout.ScaledLayout;
+
+import javax.swing.*;
+
+public class CombatButtonPanel extends JPanel
+{
+    private final CombatAction combatAction;
+    JButton fightButton;
+    JButton healthButton;
+    JButton runButton;
+
+
+
+    public CombatButtonPanel(CombatAction cAction)
+    {
+        combatAction = cAction;
+        LayoutBox[] verticalBoxes = new LayoutBox().splitVertical(33, 33, 33);
+        setLayout(new ScaledLayout());
+        fightButton = new JButton("Fight");
+        healthButton = new JButton("Health");
+        runButton = new JButton("Run");
+
+        fightButton.addActionListener(e -> combatAction.requestAttackEnemy());
+
+        healthButton.addActionListener(e -> combatAction.requestHeal());
+
+        runButton.addActionListener(e -> combatAction.requestRun());
+
+        add(fightButton, verticalBoxes[0]);
+        add(healthButton, verticalBoxes[1]);
+        add(runButton, verticalBoxes[2]);
+    }
+}
