@@ -21,7 +21,7 @@ public class CombatController implements CombatAction, Updatable
         combatViewAction = cvAction;
     }
 
-    public void requestAttackEnemy()
+    public void requestAttack()
     {
         String combatResult = combatModel.playerAttack();
 
@@ -37,7 +37,7 @@ public class CombatController implements CombatAction, Updatable
 
     public void requestHeal()
     {
-
+        combatModel.heal();
     }
 
     public void requestUsePotion(Potion potion)

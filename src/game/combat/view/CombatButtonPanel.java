@@ -9,11 +9,9 @@ import javax.swing.*;
 public class CombatButtonPanel extends JPanel
 {
     private final CombatAction combatAction;
-    JButton fightButton;
-    JButton healthButton;
-    JButton runButton;
-
-
+    private final JButton fightButton;
+    private final JButton healthButton;
+    private final JButton runButton;
 
     public CombatButtonPanel(CombatAction cAction)
     {
@@ -24,7 +22,7 @@ public class CombatButtonPanel extends JPanel
         healthButton = new JButton("Health");
         runButton = new JButton("Run");
 
-        fightButton.addActionListener(e -> combatAction.requestAttackEnemy());
+        fightButton.addActionListener(e -> combatAction.requestAttack());
 
         healthButton.addActionListener(e -> combatAction.requestHeal());
 
