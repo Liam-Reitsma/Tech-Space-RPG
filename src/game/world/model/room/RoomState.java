@@ -15,7 +15,7 @@ public class RoomState
     
     public RoomState(RoomType type)
     {
-        roomTileState = UNVISITED;
+        roomTileState = UNSEEN;
         roomType = type;
     }
     

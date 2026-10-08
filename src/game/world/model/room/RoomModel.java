@@ -26,11 +26,11 @@ public class RoomModel
     {
         return switch(roomType)
         {
-            case EMPTY    -> null;
-            case COMBAT   -> createEnemy(COMBAT, player.getLevel());
-            case CHEST    -> createChest(player.getLevel());
-            case MINIBOSS -> createEnemy(MINIBOSS, player.getLevel());
-            case BOSS     -> createEnemy(BOSS, player.getLevel());
+            case EMPTY, WALL-> null;
+            case COMBAT     -> createEnemy(COMBAT, player.getLevel());
+            case CHEST      -> createChest(player.getLevel());
+            case MINIBOSS   -> createEnemy(MINIBOSS, player.getLevel());
+            case BOSS       -> createEnemy(BOSS, player.getLevel());
         };
     }
     
