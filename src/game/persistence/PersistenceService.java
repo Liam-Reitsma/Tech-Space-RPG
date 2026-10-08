@@ -68,6 +68,16 @@ public class PersistenceService
         return success;
     }
     
+    public boolean deleteSaveGame(String saveName)
+    {
+        boolean equippedDeleted = inventoryDAO.deleteEquipped(saveName);
+        boolean inventoryDeleted = inventoryDAO.deleteInventory(saveName);
+        boolean worldDeleted = worldDAO.deleteWorld(saveName);
+        boolean playerDeleted = playerDAO.deletePlayer(saveName);
+        
+        return equippedDeleted && inventoryDeleted && worldDeleted && playerDeleted;
+    }
+    
     public boolean quickSave(Player player, RuntimeRoom room, InventoryChange change, Item item)
     {
         if(iKey == null)

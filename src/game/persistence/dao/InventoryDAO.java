@@ -297,4 +297,16 @@ public class InventoryDAO
         
         return inventory;
     }
+    
+    public boolean deleteEquipped(String saveName)
+    {
+        return dbManager.updateDB(buildDeleteRowSQL(EQUIPPED_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+    }
+    
+    public boolean deleteInventory(String saveName)
+    {
+        return  dbManager.updateDB(buildDeleteRowSQL(ARMOR_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
+                dbManager.updateDB(buildDeleteRowSQL(WEAPON_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
+                dbManager.updateDB(buildDeleteRowSQL(POTION_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+    }
 }

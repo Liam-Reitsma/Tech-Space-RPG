@@ -86,4 +86,9 @@ public class WorldDAO
         
         return world;
     }
+    
+    public boolean deleteWorld(String saveName)
+    {
+        return dbManager.updateDB(buildDeleteRowSQL(TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+    }
 }

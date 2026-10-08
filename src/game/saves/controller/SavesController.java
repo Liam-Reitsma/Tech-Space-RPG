@@ -1,6 +1,5 @@
 package game.saves.controller;
 
-import static game.frame.controller.DisplayTarget.MAIN_GAME;
 import static game.frame.controller.DisplayTarget.SAVES;
 
 import game.entities.player.Player;
@@ -42,6 +41,12 @@ public class SavesController implements SavesAction
         }
         savesViewAction.updateSavesList(saveData);
         frameAction.display(SAVES);
+    }
+    
+    @Override
+    public void requestDeleteSave(String saveName)
+    {
+        persistenceService.deleteSaveGame(saveName.split(" \\| ")[0]);
     }
     
     @Override

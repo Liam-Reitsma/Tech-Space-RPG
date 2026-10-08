@@ -131,4 +131,10 @@ public class PlayerDAO
         
         return new Player(name, level, health, xp, gold, classType, point, strength, dexterity, intelligence);
     }
+    
+    public boolean deletePlayer(String saveName)
+    {
+        return  dbManager.updateDB(buildDeleteRowSQL(STATS_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
+                dbManager.updateDB(buildDeleteRowSQL(PLAYER_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+    }
 }
