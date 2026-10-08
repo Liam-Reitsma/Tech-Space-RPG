@@ -39,4 +39,16 @@ public class DatabaseSchemaManager
         
         return true;
     }
+    
+    public boolean dropTables()
+    {
+        boolean success = true;
+        PersistenceTable[] tables = PersistenceTable.values();
+        for(int i = tables.length - 1; i >= 0; i--)
+        {
+            success = success && dbManager.dropTableIfExists(tables[i].name());
+        }
+        
+        return success;
+    }
 }
