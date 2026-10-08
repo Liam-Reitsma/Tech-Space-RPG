@@ -15,7 +15,7 @@ public class RoomState
     
     public RoomState(RoomType type)
     {
-        roomTileState = UNVISITED;
+        roomTileState = UNSEEN;
         roomType = type;
     }
     
@@ -29,6 +29,10 @@ public class RoomState
     
     public void setCompleted() { roomTileState = COMPLETED; }
     
+    public boolean isSeen() { return roomTileState != UNSEEN; }
+    
+    public void setSeen() { roomTileState = UNVISITED; }
+    
     public RoomTileState getRoomTileState() { return roomTileState; }
     
     public void setCurrent() { roomTileState = CURRENT; }
@@ -36,9 +40,5 @@ public class RoomState
     public RoomType getRoomType() { return roomType; }
     
     @Override
-    public String toString()
-    {
-        if(roomTileState == WALL || roomTileState == UNVISITED) return roomTileState.toString();
-        return roomTileState.toString() + " " + roomType.toString();
-    }
+    public String toString() { return roomTileState.toString() + " " + roomType.toString(); }
 }

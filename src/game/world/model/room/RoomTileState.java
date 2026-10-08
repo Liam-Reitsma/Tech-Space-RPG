@@ -2,7 +2,7 @@ package game.world.model.room;
 
 public enum RoomTileState
 {
-    WALL,
+    UNSEEN,
     COMPLETED,
     FLED,
     UNVISITED,

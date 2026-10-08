@@ -22,7 +22,11 @@ import game.newgame.view.NewGameScreen;
 import game.options.controller.OptionsController;
 import game.options.view.OptionsOverlay;
 import game.persistence.DBManager;
+import game.persistence.DatabaseSchemaManager;
 import game.persistence.PersistenceService;
+import game.persistence.dao.InventoryDAO;
+import game.persistence.dao.PlayerDAO;
+import game.persistence.dao.WorldDAO;
 import game.saves.controller.SavesController;
 import game.saves.view.SavesOverlay;
 import game.world.controller.WorldController;
@@ -38,21 +42,25 @@ public class Main
     public static void main(String[] args)
     {
         DBManager dbManager = new DBManager();
-        PersistenceService persistenceService = new PersistenceService(dbManager);
+        DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
+        InventoryDAO inventoryDAO = new InventoryDAO(dbManager);
+        PlayerDAO playerDAO = new PlayerDAO(dbManager);
+        WorldDAO worldDAO = new WorldDAO(dbManager);
+        PersistenceService persistenceService = new PersistenceService(databaseSchemaManager, inventoryDAO, playerDAO, worldDAO);
         GameModel gameModel = new GameModel();
         CombatModel combatModel = new CombatModel(gameModel);
         
         Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
         
         FrameController frameController = new FrameController();
-        MainMenuController mainMenuController = new MainMenuController(frameController);
         OptionsController optionsController = new OptionsController(frameController);
         WorldController worldController = new WorldController(gameModel);
-        GameController gameController = new GameController(gameModel, frameController, worldController);
+        GameController gameController = new GameController(persistenceService, gameModel, frameController, worldController);
         NewGameController newGameController = new NewGameController(frameController, gameController);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
 
         CombatController combatController = new CombatController(combatModel);
+        MainMenuController mainMenuController = new MainMenuController(frameController, newGameController, optionsController, savesController);
         
         OverlayContainer overlayContainer = new OverlayContainer();
         GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);
@@ -86,11 +94,9 @@ public class Main
         newGameController.setNewGameViewAction(newGameScreen);
         savesController.setSavesViewAction(savesOverlay);
         
-        //persistenceService.createNewGame("test", "testGuy", ClassType.GUARDIAN);
         frameController.display(MAIN_MENU);
         gameFrame.setVisible(true);
         
-        //dbManager.closeSQLConnection();
-        //System.exit(0);
+        Runtime.getRuntime().addShutdownHook(new Thread(dbManager::closeSQLConnection));
     }
 }

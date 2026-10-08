@@ -2,5 +2,5 @@ package game.saves.view;
 
 public interface SavesViewAction
 {
-    void updateSavesList(String[] saveNames);
+    void updateSavesList(String[] saveDisplayData);
 }
