@@ -112,6 +112,8 @@ public class SQLCommandFactory
         sql.append("UPDATE ").append(tableName).append(" SET ");
         for(String column : columns)
         {
+            if(column.equalsIgnoreCase(columnName))
+                continue;
             sql.append(column).append(" = ?").append(separator);
         }
         
