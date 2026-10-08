@@ -17,7 +17,11 @@ import game.newgame.view.NewGameScreen;
 import game.options.controller.OptionsController;
 import game.options.view.OptionsOverlay;
 import game.persistence.DBManager;
+import game.persistence.DatabaseSchemaManager;
 import game.persistence.PersistenceService;
+import game.persistence.dao.InventoryDAO;
+import game.persistence.dao.PlayerDAO;
+import game.persistence.dao.WorldDAO;
 import game.saves.controller.SavesController;
 import game.saves.view.SavesOverlay;
 import game.world.controller.WorldController;
@@ -33,7 +37,11 @@ public class Main
     public static void main(String[] args)
     {
         DBManager dbManager = new DBManager();
-        PersistenceService persistenceService = new PersistenceService(dbManager);
+        DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
+        InventoryDAO inventoryDAO = new InventoryDAO(dbManager);
+        PlayerDAO playerDAO = new PlayerDAO(dbManager);
+        WorldDAO worldDAO = new WorldDAO(dbManager);
+        PersistenceService persistenceService = new PersistenceService(databaseSchemaManager, inventoryDAO, playerDAO, worldDAO);
         GameModel gameModel = new GameModel();
         
         Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
