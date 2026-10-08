@@ -1,4 +1,4 @@
-package game.combat;
+package game.combat.model;
 
 public class ActionResult
 {

@@ -2,6 +2,7 @@ package game.combat.view;
 
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
+import game.items.PotionType;
 
 import javax.swing.*;
 
@@ -21,6 +22,12 @@ public class CombatPane extends JPanel implements CombatViewAction
     }
 
     @Override
+    public void showAvailablePotions(PotionType[] potions)
+    {
+        combatButtonPanel.updatePotions(potions);
+    }
+
+    @Override
     public void displayMessage(String message)
     {
         combatTextPane.update(message);
@@ -29,6 +36,6 @@ public class CombatPane extends JPanel implements CombatViewAction
     @Override
     public void setActionEnabled(boolean actionEnabled)
     {
-        combatButtonPanel.setButtonEnabled(actionEnabled);
+        combatButtonPanel.setControlEnabled(actionEnabled);
     }
 }

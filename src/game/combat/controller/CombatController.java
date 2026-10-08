@@ -1,13 +1,12 @@
 package game.combat.controller;
 
 import game.Updatable;
-import game.combat.ActionResult;
+import game.combat.model.ActionResult;
 import game.combat.model.CombatModel;
 import game.combat.view.CombatViewAction;
 import game.entities.Enemy;
 import game.items.PotionType;
 
-import static game.combat.CombatOutcome.ONGOING;
 
 public class CombatController implements CombatAction, Updatable
 {
@@ -25,8 +24,8 @@ public class CombatController implements CombatAction, Updatable
     public void startCombat(Enemy enemy)
     {
         combatModel.startCombat(enemy);
-        combatViewAction.setActionEnabled(true);
         combatViewAction.displayMessage(enemy.getName() + " has appeared!");
+        requestUpdate();
     }
 
     @Override
@@ -52,13 +51,14 @@ public class CombatController implements CombatAction, Updatable
 
     private void showResult(ActionResult combatResult)
     {
-        if(combatResult.getOutcome() != ONGOING) combatViewAction.setActionEnabled(false);
         combatViewAction.displayMessage(combatResult.getMessage());
+        requestUpdate();
     }
 
     @Override
     public void requestUpdate()
     {
-
+        combatViewAction.showAvailablePotions(combatModel.getAvailablePotions());
+        combatViewAction.setActionEnabled(!combatModel.notInCombat());
     }
 }

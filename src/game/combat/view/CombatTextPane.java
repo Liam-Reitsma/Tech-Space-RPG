@@ -9,6 +9,8 @@ import java.awt.*;
 
 public class CombatTextPane extends JPanel
 {
+    private static final Image MAP_IMAGE = new ImageIcon("resources/images/World Map.png").getImage();
+    private static final Font FONT = new Font("Agency FB", Font.PLAIN, 20);
 
     private final JScrollPane scrollPane;
     private final JTextPane logPane;
@@ -19,7 +21,11 @@ public class CombatTextPane extends JPanel
         logPane = new JTextPane();
         scrollPane = new JScrollPane(logPane);
         logPane.setEditable(false);
-
+        logPane.setOpaque(false);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        logPane.setFont(FONT);
+        logPane.setForeground(Color.WHITE);
         add(scrollPane);
     }
 
@@ -32,5 +38,12 @@ public class CombatTextPane extends JPanel
         catch(BadLocationException e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        g.drawImage(MAP_IMAGE, 0, 0, getWidth(), getHeight(), this);
     }
 }

@@ -1,13 +1,15 @@
 package game.combat.model;
 
-import game.combat.ActionResult;
 import game.entities.Enemy;
 import game.entities.player.Player;
 import game.items.Potion;
 import game.items.PotionType;
 import game.maingame.model.GameModel;
 
-import static game.combat.CombatOutcome.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static game.combat.model.CombatOutcome.*;
 
 public class CombatModel
 {
@@ -23,6 +25,7 @@ public class CombatModel
     public void startCombat(Enemy newEnemy)
     {
         currentEnemy = newEnemy;
+
     }
 
     public boolean notInCombat()
@@ -33,6 +36,19 @@ public class CombatModel
     private void endCombat()
     {
         currentEnemy =  null;
+    }
+
+    public PotionType[] getAvailablePotions()
+    {
+        Player player = gameModel.getPlayer();
+        Potion[] potionsFromInventory = player.getInventory().getAllItemTypeInInventory(Potion.class);
+        List<PotionType> potionTypes = new ArrayList<>();
+        for(Potion potion : potionsFromInventory)
+        {
+            if(player.getInventory().getItemCount(potion) > 0)
+                potionTypes.add(potion.getPotionType());
+        }
+        return potionTypes.toArray(new PotionType[0]);
     }
 
     public ActionResult attack()
