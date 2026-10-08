@@ -1,5 +1,6 @@
 package game.persistence;
 
+import static game.persistence.PersistenceTable.EQUIPPED_ITEMS;
 import static game.persistence.PersistenceTable.PLAYER;
 import static game.persistence.SQLCommandFactory.buildCreateTableSQL;
 
@@ -25,7 +26,13 @@ public class DatabaseSchemaManager
         {
             if(table == PLAYER)
                 continue;
-            if(!dbManager.createTable(table.name(), buildCreateTableSQL(table.name(), table.getColumns(), table.getPrimaryKeys(),
+            if(table == EQUIPPED_ITEMS)
+            {
+                if(!dbManager.createTable(table.name(), buildCreateTableSQL(table.name(), table.getColumns(), table.getPrimaryKeys(),
+                        table.getPrimaryKeys(), new String[]{PLAYER.name()}, new String[]{COLUMN_NAME})))
+                    return false;
+            }
+            else if(!dbManager.createTable(table.name(), buildCreateTableSQL(table.name(), table.getColumns(), table.getPrimaryKeys(),
                     table.getColumnStrings(), new String[]{PLAYER.name()}, new String[]{COLUMN_NAME})))
                 return false;
         }
