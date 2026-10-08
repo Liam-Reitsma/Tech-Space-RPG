@@ -25,7 +25,7 @@ public class CombatTextPane extends JPanel
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         logPane.setFont(FONT);
-        logPane.setForeground(Color.WHITE);
+        logPane.setForeground(Color.BLACK);
         add(scrollPane);
     }
 

@@ -3,6 +3,11 @@ package game.maingame.controller;
 import static game.frame.controller.DisplayTarget.MAIN_GAME;
 
 import game.Updatable;
+import game.combat.controller.CombatController;
+import game.combat.controller.CombatListener;
+import game.combat.model.CombatOutcome;
+import game.entities.Enemy;
+import game.entities.EnemyType;
 import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.model.GameModel;
@@ -15,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GameController implements GameAction
+public class GameController implements GameAction, CombatListener
 {
     private final List<Updatable> updatables;
     
@@ -23,7 +28,9 @@ public class GameController implements GameAction
     
     private final FrameAction frameAction;
     private final WorldController worldController; //TODO: WorldAction
-    
+
+    private CombatController combatController;
+
     private GameViewAction gameViewAction;
     
     public GameController(GameModel gModel, FrameAction fAction, WorldController wController)
@@ -36,7 +43,11 @@ public class GameController implements GameAction
         worldController = wController;
         updatables.add(wController);
     }
-    
+
+    public void setCombatController(CombatController combatController) {
+        this.combatController = combatController;
+    }
+
     public void setGameViewAction(GameViewAction gvAction) { gameViewAction = gvAction; }
     
     @Override
@@ -64,7 +75,9 @@ public class GameController implements GameAction
         requestOpenGameScreen();
         
         gameViewAction.updateMainGameScreen();
-        
+
+        //combatController.startCombat(new Enemy(EnemyType.BRUISER, player.getLevel())); // TODO test only, remove in A5
+
         requestGameUpdate();
     }
     
@@ -75,5 +88,16 @@ public class GameController implements GameAction
         {
             controller.requestUpdate();
         }
+    }
+
+    @Override
+    public void onCombatEnded(CombatOutcome combatOutcome)
+    {
+        System.out.println("Combat ended: " + combatOutcome); // TODO A7: update room state
+    }
+
+    public void addUpdatable(Updatable updatable)
+    {
+        updatables.add(updatable);
     }
 }

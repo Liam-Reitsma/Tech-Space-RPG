@@ -78,18 +78,20 @@ public class Main
         displayMap.put(SAVES, savesOverlay);
         
         gameFrame.registerDisplay(displayMap);
-
         combatController.setCombatViewAction(combatPane);
+        combatController.setCombatListener(gameController);
         frameController.setFrameViewAction(gameFrame);
         worldController.setWorldViewAction(worldPanel);
         gameController.setGameViewAction(gameScreen);
+        gameController.setCombatController(combatController);
+        gameController.addUpdatable(combatController);
         newGameController.setNewGameViewAction(newGameScreen);
         savesController.setSavesViewAction(savesOverlay);
         
         //persistenceService.createNewGame("test", "testGuy", ClassType.GUARDIAN);
         frameController.display(MAIN_MENU);
         gameFrame.setVisible(true);
-        
+
         //dbManager.closeSQLConnection();
         //System.exit(0);
     }
