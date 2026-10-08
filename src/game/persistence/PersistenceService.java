@@ -6,6 +6,7 @@ import static game.persistence.SQLCommandFactory.*;
 import game.entities.player.ClassType;
 import game.entities.player.Player;
 import game.items.EquippableItem;
+import game.items.Item;
 import game.persistence.dao.InventoryDAO;
 import game.persistence.dao.PlayerDAO;
 import game.persistence.dao.WorldDAO;
@@ -43,13 +44,17 @@ public class PersistenceService
         if(equipped == null || equipped.length == 0)
             return null;
         
+        Map<Item, Integer> inventory = inventoryDAO.loadInventory(saveName);
+        if(inventory == null)
+            return null;
+        
         Map<Point, RuntimeRoom> world = worldDAO.loadSavedWorld(saveName);
         if(world == null || world.isEmpty())
             return null;
         
         iKey = saveName;
         
-        return new SavedData(player, equipped, world);
+        return new SavedData(player, equipped, inventory, world);
     }
     
     public boolean createNewSaveGame(String saveName, String charName, ClassType classType, Map<Point, RuntimeRoom> world)

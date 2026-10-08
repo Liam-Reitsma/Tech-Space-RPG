@@ -8,15 +8,15 @@ import game.entities.player.Player;
 import game.items.EquippableItem;
 import game.items.Item;
 import game.items.Potion;
+import game.items.PotionType;
 import game.items.armour.Armour;
+import game.items.armour.ArmourMaterial;
+import game.items.armour.ArmourSlot;
 import game.items.weapon.Weapon;
 import game.items.weapon.WeaponType;
 import game.persistence.DBManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InventoryDAO
 {
@@ -244,7 +244,7 @@ public class InventoryDAO
     
     public EquippableItem[] loadEquippedItems(String saveName)
     {
-        List<Map<String, Object>> itemDataList = dbManager.queryDB(buildSelectSQL(EQUIPPED_ITEMS.name(), SAVE_NAME_COLUMN), saveName);
+        List<Map<String, Object>> itemDataList = dbManager.queryDB(buildSelectSQL(EQUIPPED_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
         List<EquippableItem> equippableItems = new ArrayList<>();
         if(itemDataList == null)
             return null;
@@ -268,5 +268,33 @@ public class InventoryDAO
             equippableItems.add(new Armour(itemData.get("BOOTS").toString()));
         
         return equippableItems.toArray(new EquippableItem[0]);
+    }
+    
+    public Map<Item, Integer> loadInventory(String saveName)
+    {
+        List<Map<String, Object>> storedWeaponList = dbManager.queryDB(buildSelectSQL(WEAPON_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
+        List<Map<String, Object>> storedArmourList = dbManager.queryDB(buildSelectSQL(ARMOR_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
+        List<Map<String, Object>> storedPotionList = dbManager.queryDB(buildSelectSQL(POTION_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
+        Map<Item, Integer> inventory = new HashMap<>();
+        if(storedWeaponList == null || storedArmourList == null || storedPotionList == null)
+            return null;
+        
+        for(Map<String, Object> storedWeapon : storedWeaponList)
+        {
+            Weapon weapon = new Weapon(WeaponType.valueOf(storedWeapon.get("WEAPON_TYPE").toString()), (int)storedWeapon.get("LEVEL"));
+            inventory.put(weapon, (int)storedWeapon.get("COUNT"));
+        }
+        for(Map<String, Object> storedArmour : storedArmourList)
+        {
+            Armour armour = new Armour(ArmourMaterial.valueOf(storedArmour.get("ARMOUR_MATERIAL").toString()), ArmourSlot.valueOf(storedArmour.get("ARMOUR_SLOT").toString()));
+            inventory.put(armour, (int)storedArmour.get("COUNT"));
+        }
+        for(Map<String, Object> storedPotion : storedPotionList)
+        {
+            Potion potion = new Potion(PotionType.valueOf(storedPotion.get("POTION_TYPE").toString()));
+            inventory.put(potion, (int)storedPotion.get("COUNT"));
+        }
+        
+        return inventory;
     }
 }
