@@ -80,6 +80,8 @@ public class GameFrame extends JFrame implements FrameViewAction
         {
             if(currentDisplayedScreen != null)
                 currentDisplayedScreen.closeDisplay();
+            if(currentDisplayedOverlay != null)
+                currentDisplayedOverlay.closeDisplay();
             currentDisplayedScreen = screen;
         }
         
