@@ -1,12 +1,10 @@
 package game.combat.controller;
 
-import game.entities.Enemy;
-import game.items.Potion;
+import game.items.PotionType;
 
 public interface CombatAction
 {
-    void requestAttackEnemy();
-    void requestAttackPlayer();
-    void requestHeal();
+    void requestAttack();
+    void requestHeal(PotionType potionType);
     void requestRun();
 }

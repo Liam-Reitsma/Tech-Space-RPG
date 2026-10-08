@@ -1,9 +1,12 @@
 package game.combat.controller;
 
 import game.Updatable;
+import game.combat.model.ActionResult;
 import game.combat.model.CombatModel;
 import game.combat.view.CombatViewAction;
-import game.items.Potion;
+import game.entities.Enemy;
+import game.items.PotionType;
+
 
 public class CombatController implements CombatAction, Updatable
 {
@@ -16,43 +19,46 @@ public class CombatController implements CombatAction, Updatable
         combatModel = cModel;
     }
 
-    public void setCombatViewAction(CombatViewAction cvAction)
+    public void setCombatViewAction(CombatViewAction cvAction) { combatViewAction = cvAction;}
+
+    public void startCombat(Enemy enemy)
     {
-        combatViewAction = cvAction;
+        combatModel.startCombat(enemy);
+        combatViewAction.displayMessage(enemy.getName() + " has appeared!");
+        requestUpdate();
     }
 
-    public void requestAttackEnemy()
+    @Override
+    public void requestAttack()
     {
-        String combatResult = combatModel.playerAttack();
-
-        combatViewAction.updateCombatTextPane(combatResult);
+        if(combatModel.notInCombat()) return;
+        showResult(combatModel.attack());
     }
 
-    public void requestAttackPlayer()
+    @Override
+    public void requestHeal(PotionType potionType)
     {
-        String resultText = combatModel.enemyAttack();
-
-        combatViewAction.updateCombatTextPane(resultText);
+        if(combatModel.notInCombat()) return;
+        showResult(combatModel.heal(potionType));
     }
 
-    public void requestHeal()
-    {
-
-    }
-
-    public void requestUsePotion(Potion potion)
-    {
-        combatModel.heal();
-    }
-
+    @Override
     public void requestRun()
     {
-        combatViewAction.updateCombatTextPane("Player has ran away.");
+        if(combatModel.notInCombat()) return;
+        showResult(combatModel.run());
+    }
+
+    private void showResult(ActionResult combatResult)
+    {
+        combatViewAction.displayMessage(combatResult.getMessage());
+        requestUpdate();
     }
 
     @Override
     public void requestUpdate()
     {
-
+        combatViewAction.showAvailablePotions(combatModel.getAvailablePotions());
+        combatViewAction.setActionEnabled(!combatModel.notInCombat());
     }
 }

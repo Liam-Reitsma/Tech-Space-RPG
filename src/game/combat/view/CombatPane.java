@@ -1,26 +1,41 @@
 package game.combat.view;
 
-import game.combat.controller.CombatAction;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
+import game.items.PotionType;
 
 import javax.swing.*;
 
 public class CombatPane extends JPanel implements CombatViewAction
 {
-    public CombatPane(CombatAction cAction)
+    private final CombatTextPane combatTextPane;
+    private final CombatButtonPanel combatButtonPanel;
+
+    public CombatPane(CombatButtonPanel cbPanel, CombatTextPane ctPane)
     {
         setLayout(new ScaledLayout());
         LayoutBox[] verticalBox = new LayoutBox().splitVertical(70, 30);
-
-        add(new CombatTextPane(), verticalBox[0]);
-
-        add(new CombatButtonPanel(cAction), verticalBox[1]);
+        combatTextPane = ctPane;
+        add(combatTextPane, verticalBox[0]);
+        combatButtonPanel = cbPanel;
+        add(combatButtonPanel, verticalBox[1]);
     }
 
     @Override
-    public void updateCombatTextPane(String actionPerformed)
+    public void showAvailablePotions(PotionType[] potions)
     {
+        combatButtonPanel.updatePotions(potions);
+    }
 
+    @Override
+    public void displayMessage(String message)
+    {
+        combatTextPane.update(message);
+    }
+
+    @Override
+    public void setActionEnabled(boolean actionEnabled)
+    {
+        combatButtonPanel.setControlEnabled(actionEnabled);
     }
 }
