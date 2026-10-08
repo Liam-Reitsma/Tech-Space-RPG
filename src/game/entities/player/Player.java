@@ -193,10 +193,11 @@ public class Player extends Entities implements Persistable
         point = point.move(direction);
     }
     
-    public Inventory getInventory()
-    {
-        return inventory;
-    }
+    public Inventory getInventory() { return inventory; }
+    
+    public void setInventory(Map<Item, Integer> loadedStoredMap) { inventory.setInventory(loadedStoredMap); }
+    
+    public void setEquipped(EquippableItem[] loadedEquippedArray) { inventory.setEquipped(loadedEquippedArray); }
     
     public int getXP() { return xp; }
     

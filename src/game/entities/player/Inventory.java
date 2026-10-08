@@ -78,10 +78,7 @@ public class Inventory
         return armourlist.toArray(new Armour[0]);
     }
     
-    public Item[] getItemsInInventory()
-    {
-        return storedItemsMap.keySet().toArray(new Item[0]);
-    }
+    public Item[] getItemsInInventory() { return storedItemsMap.keySet().toArray(new Item[0]); }
     
     public <I extends Item> I[] getAllItemTypeInInventory(Class<I> itemClass)
     {
@@ -100,8 +97,13 @@ public class Inventory
         return itemList.toArray(result);
     }
     
-    public int getItemCount(Item item)
+    public int getItemCount(Item item) { return storedItemsMap.get(item); }
+    
+    public void setInventory(Map<Item, Integer> loadedStoredMap) { storedItemsMap.putAll(loadedStoredMap); }
+    
+    public void setEquipped(EquippableItem[] loadedEquippedArray)
     {
-        return storedItemsMap.get(item);
+        for(EquippableItem loadedEquippedItem : loadedEquippedArray)
+            equippedItemsMap.put(loadedEquippedItem.getEquipSlot(), loadedEquippedItem);
     }
 }
