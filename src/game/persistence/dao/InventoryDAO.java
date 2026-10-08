@@ -73,11 +73,11 @@ public class InventoryDAO
     
     public boolean updateStoredEquipment(String saveName, Inventory inventory)
     {
-        if(!dbManager.updateDB(buildDeleteAllRowSQL(STORED_ARMOUR.name(), SAVE_NAME_COLUMN), saveName))
+        if(!dbManager.updateDB(buildDeleteAllRowsSQL(STORED_ARMOUR.name(), SAVE_NAME_COLUMN), saveName))
             return false;
-        if(!dbManager.updateDB(buildDeleteAllRowSQL(STORED_WEAPONS.name(), SAVE_NAME_COLUMN), saveName))
+        if(!dbManager.updateDB(buildDeleteAllRowsSQL(STORED_WEAPONS.name(), SAVE_NAME_COLUMN), saveName))
             return false;
-        if(!dbManager.updateDB(buildDeleteAllRowSQL(STORED_POTIONS.name(), SAVE_NAME_COLUMN), saveName))
+        if(!dbManager.updateDB(buildDeleteAllRowsSQL(STORED_POTIONS.name(), SAVE_NAME_COLUMN), saveName))
             return false;
         
         Armour[] armourArray = inventory.getAllItemTypeInInventory(Armour.class);
@@ -162,14 +162,14 @@ public class InventoryDAO
                 else
                 {
                     args = new Object[]{newCount, saveName, armour.getEquipSlot().name(), armour.getArmourMaterial().name()};
-                    return dbManager.updateDB(buildUpdateRowSQL(ARMOR_TABLE_NAME,
+                    return dbManager.updateDB(buildUpdateCellEntrySQL(ARMOR_TABLE_NAME,
                             ARMOR_COLUMNS[ARMOR_COLUMNS.length - 1], ARMOR_COLUMNS), args);
                 }
             }
             default ->
             {
                 args = new Object[]{newCount, saveName, armour.getEquipSlot().name(), armour.getArmourMaterial().name()};
-                return dbManager.updateDB(buildUpdateRowSQL(ARMOR_TABLE_NAME,
+                return dbManager.updateDB(buildUpdateCellEntrySQL(ARMOR_TABLE_NAME,
                         ARMOR_COLUMNS[ARMOR_COLUMNS.length - 1], ARMOR_COLUMNS), args);
             }
         }
@@ -195,14 +195,14 @@ public class InventoryDAO
                 else
                 {
                     args = new Object[]{newCount, saveName, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel()};
-                    return dbManager.updateDB(buildUpdateRowSQL(
+                    return dbManager.updateDB(buildUpdateCellEntrySQL(
                             WEAPON_TABLE_NAME, WEAPON_COLUMNS[WEAPON_COLUMNS.length - 1], WEAPON_COLUMNS),args);
                 }
             }
             default ->
             {
                 args = new Object[]{newCount, saveName, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel()};
-                return dbManager.updateDB(buildUpdateRowSQL(WEAPON_TABLE_NAME,
+                return dbManager.updateDB(buildUpdateCellEntrySQL(WEAPON_TABLE_NAME,
                         WEAPON_COLUMNS[WEAPON_COLUMNS.length - 1], WEAPON_COLUMNS), args);
             }
         }
@@ -229,14 +229,14 @@ public class InventoryDAO
                 else
                 {
                     args = new Object[]{newCount, saveName, potion.getPotionType().name()};
-                    return dbManager.updateDB(buildUpdateRowSQL(POTION_TABLE_NAME,
+                    return dbManager.updateDB(buildUpdateCellEntrySQL(POTION_TABLE_NAME,
                             POTION_COLUMNS[POTION_COLUMNS.length - 1], POTION_COLUMNS), args);
                 }
             }
             default ->
             {
                 args = new Object[]{newCount, saveName, potion.getPotionType().name()};
-                return dbManager.updateDB(buildUpdateRowSQL(POTION_TABLE_NAME,
+                return dbManager.updateDB(buildUpdateCellEntrySQL(POTION_TABLE_NAME,
                         POTION_COLUMNS[POTION_COLUMNS.length - 1], POTION_COLUMNS), args);
             }
         }

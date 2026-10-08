@@ -78,8 +78,8 @@ public class PlayerDAO
     
     public Player[] getAllSaves()
     {
-        List<Map<String, Object>> playerDataList = dbManager.queryDB(buildSelectSQLNoConstraint(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN));
-        List<Map<String, Object>> statsDataList = dbManager.queryDB(buildSelectSQLNoConstraint(STATS_TABLE_NAME, SAVE_NAME_COLUMN));
+        List<Map<String, Object>> playerDataList = dbManager.queryDB(buildSelectTableSQL(PLAYER_TABLE_NAME));
+        List<Map<String, Object>> statsDataList = dbManager.queryDB(buildSelectTableSQL(STATS_TABLE_NAME));
         if(playerDataList == null || statsDataList == null)
             return null;
         if(playerDataList.isEmpty() || statsDataList.isEmpty() || playerDataList.size() != statsDataList.size())
