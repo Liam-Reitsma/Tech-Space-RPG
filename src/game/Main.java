@@ -81,11 +81,9 @@ public class Main
         newGameController.setNewGameViewAction(newGameScreen);
         savesController.setSavesViewAction(savesOverlay);
         
-        //persistenceService.createNewGame("test", "testGuy", ClassType.GUARDIAN);
         frameController.display(MAIN_MENU);
         gameFrame.setVisible(true);
         
-        //dbManager.closeSQLConnection();
-        //System.exit(0);
+        Runtime.getRuntime().addShutdownHook(new Thread(dbManager::closeSQLConnection));
     }
 }
