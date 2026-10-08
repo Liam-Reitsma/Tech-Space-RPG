@@ -44,7 +44,11 @@ public class RewardModel
 
     public boolean hasPointsToAllocate()
     {
-        return unspentPoints > 0;
+        if(unspentPoints > 0) return true;
+        for(int planned : statsLeveledUp.values())
+            if(planned > 0) return true;
+
+        return false;
     }
 
     public String confirmLeveledUp()
@@ -61,7 +65,7 @@ public class RewardModel
         }
 
         statsLeveledUp.clear();
-        if(resultMessage.length() == 2) return "Nothing has be leveled up.";
+        if(resultMessage.length() == 2) return "Nothing has been leveled up.";
         return resultMessage;
     }
 

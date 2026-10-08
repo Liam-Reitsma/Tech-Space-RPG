@@ -24,7 +24,7 @@ public class RewardStatPanel extends JPanel
         setLayout(new ScaledLayout());
 
         LayoutBox[] statBoxes = new LayoutBox().splitVertical(22.5f, 22.5f, 22.5f, 22.5f, 10);
-        pointsToSpendLabel = new JLabel();
+        pointsToSpendLabel = new JLabel("",  SwingConstants.CENTER);
         JButton confirmButton = new JButton("Confirm");
 
         confirmButton.addActionListener(e -> {rewardAction.requestConfirmStat();});

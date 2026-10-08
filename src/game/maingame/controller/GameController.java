@@ -12,6 +12,7 @@ import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
+import game.reward.controller.RewardController;
 import game.world.model.Point;
 import game.world.controller.WorldController;
 import game.world.model.room.RuntimeRoom;
@@ -30,6 +31,9 @@ public class GameController implements GameAction, CombatListener
     private final WorldController worldController; //TODO: WorldAction
 
     private CombatController combatController;
+    private RewardController rewardController;
+
+    private Enemy currentEncounter;
 
     private GameViewAction gameViewAction;
     
@@ -44,8 +48,13 @@ public class GameController implements GameAction, CombatListener
         updatables.add(wController);
     }
 
-    public void setCombatController(CombatController combatController) {
-        this.combatController = combatController;
+    public void setCombatController(CombatController cController) {
+        combatController = cController;
+    }
+
+    public void setRewardController(RewardController rController)
+    {
+        rewardController = rController;
     }
 
     public void setGameViewAction(GameViewAction gvAction) { gameViewAction = gvAction; }
@@ -76,7 +85,11 @@ public class GameController implements GameAction, CombatListener
         
         gameViewAction.updateMainGameScreen();
 
-        //combatController.startCombat(new Enemy(EnemyType.BRUISER, player.getLevel())); // TODO test only, remove in A5
+
+
+        currentEncounter = new Enemy(EnemyType.BRUISER, player.getLevel()); // TODO test only, remove in A5
+        combatController.startCombat(currentEncounter);
+
 
         requestGameUpdate();
     }
@@ -93,7 +106,10 @@ public class GameController implements GameAction, CombatListener
     @Override
     public void onCombatEnded(CombatOutcome combatOutcome)
     {
-        System.out.println("Combat ended: " + combatOutcome); // TODO A7: update room state
+        if(combatOutcome == CombatOutcome.WIN)
+        {
+            rewardController.giveEnemyReward(currentEncounter);
+        }
     }
 
     public void addUpdatable(Updatable updatable)

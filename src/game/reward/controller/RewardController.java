@@ -15,14 +15,14 @@ public class RewardController implements RewardAction, Updatable
         rewardModel = rModel;
     }
 
-    public void setViewAction(RewardViewAction rvAction)
+    public void setRewardViewAction(RewardViewAction rvAction)
     {
         rewardViewAction = rvAction;
     }
 
     public void giveEnemyReward(Enemy enemy)
     {
-        rewardModel.applyEnemyReward(enemy);
+        rewardViewAction.displayMessage(rewardModel.applyEnemyReward(enemy));
         requestUpdate();
     }
 
@@ -38,17 +38,23 @@ public class RewardController implements RewardAction, Updatable
     }
 
     @Override
-    public void requestPlannedIncrease(StatType stat) {
-
+    public void requestPlannedIncrease(StatType stat)
+    {
+        rewardModel.planIncrease(stat);
+        requestUpdate();
     }
 
     @Override
-    public void requestPlannedDecrease(StatType stat) {
-
+    public void requestPlannedDecrease(StatType stat)
+    {
+        rewardModel.planDecrease(stat);
+        requestUpdate();
     }
 
     @Override
-    public void requestConfirmStat() {
-
+    public void requestConfirmStat()
+    {
+        rewardModel.confirmLeveledUp();
+        requestUpdate();
     }
 }

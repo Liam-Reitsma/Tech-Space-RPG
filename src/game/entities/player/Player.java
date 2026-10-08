@@ -219,4 +219,6 @@ public class Player extends Entities implements Persistable
     public Point getPoint() { return point; }
     
     public ClassType getClassType() { return classType; }
+
+    public int getStatValue(StatType statType) { return statTypeMap.get(statType); }
 }

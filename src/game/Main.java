@@ -23,6 +23,9 @@ import game.options.controller.OptionsController;
 import game.options.view.OptionsOverlay;
 import game.persistence.DBManager;
 import game.persistence.PersistenceService;
+import game.reward.controller.RewardController;
+import game.reward.model.RewardModel;
+import game.reward.view.RewardStatPanel;
 import game.saves.controller.SavesController;
 import game.saves.view.SavesOverlay;
 import game.world.controller.WorldController;
@@ -41,6 +44,7 @@ public class Main
         PersistenceService persistenceService = new PersistenceService(dbManager);
         GameModel gameModel = new GameModel();
         CombatModel combatModel = new CombatModel(gameModel);
+        RewardModel rewardModel = new RewardModel(gameModel);
         
         Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
         
@@ -50,6 +54,7 @@ public class Main
         WorldController worldController = new WorldController(gameModel);
         GameController gameController = new GameController(gameModel, frameController, worldController);
         NewGameController newGameController = new NewGameController(frameController, gameController);
+        RewardController rewardController = new RewardController(rewardModel);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
 
         CombatController combatController = new CombatController(combatModel);
@@ -65,10 +70,12 @@ public class Main
         WorldMovementPanel worldMovementPanel = new WorldMovementPanel(worldController);
         WorldPanel worldPanel = new WorldPanel(worldMapPanel, worldMovementPanel);
 
+        RewardStatPanel rewardStatPanel = new RewardStatPanel(rewardController);
+
         CombatButtonPanel combatButtonPanel = new CombatButtonPanel(combatController);
         CombatTextPane combatTextPane = new CombatTextPane();
-        CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane);
-        
+        CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane, rewardStatPanel);
+
         GameScreen gameScreen = new GameScreen(combatPane, worldPanel, gameController);
         
         displayMap.put(MAIN_GAME, gameScreen);
@@ -82,10 +89,14 @@ public class Main
         combatController.setCombatListener(gameController);
         frameController.setFrameViewAction(gameFrame);
         worldController.setWorldViewAction(worldPanel);
+
         gameController.setGameViewAction(gameScreen);
         gameController.setCombatController(combatController);
+        gameController.setRewardController(rewardController);
         gameController.addUpdatable(combatController);
+
         newGameController.setNewGameViewAction(newGameScreen);
+        rewardController.setRewardViewAction(combatPane);
         savesController.setSavesViewAction(savesOverlay);
         
         //persistenceService.createNewGame("test", "testGuy", ClassType.GUARDIAN);
