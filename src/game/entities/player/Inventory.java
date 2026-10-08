@@ -30,8 +30,14 @@ public class Inventory
     
     public void removeFromInventory(Item item, boolean removeStack)
     {
-        if(removeStack) storedItemsMap.remove(item);
-        else storedItemsMap.put(item, storedItemsMap.getOrDefault(item, 0) - 1);
+        int count = storedItemsMap.getOrDefault(item, 0);
+        
+        if(count <= 0)
+            return;
+        if(removeStack || count == 1)
+            storedItemsMap.remove(item);
+        else
+            storedItemsMap.put(item, storedItemsMap.get(item) - 1);
     }
     
     public void equipItem(EquippableItem item)
@@ -97,7 +103,7 @@ public class Inventory
         return itemList.toArray(result);
     }
     
-    public int getItemCount(Item item) { return storedItemsMap.get(item); }
+    public int getItemCount(Item item) { return storedItemsMap.getOrDefault(item, 0); }
     
     public void setInventory(Map<Item, Integer> loadedStoredMap) { storedItemsMap.putAll(loadedStoredMap); }
     

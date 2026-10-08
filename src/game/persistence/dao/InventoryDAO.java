@@ -60,7 +60,7 @@ public class InventoryDAO
             {
                 if(armour.getEquipSlot().name().equalsIgnoreCase(equippedColumns[i]))
                 {
-                    args[i] = armour.toString();
+                    args[i] = armour.getArmourMaterial().name();
                     break;
                 }
             }
@@ -119,14 +119,14 @@ public class InventoryDAO
         return true;
     }
     
-    public boolean addItem(String saveName, Item item, int newCount)
+    public boolean addItem(String saveName, Item item, int oldCount)
     {
-        return updateItemEntry(saveName, item, newCount - 1, newCount);
+        return updateItemEntry(saveName, item, oldCount, oldCount + 1);
     }
     
-    public boolean removeItem(String saveName, Item item, int newCount)
+    public boolean removeItem(String saveName, Item item, int oldCount)
     {
-        return updateItemEntry(saveName, item, newCount + 1, newCount);
+        return oldCount > 0 && updateItemEntry(saveName, item, oldCount, oldCount - 1);
     }
     
     private boolean updateItemEntry(String saveName, Item item, int oldCount, int newCount)
@@ -255,17 +255,17 @@ public class InventoryDAO
         
         equippableItems.add(new Weapon(WeaponType.valueOf(itemData.get("WEAPON_TYPE").toString()), (int)itemData.get("WEAPON_LEVEL")));
         if(itemData.get("HEAD") != null)
-            equippableItems.add(new Armour(itemData.get("HEAD").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("HEAD").toString()), ArmourSlot.HEAD));
         if(itemData.get("CHEST") != null)
-            equippableItems.add(new Armour(itemData.get("CHEST").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("CHEST").toString()), ArmourSlot.CHEST));
         if(itemData.get("ARMS") != null)
-            equippableItems.add(new Armour(itemData.get("ARMS").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("ARMS").toString()), ArmourSlot.ARMS));
         if(itemData.get("THIGHS") != null)
-            equippableItems.add(new Armour(itemData.get("THIGHS").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("THIGHS").toString()), ArmourSlot.THIGHS));
         if(itemData.get("SHINS") != null)
-            equippableItems.add(new Armour(itemData.get("SHINS").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("SHINS").toString()), ArmourSlot.SHINS));
         if(itemData.get("BOOTS") != null)
-            equippableItems.add(new Armour(itemData.get("BOOTS").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("BOOTS").toString()), ArmourSlot.BOOTS));
         
         return equippableItems.toArray(new EquippableItem[0]);
     }
