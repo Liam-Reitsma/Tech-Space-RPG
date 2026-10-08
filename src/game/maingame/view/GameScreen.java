@@ -1,5 +1,6 @@
 package game.maingame.view;
 
+import game.combat.view.CombatPane;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.config.DisplayableScreen;
@@ -35,13 +36,15 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     private JButton saveGameButton;
     private JButton loadGameButton;
     private JButton exitGameButton;
-    
+
+    private final CombatPane combatPane;
     private final WorldPanel worldPanel;
     private final GameAction gameAction;
     
-    public GameScreen(WorldPanel wPanel, GameAction gAction)
+    public GameScreen(CombatPane cPane, WorldPanel wPanel, GameAction gAction)
     {
         setLayout(new ScaledLayout());
+        combatPane = cPane;
         worldPanel = wPanel;
         
         LayoutBox[] boxes = new LayoutBox().splitVertical(90, 10);
@@ -63,12 +66,7 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     
     private void createTextPane(LayoutBox box)
     {
-        logPane = new JTextPane();
-        JScrollPane scrollPane = new JScrollPane(logPane);
-        textBackdrop = new JPanel(new ScaledLayout());
-        textBackdrop.add(scrollPane);
-        
-        add(textBackdrop, box);
+        add(combatPane, box);
     }
     
     private void createInventoryPane(LayoutBox box)

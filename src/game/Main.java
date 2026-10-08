@@ -2,6 +2,11 @@ package game;
 
 import static game.frame.controller.DisplayTarget.*;
 
+import game.combat.controller.CombatController;
+import game.combat.model.CombatModel;
+import game.combat.view.CombatButtonPanel;
+import game.combat.view.CombatPane;
+import game.combat.view.CombatTextPane;
 import game.frame.controller.DisplayTarget;
 import game.frame.controller.FrameController;
 import game.frame.view.GameFrame;
@@ -35,6 +40,7 @@ public class Main
         DBManager dbManager = new DBManager();
         PersistenceService persistenceService = new PersistenceService(dbManager);
         GameModel gameModel = new GameModel();
+        CombatModel combatModel = new CombatModel(gameModel);
         
         Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
         
@@ -45,6 +51,8 @@ public class Main
         GameController gameController = new GameController(gameModel, frameController, worldController);
         NewGameController newGameController = new NewGameController(frameController, gameController);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
+
+        CombatController combatController = new CombatController(combatModel);
         
         OverlayContainer overlayContainer = new OverlayContainer();
         GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);
@@ -56,8 +64,12 @@ public class Main
         WorldMapPanel worldMapPanel = new WorldMapPanel();
         WorldMovementPanel worldMovementPanel = new WorldMovementPanel(worldController);
         WorldPanel worldPanel = new WorldPanel(worldMapPanel, worldMovementPanel);
+
+        CombatButtonPanel combatButtonPanel = new CombatButtonPanel(combatController);
+        CombatTextPane combatTextPane = new CombatTextPane();
+        CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane);
         
-        GameScreen gameScreen = new GameScreen(worldPanel, gameController);
+        GameScreen gameScreen = new GameScreen(combatPane, worldPanel, gameController);
         
         displayMap.put(MAIN_GAME, gameScreen);
         displayMap.put(MAIN_MENU, mainMenuScreen);
@@ -66,7 +78,8 @@ public class Main
         displayMap.put(SAVES, savesOverlay);
         
         gameFrame.registerDisplay(displayMap);
-        
+
+        combatController.setCombatViewAction(combatPane);
         frameController.setFrameViewAction(gameFrame);
         worldController.setWorldViewAction(worldPanel);
         gameController.setGameViewAction(gameScreen);
