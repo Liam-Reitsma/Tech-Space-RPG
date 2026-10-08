@@ -92,6 +92,25 @@ public class PersistenceService
         return true;
     }
     
+    public boolean quickSave(Player player, RuntimeRoom room, InventoryChange change, Item item)
+    {
+        if(iKey == null)
+            return false;
+        
+        boolean success = playerDAO.updatePlayer(iKey, player) && worldDAO.updateRoomStatus(iKey, room);
+        
+        if(item == null && (change == InventoryChange.ADD || change == InventoryChange.REMOVE))
+            return false;
+        
+        return switch(change)
+        {
+            case NONE -> success;
+            case ADD -> success && inventoryDAO.addItem(iKey, item, player.getInventory().getItemCount(item));
+            case EQUIP -> success && inventoryDAO.updateStoredEquipment(iKey, player.getInventory()) && inventoryDAO.updateEquippedEquipment(iKey, player.getInventory());
+            case REMOVE -> success && inventoryDAO.removeItem(iKey, item, player.getInventory().getItemCount(item));
+        };
+    }
+    
     public boolean fullSave(Player player, Map<Point, RuntimeRoom> world)
     {
         if(iKey == null)
