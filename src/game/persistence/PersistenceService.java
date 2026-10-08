@@ -1,8 +1,5 @@
 package game.persistence;
 
-import static game.persistence.PersistenceTable.*;
-import static game.persistence.SQLCommandFactory.*;
-
 import game.entities.player.ClassType;
 import game.entities.player.Player;
 import game.items.EquippableItem;
@@ -17,18 +14,16 @@ import java.util.*;
 
 public class PersistenceService
 {
-    private static final String COLUMN_NAME = "SAVE_NAME";
-    
     private String iKey;
     
-    private final DBManager dbManager;
+    private final DatabaseSchemaManager databaseSchemaManager;
     private final InventoryDAO inventoryDAO;
     private final PlayerDAO playerDAO;
     private final WorldDAO worldDAO;
     
-    public PersistenceService(DBManager db, InventoryDAO iDAO, PlayerDAO pDAO, WorldDAO wDAO)
+    public PersistenceService(DatabaseSchemaManager dbSchemaManager, InventoryDAO iDAO, PlayerDAO pDAO, WorldDAO wDAO)
     {
-        dbManager = db;
+        databaseSchemaManager = dbSchemaManager;
         inventoryDAO = iDAO;
         playerDAO = pDAO;
         worldDAO = wDAO;
@@ -60,7 +55,7 @@ public class PersistenceService
     public boolean createNewSaveGame(String saveName, String charName, ClassType classType, Map<Point, RuntimeRoom> world)
     {
         Player player = new Player(charName, classType);
-        if(!createTables())
+        if(!databaseSchemaManager.createTables())
             return false;
         
         boolean success = playerDAO.insertPlayer(saveName, player) &&
@@ -71,25 +66,6 @@ public class PersistenceService
             iKey = saveName;
         
         return success;
-    }
-    
-    private boolean createTables()
-    {
-        if(!dbManager.createTable(PLAYER.name(),
-                buildCreateTableSQL(PLAYER.name(), PLAYER.getColumns(), PLAYER.getPrimaryKeys(),
-                        PLAYER.getColumnStrings())))
-            return false;
-        
-        for(PersistenceTable table : PersistenceTable.values())
-        {
-            if(table == PLAYER)
-                continue;
-            if(!dbManager.createTable(table.name(), buildCreateTableSQL(table.name(), table.getColumns(), table.getPrimaryKeys(),
-                    table.getColumnStrings(), new String[]{PLAYER.name()}, new String[]{COLUMN_NAME})))
-                return false;
-        }
-        
-        return true;
     }
     
     public boolean quickSave(Player player, RuntimeRoom room, InventoryChange change, Item item)
