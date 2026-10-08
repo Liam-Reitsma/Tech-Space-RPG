@@ -8,7 +8,6 @@ import game.ConsoleHandler;
 import game.Loopable;
 import game.entities.*;
 import game.entities.player.Player;
-import game.entities.player.PlayerErrors;
 import game.items.EquippableItem;
 import game.items.Potion;
 import game.items.PotionType;
@@ -17,11 +16,11 @@ import game.items.weapon.Weapon;
 
 import java.util.Optional;
 
-public class RewardController implements Loopable<Player, Persistable, RewardResult>
+public class RewardControllerOLD implements Loopable<Player, Persistable, RewardResult>
 {
     private final ConsoleHandler consoleH;
 
-    public  RewardController(ConsoleHandler cH)
+    public RewardControllerOLD(ConsoleHandler cH)
     {
         consoleH = cH;
     }
