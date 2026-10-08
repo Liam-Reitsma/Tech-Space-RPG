@@ -128,7 +128,7 @@ public class DBManager
         }
     }
     
-    private void dropTableIfExists(String tableName)
+    public boolean dropTableIfExists(String tableName)
     {
         try
         {
@@ -140,9 +140,10 @@ public class DBManager
                         statement.execute("DROP TABLE " + tableName);
                 }
             }
+            return true;
         } catch(SQLException ex)
         {
-            System.out.println(ex.getMessage());
+            return false;
         }
     }
 }

@@ -49,7 +49,7 @@ public class WorldDAO
     
     public boolean updateMap(String saveName, Map<Point, RuntimeRoom> world)
     {
-        if(!dbManager.updateDB(buildDeleteAllRowSQL(TABLE_NAME, SAVE_NAME_COLUMN), saveName))
+        if(!dbManager.updateDB(buildDeleteAllRowsSQL(TABLE_NAME, SAVE_NAME_COLUMN), saveName))
             return false;
         
         return insertWorld(saveName, world);
@@ -64,7 +64,7 @@ public class WorldDAO
         String[] primaryKeys = ROOMS.getPrimaryKeys();
         String columnName = "ROOM_TILE_STATE";
         
-        return dbManager.updateDB(buildUpdateRowSQL(TABLE_NAME, columnName, primaryKeys), args);
+        return dbManager.updateDB(buildUpdateCellEntrySQL(TABLE_NAME, columnName, primaryKeys), args);
     }
     
     public Map<Point, RuntimeRoom> loadSavedWorld(String saveName)

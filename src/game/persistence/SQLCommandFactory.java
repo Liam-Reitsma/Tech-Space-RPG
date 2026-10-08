@@ -22,11 +22,6 @@ public class SQLCommandFactory
         return buildCreateTableSQL(tableName, columns, pKeys, notNullables,null, null);
     }
     
-    public static String buildCreateTableSQL(String tableName, LinkedHashMap<String, String> columns, String[] pKeys, String[] parentTableNames, String[] fKeys)
-    {
-        return buildCreateTableSQL(tableName, columns, pKeys, null, parentTableNames, fKeys);
-    }
-    
     public static String buildCreateTableSQL(String tableName, LinkedHashMap<String, String> columns, String[] pKeys, String[] notNullables, String[] parentTableNames, String[] fKeys)
     {
         StringBuilder sql = new StringBuilder();
@@ -86,13 +81,13 @@ public class SQLCommandFactory
         }
         
         sql.delete((sql.length()) - separator.length(), sql.length()).append(")");
-        sql.append(" VALUES (").repeat("?, ", columns.length);
+        sql.append(" VALUES(").repeat("?, ", columns.length);
         sql.delete((sql.length()) - separator.length(), sql.length()).append(")");
         
         return sql.toString();
     }
     
-    public static String buildSelectSQLNoConstraint(String tableName, String columnName)
+    public static String buildSelectTableSQL(String tableName)
     {
         StringBuilder sql = new StringBuilder();
         
@@ -117,6 +112,8 @@ public class SQLCommandFactory
         sql.append("UPDATE ").append(tableName).append(" SET ");
         for(String column : columns)
         {
+            if(column.equalsIgnoreCase(columnName))
+                continue;
             sql.append(column).append(" = ?").append(separator);
         }
         
@@ -126,11 +123,11 @@ public class SQLCommandFactory
         return sql.toString();
     }
     
-    public static String buildUpdateRowSQL(String tableName, String columnName, String[] columns)
+    public static String buildUpdateCellEntrySQL(String tableName, String columnName, String[] columns)
     {
         StringBuilder sql = new StringBuilder();
         
-        sql.append("UPDATE ").append(tableName).append(" SET ").append(columnName).append(" = ? ").append(" WHERE ");
+        sql.append("UPDATE ").append(tableName).append(" SET ").append(columnName).append(" = ? ").append("WHERE ");
         for(String column : columns)
         {
             if(columnName.equalsIgnoreCase(column)) continue;
@@ -157,7 +154,7 @@ public class SQLCommandFactory
         return sql.toString();
     }
     
-    public static String buildDeleteAllRowSQL(String tableName, String columnName)
+    public static String buildDeleteAllRowsSQL(String tableName, String columnName)
     {
         StringBuilder sql = new StringBuilder();
         

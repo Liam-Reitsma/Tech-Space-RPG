@@ -60,7 +60,7 @@ public class InventoryDAO
             {
                 if(armour.getEquipSlot().name().equalsIgnoreCase(equippedColumns[i]))
                 {
-                    args[i] = armour.toString();
+                    args[i] = armour.getArmourMaterial().name();
                     break;
                 }
             }
@@ -73,11 +73,11 @@ public class InventoryDAO
     
     public boolean updateStoredEquipment(String saveName, Inventory inventory)
     {
-        if(!dbManager.updateDB(buildDeleteAllRowSQL(STORED_ARMOUR.name(), SAVE_NAME_COLUMN), saveName))
+        if(!dbManager.updateDB(buildDeleteAllRowsSQL(STORED_ARMOUR.name(), SAVE_NAME_COLUMN), saveName))
             return false;
-        if(!dbManager.updateDB(buildDeleteAllRowSQL(STORED_WEAPONS.name(), SAVE_NAME_COLUMN), saveName))
+        if(!dbManager.updateDB(buildDeleteAllRowsSQL(STORED_WEAPONS.name(), SAVE_NAME_COLUMN), saveName))
             return false;
-        if(!dbManager.updateDB(buildDeleteAllRowSQL(STORED_POTIONS.name(), SAVE_NAME_COLUMN), saveName))
+        if(!dbManager.updateDB(buildDeleteAllRowsSQL(STORED_POTIONS.name(), SAVE_NAME_COLUMN), saveName))
             return false;
         
         Armour[] armourArray = inventory.getAllItemTypeInInventory(Armour.class);
@@ -119,14 +119,14 @@ public class InventoryDAO
         return true;
     }
     
-    public boolean addItem(String saveName, Item item, int newCount)
+    public boolean addItem(String saveName, Item item, int oldCount)
     {
-        return updateItemEntry(saveName, item, newCount - 1, newCount);
+        return updateItemEntry(saveName, item, oldCount, oldCount + 1);
     }
     
-    public boolean removeItem(String saveName, Item item, int newCount)
+    public boolean removeItem(String saveName, Item item, int oldCount)
     {
-        return updateItemEntry(saveName, item, newCount + 1, newCount);
+        return oldCount > 0 && updateItemEntry(saveName, item, oldCount, oldCount - 1);
     }
     
     private boolean updateItemEntry(String saveName, Item item, int oldCount, int newCount)
@@ -162,14 +162,14 @@ public class InventoryDAO
                 else
                 {
                     args = new Object[]{newCount, saveName, armour.getEquipSlot().name(), armour.getArmourMaterial().name()};
-                    return dbManager.updateDB(buildUpdateRowSQL(ARMOR_TABLE_NAME,
+                    return dbManager.updateDB(buildUpdateCellEntrySQL(ARMOR_TABLE_NAME,
                             ARMOR_COLUMNS[ARMOR_COLUMNS.length - 1], ARMOR_COLUMNS), args);
                 }
             }
             default ->
             {
                 args = new Object[]{newCount, saveName, armour.getEquipSlot().name(), armour.getArmourMaterial().name()};
-                return dbManager.updateDB(buildUpdateRowSQL(ARMOR_TABLE_NAME,
+                return dbManager.updateDB(buildUpdateCellEntrySQL(ARMOR_TABLE_NAME,
                         ARMOR_COLUMNS[ARMOR_COLUMNS.length - 1], ARMOR_COLUMNS), args);
             }
         }
@@ -195,14 +195,14 @@ public class InventoryDAO
                 else
                 {
                     args = new Object[]{newCount, saveName, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel()};
-                    return dbManager.updateDB(buildUpdateRowSQL(
+                    return dbManager.updateDB(buildUpdateCellEntrySQL(
                             WEAPON_TABLE_NAME, WEAPON_COLUMNS[WEAPON_COLUMNS.length - 1], WEAPON_COLUMNS),args);
                 }
             }
             default ->
             {
                 args = new Object[]{newCount, saveName, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel()};
-                return dbManager.updateDB(buildUpdateRowSQL(WEAPON_TABLE_NAME,
+                return dbManager.updateDB(buildUpdateCellEntrySQL(WEAPON_TABLE_NAME,
                         WEAPON_COLUMNS[WEAPON_COLUMNS.length - 1], WEAPON_COLUMNS), args);
             }
         }
@@ -229,14 +229,14 @@ public class InventoryDAO
                 else
                 {
                     args = new Object[]{newCount, saveName, potion.getPotionType().name()};
-                    return dbManager.updateDB(buildUpdateRowSQL(POTION_TABLE_NAME,
+                    return dbManager.updateDB(buildUpdateCellEntrySQL(POTION_TABLE_NAME,
                             POTION_COLUMNS[POTION_COLUMNS.length - 1], POTION_COLUMNS), args);
                 }
             }
             default ->
             {
                 args = new Object[]{newCount, saveName, potion.getPotionType().name()};
-                return dbManager.updateDB(buildUpdateRowSQL(POTION_TABLE_NAME,
+                return dbManager.updateDB(buildUpdateCellEntrySQL(POTION_TABLE_NAME,
                         POTION_COLUMNS[POTION_COLUMNS.length - 1], POTION_COLUMNS), args);
             }
         }
@@ -255,17 +255,17 @@ public class InventoryDAO
         
         equippableItems.add(new Weapon(WeaponType.valueOf(itemData.get("WEAPON_TYPE").toString()), (int)itemData.get("WEAPON_LEVEL")));
         if(itemData.get("HEAD") != null)
-            equippableItems.add(new Armour(itemData.get("HEAD").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("HEAD").toString()), ArmourSlot.HEAD));
         if(itemData.get("CHEST") != null)
-            equippableItems.add(new Armour(itemData.get("CHEST").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("CHEST").toString()), ArmourSlot.CHEST));
         if(itemData.get("ARMS") != null)
-            equippableItems.add(new Armour(itemData.get("ARMS").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("ARMS").toString()), ArmourSlot.ARMS));
         if(itemData.get("THIGHS") != null)
-            equippableItems.add(new Armour(itemData.get("THIGHS").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("THIGHS").toString()), ArmourSlot.THIGHS));
         if(itemData.get("SHINS") != null)
-            equippableItems.add(new Armour(itemData.get("SHINS").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("SHINS").toString()), ArmourSlot.SHINS));
         if(itemData.get("BOOTS") != null)
-            equippableItems.add(new Armour(itemData.get("BOOTS").toString()));
+            equippableItems.add(new Armour(ArmourMaterial.valueOf(itemData.get("BOOTS").toString()), ArmourSlot.BOOTS));
         
         return equippableItems.toArray(new EquippableItem[0]);
     }
