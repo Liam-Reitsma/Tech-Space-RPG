@@ -15,6 +15,8 @@ import game.gui.config.Displayable;
 import game.maingame.controller.GameController;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameScreen;
+import game.maingamemenu.controller.MainGameMenuController;
+import game.maingamemenu.view.MainGameMenuPanel;
 import game.mainmenu.controller.MainMenuController;
 import game.mainmenu.view.MainMenuScreen;
 import game.newgame.controller.NewGameController;
@@ -47,7 +49,7 @@ public class Main
         PlayerDAO playerDAO = new PlayerDAO(dbManager);
         WorldDAO worldDAO = new WorldDAO(dbManager);
         PersistenceService persistenceService = new PersistenceService(databaseSchemaManager, inventoryDAO, playerDAO, worldDAO);
-        GameModel gameModel = new GameModel();
+        GameModel gameModel = new GameModel(persistenceService);
         CombatModel combatModel = new CombatModel(gameModel);
         
         Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
@@ -58,9 +60,10 @@ public class Main
         GameController gameController = new GameController(persistenceService, gameModel, frameController, worldController);
         NewGameController newGameController = new NewGameController(frameController, gameController);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
-
         CombatController combatController = new CombatController(combatModel);
         MainMenuController mainMenuController = new MainMenuController(frameController, newGameController, optionsController, savesController);
+        MainGameMenuController mainGameMenuController = new MainGameMenuController(gameModel, frameController, mainMenuController, optionsController, savesController);
+        
         
         OverlayContainer overlayContainer = new OverlayContainer();
         GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);
@@ -77,7 +80,9 @@ public class Main
         CombatTextPane combatTextPane = new CombatTextPane();
         CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane);
         
-        GameScreen gameScreen = new GameScreen(combatPane, worldPanel, gameController);
+        MainGameMenuPanel mainGameMenuPanel = new MainGameMenuPanel(mainGameMenuController);
+        
+        GameScreen gameScreen = new GameScreen(combatPane, mainGameMenuPanel, worldPanel, gameController);
         
         displayMap.put(MAIN_GAME, gameScreen);
         displayMap.put(MAIN_MENU, mainMenuScreen);

@@ -5,6 +5,7 @@ import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.config.DisplayableScreen;
 import game.maingame.controller.GameAction;
+import game.maingamemenu.view.MainGameMenuPanel;
 import game.world.view.WorldPanel;
 
 import javax.swing.*;
@@ -38,19 +39,22 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     private JButton exitGameButton;
 
     private final CombatPane combatPane;
-    private final WorldPanel worldPanel;
+    private final MainGameMenuPanel mainGameMenuPanel;
+    private final WorldPanel worldPane;
+    
     private final GameAction gameAction;
     
-    public GameScreen(CombatPane cPane, WorldPanel wPanel, GameAction gAction)
+    public GameScreen(CombatPane cPane, MainGameMenuPanel mgmPanel, WorldPanel wPanel, GameAction gAction)
     {
         setLayout(new ScaledLayout());
         combatPane = cPane;
-        worldPanel = wPanel;
+        mainGameMenuPanel = mgmPanel;
+        worldPane = wPanel;
         
         LayoutBox[] boxes = new LayoutBox().splitVertical(90, 10);
         
         createMainPanel(boxes[0]);
-        createBottomMenu(boxes[1]);
+        add(mainGameMenuPanel, (boxes[1]));
         
         gameAction = gAction;
     }
@@ -59,14 +63,9 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     {
         LayoutBox[] boxes = box.splitHorizontal(33, 33, 33);
         
-        createTextPane(boxes[0]);
+        add(combatPane, boxes[0]);
         createInventoryPane(boxes[1]);
-        createWorldPane(boxes[2]);
-    }
-    
-    private void createTextPane(LayoutBox box)
-    {
-        add(combatPane, box);
+        add(worldPane, boxes[2]);
     }
     
     private void createInventoryPane(LayoutBox box)
@@ -87,38 +86,6 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
         LayoutBox inventoryBox = verticalBoxes[1];
         inventoryBackdrop = new JPanel(new ScaledLayout());
         add(inventoryBackdrop, inventoryBox);
-    }
-    
-    private void createWorldPane(LayoutBox box)
-    {
-        add(worldPanel, box);
-    }
-    
-    private void createBottomMenu(LayoutBox box)
-    {
-        LayoutBox[] boxes = new LayoutBox().splitHorizontal(33, 33, 33);
-        
-        menuBackdrop = new JPanel(new ScaledLayout());
-        
-        LayoutBox saveGameBox = boxes[0];
-        saveGameBackdrop = new JPanel(new ScaledLayout());
-        saveGameButton = new JButton("Save Game");
-        saveGameBackdrop.add(saveGameButton, new LayoutBox().insets(20, 0));
-        menuBackdrop.add(saveGameBackdrop, saveGameBox);
-        
-        LayoutBox loadGameBox = boxes[1];
-        loadGameBackdrop = new JPanel(new ScaledLayout());
-        loadGameButton = new JButton("Load Game");
-        loadGameBackdrop.add(loadGameButton, new LayoutBox().insets(20, 0));
-        menuBackdrop.add(loadGameBackdrop, loadGameBox);
-        
-        LayoutBox exitGameBox = boxes[2];
-        exitGameBackdrop = new JPanel(new ScaledLayout());
-        exitGameButton = new JButton("Exit Game");
-        exitGameBackdrop.add(exitGameButton, new LayoutBox().insets(20, 0));
-        menuBackdrop.add(exitGameBackdrop, exitGameBox);
-        
-        add(menuBackdrop, box);
     }
     
     public void paintComponent(Graphics g)

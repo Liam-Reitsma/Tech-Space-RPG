@@ -39,10 +39,4 @@ public class MainMenuController implements MainMenuAction
             case EXIT_GAME -> frameAction.requestCloseGame();
         }
     }
-    
-    @Override
-    public void requestExitGame()
-    {
-        frameAction.requestCloseGame();
-    }
 }

@@ -23,8 +23,7 @@ public class WorldGenerator
     
     public Map<Point, GenerationRoom> generate()
     {
-        if(!rooms.isEmpty()) return rooms;
-        
+        rooms.clear();
         GenerationRoom origin = new GenerationRoom();
         rooms.put(origin.getPoint(), origin);
         GenerationRoom firstNorth = new GenerationRoom(origin, origin.getDepth() + 1, origin.getStreak() + 1, 1, NORTH, new Point((origin.getPoint().getX()), origin.getPoint().getY() + 1));

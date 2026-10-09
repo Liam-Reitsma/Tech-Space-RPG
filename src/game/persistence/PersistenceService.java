@@ -107,5 +107,5 @@ public class PersistenceService
                 worldDAO.updateMap(iKey, world);
     }
     
-    public Player[] getAllSaves() { return playerDAO.getAllSaves(); }
+    public Map<String, Player> getAllSaves() { return playerDAO.getAllSaves(); }
 }
