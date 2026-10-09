@@ -111,6 +111,7 @@ public class Main
 
         gameController.addUpdatable(combatController);
         gameController.addUpdatable(rewardController);
+        gameController.addUpdatable(worldController);
 
         newGameController.setNewGameViewAction(newGameScreen);
         rewardController.setRewardViewAction(combatPane);
