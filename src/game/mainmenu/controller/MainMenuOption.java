@@ -1,22 +1,12 @@
 package game.mainmenu.controller;
 
-import game.frame.controller.DisplayTarget;
-
 public enum MainMenuOption
 {
-    NEW_GAME(DisplayTarget.NEW_GAME),
-    LOAD_GAME(DisplayTarget.SAVES),
-    OPTIONS(DisplayTarget.OPTIONS),
-    EXIT_GAME(DisplayTarget.EXIT);
+    NEW_GAME(),
+    LOAD_GAME(),
+    OPTIONS(),
+    EXIT_GAME();
     
-    private final DisplayTarget displayTarget;
-    
-    MainMenuOption(DisplayTarget display)
-    {
-        displayTarget = display;
-    }
-    
-    public DisplayTarget getDisplayTarget() { return displayTarget; }
     
     @Override
     public String toString()

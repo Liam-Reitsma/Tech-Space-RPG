@@ -2,7 +2,9 @@ package game.persistence;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DBManager
 {
@@ -47,46 +49,54 @@ public class DBManager
         }
     }
     
-    public void createTable(String tableName, String sql)
+    public boolean createTable(String tableName, String sql)
     {
-        if(tableExists(tableName)) return;
+        if(tableExists(tableName)) return true;
         
-        Connection conn = connection;
-        
-        try(Statement statement = conn.createStatement())
+        try(Statement statement = connection.createStatement())
         {
             statement.executeUpdate(sql);
+            return true;
         } catch(SQLException e)
         {
-            //change for an actual error.
-            System.out.println(e.getMessage());
+            return false;
         }
     }
     
     private boolean tableExists(String tableName)
     {
-        boolean result = false;
-        
         try
         {
-            DatabaseMetaData metadata = connection.getMetaData();
-            ResultSet tables = metadata.getTables(null, null, tableName.toUpperCase(), null);
-            
-            result = tables.next();
-            
-            tables.close();
+            try(ResultSet tables = connection.getMetaData().getTables(null, null, tableName.toUpperCase(), null))
+            {
+                return tables.next();
+            }
         }
-        catch(SQLException ex)
+        catch(SQLException e)
         {
-            System.out.println(ex.getMessage());
+            return false;
         }
-        
-        return result;
     }
     
-    public void addEntryDB(String templateSQL, Object... args)
+    public boolean updateDB(String templateSQL, Object... args)
     {
-        //TODO Add return value & meaning to inform caller result.
+        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
+        {
+            for(int i = 1; i <= args.length; i++)
+                ps.setObject(i, args[i - 1]);
+            
+            ps.executeUpdate();
+            return true;
+        } catch(SQLException e)
+        {
+            return false;
+        }
+    }
+    
+    public List<Map<String, Object>> queryDB(String templateSQL, Object... args)
+    {
+        List<Map<String, Object>> objectList = new ArrayList<>();
+        Map<String, Object> row;
         int i = 0;
         
         try(PreparedStatement ps = connection.prepareStatement(templateSQL))
@@ -96,179 +106,44 @@ public class DBManager
                 ps.setObject(++i, object);
             }
             
-            ps.executeUpdate();
-        } catch(SQLException e)
-        {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void updateEntryDB(String templateSQL, String saveName, Object... args)
-    {
-        //TODO Add return value & meaning to inform caller result.
-        
-        int i = 0;
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            for(Object object : args)
+            try(ResultSet rs = ps.executeQuery())
             {
-                ps.setObject(++i, object);
-            }
-            ps.setObject(++i, saveName);
-            
-            ps.executeUpdate();
-        } catch(SQLException e)
-        {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void updateCellEntryDB(String templateSQL, Object newCellValue, Object... args)
-    {
-        //TODO Add return value & meaning to inform caller result.
-        
-        int i = 0;
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            ps.setObject(++i, newCellValue);
-            
-            for(Object object : args)
-            {
-                ps.setObject(++i, object);
-            }
-            
-            ps.executeUpdate();
-        } catch(SQLException e)
-        {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void deleteEntryDB(String templateSQL, String saveName)
-    {
-        //TODO Add return value & meaning to inform caller result.
-        
-        int i = 0;
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            ps.setObject(++i, saveName);
-            
-            ps.executeUpdate();
-        } catch(SQLException e)
-        {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void deleteSingleEntryDB(String templateSQL, Object... args)
-    {
-        //TODO Add return value & meaning to inform caller result.
-        
-        int i = 0;
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            for(Object object : args)
-            {
-                ps.setObject(++i, object);
-            }
-            
-            ps.executeUpdate();
-        } catch(SQLException e)
-        {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public Object[] queryDB(String templateSQL, String searchName)
-    {
-        List<Object> objectList = new ArrayList<>();
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            ps.setString( 1, searchName);
-            
-            ResultSet rs = ps.executeQuery();
-            
-            while(rs.next()) objectList.add(rs.getObject(searchName));
-            
-            objectList.removeFirst();
-            
-            return objectList.toArray(new Object[0]);
-        } catch(SQLException e)
-        {
-            return null;
-        }
-    }
-    
-    public Object[][] queryRoomDB(String templateSQL, String searchName)
-    {
-        List<Object[]> roomsList = new ArrayList<>();
-        
-        try(PreparedStatement ps = connection.prepareStatement(templateSQL))
-        {
-            ps.setString( 1, searchName);
-            
-            ResultSet rs = ps.executeQuery();
-            
-            while(rs.next())
-            {
-                Object[] room = new Object[4];
+                ResultSetMetaData metadata = rs.getMetaData();
                 
-                room[0] =  rs.getInt("X_POINT");
-                room[1] =  rs.getInt("Y_POINT");
-                room[2] =  rs.getString("ROOM_TYPE");
-                room[3] =  rs.getBoolean("IS_COMPLETE");
-                
-                roomsList.add(room);
+                while(rs.next())
+                {
+                    row = new HashMap<>();
+                    for(int col = 1; col <= metadata.getColumnCount(); col++)
+                    {
+                        row.put(metadata.getColumnName(col) , rs.getObject(col));
+                    }
+                    objectList.add(row);
+                }
             }
             
-            return roomsList.toArray(new Object[0][]);
+            return objectList;
         } catch(SQLException e)
         {
             return null;
         }
     }
     
-    public String[] getSavesName()
-    {
-        Connection conn = connection;
-        List<String> savesStringName = new ArrayList<>();
-        
-        try
-        {
-            ResultSet rs = conn.createStatement().executeQuery("SELECT SAVE_NAME FROM PLAYER");
-            
-            while(rs.next()) savesStringName.add(rs.getString("SAVE_NAME"));
-            
-            return savesStringName.toArray(new String[0]);
-        } catch(SQLException e)
-        {
-            return null;
-        }
-    }
-    
-    private void dropTableIfExists(String tableName)
+    public boolean dropTableIfExists(String tableName)
     {
         try
         {
-            Connection conn = connection;
-            Statement statement = conn.createStatement();
-            
-            DatabaseMetaData metadata = connection.getMetaData();
-            ResultSet tables = metadata.getTables(null, null, tableName.toUpperCase(), null);
-            if(tables.next())
+            try(Statement statement = connection.createStatement())
             {
-                statement.execute("DROP TABLE " + tableName);
+                try(ResultSet tables = connection.getMetaData().getTables(null, null, tableName.toUpperCase(), null))
+                {
+                    if(tables.next())
+                        statement.execute("DROP TABLE " + tableName);
+                }
             }
-            
-            tables.close();
+            return true;
         } catch(SQLException ex)
         {
-            System.out.println(ex.getMessage());
+            return false;
         }
     }
 }

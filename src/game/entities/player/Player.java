@@ -50,6 +50,7 @@ public class Player extends Entities implements Persistable
         classType = type;
         point = new Point(0, 0);
         inventory = new Inventory();
+        inventory.equipItem(new Weapon(classType.getStartingWeapon(), level));
         
         statTypeMap = new HashMap<>();
         statTypeMap.put(STR, type.getStatStrength());
@@ -66,24 +67,23 @@ public class Player extends Entities implements Persistable
     }
 
     /** Used when loading an existing character.*/
-    public Player(Object[] playerData, Object[] statData)
+    public Player(String loadedName, int loadedLevel, float loadedHealth, int loadedXP, int loadedGold, ClassType loadedClassType, Point loadedPoint, int loadedSTR, int loadedDEX, int loadedINT)
     {
-        int i = -1;
-        name = (String)playerData[++i];
-        level = (int)playerData[++i];
-        health = (float)playerData[++i];
-        xp = (int)playerData[++i];
-        gold = (int)playerData[++i];
-        classType = ClassType.parseClassType((String)playerData[++i]);
-        point = new Point((int)playerData[++i], (int)playerData[++i]);
+        name = loadedName;
+        level = loadedLevel;
+        health = loadedHealth;
+        xp = loadedXP;
+        gold = loadedGold;
+        classType = loadedClassType;
+        point = loadedPoint;
 
         inventory = new Inventory();
+        inventory.equipItem(new Weapon(classType.getStartingWeapon(), level));
         
-        i = -1;
         statTypeMap = new HashMap<>();
-        statTypeMap.put(STR, (int)statData[++i]);
-        statTypeMap.put(DEX, (int)statData[++i]);
-        statTypeMap.put(INT, (int)statData[++i]);
+        statTypeMap.put(STR, loadedSTR);
+        statTypeMap.put(DEX, loadedDEX);
+        statTypeMap.put(INT, loadedINT);
         
         maximumHealth = 100 * (1 + statTypeMap.get(STR) * 0.05f);
         armourPenetration = statTypeMap.get(DEX) * 0.005f;
@@ -195,10 +195,11 @@ public class Player extends Entities implements Persistable
         point = point.move(direction);
     }
     
-    public Inventory getInventory()
-    {
-        return inventory;
-    }
+    public Inventory getInventory() { return inventory; }
+    
+    public void setInventory(Map<Item, Integer> loadedStoredMap) { inventory.setInventory(loadedStoredMap); }
+    
+    public void setEquipped(EquippableItem[] loadedEquippedArray) { inventory.setEquipped(loadedEquippedArray); }
     
     public int getXP() { return xp; }
     

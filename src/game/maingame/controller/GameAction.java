@@ -1,6 +1,7 @@
 package game.maingame.controller;
 
 import game.entities.player.Player;
+import game.persistence.SavedData;
 import game.world.model.Point;
 import game.world.model.room.RuntimeRoom;
 
@@ -10,6 +11,6 @@ public interface GameAction
 {
     void requestOpenGameScreen();
     void requestNewGame(Player newPlayer);
-    void requestLoadGame(Player loadedPlayer, Map<Point, RuntimeRoom> loadedWorld);
+    void requestLoadGame(SavedData savedData);
     void requestGameUpdate();
 }

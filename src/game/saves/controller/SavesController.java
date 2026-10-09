@@ -2,9 +2,11 @@ package game.saves.controller;
 
 import static game.frame.controller.DisplayTarget.SAVES;
 
+import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
 import game.persistence.PersistenceService;
+import game.persistence.SavedData;
 import game.saves.view.SavesViewAction;
 
 public class SavesController implements SavesAction
@@ -29,14 +31,31 @@ public class SavesController implements SavesAction
     @Override
     public void requestOpenSavesOverlay()
     {
-        savesViewAction.updateSavesList(persistenceService.getSaveOptionNames());
+        Player[] players = persistenceService.getAllSaves();
+        String[] saveData = new String[0];
+        if(players != null)
+        {
+            saveData = new String[players.length];
+            for(int i = 0 ; i < saveData.length; i++)
+                saveData[i] = players[i].getName() + " | " + players[i].getLevel() + " | " + players[i].getClassType().toString();
+        }
+        savesViewAction.updateSavesList(saveData);
         frameAction.display(SAVES);
+    }
+    
+    @Override
+    public void requestDeleteSave(String saveName)
+    {
+        persistenceService.deleteSaveGame(saveName.split(" \\| ")[0]);
     }
     
     @Override
     public void requestSelectSave(String saveName)
     {
-        gameAction.requestLoadGame(persistenceService.loadSavedPlayer(saveName), persistenceService.loadSavedWorld());
+        SavedData data = persistenceService.loadSaveGame(saveName.split(" \\| ")[0]);
+        if(data != null)
+            gameAction.requestLoadGame(data);
+        //TODO show error
     }
     
     @Override

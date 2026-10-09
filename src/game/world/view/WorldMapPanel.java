@@ -59,20 +59,20 @@ public class WorldMapPanel extends JPanel
         {
             for(int col = 0; col < rooms[row].length; col++)
             {
-                if(!rooms[row][col].isSeen())
+                if(!rooms[row][col].getRoomState().isSeen())
                     roomTiles[row][col].setOpaque(false);
                 else
                 {
                     roomTiles[row][col].setOpaque(true);
                     switch(rooms[row][col].getRoomState().getRoomTileState())
                     {
-                        case WALL -> roomTiles[row][col].setBackground(Color.BLACK);
                         case COMPLETED -> roomTiles[row][col].setBackground(Color.GREEN);
                         case CURRENT -> roomTiles[row][col].setBackground(Color.CYAN);
                         default ->
                         {
                             switch(rooms[row][col].getRoomState().getRoomType())
                             {
+                                case WALL -> roomTiles[row][col].setBackground(Color.BLACK);
                                 case COMBAT -> roomTiles[row][col].setBackground(Color.RED);
                                 case BOSS -> roomTiles[row][col].setBackground(Color.MAGENTA);
                                 case MINIBOSS -> roomTiles[row][col].setBackground(Color.PINK);

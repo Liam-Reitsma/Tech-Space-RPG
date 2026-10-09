@@ -12,6 +12,8 @@ import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
+import game.persistence.PersistenceService;
+import game.persistence.SavedData;
 import game.world.model.Point;
 import game.world.controller.WorldController;
 import game.world.model.room.RuntimeRoom;
@@ -24,6 +26,7 @@ public class GameController implements GameAction, CombatListener
 {
     private final List<Updatable> updatables;
     
+    private final PersistenceService persistenceService;
     private final GameModel gameModel;
     
     private final FrameAction frameAction;
@@ -33,8 +36,9 @@ public class GameController implements GameAction, CombatListener
 
     private GameViewAction gameViewAction;
     
-    public GameController(GameModel gModel, FrameAction fAction, WorldController wController)
+    public GameController(PersistenceService pService, GameModel gModel, FrameAction fAction, WorldController wController)
     {
+        persistenceService = pService;
         gameModel = gModel;
         
         frameAction = fAction;
@@ -59,13 +63,17 @@ public class GameController implements GameAction, CombatListener
     @Override
     public void requestNewGame(Player newPlayer)
     {
-        startGame(newPlayer, worldController.requestGenerateWorld());
+        Map<Point, RuntimeRoom> world = worldController.requestGenerateWorld();
+        persistenceService.createNewSaveGame(newPlayer.getName(), newPlayer.getName(), newPlayer.getClassType(), world);
+        startGame(newPlayer, world);
     }
     
     @Override
-    public void requestLoadGame(Player loadedPlayer, Map<Point, RuntimeRoom> loadedWorld)
+    public void requestLoadGame(SavedData savedData)
     {
-        startGame(loadedPlayer, loadedWorld);
+        savedData.player.setInventory(savedData.inventory);
+        savedData.player.setEquipped(savedData.equipped);
+        startGame(savedData.player, savedData.world);
     }
     
     private void startGame(Player player, Map<Point, RuntimeRoom> world)
@@ -75,8 +83,6 @@ public class GameController implements GameAction, CombatListener
         requestOpenGameScreen();
         
         gameViewAction.updateMainGameScreen();
-
-        //combatController.startCombat(new Enemy(EnemyType.BRUISER, player.getLevel())); // TODO test only, remove in A5
 
         requestGameUpdate();
     }

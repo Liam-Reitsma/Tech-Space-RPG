@@ -36,14 +36,22 @@ public class SavesPanel extends JPanel
         ActionListener saveButtonListener = e ->
         {
             String selectedSaveName = saveList.getSelectedValue();
-            
             if(selectedSaveName != null)
-            {
                 savesAction.requestSelectSave(selectedSaveName);
-            }
         };
+        
+        ActionListener deleteButtonListener = e ->
+        {
+            String selectSaveName = saveList.getSelectedValue();
+            if(selectSaveName != null)
+                savesAction.requestDeleteSave(selectSaveName);
+        };
+        
+        LayoutBox[] buttonBoxes = boxes[1].splitHorizontal(50, 50);
+        PanelButton deleteSaveButton = new PanelButton("Delete", deleteButtonListener);
+        add(deleteSaveButton, buttonBoxes[0]);
         PanelButton selectSaveButton = new PanelButton("Select", saveButtonListener);
-        add(selectSaveButton, boxes[1]);
+        add(selectSaveButton, buttonBoxes[1]);
         
         addMouseListener(new MouseAdapter() {});
         
