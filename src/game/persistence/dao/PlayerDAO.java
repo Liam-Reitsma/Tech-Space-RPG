@@ -8,8 +8,11 @@ import game.entities.player.Player;
 import game.persistence.DBManager;
 import game.world.model.Point;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class PlayerDAO
 {
@@ -76,28 +79,27 @@ public class PlayerDAO
         return loadPlayer(playerData, statsDataList);
     }
     
-    public Player[] getAllSaves()
+    public Map<String, Player> getAllSaves()
     {
+        Map<String, Player> saveNameCharacterMap = new HashMap<>();
         List<Map<String, Object>> playerDataList = dbManager.queryDB(buildSelectTableSQL(PLAYER_TABLE_NAME));
         List<Map<String, Object>> statsDataList = dbManager.queryDB(buildSelectTableSQL(STATS_TABLE_NAME));
         if(playerDataList == null || statsDataList == null)
             return null;
         if(playerDataList.isEmpty() || statsDataList.isEmpty() || playerDataList.size() != statsDataList.size())
-            return new Player[0];
+            return saveNameCharacterMap;
         
-        Player[] players = new Player[playerDataList.size()];
         
-        int i = 0;
         for(Map<String, Object> playerData : playerDataList)
         {
             Player result = loadPlayer(playerData, statsDataList);
             if(result == null)
                 return null;
             
-            players[i++] = result;
+            saveNameCharacterMap.put(playerData.get("SAVE_NAME").toString(), result);
         }
         
-        return players;
+        return saveNameCharacterMap;
     }
     
     private Player loadPlayer(Map<String, Object> playerData, List<Map<String, Object>> statsDataList)
