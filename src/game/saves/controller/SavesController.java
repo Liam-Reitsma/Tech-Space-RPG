@@ -9,8 +9,14 @@ import game.persistence.PersistenceService;
 import game.persistence.SavedData;
 import game.saves.view.SavesViewAction;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 public class SavesController implements SavesAction
 {
+    private String[] saveNames;
+    
     private final PersistenceService persistenceService;
     
     private final FrameAction frameAction;
@@ -31,32 +37,45 @@ public class SavesController implements SavesAction
     @Override
     public void requestOpenSavesOverlay()
     {
-        Player[] players = persistenceService.getAllSaves();
-        String[] saveData = new String[0];
-        if(players != null)
+        Map<String, Player> saveNamePlayerMap = persistenceService.getAllSaves();
+        String[] displayData = new String[0];
+        if(saveNamePlayerMap != null)
         {
-            saveData = new String[players.length];
-            for(int i = 0 ; i < saveData.length; i++)
-                saveData[i] = players[i].getName() + " | " + players[i].getLevel() + " | " + players[i].getClassType().toString();
+            saveNames = new String[saveNamePlayerMap.size()];
+            displayData = new String[saveNamePlayerMap.size()];
+            int i = 0;
+            for(Entry<String, Player> playerEntry : saveNamePlayerMap.entrySet())
+            {
+                String saveName = playerEntry.getKey();
+                Player player = playerEntry.getValue();
+                saveNames[i] = saveName;
+                displayData[i++] = player.getName() + " | " + player.getLevel() + " | " + player.getClassType().toString();
+            }
         }
-        savesViewAction.updateSavesList(saveData);
+        savesViewAction.updateSavesList(displayData);
         frameAction.display(SAVES);
     }
     
     @Override
-    public void requestDeleteSave(String saveName)
+    public void requestDeleteSave(int deletedIndex)
     {
-        persistenceService.deleteSaveGame(saveName.split(" \\| ")[0]);
-        savesViewAction.removeSave(saveName);
+        if(deletedIndex >= 0 && deletedIndex < saveNames.length)
+        {
+            persistenceService.deleteSaveGame(saveNames[deletedIndex]);
+            savesViewAction.removeSave(saveNames[deletedIndex]);
+        }
     }
     
     @Override
-    public void requestSelectSave(String saveName)
+    public void requestSelectSave(int selectedIndex)
     {
-        SavedData data = persistenceService.loadSaveGame(saveName.split(" \\| ")[0]);
-        if(data != null)
-            gameAction.requestLoadGame(data);
-        //TODO show error
+        if(selectedIndex >= 0 && selectedIndex < saveNames.length)
+        {
+            SavedData data = persistenceService.loadSaveGame(saveNames[selectedIndex]);
+            if(data != null)
+                gameAction.requestLoadGame(data);
+            //TODO show error
+        }
     }
     
     @Override

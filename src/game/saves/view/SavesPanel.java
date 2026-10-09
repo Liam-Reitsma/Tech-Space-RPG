@@ -35,16 +35,14 @@ public class SavesPanel extends JPanel
         
         ActionListener saveButtonListener = e ->
         {
-            String selectedSaveName = saveList.getSelectedValue();
-            if(selectedSaveName != null)
-                savesAction.requestSelectSave(selectedSaveName);
+            int selectedIndex = saveList.getSelectedIndex();
+            savesAction.requestSelectSave(selectedIndex);
         };
         
         ActionListener deleteButtonListener = e ->
         {
-            String selectSaveName = saveList.getSelectedValue();
-            if(selectSaveName != null)
-                savesAction.requestDeleteSave(selectSaveName);
+            int selectedIndex = saveList.getSelectedIndex();
+            savesAction.requestDeleteSave(selectedIndex);
         };
         
         LayoutBox[] buttonBoxes = boxes[1].splitHorizontal(50, 50);
