@@ -47,6 +47,7 @@ public class SavesController implements SavesAction
     public void requestDeleteSave(String saveName)
     {
         persistenceService.deleteSaveGame(saveName.split(" \\| ")[0]);
+        savesViewAction.removeSave(saveName);
     }
     
     @Override

@@ -91,6 +91,11 @@ public class SavesPanel extends JPanel
         }
     }
     
+    public void removeSave(String saveName)
+    {
+        listModel.removeElement(saveName);
+    }
+    
     @Override
     public void paintComponent(Graphics g)
     {
