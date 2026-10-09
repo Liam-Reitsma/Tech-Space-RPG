@@ -7,6 +7,7 @@ import java.io.IOException;
 public class AudioManager
 {
     private static AudioManager audioManager;
+    private Clip currentMusic;
     
     private AudioManager()
     {
@@ -21,19 +22,45 @@ public class AudioManager
         return audioManager;
     }
     
-    public void playSound(String path)
+    public void playSound(SoundEffect sound)
     {
-        File audioFile = new File(path);
-        try
+        try(AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(sound.getUrlPath())))
         {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
             Clip clip = AudioSystem.getClip();
+            clip.addLineListener(e ->
+            {
+                if(e.getType() == LineEvent.Type.STOP)
+                    clip.close();
+            });
             clip.open(audioStream);
             clip.start();
         } catch(UnsupportedAudioFileException | LineUnavailableException | IOException e)
         {
             throw new RuntimeException(e);
         }
-        
+    }
+    
+    public void playMusic(MusicTrack music)
+    {
+        stopMusic();
+        try(AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(music.getUrlPath())))
+        {
+            currentMusic = AudioSystem.getClip();
+            currentMusic.open(audioStream);
+            currentMusic.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch(UnsupportedAudioFileException | LineUnavailableException | IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public void stopMusic()
+    {
+        if(currentMusic != null)
+        {
+            currentMusic.stop();
+            currentMusic.close();
+            currentMusic = null;
+        }
     }
 }
