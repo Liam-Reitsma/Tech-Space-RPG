@@ -7,5 +7,5 @@ public interface RewardViewAction
     void displayMessage(String message);
     void updateStat(StatType stat, int currentValue, int planned);
     void updateRemaining(int remaining);
-    void showStatPanel(boolean show);
+    void showRewardPanel(RewardPanelType panelType);
 }

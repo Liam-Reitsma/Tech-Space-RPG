@@ -25,6 +25,7 @@ import game.persistence.DBManager;
 import game.persistence.PersistenceService;
 import game.reward.controller.RewardController;
 import game.reward.model.RewardModel;
+import game.reward.view.ChestPanel;
 import game.reward.view.RewardStatPanel;
 import game.saves.controller.SavesController;
 import game.saves.view.SavesOverlay;
@@ -71,10 +72,11 @@ public class Main
         WorldPanel worldPanel = new WorldPanel(worldMapPanel, worldMovementPanel);
 
         RewardStatPanel rewardStatPanel = new RewardStatPanel(rewardController);
+        ChestPanel chestPanel = new ChestPanel(rewardController);
 
         CombatButtonPanel combatButtonPanel = new CombatButtonPanel(combatController);
         CombatTextPane combatTextPane = new CombatTextPane();
-        CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane, rewardStatPanel);
+        CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane, rewardStatPanel, chestPanel);
 
         GameScreen gameScreen = new GameScreen(combatPane, worldPanel, gameController);
         
@@ -93,7 +95,9 @@ public class Main
         gameController.setGameViewAction(gameScreen);
         gameController.setCombatController(combatController);
         gameController.setRewardController(rewardController);
+
         gameController.addUpdatable(combatController);
+        gameController.addUpdatable(rewardController);
 
         newGameController.setNewGameViewAction(newGameScreen);
         rewardController.setRewardViewAction(combatPane);

@@ -3,8 +3,11 @@ package game.reward.model;
 import game.entities.Enemy;
 import game.entities.StatType;
 import game.entities.player.Player;
+import game.items.Item;
 import game.items.Potion;
 import game.items.PotionType;
+import game.items.armour.Armour;
+import game.items.weapon.Weapon;
 import game.maingame.model.GameModel;
 
 import java.util.EnumMap;
@@ -15,6 +18,7 @@ public class RewardModel
     private final GameModel gameModel;
     private int unspentPoints;
     private final Map<StatType, Integer> statsLeveledUp;
+    private Item offeredItem;
 
     public RewardModel(GameModel gModel)
     {
@@ -87,5 +91,42 @@ public class RewardModel
         rewardMessage += "Enemy has dropped a " + potionTypeReceived + " potion.\n";
 
         return rewardMessage;
+    }
+
+    public String offerChestItem(Item item)
+    {
+        offeredItem = item;
+        String returnMessage = "The chest contained a " + item.getName();
+        if(item instanceof Weapon weapon)
+        {
+            returnMessage += " which gives you " +
+                    Math.round(weapon.calculateDamage(gameModel.getPlayer().getStatValue(weapon.getScalingStat()))) + ".";
+        }
+        else if(item instanceof Armour armour)
+        {
+            returnMessage += " which has " + Math.round(armour.calculateProtection() * 100) + "% protection.";
+        }
+        return returnMessage;
+    }
+
+    public boolean hasOfferedItem()
+    {
+        return offeredItem != null;
+    }
+
+    public String takeOfferedItem()
+    {
+        if(offeredItem == null) return "There is no item available to take.";
+        gameModel.getPlayer().addToInventory(offeredItem);
+        String returnMessage = offeredItem.getName() + " has been added to the inventory.";
+        offeredItem = null;
+        return returnMessage;
+    }
+
+    public String discardOfferedItem()
+    {
+        if(offeredItem == null) return "There is no item available to discard.";
+        offeredItem = null;
+        return "Item has been discarded.";
     }
 }

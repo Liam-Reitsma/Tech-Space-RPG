@@ -7,7 +7,6 @@ import game.combat.controller.CombatController;
 import game.combat.controller.CombatListener;
 import game.combat.model.CombatOutcome;
 import game.entities.Enemy;
-import game.entities.EnemyType;
 import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.model.GameModel;
@@ -84,12 +83,6 @@ public class GameController implements GameAction, CombatListener
         requestOpenGameScreen();
         
         gameViewAction.updateMainGameScreen();
-
-
-
-        currentEncounter = new Enemy(EnemyType.BRUISER, player.getLevel()); // TODO test only, remove in A5
-        combatController.startCombat(currentEncounter);
-
 
         requestGameUpdate();
     }

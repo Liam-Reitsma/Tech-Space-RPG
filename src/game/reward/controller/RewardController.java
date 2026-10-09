@@ -1,8 +1,9 @@
 package game.reward.controller;
 
 import game.Updatable;
+import game.reward.view.RewardPanelType;
 import game.entities.*;
-import game.entities.StatType;
+import game.items.Item;
 import game.reward.model.RewardModel;
 import game.reward.view.RewardViewAction;
 
@@ -34,7 +35,9 @@ public class RewardController implements RewardAction, Updatable
             rewardViewAction.updateStat(statType, rewardModel.getCurrentStatPoint(statType), rewardModel.getPlannedStatPoint(statType));
         }
         rewardViewAction.updateRemaining(rewardModel.getRemainingStatPoint());
-        rewardViewAction.showStatPanel(rewardModel.hasPointsToAllocate());
+        if(rewardModel.hasOfferedItem()) rewardViewAction.showRewardPanel(RewardPanelType.CHEST);
+        else if(rewardModel.hasPointsToAllocate()) rewardViewAction.showRewardPanel(RewardPanelType.STAT_POINTS);
+        else rewardViewAction.showRewardPanel(RewardPanelType.NONE);
     }
 
     @Override
@@ -54,7 +57,27 @@ public class RewardController implements RewardAction, Updatable
     @Override
     public void requestConfirmStat()
     {
-        rewardModel.confirmLeveledUp();
+        rewardViewAction.displayMessage(rewardModel.confirmLeveledUp());
+        requestUpdate();
+    }
+
+    @Override
+    public void requestTakeItem()
+    {
+        rewardViewAction.displayMessage(rewardModel.takeOfferedItem());
+        requestUpdate();
+    }
+
+    @Override
+    public void requestDiscardItem()
+    {
+        rewardViewAction.displayMessage(rewardModel.discardOfferedItem());
+        requestUpdate();
+    }
+
+    public void offerChestReward(Item item)
+    {
+        rewardViewAction.displayMessage(rewardModel.offerChestItem(item));
         requestUpdate();
     }
 }

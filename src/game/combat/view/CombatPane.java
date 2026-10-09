@@ -4,6 +4,8 @@ import game.entities.StatType;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.items.PotionType;
+import game.reward.view.ChestPanel;
+import game.reward.view.RewardPanelType;
 import game.reward.view.RewardStatPanel;
 import game.reward.view.RewardViewAction;
 
@@ -14,18 +16,22 @@ public class CombatPane extends JPanel implements CombatViewAction, RewardViewAc
     private final CombatTextPane combatTextPane;
     private final CombatButtonPanel combatButtonPanel;
     private final RewardStatPanel rewardStatPanel;
+    private final ChestPanel chestPanel;
 
-    public CombatPane(CombatButtonPanel cbPanel, CombatTextPane ctPane, RewardStatPanel rsPanel)
+    public CombatPane(CombatButtonPanel cbPanel, CombatTextPane ctPane, RewardStatPanel rsPanel, ChestPanel cpPanel)
     {
         setLayout(new ScaledLayout());
         LayoutBox[] verticalBox = new LayoutBox().splitVertical(70, 30);
         combatTextPane = ctPane;
+        chestPanel = cpPanel;
         add(combatTextPane, verticalBox[0]);
         combatButtonPanel = cbPanel;
         add(combatButtonPanel, verticalBox[1]);
         rewardStatPanel = rsPanel;
         add(rewardStatPanel, verticalBox[1]);
         rewardStatPanel.setVisible(false);
+        add(chestPanel, verticalBox[1]);
+        chestPanel.setVisible(false);
     }
 
     @Override
@@ -53,10 +59,11 @@ public class CombatPane extends JPanel implements CombatViewAction, RewardViewAc
     }
 
     @Override
-    public void showStatPanel(boolean show)
+    public void showRewardPanel(RewardPanelType panelType)
     {
-        rewardStatPanel.setVisible(show);
-        combatButtonPanel.setVisible(!show);
+        chestPanel.setVisible(panelType == RewardPanelType.CHEST);
+        rewardStatPanel.setVisible(panelType == RewardPanelType.STAT_POINTS);
+        combatButtonPanel.setVisible(panelType == RewardPanelType.NONE);
     }
 
     @Override
