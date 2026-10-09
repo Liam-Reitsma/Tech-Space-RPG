@@ -14,6 +14,8 @@ import java.util.Map;
 public class WorldController implements WorldAction, Updatable
 {
     private WorldViewAction worldViewAction;
+
+    private RoomListener roomListener;
     
     private final GameModel gameModel;
     private final WorldModel worldModel;
@@ -25,7 +27,9 @@ public class WorldController implements WorldAction, Updatable
     }
     
     public void setWorldViewAction(WorldViewAction wvAction) { worldViewAction = wvAction; }
-    
+
+    public void setRoomListener(RoomListener rListener) { roomListener = rListener; }
+
     @Override
     public Map<Point, RuntimeRoom> requestGenerateWorld()
     {
@@ -38,6 +42,7 @@ public class WorldController implements WorldAction, Updatable
         gameModel.getWorld().get(gameModel.getPlayer().getPoint()).clearCurrent();
         gameModel.getPlayer().movePoint(direction);
         gameModel.getWorld().get(gameModel.getPlayer().getPoint()).setCurrent();
+        if(roomListener != null) roomListener.onRoomEntered(gameModel.getWorld().get(gameModel.getPlayer().getPoint()));
         requestUpdate(); //TODO Remove when wired in update in GameController
     }
     

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GameController implements GameAction, CombatListener
+public class GameController implements GameAction, CombatListener, RoomListener
 {
     private final List<Updatable> updatables;
     
@@ -123,5 +123,11 @@ public class GameController implements GameAction, CombatListener
     public void addUpdatable(Updatable updatable)
     {
         updatables.add(updatable);
+    }
+
+    @Override
+    public void onRoomEntered(RuntimeRoom room)
+    {
+        System.out.println("Entered " + room.getRoomState()); // TODO Temporary
     }
 }

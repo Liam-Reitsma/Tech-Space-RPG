@@ -104,6 +104,7 @@ public class Main
         combatController.setCombatListener(gameController);
         frameController.setFrameViewAction(gameFrame);
         worldController.setWorldViewAction(worldPanel);
+        worldController.setRoomListener(gameController);
 
         gameController.setGameViewAction(gameScreen);
         gameController.setCombatController(combatController);
