@@ -31,6 +31,14 @@ public class RuntimeRoom implements Persistable
     public RoomState getRoomState() { return roomState; }
     
     public void setCurrent() { roomState.setCurrent(); }
+
+    public boolean isCurrent() { return roomState.isCurrent(); }
+
+    public void clearCurrent() { roomState.clearCurrent(); }
+
+    public boolean isFled() { return roomState.isFled(); }
+
+    public void setFled() { roomState.setFled(); }
     
     public Point getPoint() { return point; }
 }

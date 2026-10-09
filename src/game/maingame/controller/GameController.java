@@ -87,9 +87,9 @@ public class GameController implements GameAction, CombatListener
     private void startGame(Player player, Map<Point, RuntimeRoom> world)
     {
         gameModel.setGame(player, world);
-        
+        world.get(player.getPoint()).setCurrent();
+
         requestOpenGameScreen();
-        
         gameViewAction.updateMainGameScreen();
 
         requestGameUpdate();
