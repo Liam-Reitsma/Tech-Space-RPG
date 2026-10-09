@@ -3,10 +3,15 @@ package game.maingame.controller;
 import static game.frame.controller.DisplayTarget.MAIN_GAME;
 
 import game.Updatable;
+import game.combat.controller.CombatController;
+import game.combat.controller.CombatListener;
+import game.combat.model.CombatOutcome;
+import game.entities.Enemy;
 import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
+import game.reward.controller.RewardController;
 import game.persistence.PersistenceService;
 import game.persistence.SavedData;
 import game.world.model.Point;
@@ -17,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GameController implements GameAction
+public class GameController implements GameAction, CombatListener
 {
     private final List<Updatable> updatables;
     
@@ -26,7 +31,12 @@ public class GameController implements GameAction
     
     private final FrameAction frameAction;
     private final WorldController worldController; //TODO: WorldAction
-    
+
+    private CombatController combatController;
+    private RewardController rewardController;
+
+    private Enemy currentEncounter;
+
     private GameViewAction gameViewAction;
     
     public GameController(PersistenceService pService, GameModel gModel, FrameAction fAction, WorldController wController)
@@ -40,7 +50,16 @@ public class GameController implements GameAction
         worldController = wController;
         updatables.add(wController);
     }
-    
+
+    public void setCombatController(CombatController cController) {
+        combatController = cController;
+    }
+
+    public void setRewardController(RewardController rController)
+    {
+        rewardController = rController;
+    }
+
     public void setGameViewAction(GameViewAction gvAction) { gameViewAction = gvAction; }
     
     @Override
@@ -68,8 +87,11 @@ public class GameController implements GameAction
     private void startGame(Player player, Map<Point, RuntimeRoom> world)
     {
         gameModel.setGame(player, world);
+        
         requestOpenGameScreen();
+        
         gameViewAction.updateMainGameScreen();
+
         requestGameUpdate();
     }
     
@@ -80,5 +102,19 @@ public class GameController implements GameAction
         {
             controller.requestUpdate();
         }
+    }
+
+    @Override
+    public void onCombatEnded(CombatOutcome combatOutcome)
+    {
+        if(combatOutcome == CombatOutcome.WIN)
+        {
+            rewardController.giveEnemyReward(currentEncounter);
+        }
+    }
+
+    public void addUpdatable(Updatable updatable)
+    {
+        updatables.add(updatable);
     }
 }

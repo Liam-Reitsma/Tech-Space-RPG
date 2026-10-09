@@ -65,6 +65,7 @@ public class CombatModel
 
         if(currentEnemy.getHealth() <= 0)
         {
+            gameModel.getWorld().get(player.getPoint()).setCompleted();
             endCombat();
             return new ActionResult(WIN, playerAttackResult + "The enemy has been defeated!");
         }
@@ -94,7 +95,6 @@ public class CombatModel
         Player player = gameModel.getPlayer();
         float oldPlayerHealth = player.getHealth();
         Potion potion = new Potion(potionType);
-        //TODO Change the getItemCount method to check whether the item is in the inventory
         int potionCount = player.getInventory().getItemCount(potion);
 
         if(potionCount == 0) return new ActionResult(ONGOING, "No potions " + potionType + " in inventory!");

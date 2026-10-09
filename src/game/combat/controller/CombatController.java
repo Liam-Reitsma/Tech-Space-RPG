@@ -3,6 +3,7 @@ package game.combat.controller;
 import game.Updatable;
 import game.combat.model.ActionResult;
 import game.combat.model.CombatModel;
+import game.combat.model.CombatOutcome;
 import game.combat.view.CombatViewAction;
 import game.entities.Enemy;
 import game.items.PotionType;
@@ -13,6 +14,7 @@ public class CombatController implements CombatAction, Updatable
     private final CombatModel combatModel;
 
     private CombatViewAction combatViewAction;
+    private CombatListener combatListener;
 
     public CombatController(CombatModel cModel)
     {
@@ -20,6 +22,8 @@ public class CombatController implements CombatAction, Updatable
     }
 
     public void setCombatViewAction(CombatViewAction cvAction) { combatViewAction = cvAction;}
+
+    public void setCombatListener(CombatListener cListener) { combatListener = cListener;}
 
     public void startCombat(Enemy enemy)
     {
@@ -52,6 +56,9 @@ public class CombatController implements CombatAction, Updatable
     private void showResult(ActionResult combatResult)
     {
         combatViewAction.displayMessage(combatResult.getMessage());
+        if(combatResult.getOutcome() != CombatOutcome.ONGOING && combatListener != null)
+            combatListener.onCombatEnded(combatResult.getOutcome());
+
         requestUpdate();
     }
 
