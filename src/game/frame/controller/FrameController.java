@@ -2,6 +2,10 @@ package game.frame.controller;
 
 import game.frame.view.FrameViewAction;
 import game.gui.config.DisplayResolution;
+import game.gui.errors.DisplayError;
+
+import javax.swing.*;
+import java.awt.event.ActionListener;
 
 public class FrameController implements FrameAction
 {
@@ -21,6 +25,12 @@ public class FrameController implements FrameAction
     }
     
     @Override
+    public void requestDisplayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
+    {
+        frameViewAction.displayError(error, leftButton, rightButton);
+    }
+    
+    @Override
     public void display(DisplayTarget display)
     {
         frameViewAction.display(display);
@@ -30,6 +40,12 @@ public class FrameController implements FrameAction
     public void closeOverlay()
     {
         frameViewAction.closeOverlay();
+    }
+    
+    @Override
+    public void requestCloseError()
+    {
+        frameViewAction.closeError();
     }
     
     @Override
