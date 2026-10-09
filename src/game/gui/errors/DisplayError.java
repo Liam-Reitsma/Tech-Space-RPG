@@ -23,6 +23,19 @@ public enum DisplayError
     {
         PanelButton leftButton = new PanelButton(leftButtonText, leftButtonAction);
         PanelButton rightButton = new PanelButton(rightButtonText, rightButtonAction);
-        return new ErrorOverlay(errorMessage, leftButton, rightButton);
+        return new ErrorOverlay(toString(), errorMessage, leftButton, rightButton);
+    }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder result = new StringBuilder();
+        String[] words = name().split("_");
+        for(String word : words)
+        {
+            result.append(word.charAt(0)).append(word.substring(1).toLowerCase()).append(" ");
+        }
+        
+        return result.toString();
     }
 }
