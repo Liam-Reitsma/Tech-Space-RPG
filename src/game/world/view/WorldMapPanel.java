@@ -60,7 +60,10 @@ public class WorldMapPanel extends JPanel
             for(int col = 0; col < rooms[row].length; col++)
             {
                 if(!rooms[row][col].getRoomState().isSeen())
+                {
                     roomTiles[row][col].setOpaque(false);
+                    roomTiles[row][col].setBackground(Color.WHITE);
+                }
                 else
                 {
                     roomTiles[row][col].setOpaque(true);
