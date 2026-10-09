@@ -7,11 +7,11 @@ import game.combat.controller.CombatController;
 import game.combat.controller.CombatListener;
 import game.combat.model.CombatOutcome;
 import game.entities.Enemy;
-import game.entities.EnemyType;
 import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
+import game.reward.controller.RewardController;
 import game.persistence.PersistenceService;
 import game.persistence.SavedData;
 import game.world.model.Point;
@@ -33,6 +33,9 @@ public class GameController implements GameAction, CombatListener
     private final WorldController worldController; //TODO: WorldAction
 
     private CombatController combatController;
+    private RewardController rewardController;
+
+    private Enemy currentEncounter;
 
     private GameViewAction gameViewAction;
     
@@ -48,8 +51,13 @@ public class GameController implements GameAction, CombatListener
         updatables.add(wController);
     }
 
-    public void setCombatController(CombatController combatController) {
-        this.combatController = combatController;
+    public void setCombatController(CombatController cController) {
+        combatController = cController;
+    }
+
+    public void setRewardController(RewardController rController)
+    {
+        rewardController = rController;
     }
 
     public void setGameViewAction(GameViewAction gvAction) { gameViewAction = gvAction; }
@@ -99,7 +107,10 @@ public class GameController implements GameAction, CombatListener
     @Override
     public void onCombatEnded(CombatOutcome combatOutcome)
     {
-        System.out.println("Combat ended: " + combatOutcome); // TODO A7: update room state
+        if(combatOutcome == CombatOutcome.WIN)
+        {
+            rewardController.giveEnemyReward(currentEncounter);
+        }
     }
 
     public void addUpdatable(Updatable updatable)

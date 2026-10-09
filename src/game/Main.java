@@ -24,6 +24,10 @@ import game.options.view.OptionsOverlay;
 import game.persistence.DBManager;
 import game.persistence.DatabaseSchemaManager;
 import game.persistence.PersistenceService;
+import game.reward.controller.RewardController;
+import game.reward.model.RewardModel;
+import game.reward.view.ChestPanel;
+import game.reward.view.RewardStatPanel;
 import game.persistence.dao.InventoryDAO;
 import game.persistence.dao.PlayerDAO;
 import game.persistence.dao.WorldDAO;
@@ -49,7 +53,8 @@ public class Main
         PersistenceService persistenceService = new PersistenceService(databaseSchemaManager, inventoryDAO, playerDAO, worldDAO);
         GameModel gameModel = new GameModel();
         CombatModel combatModel = new CombatModel(gameModel);
-        
+        RewardModel rewardModel = new RewardModel(gameModel);
+
         Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
         
         FrameController frameController = new FrameController();
@@ -57,6 +62,7 @@ public class Main
         WorldController worldController = new WorldController(gameModel);
         GameController gameController = new GameController(persistenceService, gameModel, frameController, worldController);
         NewGameController newGameController = new NewGameController(frameController, gameController);
+        RewardController rewardController = new RewardController(rewardModel);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
 
         CombatController combatController = new CombatController(combatModel);
@@ -73,10 +79,13 @@ public class Main
         WorldMovementPanel worldMovementPanel = new WorldMovementPanel(worldController);
         WorldPanel worldPanel = new WorldPanel(worldMapPanel, worldMovementPanel);
 
+        RewardStatPanel rewardStatPanel = new RewardStatPanel(rewardController);
+        ChestPanel chestPanel = new ChestPanel(rewardController);
+
         CombatButtonPanel combatButtonPanel = new CombatButtonPanel(combatController);
         CombatTextPane combatTextPane = new CombatTextPane();
-        CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane);
-        
+        CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane, rewardStatPanel, chestPanel);
+
         GameScreen gameScreen = new GameScreen(combatPane, worldPanel, gameController);
         
         displayMap.put(MAIN_GAME, gameScreen);
@@ -90,15 +99,21 @@ public class Main
         combatController.setCombatListener(gameController);
         frameController.setFrameViewAction(gameFrame);
         worldController.setWorldViewAction(worldPanel);
+
         gameController.setGameViewAction(gameScreen);
         gameController.setCombatController(combatController);
+        gameController.setRewardController(rewardController);
+
         gameController.addUpdatable(combatController);
+        gameController.addUpdatable(rewardController);
+
         newGameController.setNewGameViewAction(newGameScreen);
+        rewardController.setRewardViewAction(combatPane);
         savesController.setSavesViewAction(savesOverlay);
 
         frameController.display(MAIN_MENU);
         gameFrame.setVisible(true);
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread(dbManager::closeSQLConnection));
     }
 }

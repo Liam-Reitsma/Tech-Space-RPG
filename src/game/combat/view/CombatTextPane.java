@@ -10,7 +10,7 @@ import java.awt.*;
 public class CombatTextPane extends JPanel
 {
     private static final Image MAP_IMAGE = new ImageIcon("resources/images/World Map.png").getImage();
-    private static final Font FONT = new Font("Agency FB", Font.PLAIN, 20);
+    private static final Font FONT = new Font("Agency FB", Font.PLAIN, 15);
 
     private final JScrollPane scrollPane;
     private final JTextPane logPane;
