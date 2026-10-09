@@ -65,7 +65,6 @@ public class CombatModel
 
         if(currentEnemy.getHealth() <= 0)
         {
-            gameModel.getWorld().get(player.getPoint()).setCompleted();
             endCombat();
             return new ActionResult(WIN, playerAttackResult + "The enemy has been defeated!");
         }

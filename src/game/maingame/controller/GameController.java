@@ -11,6 +11,7 @@ import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
+import game.persistence.InventoryChange;
 import game.reward.controller.RewardController;
 import game.persistence.PersistenceService;
 import game.persistence.SavedData;
@@ -107,10 +108,16 @@ public class GameController implements GameAction, CombatListener
     @Override
     public void onCombatEnded(CombatOutcome combatOutcome)
     {
-        if(combatOutcome == CombatOutcome.WIN)
+        RuntimeRoom room = gameModel.getWorld().get(gameModel.getPlayer().getPoint());
+        switch(combatOutcome)
         {
-            rewardController.giveEnemyReward(currentEncounter);
+            case WIN -> { room.setCompleted(); rewardController.giveEnemyReward(currentEncounter); }
+            case FLEE -> room.setFled();
+            case LOSE -> { room.setCompleted(); }
         }
+        currentEncounter = null;
+        gameModel.quickSave(room, InventoryChange.NONE, null);
+        requestGameUpdate();
     }
 
     public void addUpdatable(Updatable updatable)
