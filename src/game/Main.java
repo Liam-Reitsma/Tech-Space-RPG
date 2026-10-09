@@ -117,7 +117,7 @@ public class Main
         rewardController.setRewardViewAction(combatPane);
         savesController.setSavesViewAction(savesOverlay);
 
-        frameController.display(MAIN_MENU);
+        frameController.requestDisplay(MAIN_MENU);
         gameFrame.setVisible(true);
 
         Runtime.getRuntime().addShutdownHook(new Thread(dbManager::closeSQLConnection));

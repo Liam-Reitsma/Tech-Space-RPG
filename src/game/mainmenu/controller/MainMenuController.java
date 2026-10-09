@@ -32,7 +32,7 @@ public class MainMenuController implements MainMenuAction
     @Override
     public void requestOpenMainMenu()
     {
-        frameAction.display(MAIN_MENU);
+        frameAction.requestDisplay(MAIN_MENU);
         audioManager.playSound(SoundEffect.MAIN_MENU_SOUNDBITE);
         audioManager.playMusic(MusicTrack.MAIN_MENU_AMBIANCE);
     }

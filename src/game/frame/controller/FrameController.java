@@ -31,13 +31,13 @@ public class FrameController implements FrameAction
     }
     
     @Override
-    public void display(DisplayTarget display)
+    public void requestDisplay(DisplayTarget display)
     {
         frameViewAction.display(display);
     }
     
     @Override
-    public void closeOverlay()
+    public void requestCloseOverlay()
     {
         frameViewAction.closeOverlay();
     }

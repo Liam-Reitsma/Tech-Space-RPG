@@ -17,7 +17,7 @@ public class OptionsController implements OptionsAction
     @Override
     public void requestOpenOptionsOverlay()
     {
-        frameAction.display(OPTIONS);
+        frameAction.requestDisplay(OPTIONS);
     }
     
     @Override
@@ -29,6 +29,6 @@ public class OptionsController implements OptionsAction
     @Override
     public void requestCloseOptions()
     {
-        frameAction.closeOverlay();
+        frameAction.requestCloseOverlay();
     }
 }

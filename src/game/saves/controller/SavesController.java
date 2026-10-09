@@ -9,7 +9,6 @@ import game.persistence.PersistenceService;
 import game.persistence.SavedData;
 import game.saves.view.SavesViewAction;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -53,7 +52,7 @@ public class SavesController implements SavesAction
             }
         }
         savesViewAction.updateSavesList(displayData);
-        frameAction.display(SAVES);
+        frameAction.requestDisplay(SAVES);
     }
     
     @Override
@@ -81,6 +80,6 @@ public class SavesController implements SavesAction
     @Override
     public void requestCloseSaves()
     {
-        frameAction.closeOverlay();
+        frameAction.requestCloseOverlay();
     }
 }

@@ -4,7 +4,6 @@ import static game.frame.controller.DisplayTarget.*;
 
 import game.audio.AudioManager;
 import game.audio.MusicTrack;
-import game.audio.SoundEffect;
 import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
 import game.entities.player.ClassType;
@@ -33,7 +32,7 @@ public class NewGameController implements NewGameAction
     @Override
     public void requestOpenNewGameScreen()
     {
-        frameAction.display(NEW_GAME);
+        frameAction.requestDisplay(NEW_GAME);
         audioManager.playMusic(MusicTrack.NEW_GAME_AMBIANCE);
     }
     
@@ -52,6 +51,6 @@ public class NewGameController implements NewGameAction
     @Override
     public void requestMainMenuScreen()
     {
-        frameAction.display(MAIN_MENU);
+        frameAction.requestDisplay(MAIN_MENU);
     }
 }

@@ -9,8 +9,8 @@ public interface FrameAction
 {
     void requestResolutionChange(DisplayResolution resolution);
     void requestDisplayError(DisplayError error, ActionListener leftButton, ActionListener rightButton);
-    void display(DisplayTarget display);
-    void closeOverlay();
+    void requestDisplay(DisplayTarget display);
+    void requestCloseOverlay();
     void requestCloseError();
     void requestCloseGame();
 }
