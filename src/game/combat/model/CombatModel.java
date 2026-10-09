@@ -95,7 +95,6 @@ public class CombatModel
         Player player = gameModel.getPlayer();
         float oldPlayerHealth = player.getHealth();
         Potion potion = new Potion(potionType);
-        //TODO Change the getItemCount method to check whether the item is in the inventory
         int potionCount = player.getInventory().getItemCount(potion);
 
         if(potionCount == 0) return new ActionResult(ONGOING, "No potions " + potionType + " in inventory!");
@@ -112,7 +111,6 @@ public class CombatModel
     public ActionResult run()
     {
         endCombat();
-        gameModel.getWorld().get(gameModel.getPlayer().getPoint());
         return new ActionResult(FLEE, "You ran away.");
     }
 }
