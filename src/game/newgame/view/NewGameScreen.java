@@ -18,6 +18,8 @@ import java.awt.event.KeyEvent;
 public class NewGameScreen extends JPanel implements NewGameViewAction, DisplayableScreen
 {
     private static final Image NEW_GAME_IMAGE = new ImageIcon("resources/images/New Game Background.png").getImage();
+    private static final String DEFAULT_NAME_TEXT_FIELD = "Insert Your Name!";
+    private static final ClassType DEFAULT_CLASS_TYPE = ClassType.values()[0];
     
     private final NewGameAction newGameAction;
     
@@ -59,7 +61,7 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
         
         nameTextField = new JTextField(10);
         nameTextField.setFont(new Font("OCR Extended A", Font.BOLD, 50));
-        nameTextField.setText("Insert Your Name!");
+        nameTextField.setText(DEFAULT_NAME_TEXT_FIELD);
         nameTextField.setHorizontalAlignment(SwingConstants.CENTER);
         
         nameTextField.addKeyListener(new KeyAdapter(){
@@ -132,7 +134,8 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
     public void openDisplay()
     {
         setVisible(true);
-        changeCharacterPanel(ClassType.values()[0]);
+        nameTextField.setText(DEFAULT_NAME_TEXT_FIELD);
+        changeCharacterPanel(DEFAULT_CLASS_TYPE);
     }
     
     @Override
