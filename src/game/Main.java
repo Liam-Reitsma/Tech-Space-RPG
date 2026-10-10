@@ -116,6 +116,8 @@ public class Main
         newGameController.setNewGameViewAction(newGameScreen);
         rewardController.setRewardViewAction(combatPane);
         savesController.setSavesViewAction(savesOverlay);
+        
+        optionsController.setOptionsViewAction(optionsOverlay);
 
         frameController.requestDisplay(MAIN_MENU);
         gameFrame.setVisible(true);
