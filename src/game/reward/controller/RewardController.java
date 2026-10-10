@@ -12,6 +12,8 @@ public class RewardController implements RewardAction, Updatable
     private final RewardModel rewardModel;
     private RewardViewAction rewardViewAction;
 
+    private RewardListener rewardListener;
+
     public RewardController(RewardModel rModel) {
         rewardModel = rModel;
     }
@@ -19,6 +21,11 @@ public class RewardController implements RewardAction, Updatable
     public void setRewardViewAction(RewardViewAction rvAction)
     {
         rewardViewAction = rvAction;
+    }
+
+    public void setRewardListener(RewardListener rListener)
+    {
+        rewardListener = rListener;
     }
 
     public void requestEnemyReward(Enemy enemy)
@@ -66,6 +73,7 @@ public class RewardController implements RewardAction, Updatable
     {
         rewardViewAction.displayMessage(rewardModel.takeOfferedItem());
         requestUpdate();
+        if(rewardListener != null) rewardListener.onChestDecision();
     }
 
     @Override
@@ -73,6 +81,7 @@ public class RewardController implements RewardAction, Updatable
     {
         rewardViewAction.displayMessage(rewardModel.discardOfferedItem());
         requestUpdate();
+        if(rewardListener != null) rewardListener.onChestDecision();
     }
 
     @Override

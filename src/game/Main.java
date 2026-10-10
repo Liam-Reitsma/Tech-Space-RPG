@@ -113,6 +113,7 @@ public class Main
 
         newGameController.setNewGameViewAction(newGameScreen);
         rewardController.setRewardViewAction(combatPane);
+        rewardController.setRewardListener(gameController);
         savesController.setSavesViewAction(savesOverlay);
 
         frameController.display(MAIN_MENU);

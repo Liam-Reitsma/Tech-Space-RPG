@@ -16,6 +16,7 @@ import game.persistence.InventoryChange;
 import game.reward.controller.RewardAction;
 import game.persistence.PersistenceService;
 import game.persistence.SavedData;
+import game.reward.controller.RewardListener;
 import game.world.controller.RoomListener;
 import game.world.model.Point;
 import game.world.controller.WorldController;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GameController implements GameAction, CombatListener, RoomListener
+public class GameController implements GameAction, CombatListener, RoomListener, RewardListener
 {
     private final List<Updatable> updatables;
     
@@ -139,6 +140,7 @@ public class GameController implements GameAction, CombatListener, RoomListener
         }
         else if(content instanceof Item item)
         {
+            worldController.setMovementLocked(true);
             rewardAction.requestOfferChestReward(item);
             room.setCompleted();
             gameModel.quickSave(room, InventoryChange.NONE, null);
@@ -148,6 +150,13 @@ public class GameController implements GameAction, CombatListener, RoomListener
             room.setCompleted();
             gameModel.quickSave(room, InventoryChange.NONE, null);
         }
+        requestGameUpdate();
+    }
+
+    @Override
+    public void onChestDecision()
+    {
+        worldController.setMovementLocked(false);
         requestGameUpdate();
     }
 }
