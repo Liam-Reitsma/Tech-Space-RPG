@@ -4,7 +4,6 @@ import game.gui.common.scaledlayout.*;
 import game.reward.controller.RewardAction;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class ChestPanel extends JPanel
 {
@@ -19,7 +18,7 @@ public class ChestPanel extends JPanel
         add(questionLabel, chestRewardBoxes[0]);
 
         JButton takeButton = new JButton("Take");
-        takeButton.addActionListener(e -> rewardAction.requestTakeItem());
+        takeButton.addActionListener(e -> rewardAction.requestKeepItem());
         add(takeButton, chestRewardBoxes[1]);
 
         JButton discardButton = new JButton("Discard");

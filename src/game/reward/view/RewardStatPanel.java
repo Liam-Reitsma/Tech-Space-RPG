@@ -41,8 +41,8 @@ public class RewardStatPanel extends JPanel
             JLabel statTypeLabel =  new JLabel(stat.toString(), SwingConstants.CENTER);
             JButton plusButton = new JButton("+");
 
-            minusButton.addActionListener(e -> rewardAction.requestPlannedDecrease(stat));
-            plusButton.addActionListener(e -> rewardAction.requestPlannedIncrease(stat));
+            minusButton.addActionListener(e -> rewardAction.requestTemporaryStatDecrease(stat));
+            plusButton.addActionListener(e -> rewardAction.requestTemporaryStatIncrease(stat));
 
             minusButtons.put(stat, minusButton);
             statLabels.put(stat, statTypeLabel);

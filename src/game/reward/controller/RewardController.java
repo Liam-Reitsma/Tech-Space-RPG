@@ -21,7 +21,7 @@ public class RewardController implements RewardAction, Updatable
         rewardViewAction = rvAction;
     }
 
-    public void giveEnemyReward(Enemy enemy)
+    public void requestEnemyReward(Enemy enemy)
     {
         rewardViewAction.displayMessage(rewardModel.applyEnemyReward(enemy));
         requestUpdate();
@@ -41,14 +41,14 @@ public class RewardController implements RewardAction, Updatable
     }
 
     @Override
-    public void requestPlannedIncrease(StatType stat)
+    public void requestTemporaryStatIncrease(StatType stat)
     {
         rewardModel.planIncrease(stat);
         requestUpdate();
     }
 
     @Override
-    public void requestPlannedDecrease(StatType stat)
+    public void requestTemporaryStatDecrease(StatType stat)
     {
         rewardModel.planDecrease(stat);
         requestUpdate();
@@ -62,7 +62,7 @@ public class RewardController implements RewardAction, Updatable
     }
 
     @Override
-    public void requestTakeItem()
+    public void requestKeepItem()
     {
         rewardViewAction.displayMessage(rewardModel.takeOfferedItem());
         requestUpdate();
@@ -75,7 +75,8 @@ public class RewardController implements RewardAction, Updatable
         requestUpdate();
     }
 
-    public void offerChestReward(Item item)
+    @Override
+    public void requestOfferChestReward(Item item)
     {
         rewardViewAction.displayMessage(rewardModel.offerChestItem(item));
         requestUpdate();

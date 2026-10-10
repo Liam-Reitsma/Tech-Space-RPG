@@ -25,6 +25,7 @@ public class CombatController implements CombatAction, Updatable
 
     public void setCombatListener(CombatListener cListener) { combatListener = cListener;}
 
+    @Override
     public void startCombat(Enemy enemy)
     {
         combatModel.startCombat(enemy);

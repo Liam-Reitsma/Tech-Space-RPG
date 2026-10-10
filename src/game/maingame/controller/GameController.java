@@ -3,20 +3,24 @@ package game.maingame.controller;
 import static game.frame.controller.DisplayTarget.MAIN_GAME;
 
 import game.Updatable;
-import game.combat.controller.CombatController;
+import game.combat.controller.CombatAction;
 import game.combat.controller.CombatListener;
 import game.combat.model.CombatOutcome;
 import game.entities.Enemy;
 import game.entities.player.Player;
 import game.frame.controller.FrameAction;
+import game.items.Item;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
 import game.persistence.InventoryChange;
-import game.reward.controller.RewardController;
+import game.reward.controller.RewardAction;
 import game.persistence.PersistenceService;
 import game.persistence.SavedData;
+import game.world.controller.RoomListener;
 import game.world.model.Point;
 import game.world.controller.WorldController;
+import game.world.model.room.RoomContent;
+import game.world.model.room.RoomModel;
 import game.world.model.room.RuntimeRoom;
 
 import java.util.ArrayList;
@@ -29,36 +33,30 @@ public class GameController implements GameAction, CombatListener, RoomListener
     
     private final PersistenceService persistenceService;
     private final GameModel gameModel;
-    
-    private final FrameAction frameAction;
-    private final WorldController worldController; //TODO: WorldAction
+    private final RoomModel roomModel;
 
-    private CombatController combatController;
-    private RewardController rewardController;
+    private final CombatAction combatAction;
+    private final FrameAction frameAction;
+    private final RewardAction rewardAction;
+    private final WorldController worldController; //TODO: WorldAction
 
     private Enemy currentEncounter;
 
     private GameViewAction gameViewAction;
     
-    public GameController(PersistenceService pService, GameModel gModel, FrameAction fAction, WorldController wController)
+    public GameController(PersistenceService pService, GameModel gModel, CombatAction cAction,  FrameAction fAction, RewardAction rAction, WorldController wController)
     {
         persistenceService = pService;
         gameModel = gModel;
-        
+        roomModel = new RoomModel();
+
+        combatAction = cAction;
         frameAction = fAction;
+        rewardAction = rAction;
         
         updatables = new ArrayList<>();
         worldController = wController;
         updatables.add(wController);
-    }
-
-    public void setCombatController(CombatController cController) {
-        combatController = cController;
-    }
-
-    public void setRewardController(RewardController rController)
-    {
-        rewardController = rController;
     }
 
     public void setGameViewAction(GameViewAction gvAction) { gameViewAction = gvAction; }
@@ -89,7 +87,7 @@ public class GameController implements GameAction, CombatListener, RoomListener
     {
         gameModel.setGame(player, world);
         world.get(player.getPoint()).setCurrent();
-
+        worldController.setMovementLocked(false);
         requestOpenGameScreen();
         gameViewAction.updateMainGameScreen();
 
@@ -111,12 +109,13 @@ public class GameController implements GameAction, CombatListener, RoomListener
         RuntimeRoom room = gameModel.getWorld().get(gameModel.getPlayer().getPoint());
         switch(combatOutcome)
         {
-            case WIN -> { room.setCompleted(); rewardController.giveEnemyReward(currentEncounter); }
+            case WIN -> { room.setCompleted(); rewardAction.requestEnemyReward(currentEncounter); }
             case FLEE -> room.setFled();
-            case LOSE -> { room.setCompleted(); }
+            case LOSE -> { }
         }
         currentEncounter = null;
         gameModel.quickSave(room, InventoryChange.NONE, null);
+        worldController.setMovementLocked(false);
         requestGameUpdate();
     }
 
@@ -128,6 +127,27 @@ public class GameController implements GameAction, CombatListener, RoomListener
     @Override
     public void onRoomEntered(RuntimeRoom room)
     {
-        System.out.println("Entered " + room.getRoomState()); // TODO Temporary
+        if(room.isCompleted()) return;
+
+        RoomContent content = roomModel.createRoomContent(room.getRoomState().getRoomType(), gameModel.getPlayer());
+
+        if(content instanceof Enemy enemy)
+        {
+            currentEncounter = enemy;
+            worldController.setMovementLocked(true);
+            combatAction.startCombat(currentEncounter);
+        }
+        else if(content instanceof Item item)
+        {
+            rewardAction.requestOfferChestReward(item);
+            room.setCompleted();
+            gameModel.quickSave(room, InventoryChange.NONE, null);
+        }
+        else
+        {
+            room.setCompleted();
+            gameModel.quickSave(room, InventoryChange.NONE, null);
+        }
+        requestGameUpdate();
     }
 }

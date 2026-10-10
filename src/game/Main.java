@@ -62,11 +62,11 @@ public class Main
         FrameController frameController = new FrameController();
         OptionsController optionsController = new OptionsController(frameController);
         WorldController worldController = new WorldController(gameModel);
-        GameController gameController = new GameController(persistenceService, gameModel, frameController, worldController);
-        NewGameController newGameController = new NewGameController(frameController, gameController);
         RewardController rewardController = new RewardController(rewardModel);
-        SavesController savesController = new SavesController(persistenceService, frameController, gameController);
         CombatController combatController = new CombatController(combatModel);
+        GameController gameController = new GameController(persistenceService, gameModel, combatController, frameController, rewardController, worldController);
+        SavesController savesController = new SavesController(persistenceService, frameController, gameController);
+        NewGameController newGameController = new NewGameController(frameController, gameController);
         MainMenuController mainMenuController = new MainMenuController(frameController, newGameController, optionsController, savesController);
         MainGameMenuController mainGameMenuController = new MainGameMenuController(gameModel, frameController, mainMenuController, optionsController, savesController);
 
@@ -107,8 +107,6 @@ public class Main
         worldController.setRoomListener(gameController);
 
         gameController.setGameViewAction(gameScreen);
-        gameController.setCombatController(combatController);
-        gameController.setRewardController(rewardController);
 
         gameController.addUpdatable(combatController);
         gameController.addUpdatable(rewardController);
