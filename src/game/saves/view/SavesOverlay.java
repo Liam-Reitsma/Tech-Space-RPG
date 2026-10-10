@@ -10,10 +10,14 @@ import java.awt.*;
 
 public class SavesOverlay extends JPanel implements SavesViewAction, DisplayableOverlay
 {
-    SavesPanel savesPanel;
-    public SavesOverlay(SavesAction savesAction)
+    private final SavesAction savesAction;
+    
+    private final SavesPanel savesPanel;
+    
+    public SavesOverlay(SavesAction sAction)
     {
         setLayout(new ScaledLayout());
+        savesAction = sAction;
         LayoutBox[] box = new LayoutBox().splitVertical(25, 75);
         add(new SavesTitlePanel(savesAction), box[0]);
         savesPanel = new SavesPanel(savesAction);
@@ -29,9 +33,9 @@ public class SavesOverlay extends JPanel implements SavesViewAction, Displayable
     }
     
     @Override
-    public void removeSave(String saveName)
+    public void removeSave(int saveIndex)
     {
-        savesPanel.removeSave(saveName);
+        savesPanel.removeSave(saveIndex);
     }
     
     @Override
@@ -44,6 +48,7 @@ public class SavesOverlay extends JPanel implements SavesViewAction, Displayable
     @Override
     public void openDisplay()
     {
+        savesAction.requestOpenSavesOverlay();
         setVisible(true);
     }
     

@@ -12,6 +12,7 @@ import game.combat.model.CombatOutcome;
 import game.entities.Enemy;
 import game.entities.player.Player;
 import game.frame.controller.FrameAction;
+import game.gui.errors.DisplayError;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
 import game.reward.controller.RewardController;
@@ -69,7 +70,6 @@ public class GameController implements GameAction, CombatListener
     @Override
     public void requestOpenGameScreen()
     {
-        frameAction.display(MAIN_GAME);
         audioManager.playSound(SoundEffect.MAIN_GAME_BACKSTORY_SOUNDBITE);
         audioManager.playMusic(MusicTrack.MAIN_GAME_AMBIANCE);
     }
@@ -78,8 +78,16 @@ public class GameController implements GameAction, CombatListener
     public void requestNewGame(Player newPlayer)
     {
         Map<Point, RuntimeRoom> world = worldAction.requestGenerateWorld();
-        persistenceService.createNewSaveGame(newPlayer.getName(), newPlayer.getName(), newPlayer.getClassType(), world);
-        startGame(newPlayer, world);
+        if(persistenceService.doesSaveExist(newPlayer.getName()))
+            frameAction.requestDisplayError(
+                    DisplayError.DUPLICATE_SAVE_NAME,
+                    e -> frameAction.requestCloseError(),
+                    e -> forceStartNewGame(newPlayer, world));
+        else
+        {
+            persistenceService.createNewSaveGame(newPlayer.getName(), newPlayer.getName(), newPlayer.getClassType(), world);
+            startGame(newPlayer, world);
+        }
     }
     
     @Override
@@ -90,11 +98,18 @@ public class GameController implements GameAction, CombatListener
         startGame(savedData.player, savedData.world);
     }
     
+    private void forceStartNewGame(Player player, Map<Point, RuntimeRoom> world)
+    {
+        persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world);
+        frameAction.requestCloseError();
+        startGame(player, world);
+    }
+    
     private void startGame(Player player, Map<Point, RuntimeRoom> world)
     {
         gameModel.setGame(player, world);
         
-        requestOpenGameScreen();
+        frameAction.requestDisplay(MAIN_GAME);
         
         gameViewAction.updateMainGameScreen();
 

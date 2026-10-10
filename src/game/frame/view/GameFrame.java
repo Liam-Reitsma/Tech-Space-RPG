@@ -10,9 +10,11 @@ import game.gui.config.DisplayResolution;
 import game.gui.config.Displayable;
 import game.gui.config.DisplayableOverlay;
 import game.gui.config.DisplayableScreen;
+import game.gui.errors.DisplayError;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.Map;
@@ -23,6 +25,7 @@ public class GameFrame extends JFrame implements FrameViewAction
     
     private Displayable currentDisplayedScreen;
     private Displayable currentDisplayedOverlay;
+    private Displayable currentDisplayedError;
     
     private Map<DisplayTarget, Displayable> displayMap;
     
@@ -66,6 +69,20 @@ public class GameFrame extends JFrame implements FrameViewAction
     }
     
     @Override
+    public void displayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
+    {
+        if(currentDisplayedError != null)
+            currentDisplayedError.closeDisplay();
+        
+        currentDisplayedError = error.createOverlay(leftButton, rightButton);
+        overlayContainer.add(currentDisplayedError.getDisplay(), new LayoutBox(null, 15, 30, ScaledLayoutAnchor.CENTER));
+        currentDisplayedError.openDisplay();
+        
+        overlayContainer.revalidate();
+        overlayContainer.repaint();
+    }
+    
+    @Override
     public void display(DisplayTarget display)
     {
         Displayable displayScreen = displayMap.get(display);
@@ -95,6 +112,16 @@ public class GameFrame extends JFrame implements FrameViewAction
         {
             currentDisplayedOverlay.closeDisplay();
             currentDisplayedOverlay = null;
+        }
+    }
+    
+    @Override
+    public void closeError()
+    {
+        if(currentDisplayedError != null)
+        {
+            currentDisplayedError.closeDisplay();
+            currentDisplayedError = null;
         }
     }
     
