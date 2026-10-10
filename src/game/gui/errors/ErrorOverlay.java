@@ -25,6 +25,7 @@ public class ErrorOverlay extends JPanel implements Displayable
     @Override
     public JPanel getDisplay()
     {
+        setVisible(false);
         return this;
     }
     

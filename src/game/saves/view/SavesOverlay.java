@@ -41,6 +41,7 @@ public class SavesOverlay extends JPanel implements SavesViewAction, Displayable
     @Override
     public JPanel getDisplay()
     {
+        setVisible(false);
         return this;
     }
     

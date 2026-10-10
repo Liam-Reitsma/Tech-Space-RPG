@@ -1,5 +1,7 @@
 package game.maingamemenu.view;
 
+import static game.frame.controller.DisplayTarget.*;
+
 import game.frame.controller.DisplayTarget;
 import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
@@ -23,7 +25,7 @@ public class MainGameMenuPanel extends JPanel implements  MainGameMenuViewAction
         
         openSavesButton = new PanelButton("Load Game", e ->
         {
-            mainGameMenuAction.requestOpenDisplay(DisplayTarget.SAVES);
+            mainGameMenuAction.requestOpenDisplay(SAVES);
         });
         add(openSavesButton, boxes[0]);
         
@@ -35,19 +37,19 @@ public class MainGameMenuPanel extends JPanel implements  MainGameMenuViewAction
         
         optionsButton = new PanelButton("Options", e ->
         {
-            mainGameMenuAction.requestOpenDisplay(DisplayTarget.OPTIONS);
+            mainGameMenuAction.requestOpenDisplay(OPTIONS);
         });
         add(optionsButton, boxes[2]);
         
         mainMenuButton = new PanelButton("Exit to Main Menu", e ->
         {
-            mainGameMenuAction.requestOpenDisplay(DisplayTarget.MAIN_MENU);
+            mainGameMenuAction.requestOpenDisplay(MAIN_MENU);
         });
         add(mainMenuButton, boxes[3]);
         
         exitGameButton = new PanelButton("Exit Game", e ->
         {
-            mainGameMenuAction.requestOpenDisplay(DisplayTarget.EXIT);
+            mainGameMenuAction.requestOpenDisplay(EXIT);
         });
         add(exitGameButton, boxes[4]);
     }

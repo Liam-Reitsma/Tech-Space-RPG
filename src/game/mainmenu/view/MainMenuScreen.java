@@ -71,6 +71,7 @@ public class MainMenuScreen extends JPanel implements DisplayableScreen
     @Override
     public JPanel getDisplay()
     {
+        setVisible(false);
         return this;
     }
     
