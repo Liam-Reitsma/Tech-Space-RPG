@@ -5,8 +5,10 @@ import game.items.PotionType;
 
 public interface CombatAction
 {
-    void startCombat(Enemy enemy);
+    void requestStartCombat(Enemy enemy);
+    void requestResetCombat();
     void requestAttack();
     void requestHeal(PotionType potionType);
     void requestRun();
+    void requestDeathMessage();
 }

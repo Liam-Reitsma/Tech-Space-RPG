@@ -129,4 +129,11 @@ public class RewardModel
         offeredItem = null;
         return "Item has been discarded.";
     }
+
+    public void resetReward()
+    {
+        offeredItem = null;
+        unspentPoints = 0;
+        statsLeveledUp.clear();
+    }
 }

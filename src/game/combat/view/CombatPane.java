@@ -43,7 +43,13 @@ public class CombatPane extends JPanel implements CombatViewAction, RewardViewAc
     @Override
     public void displayMessage(String message)
     {
-        combatTextPane.update(message);
+        combatTextPane.updateLog(message);
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        combatTextPane.clearLog();
     }
 
     @Override

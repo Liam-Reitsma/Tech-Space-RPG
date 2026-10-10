@@ -29,7 +29,7 @@ public class CombatTextPane extends JPanel
         add(scrollPane);
     }
 
-    public void update(String text)
+    public void updateLog(String text)
     {
         try{
             Document currentLog = logPane.getDocument();
@@ -38,6 +38,11 @@ public class CombatTextPane extends JPanel
         catch(BadLocationException e){
             e.printStackTrace();
         }
+    }
+
+    public void clearLog()
+    {
+        logPane.setText("");
     }
 
     @Override

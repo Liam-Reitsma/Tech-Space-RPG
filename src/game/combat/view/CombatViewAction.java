@@ -6,5 +6,6 @@ public interface CombatViewAction
 {
     void showAvailablePotions(PotionType[] potions);
     void displayMessage(String message);
+    void clearMessage();
     void setActionEnabled(boolean actionEnabled);
 }

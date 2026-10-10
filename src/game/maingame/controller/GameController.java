@@ -87,12 +87,17 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     private void startGame(Player player, Map<Point, RuntimeRoom> world)
     {
         gameModel.setGame(player, world);
+        boolean isDead = player.getHealth() <= 0;
         world.get(player.getPoint()).setCurrent();
-        worldController.setMovementLocked(false);
+        worldController.setMovementLocked(isDead);
+        combatAction.requestResetCombat();
+        currentEncounter = null;
+        rewardAction.requestResetReward();
+        if(isDead) combatAction.requestDeathMessage();
         requestOpenGameScreen();
         gameViewAction.updateMainGameScreen();
-
         requestGameUpdate();
+        if(!isDead) onRoomEntered(world.get(player.getPoint()));
     }
     
     @Override
@@ -108,11 +113,19 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     public void onCombatEnded(CombatOutcome combatOutcome)
     {
         RuntimeRoom room = gameModel.getWorld().get(gameModel.getPlayer().getPoint());
+
+        if(combatOutcome == CombatOutcome.LOSE)
+        {
+            currentEncounter = null;
+            gameModel.quickSave(room, InventoryChange.NONE, null);
+            requestGameUpdate();
+            return;
+        }
         switch(combatOutcome)
         {
             case WIN -> { room.setCompleted(); rewardAction.requestEnemyReward(currentEncounter); }
             case FLEE -> room.setFled();
-            case LOSE -> { }
+            default -> { }
         }
         currentEncounter = null;
         gameModel.quickSave(room, InventoryChange.NONE, null);
@@ -136,14 +149,14 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         {
             currentEncounter = enemy;
             worldController.setMovementLocked(true);
-            combatAction.startCombat(currentEncounter);
+            combatAction.requestStartCombat(currentEncounter);
         }
         else if(content instanceof Item item)
         {
             worldController.setMovementLocked(true);
             rewardAction.requestOfferChestReward(item);
             room.setCompleted();
-            gameModel.quickSave(room, InventoryChange.NONE, null);
+            gameModel.quickSave(room, InventoryChange.NONE, null); //TODO Add item
         }
         else
         {

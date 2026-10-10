@@ -90,4 +90,10 @@ public class RewardController implements RewardAction, Updatable
         rewardViewAction.displayMessage(rewardModel.offerChestItem(item));
         requestUpdate();
     }
+
+    @Override
+    public void requestResetReward()
+    {
+        rewardModel.resetReward();
+    }
 }

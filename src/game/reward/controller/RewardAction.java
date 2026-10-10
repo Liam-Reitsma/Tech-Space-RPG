@@ -7,6 +7,7 @@ import game.items.Item;
 public interface RewardAction
 {
     void requestOfferChestReward(Item item);
+    void requestResetReward();
     void requestEnemyReward(Enemy enemy);
     void requestTemporaryStatIncrease(StatType stat);
     void requestTemporaryStatDecrease(StatType stat);

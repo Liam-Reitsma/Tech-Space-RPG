@@ -25,12 +25,16 @@ public class CombatModel
     public void startCombat(Enemy newEnemy)
     {
         currentEnemy = newEnemy;
-
     }
 
     public boolean notInCombat()
     {
         return currentEnemy == null;
+    }
+
+    public void resetCombat()
+    {
+        endCombat();
     }
 
     private void endCombat()
