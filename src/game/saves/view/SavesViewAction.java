@@ -3,5 +3,5 @@ package game.saves.view;
 public interface SavesViewAction
 {
     void updateSavesList(String[] saveDisplayData);
-    void removeSave(String saveName);
+    void removeSave(int saveIndex);
 }

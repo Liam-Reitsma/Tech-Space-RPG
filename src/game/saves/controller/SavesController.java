@@ -61,7 +61,7 @@ public class SavesController implements SavesAction
         if(deletedIndex >= 0 && deletedIndex < saveNames.length)
         {
             persistenceService.deleteSaveGame(saveNames[deletedIndex]);
-            savesViewAction.removeSave(saveNames[deletedIndex]);
+            savesViewAction.removeSave(deletedIndex);
         }
     }
     

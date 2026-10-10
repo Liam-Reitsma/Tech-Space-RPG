@@ -29,9 +29,9 @@ public class SavesOverlay extends JPanel implements SavesViewAction, Displayable
     }
     
     @Override
-    public void removeSave(String saveName)
+    public void removeSave(int saveIndex)
     {
-        savesPanel.removeSave(saveName);
+        savesPanel.removeSave(saveIndex);
     }
     
     @Override

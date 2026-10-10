@@ -89,9 +89,9 @@ public class SavesPanel extends JPanel
         }
     }
     
-    public void removeSave(String saveName)
+    public void removeSave(int saveIndex)
     {
-        listModel.removeElement(saveName);
+        listModel.remove(saveIndex);
     }
     
     @Override
