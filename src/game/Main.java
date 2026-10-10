@@ -59,16 +59,16 @@ public class Main
 
         Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
         
+        CombatController combatController = new CombatController(combatModel);
         FrameController frameController = new FrameController();
         OptionsController optionsController = new OptionsController(frameController);
         WorldController worldController = new WorldController(gameModel);
         GameController gameController = new GameController(persistenceService, gameModel, frameController, worldController);
+        MainMenuController mainMenuController = new MainMenuController(frameController);
+        MainGameMenuController mainGameMenuController = new MainGameMenuController(gameModel, frameController);
         NewGameController newGameController = new NewGameController(frameController, gameController);
         RewardController rewardController = new RewardController(rewardModel);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
-        CombatController combatController = new CombatController(combatModel);
-        MainMenuController mainMenuController = new MainMenuController(frameController, newGameController, optionsController, savesController);
-        MainGameMenuController mainGameMenuController = new MainGameMenuController(gameModel, frameController, mainMenuController, optionsController, savesController);
 
         OverlayContainer overlayContainer = new OverlayContainer();
         GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);

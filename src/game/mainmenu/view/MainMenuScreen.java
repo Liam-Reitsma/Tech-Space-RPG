@@ -1,13 +1,12 @@
 package game.mainmenu.view;
 
+import static game.frame.controller.DisplayTarget.*;
 import static game.gui.common.scaledlayout.ScaledLayoutAnchor.CENTER;
 
-import game.frame.controller.DisplayTarget;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.config.DisplayableScreen;
 import game.mainmenu.controller.MainMenuAction;
-import game.mainmenu.controller.MainMenuOption;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -56,10 +55,10 @@ public class MainMenuScreen extends JPanel implements DisplayableScreen
         LayoutBox[] boxes = box.splitVertical(25, 25, 25, 25);
         
         int i = 0;
-        for(MainMenuOption option : MainMenuOption.values())
-        {
-            add(new MainMenuButton(option.toString(), e -> mainMenuAction.requestOpenDisplay(option)), new LayoutBox(boxes[i++], 30, 70, CENTER));
-        }
+        add(new MainMenuButton(NEW_GAME.toString(), e -> mainMenuAction.requestOpenDisplay(NEW_GAME)), new LayoutBox(boxes[i++], 30, 70, CENTER));
+        add(new MainMenuButton(SAVES.toString(), e -> mainMenuAction.requestOpenDisplay(SAVES)), new LayoutBox(boxes[i++], 30, 70, CENTER));
+        add(new MainMenuButton(OPTIONS.toString(), e -> mainMenuAction.requestOpenDisplay(OPTIONS)), new LayoutBox(boxes[i++], 30, 70, CENTER));
+        add(new MainMenuButton(EXIT.toString(), e -> mainMenuAction.requestOpenDisplay(EXIT)), new LayoutBox(boxes[i++], 30, 70, CENTER));
     }
     
     @Override
@@ -72,13 +71,13 @@ public class MainMenuScreen extends JPanel implements DisplayableScreen
     @Override
     public JPanel getDisplay()
     {
-        setVisible(false);
         return this;
     }
     
     @Override
     public void openDisplay()
     {
+        mainMenuAction.requestOpenMainMenu();
         setVisible(true);
     }
     

@@ -111,6 +111,7 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     @Override
     public void openDisplay()
     {
+        gameAction.requestOpenGameScreen();
         setVisible(true);
     }
     

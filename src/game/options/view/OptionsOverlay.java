@@ -12,11 +12,14 @@ import java.util.Map;
 
 public class OptionsOverlay extends JPanel implements OptionsViewAction, DisplayableOverlay
 {
+    private final OptionsAction optionsAction;
+    
     private final OptionsPanel optionsPanel;
     
-    public OptionsOverlay(OptionsAction optionsAction)
+    public OptionsOverlay(OptionsAction oAction)
     {
         setLayout(new ScaledLayout());
+        optionsAction = oAction;
         
         LayoutBox overlayBox = new LayoutBox(0, 0, 100, 100);
         LayoutBox[] boxes = overlayBox.splitVertical(22, 78);

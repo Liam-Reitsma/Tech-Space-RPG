@@ -46,11 +46,6 @@ public class OptionsController implements OptionsAction
         displayResolution = resolution;
     }
     
-    @Override
-    public void requestOpenOptionsOverlay()
-    {
-        frameAction.requestDisplay(OPTIONS);
-    }
     
     @Override
     public void requestApplyChanges()

@@ -133,9 +133,10 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
     @Override
     public void openDisplay()
     {
+        newGameAction.requestOpenNewGameScreen();
         setVisible(true);
         nameTextField.setText(DEFAULT_NAME_TEXT_FIELD);
-        changeCharacterPanel(DEFAULT_CLASS_TYPE);
+        classComboBox.setSelectedItem(DEFAULT_CLASS_TYPE);
     }
     
     @Override

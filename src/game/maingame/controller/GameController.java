@@ -70,7 +70,6 @@ public class GameController implements GameAction, CombatListener
     @Override
     public void requestOpenGameScreen()
     {
-        frameAction.requestDisplay(MAIN_GAME);
         audioManager.playSound(SoundEffect.MAIN_GAME_BACKSTORY_SOUNDBITE);
         audioManager.playMusic(MusicTrack.MAIN_GAME_AMBIANCE);
     }
@@ -110,7 +109,7 @@ public class GameController implements GameAction, CombatListener
     {
         gameModel.setGame(player, world);
         
-        requestOpenGameScreen();
+        frameAction.requestDisplay(MAIN_GAME);
         
         gameViewAction.updateMainGameScreen();
 

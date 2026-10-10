@@ -32,7 +32,6 @@ public class NewGameController implements NewGameAction
     @Override
     public void requestOpenNewGameScreen()
     {
-        frameAction.requestDisplay(NEW_GAME);
         audioManager.playMusic(MusicTrack.NEW_GAME_AMBIANCE);
     }
     

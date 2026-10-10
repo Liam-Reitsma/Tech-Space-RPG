@@ -1,7 +1,5 @@
 package game.saves.controller;
 
-import static game.frame.controller.DisplayTarget.SAVES;
-
 import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
@@ -52,7 +50,6 @@ public class SavesController implements SavesAction
             }
         }
         savesViewAction.updateSavesList(displayData);
-        frameAction.requestDisplay(SAVES);
     }
     
     @Override

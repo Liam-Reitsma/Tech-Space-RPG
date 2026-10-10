@@ -9,7 +9,6 @@ public interface OptionsAction
 {
     void requestSetVolume(VolumeType volumeType, int volume);
     void requestSetDisplayResolution(DisplayResolution resolution);
-    void requestOpenOptionsOverlay();
     void requestApplyChanges();
     void requestCloseOptions();
 }
