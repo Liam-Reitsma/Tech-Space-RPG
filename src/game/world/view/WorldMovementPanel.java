@@ -1,5 +1,6 @@
 package game.world.view;
 
+import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.world.controller.WorldAction;
@@ -26,8 +27,7 @@ public class WorldMovementPanel extends JPanel
         
         for(Direction direction : Direction.values())
         {
-            JButton button = new JButton(direction.toString());
-            button.addActionListener(e-> worldAction.requestMoveNextRoom(direction));
+            PanelButton button = new PanelButton(direction.toString(), e-> worldAction.requestMoveNextRoom(direction));
             buttonMap.put(direction, button);
             add(button, new LayoutBox(movementBox, 30, 30, direction.getAnchor()));
         }
@@ -36,9 +36,9 @@ public class WorldMovementPanel extends JPanel
     public void updateAvailableMovementsPanel(Direction[] directions)
     {
         for(JButton button : buttonMap.values())
-            button.setVisible(false);
+            button.setEnabled(false);
         
         for(Direction direction : directions)
-            buttonMap.get(direction).setVisible(true);
+            buttonMap.get(direction).setEnabled(true);
     }
 }
