@@ -14,9 +14,13 @@ import java.util.Map;
 public class WorldController implements WorldAction, Updatable
 {
     private WorldViewAction worldViewAction;
+
+    private RoomListener roomListener;
     
     private final GameModel gameModel;
     private final WorldModel worldModel;
+
+    private boolean movementLocked;
     
     public WorldController(GameModel gModel)
     {
@@ -25,7 +29,11 @@ public class WorldController implements WorldAction, Updatable
     }
     
     public void setWorldViewAction(WorldViewAction wvAction) { worldViewAction = wvAction; }
-    
+
+    public void setRoomListener(RoomListener rListener) { roomListener = rListener; }
+
+    public void setMovementLocked(boolean locked) { movementLocked = locked; }
+
     @Override
     public Map<Point, RuntimeRoom> requestGenerateWorld()
     {
@@ -35,10 +43,12 @@ public class WorldController implements WorldAction, Updatable
     @Override
     public void requestMoveNextRoom(Direction direction)
     {
-        gameModel.getWorld().get(gameModel.getPlayer().getPoint()).isCompleted(); //TODO Move to Combat Controller
+        if(movementLocked) return;
+        gameModel.getWorld().get(gameModel.getPlayer().getPoint()).clearCurrent();
         gameModel.getPlayer().movePoint(direction);
         gameModel.getWorld().get(gameModel.getPlayer().getPoint()).setCurrent();
-        requestUpdate(); //TODO Remove when wired in update in GameController
+        if(roomListener != null) roomListener.onRoomEntered(gameModel.getWorld().get(gameModel.getPlayer().getPoint()));
+        requestUpdate();
     }
     
     @Override
@@ -46,7 +56,8 @@ public class WorldController implements WorldAction, Updatable
     {
         Player player = gameModel.getPlayer();
         Map<Point, RuntimeRoom> world = gameModel.getWorld();
-        worldViewAction.updateAvailableMovementsPanel(worldModel.getPossibleDirections(world, player.getPoint()));
+        Direction[] directions = movementLocked ? new Direction[0] : worldModel.getPossibleDirections(world, player.getPoint());
+        worldViewAction.updateAvailableMovementsPanel(directions);
         RuntimeRoom[][] rooms = worldModel.updateWorldInfo(world, player.getPoint());
         worldViewAction.updateWorldMapPanel(rooms);
     }

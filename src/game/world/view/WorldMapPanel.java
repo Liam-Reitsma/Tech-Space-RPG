@@ -67,20 +67,25 @@ public class WorldMapPanel extends JPanel
                 else
                 {
                     roomTiles[row][col].setOpaque(true);
-                    switch(rooms[row][col].getRoomState().getRoomTileState())
+
+                    if(rooms[row][col].isCurrent())
                     {
-                        case COMPLETED -> roomTiles[row][col].setBackground(Color.GREEN);
-                        case CURRENT -> roomTiles[row][col].setBackground(Color.CYAN);
-                        default ->
-                        {
-                            switch(rooms[row][col].getRoomState().getRoomType())
-                            {
-                                case WALL -> roomTiles[row][col].setBackground(Color.BLACK);
-                                case COMBAT -> roomTiles[row][col].setBackground(Color.RED);
-                                case BOSS -> roomTiles[row][col].setBackground(Color.MAGENTA);
-                                case MINIBOSS -> roomTiles[row][col].setBackground(Color.PINK);
-                                case CHEST -> roomTiles[row][col].setBackground(Color.YELLOW);
-                                default -> roomTiles[row][col].setBackground(Color.GRAY);
+                        roomTiles[row][col].setBackground(Color.CYAN);
+                    }
+                    else {
+                        switch (rooms[row][col].getRoomState().getRoomTileState()) {
+                            case COMPLETED -> roomTiles[row][col].setBackground(Color.GREEN);
+                            case FLED ->  roomTiles[row][col].setBackground(Color.ORANGE);
+                            case CURRENT -> roomTiles[row][col].setBackground(Color.CYAN);
+                            default -> {
+                                switch (rooms[row][col].getRoomState().getRoomType()) {
+                                    case WALL -> roomTiles[row][col].setBackground(Color.BLACK);
+                                    case COMBAT -> roomTiles[row][col].setBackground(Color.RED);
+                                    case BOSS -> roomTiles[row][col].setBackground(Color.MAGENTA);
+                                    case MINIBOSS -> roomTiles[row][col].setBackground(Color.PINK);
+                                    case CHEST -> roomTiles[row][col].setBackground(Color.YELLOW);
+                                    default -> roomTiles[row][col].setBackground(Color.GRAY);
+                                }
                             }
                         }
                     }

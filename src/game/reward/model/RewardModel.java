@@ -99,8 +99,8 @@ public class RewardModel
         String returnMessage = "The chest contained a " + item.getName();
         if(item instanceof Weapon weapon)
         {
-            returnMessage += " which gives you " +
-                    Math.round(weapon.calculateDamage(gameModel.getPlayer().getStatValue(weapon.getScalingStat()))) + ".";
+            returnMessage += " which deals " +
+                    Math.round(weapon.calculateDamage(gameModel.getPlayer().getStatValue(weapon.getScalingStat()))) + " damage.";
         }
         else if(item instanceof Armour armour)
         {
@@ -128,5 +128,12 @@ public class RewardModel
         if(offeredItem == null) return "There is no item available to discard.";
         offeredItem = null;
         return "Item has been discarded.";
+    }
+
+    public void resetReward()
+    {
+        offeredItem = null;
+        unspentPoints = 0;
+        statsLeveledUp.clear();
     }
 }
