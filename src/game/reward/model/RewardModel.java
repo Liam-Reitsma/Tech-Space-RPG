@@ -88,7 +88,7 @@ public class RewardModel
         if(levelsGained > 0)
             rewardMessage += "You have leveled up!\n" + unspentPoints + " stat points to spend.\n";
 
-        rewardMessage += "Enemy has dropped a " + potionTypeReceived + " potion.\n";
+        rewardMessage += enemy.getName() + " has dropped a " + potionTypeReceived + " potion.\n";
 
         return rewardMessage;
     }
