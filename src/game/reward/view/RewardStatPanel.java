@@ -1,11 +1,13 @@
 package game.reward.view;
 
 import game.entities.StatType;
+import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.reward.controller.RewardAction;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.*;
 
 public class RewardStatPanel extends JPanel
@@ -22,6 +24,7 @@ public class RewardStatPanel extends JPanel
     {
         rewardAction = rAction;
         setLayout(new ScaledLayout());
+        setOpaque(false);
 
         LayoutBox[] statBoxes = new LayoutBox().splitVertical(22.5f, 22.5f, 22.5f, 22.5f, 10);
         pointsToSpendLabel = new JLabel("",  SwingConstants.CENTER);
@@ -29,6 +32,7 @@ public class RewardStatPanel extends JPanel
 
         confirmButton.addActionListener(e -> {rewardAction.requestConfirmStat();});
 
+        pointsToSpendLabel.setForeground(Color.WHITE);
         add(pointsToSpendLabel, statBoxes[0]);
 
         StatType[] stats = StatType.values();
@@ -37,12 +41,10 @@ public class RewardStatPanel extends JPanel
             StatType stat = stats[i];
             LayoutBox[] statBox = statBoxes[i + 1].splitHorizontal(20, 60, 20);
 
-            JButton minusButton = new JButton("-");
+            PanelButton minusButton = new PanelButton("-", e -> rewardAction.requestTemporaryStatDecrease(stat));
             JLabel statTypeLabel =  new JLabel(stat.toString(), SwingConstants.CENTER);
-            JButton plusButton = new JButton("+");
-
-            minusButton.addActionListener(e -> rewardAction.requestPlannedDecrease(stat));
-            plusButton.addActionListener(e -> rewardAction.requestPlannedIncrease(stat));
+            statTypeLabel.setForeground(Color.WHITE);
+            PanelButton plusButton = new PanelButton("+", e -> rewardAction.requestTemporaryStatIncrease(stat));
 
             minusButtons.put(stat, minusButton);
             statLabels.put(stat, statTypeLabel);

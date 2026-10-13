@@ -59,16 +59,16 @@ public class Main
 
         Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
         
-        CombatController combatController = new CombatController(combatModel);
         FrameController frameController = new FrameController();
         OptionsController optionsController = new OptionsController(frameController);
         WorldController worldController = new WorldController(gameModel);
-        GameController gameController = new GameController(persistenceService, gameModel, frameController, worldController);
+        RewardController rewardController = new RewardController(rewardModel);
+        CombatController combatController = new CombatController(combatModel);
+        GameController gameController = new GameController(persistenceService, gameModel, combatController, frameController, rewardController, worldController);
+        SavesController savesController = new SavesController(persistenceService, frameController, gameController);
+        NewGameController newGameController = new NewGameController(frameController, gameController);
         MainMenuController mainMenuController = new MainMenuController(frameController);
         MainGameMenuController mainGameMenuController = new MainGameMenuController(gameModel, frameController);
-        NewGameController newGameController = new NewGameController(frameController, gameController);
-        RewardController rewardController = new RewardController(rewardModel);
-        SavesController savesController = new SavesController(persistenceService, frameController, gameController);
 
         OverlayContainer overlayContainer = new OverlayContainer();
         GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);
@@ -104,10 +104,9 @@ public class Main
         combatController.setCombatListener(gameController);
         frameController.setFrameViewAction(gameFrame);
         worldController.setWorldViewAction(worldPanel);
+        worldController.setRoomListener(gameController);
 
         gameController.setGameViewAction(gameScreen);
-        gameController.setCombatController(combatController);
-        gameController.setRewardController(rewardController);
 
         gameController.addUpdatable(combatController);
         gameController.addUpdatable(rewardController);
@@ -115,8 +114,9 @@ public class Main
 
         newGameController.setNewGameViewAction(newGameScreen);
         rewardController.setRewardViewAction(combatPane);
+        rewardController.setRewardListener(gameController);
         savesController.setSavesViewAction(savesOverlay);
-        
+
         optionsController.setOptionsViewAction(optionsOverlay);
 
         frameController.requestDisplay(MAIN_MENU);

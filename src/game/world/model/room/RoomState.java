@@ -6,6 +6,7 @@ public class RoomState
 {
     private RoomTileState roomTileState;
     private final RoomType roomType;
+    private boolean isCurrentRoom;
     
     public RoomState(RoomTileState state)
     {
@@ -35,7 +36,15 @@ public class RoomState
     
     public RoomTileState getRoomTileState() { return roomTileState; }
     
-    public void setCurrent() { roomTileState = CURRENT; }
+    public void setCurrent() { isCurrentRoom = true; }
+
+    public boolean isCurrent() { return isCurrentRoom; }
+
+    public void clearCurrent() { isCurrentRoom = false; }
+
+    public boolean isFled() { return roomTileState == FLED; }
+
+    public void setFled() { roomTileState = FLED; }
     
     public RoomType getRoomType() { return roomType; }
     

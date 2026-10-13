@@ -86,7 +86,13 @@ public class GameFrame extends JFrame implements FrameViewAction
     public void display(DisplayTarget display)
     {
         Displayable displayScreen = displayMap.get(display);
-        
+
+        if(display == DisplayTarget.EXIT)
+        {
+            closeGameFrame();
+            return;
+        }
+
         if(displayScreen instanceof DisplayableOverlay overlay)
         {
             if(currentDisplayedOverlay != null)

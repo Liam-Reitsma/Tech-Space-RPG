@@ -1,19 +1,21 @@
 package game.combat.view;
 
 import game.combat.controller.CombatAction;
+import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.items.PotionType;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class CombatButtonPanel extends JPanel
 {
     private final CombatAction combatAction;
 
-    private final JButton fightButton;
-    private final JButton healthButton;
-    private final JButton runButton;
+    private final PanelButton fightButton;
+    private final PanelButton healthButton;
+    private final PanelButton runButton;
 
     private final JComboBox<PotionType> potionSelection;
 
@@ -22,18 +24,14 @@ public class CombatButtonPanel extends JPanel
         combatAction = cAction;
         LayoutBox[] verticalBoxes = new LayoutBox().splitVertical(33, 33, 33);
         setLayout(new ScaledLayout());
-
-        fightButton = new JButton("Fight");
-        healthButton = new JButton("Health");
-        runButton = new JButton("Run");
+        setOpaque(false);
 
         potionSelection = new JComboBox<>();
 
-        fightButton.addActionListener(e -> combatAction.requestAttack());
-
-        healthButton.addActionListener(e -> combatAction.requestHeal(potionSelection.getItemAt(potionSelection.getSelectedIndex())));
-
-        runButton.addActionListener(e -> combatAction.requestRun());
+        fightButton = new PanelButton("Fight", e -> combatAction.requestAttack());
+        healthButton = new PanelButton("Health",
+                e ->combatAction.requestHeal(potionSelection.getItemAt(potionSelection.getSelectedIndex())));
+        runButton = new PanelButton("Run", e ->combatAction.requestRun());
 
         setControlEnabled(false);
 

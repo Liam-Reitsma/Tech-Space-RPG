@@ -25,12 +25,16 @@ public class CombatModel
     public void startCombat(Enemy newEnemy)
     {
         currentEnemy = newEnemy;
-
     }
 
     public boolean notInCombat()
     {
         return currentEnemy == null;
+    }
+
+    public void resetCombat()
+    {
+        endCombat();
     }
 
     private void endCombat()
@@ -65,7 +69,6 @@ public class CombatModel
 
         if(currentEnemy.getHealth() <= 0)
         {
-            gameModel.getWorld().get(player.getPoint()).setCompleted();
             endCombat();
             return new ActionResult(WIN, playerAttackResult + "The enemy has been defeated!");
         }
@@ -79,7 +82,7 @@ public class CombatModel
         float enemyDamage = currentEnemy.attack();
         player.takeDamage(enemyDamage, 0);
 
-        String resultText = "Enemy inflicted " + Math.round(oldPlayerHealth - player.getHealth()) + " to the player.\n" +
+        String resultText = currentEnemy.getName() + Math.round(oldPlayerHealth - player.getHealth()) + " to the player.\n" +
                 "Player has " + Math.round(player.getHealth()) + " health.\n";
 
         if(player.getHealth() <= 0)

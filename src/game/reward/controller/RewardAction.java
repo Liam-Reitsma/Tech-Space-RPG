@@ -1,12 +1,17 @@
 package game.reward.controller;
 
+import game.entities.Enemy;
 import game.entities.StatType;
+import game.items.Item;
 
 public interface RewardAction
 {
-    void requestPlannedIncrease(StatType stat);
-    void requestPlannedDecrease(StatType stat);
+    void requestOfferChestReward(Item item);
+    void requestResetReward();
+    void requestEnemyReward(Enemy enemy);
+    void requestTemporaryStatIncrease(StatType stat);
+    void requestTemporaryStatDecrease(StatType stat);
     void requestConfirmStat();
-    void requestTakeItem();
+    void requestKeepItem();
     void requestDiscardItem();
 }

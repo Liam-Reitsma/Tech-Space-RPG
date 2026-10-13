@@ -25,11 +25,18 @@ public class CombatController implements CombatAction, Updatable
 
     public void setCombatListener(CombatListener cListener) { combatListener = cListener;}
 
-    public void startCombat(Enemy enemy)
+    @Override
+    public void requestStartCombat(Enemy enemy)
     {
         combatModel.startCombat(enemy);
         combatViewAction.displayMessage(enemy.getName() + " has appeared!");
         requestUpdate();
+    }
+
+    @Override
+    public void requestResetCombat() {
+        combatModel.resetCombat();
+        combatViewAction.clearMessage();
     }
 
     @Override
@@ -51,6 +58,15 @@ public class CombatController implements CombatAction, Updatable
     {
         if(combatModel.notInCombat()) return;
         showResult(combatModel.run());
+    }
+
+    @Override
+    public void requestDeathMessage()
+    {
+        combatViewAction.displayMessage("""
+                Player has been defeated!
+                It is time for a new timeline.
+                Load another save or start a new game.""");
     }
 
     private void showResult(ActionResult combatResult)

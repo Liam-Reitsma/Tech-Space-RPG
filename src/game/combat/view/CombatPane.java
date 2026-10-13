@@ -10,9 +10,12 @@ import game.reward.view.RewardStatPanel;
 import game.reward.view.RewardViewAction;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class CombatPane extends JPanel implements CombatViewAction, RewardViewAction
 {
+    private static final Image TEXT_PANE_BACKGROUND = new ImageIcon("resources/images/Options Content.png").getImage();
+
     private final CombatTextPane combatTextPane;
     private final CombatButtonPanel combatButtonPanel;
     private final RewardStatPanel rewardStatPanel;
@@ -43,7 +46,13 @@ public class CombatPane extends JPanel implements CombatViewAction, RewardViewAc
     @Override
     public void displayMessage(String message)
     {
-        combatTextPane.update(message);
+        combatTextPane.updateLog(message);
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        combatTextPane.clearLog();
     }
 
     @Override
@@ -70,5 +79,13 @@ public class CombatPane extends JPanel implements CombatViewAction, RewardViewAc
     public void setActionEnabled(boolean actionEnabled)
     {
         combatButtonPanel.setControlEnabled(actionEnabled);
+    }
+
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+
+        g.drawImage(TEXT_PANE_BACKGROUND, 0, 0, getWidth(), getHeight(), this);
     }
 }
