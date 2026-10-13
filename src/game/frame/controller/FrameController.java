@@ -33,7 +33,10 @@ public class FrameController implements FrameAction
     @Override
     public void requestDisplay(DisplayTarget display)
     {
-        frameViewAction.display(display);
+        if(display == DisplayTarget.EXIT)
+            frameViewAction.closeGameFrame();
+        else
+            frameViewAction.display(display);
     }
     
     @Override
@@ -46,11 +49,5 @@ public class FrameController implements FrameAction
     public void requestCloseError()
     {
         frameViewAction.closeError();
-    }
-    
-    @Override
-    public void requestCloseGame()
-    {
-        frameViewAction.closeGameFrame();
     }
 }

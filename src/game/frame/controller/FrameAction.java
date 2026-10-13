@@ -12,5 +12,4 @@ public interface FrameAction
     void requestDisplay(DisplayTarget display);
     void requestCloseOverlay();
     void requestCloseError();
-    void requestCloseGame();
 }
