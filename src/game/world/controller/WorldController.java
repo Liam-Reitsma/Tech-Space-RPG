@@ -32,7 +32,8 @@ public class WorldController implements WorldAction, Updatable
 
     public void setRoomListener(RoomListener rListener) { roomListener = rListener; }
 
-    public void setMovementLocked(boolean locked) { movementLocked = locked; }
+    @Override
+    public void requestSetMovementLocked(boolean locked) { movementLocked = locked; }
 
     @Override
     public Map<Point, RuntimeRoom> requestGenerateWorld()

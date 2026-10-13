@@ -67,8 +67,8 @@ public class Main
         GameController gameController = new GameController(persistenceService, gameModel, combatController, frameController, rewardController, worldController);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
         NewGameController newGameController = new NewGameController(frameController, gameController);
-        MainMenuController mainMenuController = new MainMenuController(frameController, newGameController, optionsController, savesController);
-        MainGameMenuController mainGameMenuController = new MainGameMenuController(gameModel, frameController, mainMenuController, optionsController, savesController);
+        MainMenuController mainMenuController = new MainMenuController(frameController);
+        MainGameMenuController mainGameMenuController = new MainGameMenuController(gameModel, frameController);
 
         OverlayContainer overlayContainer = new OverlayContainer();
         GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);

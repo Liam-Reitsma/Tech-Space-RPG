@@ -112,7 +112,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         gameModel.setGame(player, world);
         boolean isDead = player.getHealth() <= 0;
         world.get(player.getPoint()).setCurrent();
-        worldAction.setMovementLocked(isDead);
+        worldAction.requestSetMovementLocked(isDead);
         combatAction.requestResetCombat();
         currentEncounter = null;
         rewardAction.requestResetReward();
@@ -160,7 +160,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         }
         currentEncounter = null;
         gameModel.quickSave(room, InventoryChange.NONE, null);
-        worldController.setMovementLocked(false);
+        worldAction.requestSetMovementLocked(false);
         requestGameUpdate();
     }
 
@@ -174,12 +174,12 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         if(content instanceof Enemy enemy)
         {
             currentEncounter = enemy;
-            worldController.setMovementLocked(true);
+            worldAction.requestSetMovementLocked(true);
             combatAction.requestStartCombat(currentEncounter);
         }
         else if(content instanceof Item item)
         {
-            worldController.setMovementLocked(true);
+            worldAction.requestSetMovementLocked(true);
             rewardAction.requestOfferChestReward(item);
             room.setCompleted();
             gameModel.quickSave(room, InventoryChange.NONE, null); //TODO Add item
@@ -195,7 +195,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     @Override
     public void onChestDecision()
     {
-        worldController.setMovementLocked(false);
+        worldAction.requestSetMovementLocked(false);
         requestGameUpdate();
     }
 }
