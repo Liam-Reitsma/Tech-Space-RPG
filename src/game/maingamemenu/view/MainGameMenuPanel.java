@@ -1,14 +1,16 @@
 package game.maingamemenu.view;
 
+import static game.frame.controller.DisplayTarget.*;
+
+import game.frame.controller.DisplayTarget;
 import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.maingamemenu.controller.MainGameMenuAction;
-import game.maingamemenu.controller.MainGameMenuOption;
 
 import javax.swing.*;
 
-public class MainGameMenuPanel extends JPanel
+public class MainGameMenuPanel extends JPanel implements  MainGameMenuViewAction
 {
     private final PanelButton openSavesButton;
     private final PanelButton fullSaveButton;
@@ -23,7 +25,7 @@ public class MainGameMenuPanel extends JPanel
         
         openSavesButton = new PanelButton("Load Game", e ->
         {
-            mainGameMenuAction.requestOpenDisplay(MainGameMenuOption.LOAD_GAME);
+            mainGameMenuAction.requestOpenDisplay(SAVES);
         });
         add(openSavesButton, boxes[0]);
         
@@ -35,19 +37,19 @@ public class MainGameMenuPanel extends JPanel
         
         optionsButton = new PanelButton("Options", e ->
         {
-            mainGameMenuAction.requestOpenDisplay(MainGameMenuOption.OPTIONS);
+            mainGameMenuAction.requestOpenDisplay(OPTIONS);
         });
         add(optionsButton, boxes[2]);
         
         mainMenuButton = new PanelButton("Exit to Main Menu", e ->
         {
-            mainGameMenuAction.requestOpenDisplay(MainGameMenuOption.MAIN_MENU);
+            mainGameMenuAction.requestOpenDisplay(MAIN_MENU);
         });
         add(mainMenuButton, boxes[3]);
         
         exitGameButton = new PanelButton("Exit Game", e ->
         {
-            mainGameMenuAction.requestOpenDisplay(MainGameMenuOption.EXIT_GAME);
+            mainGameMenuAction.requestOpenDisplay(EXIT);
         });
         add(exitGameButton, boxes[4]);
     }

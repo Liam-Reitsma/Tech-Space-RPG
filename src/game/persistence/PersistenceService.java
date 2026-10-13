@@ -52,6 +52,17 @@ public class PersistenceService
         return new SavedData(player, equipped, inventory, world);
     }
     
+    public boolean doesSaveExist(String saveName)
+    {
+        return playerDAO.doesSaveExist(saveName);
+    }
+    
+    public void forceCreateNewSaveGame(String saveName, String charName, ClassType classType, Map<Point, RuntimeRoom> world)
+    {
+        deleteSaveGame(saveName);
+        createNewSaveGame(saveName, charName, classType, world);
+    }
+    
     public boolean createNewSaveGame(String saveName, String charName, ClassType classType, Map<Point, RuntimeRoom> world)
     {
         Player player = new Player(charName, classType);

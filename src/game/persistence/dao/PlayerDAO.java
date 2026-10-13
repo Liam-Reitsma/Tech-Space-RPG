@@ -139,4 +139,10 @@ public class PlayerDAO
         return  dbManager.updateDB(buildDeleteRowSQL(STATS_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
                 dbManager.updateDB(buildDeleteRowSQL(PLAYER_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
     }
+    
+    public boolean doesSaveExist(String saveName)
+    {
+        List<Map<String, Object>> result = dbManager.queryDB(buildSelectSQL(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
+        return !result.isEmpty();
+    }
 }

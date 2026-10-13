@@ -1,5 +1,6 @@
 package game.options.view;
 
+import game.audio.VolumeType;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.config.DisplayableOverlay;
@@ -7,17 +8,24 @@ import game.options.controller.OptionsAction;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
-public class OptionsOverlay extends JPanel implements DisplayableOverlay
+public class OptionsOverlay extends JPanel implements OptionsViewAction, DisplayableOverlay
 {
-    public OptionsOverlay(OptionsAction optionsAction)
+    private final OptionsAction optionsAction;
+    
+    private final OptionsPanel optionsPanel;
+    
+    public OptionsOverlay(OptionsAction oAction)
     {
         setLayout(new ScaledLayout());
+        optionsAction = oAction;
         
         LayoutBox overlayBox = new LayoutBox(0, 0, 100, 100);
         LayoutBox[] boxes = overlayBox.splitVertical(22, 78);
         add(new OptionsTitlePanel(optionsAction), boxes[0]);
-        add(new OptionsPanel(optionsAction), boxes[1]);
+        optionsPanel = new OptionsPanel(optionsAction);
+        add(optionsPanel, boxes[1]);
         
         setOpaque(false);
     }
@@ -38,6 +46,13 @@ public class OptionsOverlay extends JPanel implements DisplayableOverlay
     @Override
     public void closeDisplay()
     {
+        optionsPanel.resetValues();
         setVisible(false);
+    }
+    
+    @Override
+    public void setNewVolume(Map<VolumeType, Integer> volumeMap)
+    {
+        optionsPanel.setNewVolume(volumeMap);
     }
 }

@@ -1,7 +1,5 @@
 package game.saves.controller;
 
-import static game.frame.controller.DisplayTarget.SAVES;
-
 import game.entities.player.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
@@ -9,7 +7,6 @@ import game.persistence.PersistenceService;
 import game.persistence.SavedData;
 import game.saves.view.SavesViewAction;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -53,7 +50,6 @@ public class SavesController implements SavesAction
             }
         }
         savesViewAction.updateSavesList(displayData);
-        frameAction.display(SAVES);
     }
     
     @Override
@@ -62,7 +58,7 @@ public class SavesController implements SavesAction
         if(deletedIndex >= 0 && deletedIndex < saveNames.length)
         {
             persistenceService.deleteSaveGame(saveNames[deletedIndex]);
-            savesViewAction.removeSave(saveNames[deletedIndex]);
+            savesViewAction.removeSave(deletedIndex);
         }
     }
     
@@ -81,6 +77,6 @@ public class SavesController implements SavesAction
     @Override
     public void requestCloseSaves()
     {
-        frameAction.closeOverlay();
+        frameAction.requestCloseOverlay();
     }
 }
