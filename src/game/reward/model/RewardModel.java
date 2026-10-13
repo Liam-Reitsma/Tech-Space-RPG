@@ -2,7 +2,7 @@ package game.reward.model;
 
 import game.entities.Enemy;
 import game.entities.StatType;
-import game.entities.player.Player;
+import game.player.model.Player;
 import game.items.Item;
 import game.items.Potion;
 import game.items.PotionType;

@@ -1,4 +1,4 @@
-package game.entities.player;
+package game.player;
 
 public enum PlayerMenuOptions
 {

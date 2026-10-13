@@ -1,4 +1,4 @@
-package game.entities.player;
+package game.player.model;
 
 import game.items.*;
 import game.items.armour.Armour;

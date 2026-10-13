@@ -1,11 +1,14 @@
-    package game.entities.player;
+    package game.player.controller;
     
-    import static game.entities.player.PlayerErrors.*;
+    import static game.player.PlayerErrors.*;
     
     import game.ConsoleHandler;
     import game.items.Item;
     import game.items.armour.Armour;
     import game.items.weapon.Weapon;
+    import game.player.model.Player;
+    import game.player.PlayerMenuOptions;
+    import game.player.PlayerResult;
     
     import java.util.Optional;
     

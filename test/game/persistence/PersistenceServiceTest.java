@@ -1,7 +1,7 @@
 package game.persistence;
 
-import game.entities.player.ClassType;
-import game.entities.player.Player;
+import game.player.model.ClassType;
+import game.player.model.Player;
 import game.items.Item;
 import game.items.Potion;
 import game.items.PotionType;

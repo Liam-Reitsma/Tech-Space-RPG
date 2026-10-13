@@ -1,6 +1,6 @@
 package game.newgame.controller;
 
-import game.entities.player.ClassType;
+import game.player.model.ClassType;
 
 public interface NewGameAction
 {

@@ -4,7 +4,7 @@ import static game.world.model.room.RoomType.*;
 
 import game.entities.Enemy;
 import game.entities.EnemyType;
-import game.entities.player.Player;
+import game.player.model.Player;
 import game.items.Item;
 import game.items.armour.Armour;
 import game.items.armour.ArmourMaterial;

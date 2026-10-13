@@ -1,6 +1,6 @@
 package game.persistence;
 
-import game.entities.player.Player;
+import game.player.model.Player;
 import game.items.EquippableItem;
 import game.items.Item;
 import game.world.model.Point;

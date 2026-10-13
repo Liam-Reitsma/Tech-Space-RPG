@@ -1,8 +1,8 @@
 package game.persistence.dao;
 
-import game.entities.player.ClassType;
-import game.entities.player.Inventory;
-import game.entities.player.Player;
+import game.player.model.ClassType;
+import game.player.model.Inventory;
+import game.player.model.Player;
 import game.items.EquippableItem;
 import game.items.Item;
 import game.items.Potion;

@@ -1,4 +1,4 @@
-package game.entities.player;
+package game.player.model;
 
 import static game.items.weapon.WeaponType.*;
 

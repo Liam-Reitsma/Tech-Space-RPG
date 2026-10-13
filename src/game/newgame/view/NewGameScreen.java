@@ -1,6 +1,6 @@
 package game.newgame.view;
 
-import game.entities.player.ClassType;
+import game.player.model.ClassType;
 import game.gui.common.PanelButton;
 import game.gui.common.PicturePreview;
 import game.gui.common.scaledlayout.LayoutBox;
