@@ -7,6 +7,7 @@ import game.player.model.StatEntry;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +25,17 @@ public class PlayerStatsPanel extends JPanel
         
         LayoutBox[] boxes = new LayoutBox().splitHorizontal(50, 50);
         
-        JTextPane statTextPane = new JTextPane();
+        JTextPane statTextPane = new JTextPane()
+        {
+            @Override
+            public String getToolTipText(MouseEvent e)
+            {
+                int offset = viewToModel2D(e.getPoint());
+                Element element = getStyledDocument().getCharacterElement(offset);
+                return (String)element.getAttributes().getAttribute("tooltip");
+            }
+        };
+        statTextPane.setToolTipText("");
         statTextPane.setEditable(false);
         statTextPane.setOpaque(false);
         statTextPane.setFont(new Font("Agency FB", Font.BOLD, 17));
