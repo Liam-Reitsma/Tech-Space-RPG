@@ -26,6 +26,9 @@ import game.options.view.OptionsOverlay;
 import game.persistence.DBManager;
 import game.persistence.DatabaseSchemaManager;
 import game.persistence.PersistenceService;
+import game.player.controller.PlayerController;
+import game.player.model.PlayerModel;
+import game.player.view.PlayerPanel;
 import game.reward.controller.RewardController;
 import game.reward.model.RewardModel;
 import game.reward.view.ChestPanel;
@@ -55,26 +58,29 @@ public class Main
         PersistenceService persistenceService = new PersistenceService(databaseSchemaManager, inventoryDAO, playerDAO, worldDAO);
         GameModel gameModel = new GameModel(persistenceService);
         CombatModel combatModel = new CombatModel(gameModel);
+        PlayerModel playerModel = new PlayerModel(gameModel);
         RewardModel rewardModel = new RewardModel(gameModel);
 
         Map<DisplayTarget, Displayable> displayMap = new HashMap<>();
         
+        CombatController combatController = new CombatController(combatModel);
         FrameController frameController = new FrameController();
         OptionsController optionsController = new OptionsController(frameController);
         WorldController worldController = new WorldController(gameModel);
         RewardController rewardController = new RewardController(rewardModel);
-        CombatController combatController = new CombatController(combatModel);
         GameController gameController = new GameController(persistenceService, gameModel, combatController, frameController, rewardController, worldController);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
-        NewGameController newGameController = new NewGameController(frameController, gameController);
         MainMenuController mainMenuController = new MainMenuController(frameController);
         MainGameMenuController mainGameMenuController = new MainGameMenuController(gameModel, frameController);
-
+        NewGameController newGameController = new NewGameController(frameController, gameController);
+        PlayerController playerController = new PlayerController(playerModel);
+        
         OverlayContainer overlayContainer = new OverlayContainer();
         GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);
         MainMenuScreen mainMenuScreen = new MainMenuScreen("Tech Space RPG", mainMenuController);
         NewGameScreen newGameScreen = new NewGameScreen(newGameController);
         OptionsOverlay optionsOverlay = new OptionsOverlay(optionsController);
+        PlayerPanel playerPanel = new PlayerPanel(playerController);
         SavesOverlay savesOverlay = new SavesOverlay(savesController);
         
         WorldMapPanel worldMapPanel = new WorldMapPanel();
@@ -90,7 +96,7 @@ public class Main
 
         MainGameMenuPanel mainGameMenuPanel = new MainGameMenuPanel(mainGameMenuController);
 
-        GameScreen gameScreen = new GameScreen(combatPane, mainGameMenuPanel, worldPanel, gameController);
+        GameScreen gameScreen = new GameScreen(combatPane, mainGameMenuPanel, playerPanel, worldPanel, gameController);
 
         displayMap.put(MAIN_GAME, gameScreen);
         displayMap.put(MAIN_MENU, mainMenuScreen);
@@ -103,21 +109,20 @@ public class Main
         combatController.setCombatViewAction(combatPane);
         combatController.setCombatListener(gameController);
         frameController.setFrameViewAction(gameFrame);
-        worldController.setWorldViewAction(worldPanel);
-        worldController.setRoomListener(gameController);
-
         gameController.setGameViewAction(gameScreen);
-
         gameController.addUpdatable(combatController);
         gameController.addUpdatable(rewardController);
         gameController.addUpdatable(worldController);
-
+        gameController.addUpdatable(playerController);
+        
         newGameController.setNewGameViewAction(newGameScreen);
+        optionsController.setOptionsViewAction(optionsOverlay);
+        playerController.setPlayerViewAction(playerPanel);
         rewardController.setRewardViewAction(combatPane);
         rewardController.setRewardListener(gameController);
         savesController.setSavesViewAction(savesOverlay);
-
-        optionsController.setOptionsViewAction(optionsOverlay);
+        worldController.setWorldViewAction(worldPanel);
+        worldController.setRoomListener(gameController);
 
         frameController.requestDisplay(MAIN_MENU);
         gameFrame.setVisible(true);
