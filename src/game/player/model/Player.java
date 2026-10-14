@@ -132,6 +132,32 @@ public class Player extends Entities implements Persistable
         if(health <= 0) health = 0;
     }
     
+    public int getProtectionValue()
+    {
+        float totalArmour = 0;
+        for(Armour armour : inventory.getEquippedArmour())
+        {
+            totalArmour += (1 - totalArmour) * Math.min(armour.calculateProtection() * armourMultiplier, 1);
+        }
+        
+        return Math.round(totalArmour);
+    }
+    
+    public String getArmourPenetrationS()
+    {
+        return Math.round(armourPenetration * 100) + "%";
+    }
+    
+    public String getDamageAmplification()
+    {
+        return Math.round(damageMultiplier * 100) + "%";
+    }
+    
+    public String getDamageReduction()
+    {
+        return Math.round(armourMultiplier * 100) + "%";
+    }
+    
     public int applyXPGain(int xpGain)
     {
         int currentLevel = level;
