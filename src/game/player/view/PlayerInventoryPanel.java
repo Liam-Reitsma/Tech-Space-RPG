@@ -48,7 +48,10 @@ public class PlayerInventoryPanel extends JPanel
     public void updateInventory(ItemStack[] itemStacks)
     {
         for(int i = 0; i < itemStacks.length; i++)
-            itemSlots[i].setItem(itemStacks[i].getItem(), itemStacks[i].getQuantity());
+            if(itemStacks[i].getItem() == null)
+                itemSlots[i].removeItem();
+            else
+                itemSlots[i].setItem(itemStacks[i].getItem(), itemStacks[i].getQuantity());
     }
     
     @Override

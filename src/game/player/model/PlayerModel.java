@@ -57,4 +57,9 @@ public class PlayerModel
     {
         return gameModel.getPlayer().getInventory().getAllEquippedSlots();
     }
+    
+    public ItemStack[] getInventory()
+    {
+        return gameModel.getPlayer().getInventory().getInventorySlots();
+    }
 }

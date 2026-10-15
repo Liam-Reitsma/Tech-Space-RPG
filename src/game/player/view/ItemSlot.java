@@ -21,7 +21,8 @@ public class ItemSlot extends JPanel
     
     private Image image;
     private int quantity;
-    private EquipSlot equipSlot;
+    
+    private final EquipSlot equipSlot;
     
     public ItemSlot()
     {
@@ -41,7 +42,7 @@ public class ItemSlot extends JPanel
     
     public void setItem(Item item, int count)
     {
-        //TODO get image from item;
+        image = new ImageIcon(item.getImageURL()).getImage();
         quantity = count;
         
         repaint();

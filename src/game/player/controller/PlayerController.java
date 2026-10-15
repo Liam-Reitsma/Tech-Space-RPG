@@ -24,6 +24,7 @@
             for(EquipSlot slot : playerModel.getAllEquippedSlots())
                 requestEquippedItemChange(slot);
             playerViewAction.updatePlayerStats(playerModel.getPlayerStatEntries());
+            playerViewAction.updateInventory(playerModel.getInventory());
         }
         
         @Override

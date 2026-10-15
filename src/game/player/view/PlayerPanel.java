@@ -5,6 +5,7 @@ import game.gui.common.scaledlayout.ScaledLayout;
 import game.items.EquipSlot;
 import game.items.EquippableItem;
 import game.player.controller.PlayerAction;
+import game.player.model.ItemStack;
 import game.player.model.StatEntry;
 
 import javax.swing.*;
@@ -47,5 +48,11 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
     public void updateEquippedItem(EquipSlot slot, EquippableItem item)
     {
         playerEquippedPanel.updateEquippedItem(slot, item);
+    }
+    
+    @Override
+    public void updateInventory(ItemStack[] itemStacks)
+    {
+        playerInventoryPanel.updateInventory(itemStacks);
     }
 }
