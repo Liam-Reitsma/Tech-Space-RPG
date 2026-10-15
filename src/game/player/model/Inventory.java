@@ -110,6 +110,19 @@ public class Inventory
         return 0;
     }
     
+    public ItemStack[] getInventorySlots()
+    {
+        return inventorySlots.clone();
+    }
+    
+    public int getItemIndex(Item item)
+    {
+        for(int i = 0; i < INVENTORY_CAPACITY; i++)
+            if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(item))
+                return i;
+        
+        return -1;
+    }
     
     public <I extends Item> I[] getAllItemTypeInInventory(Class<I> itemClass)
     {

@@ -1,6 +1,7 @@
 package game.persistence;
 
 import game.player.model.ClassType;
+import game.player.model.ItemStack;
 import game.player.model.Player;
 import game.items.Item;
 import game.items.Potion;
@@ -91,9 +92,18 @@ public class PersistenceServiceTest
         SavedData loadedData = persistenceService.loadSaveGame(SAVE_NAME);
         
         assertNotNull(loadedData);
-        assertEquals(1, (int) loadedData.inventory.get(potion));
+        assertEquals(1, getItemCount(loadedData.inventory, potion));
         
         assertEquals(RoomTileState.COMPLETED, loadedData.world.get(new Point(0, 0)).getRoomState().getRoomTileState());
+    }
+    
+    private int getItemCount(ItemStack[] inventory, Item item)
+    {
+        for(ItemStack stack : inventory)
+            if(stack != null && stack.getItem() != null && stack.getItem().equals(item))
+                return stack.getQuantity();
+        
+        return 0;
     }
     
     @Test

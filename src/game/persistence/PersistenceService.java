@@ -103,9 +103,9 @@ public class PersistenceService
         return switch(change)
         {
             case NONE -> success;
-            case ADD -> success && inventoryDAO.addItem(iKey, item, player.getInventory().getItemCount(item));
+            case ADD -> success && inventoryDAO.addItem(iKey, item, player.getInventory().getItemCount(item), player.getInventory().getItemIndex(item));
             case EQUIP -> success && inventoryDAO.updateStoredEquipment(iKey, player.getInventory()) && inventoryDAO.updateEquippedEquipment(iKey, player.getInventory());
-            case REMOVE -> success && inventoryDAO.removeItem(iKey, item, player.getInventory().getItemCount(item));
+            case REMOVE -> success && inventoryDAO.removeItem(iKey, item, player.getInventory().getItemCount(item), player.getInventory().getItemIndex(item));
         };
     }
     

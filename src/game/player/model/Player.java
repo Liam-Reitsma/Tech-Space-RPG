@@ -225,6 +225,8 @@ public class Player extends Entities implements Persistable
     
     public void setInventory(ItemStack[] loadedItemStacks) { inventory.setInventory(loadedItemStacks); }
     
+    public ItemStack[] getInventorySlots() { return inventory.getInventorySlots(); }
+    
     public void setEquipped(EquippableItem[] loadedEquippedArray) { inventory.setEquipped(loadedEquippedArray); }
     
     public int getXP() { return xp; }
