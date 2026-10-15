@@ -3,6 +3,7 @@ package game.player.view;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.items.EquipSlot;
+import game.items.EquippableItem;
 import game.items.armour.ArmourSlot;
 import game.items.weapon.WeaponSlot;
 
@@ -33,6 +34,15 @@ public class PlayerEquippedPanel extends JPanel
             equippedInventoryMap.put(equipSlots[i], itemSlot);
             add(itemSlot, verticalBoxes[i].insets(0, 10));
         }
+    }
+    
+    public void updateEquippedItem(EquipSlot slot, EquippableItem item)
+    {
+        ItemSlot itemSlot = equippedInventoryMap.get(slot);
+        if(item == null)
+            itemSlot.removeItem(slot);
+        else
+            itemSlot.setItem(item, 1);
     }
     
     @Override
