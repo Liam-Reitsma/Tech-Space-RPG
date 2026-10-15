@@ -20,6 +20,7 @@ public class PlayerModel
     {
         player = gameModel.getPlayer();
         List<StatEntry> statEntries = new ArrayList<>();
+        statEntries.add(new StatEntry("", "", ""));
         
         statEntries.add(new StatEntry("Health", Math.round(player.getHealth()) + "/" + Math.round(player.getMaximumHealth()), "Your current health out of your maximum health"));
         statEntries.add(new StatEntry("Level", player.getLevel(), "Your current level"));
