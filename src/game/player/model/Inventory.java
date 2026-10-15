@@ -14,30 +14,61 @@ import java.util.Map;
 
 public class Inventory
 {
-    private final Map<Item, Integer> storedItemsMap;
+    public static final int INVENTORY_CAPACITY = 12;
+    
+    private ItemStack[] inventorySlots;
     private final Map<EquipSlot, EquippableItem> equippedItemsMap;
     
     public Inventory()
     {
-        storedItemsMap = new HashMap<>();
+        inventorySlots = new ItemStack[INVENTORY_CAPACITY];
+        for(int i = 0; i < INVENTORY_CAPACITY; i++)
+            inventorySlots[i] = new ItemStack();
         equippedItemsMap = new HashMap<>();
+    }
+    
+    public void setInventory(ItemStack[] loadedItemStacks)
+    {
+        inventorySlots = loadedItemStacks;
+    }
+    
+    public void setEquipped(EquippableItem[] loadedEquippedArray)
+    {
+        for(EquippableItem loadedEquippedItem : loadedEquippedArray)
+            equippedItemsMap.put(loadedEquippedItem.getEquipSlot(), loadedEquippedItem);
     }
     
     public void addToInventory(Item item)
     {
-        storedItemsMap.put(item, storedItemsMap.getOrDefault(item, 0) + 1);
+        for(int i = 0; i < INVENTORY_CAPACITY; i++)
+            if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(item))
+            {
+                inventorySlots[i].addItem();
+                return;
+            }
+            
+        for(int i = 0; i < INVENTORY_CAPACITY; i++)
+            if(inventorySlots[i].getItem() == null)
+            {
+                inventorySlots[i].setItem(item);
+                return;
+            }
     }
     
     public void removeFromInventory(Item item, boolean removeStack)
     {
-        int count = storedItemsMap.getOrDefault(item, 0);
-        
-        if(count <= 0)
-            return;
-        if(removeStack || count == 1)
-            storedItemsMap.remove(item);
-        else
-            storedItemsMap.put(item, storedItemsMap.get(item) - 1);
+        for(int i = 0; i < INVENTORY_CAPACITY; i++)
+        {
+            if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(item))
+            {
+                if(removeStack)
+                    inventorySlots[i].removeStack();
+                else
+                    inventorySlots[i].removeItem();
+                
+                return;
+            }
+        }
     }
     
     public void equipItem(EquippableItem item)
@@ -54,10 +85,47 @@ public class Inventory
             equippedItemsMap.put(item.getEquipSlot(), item);
         }
     }
+    
     public void unequipItem(EquippableItem item)
     {
         addToInventory(equippedItemsMap.get(item.getEquipSlot()));
         equippedItemsMap.remove(item.getEquipSlot());
+    }
+    
+    public Item[] getItemsInInventory()
+    {
+        Item[] items = new Item[INVENTORY_CAPACITY];
+        for(int i = 0; i < INVENTORY_CAPACITY; i++)
+            items[i] = inventorySlots[i].getItem();
+        
+        return items;
+    }
+    
+    public int getItemCount(Item item)
+    {
+        for(int i = 0 ; i < INVENTORY_CAPACITY; i++)
+            if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(item))
+                return inventorySlots[i].getQuantity();
+            
+        return 0;
+    }
+    
+    
+    public <I extends Item> I[] getAllItemTypeInInventory(Class<I> itemClass)
+    {
+        List<I> itemList = new ArrayList<>();
+        
+        for(Item item : getItemsInInventory())
+        {
+            if(itemClass.isInstance(item))
+            {
+                itemList.add(itemClass.cast(item));
+            }
+        }
+        
+        I[] result = (I[])Array.newInstance(itemClass, itemList.size());
+        
+        return itemList.toArray(result);
     }
     
     public Weapon getEquippedWeapon()
@@ -77,30 +145,9 @@ public class Inventory
         List<Armour> armourlist = new ArrayList<>();
         
         for(ArmourSlot armourSlot : ArmourSlot.values())
-        {
             if(equippedItemsMap.containsKey(armourSlot)) armourlist.add((Armour)equippedItemsMap.get(armourSlot));
-        }
         
         return armourlist.toArray(new Armour[0]);
-    }
-    
-    public Item[] getItemsInInventory() { return storedItemsMap.keySet().toArray(new Item[0]); }
-    
-    public <I extends Item> I[] getAllItemTypeInInventory(Class<I> itemClass)
-    {
-        List<I> itemList = new ArrayList<>();
-        
-        for(Item item : getItemsInInventory())
-        {
-            if(itemClass.isInstance(item))
-            {
-                itemList.add(itemClass.cast(item));
-            }
-        }
-        
-        I[] result = (I[])Array.newInstance(itemClass, itemList.size());
-        
-        return itemList.toArray(result);
     }
     
     public EquippableItem getEquippedItem(EquipSlot slot)
@@ -121,15 +168,5 @@ public class Inventory
             equipSlots[i++] = armourSlot;
         
         return equipSlots;
-    }
-    
-    public int getItemCount(Item item) { return storedItemsMap.getOrDefault(item, 0); }
-    
-    public void setInventory(Map<Item, Integer> loadedStoredMap) { storedItemsMap.putAll(loadedStoredMap); }
-    
-    public void setEquipped(EquippableItem[] loadedEquippedArray)
-    {
-        for(EquippableItem loadedEquippedItem : loadedEquippedArray)
-            equippedItemsMap.put(loadedEquippedItem.getEquipSlot(), loadedEquippedItem);
     }
 }

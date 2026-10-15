@@ -13,6 +13,12 @@ public class ItemStack
         quantity = 0;
     }
     
+    public ItemStack(Item newItem, int newQuantity)
+    {
+        item = newItem;
+        quantity = newQuantity;
+    }
+    
     public void setItem(Item newItem)
     {
         if(newItem == null)

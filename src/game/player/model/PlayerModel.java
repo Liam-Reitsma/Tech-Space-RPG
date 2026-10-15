@@ -1,7 +1,6 @@
 package game.player.model;
 
 import game.items.EquipSlot;
-import game.items.Equippable;
 import game.items.EquippableItem;
 import game.maingame.model.GameModel;
 

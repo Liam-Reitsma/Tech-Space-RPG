@@ -1,6 +1,7 @@
 package game.persistence;
 
 import game.player.model.ClassType;
+import game.player.model.ItemStack;
 import game.player.model.Player;
 import game.items.EquippableItem;
 import game.items.Item;
@@ -39,7 +40,7 @@ public class PersistenceService
         if(equipped == null || equipped.length == 0)
             return null;
         
-        Map<Item, Integer> inventory = inventoryDAO.loadInventory(saveName);
+        ItemStack[] inventory = inventoryDAO.loadInventory(saveName);
         if(inventory == null)
             return null;
         

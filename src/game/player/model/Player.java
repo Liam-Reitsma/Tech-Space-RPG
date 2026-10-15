@@ -223,7 +223,7 @@ public class Player extends Entities implements Persistable
     
     public Inventory getInventory() { return inventory; }
     
-    public void setInventory(Map<Item, Integer> loadedStoredMap) { inventory.setInventory(loadedStoredMap); }
+    public void setInventory(ItemStack[] loadedItemStacks) { inventory.setInventory(loadedItemStacks); }
     
     public void setEquipped(EquippableItem[] loadedEquippedArray) { inventory.setEquipped(loadedEquippedArray); }
     
