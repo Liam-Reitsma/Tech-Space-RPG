@@ -1,5 +1,7 @@
 package game.player.model;
 
+import game.items.EquipSlot;
+import game.items.EquippableItem;
 import game.maingame.model.GameModel;
 
 import java.util.ArrayList;
@@ -44,5 +46,10 @@ public class PlayerModel
         statEntries.add(new StatEntry("Damage Red.", player.getDamageReduction(), "Increases your protection value by this amount"));
         
         return statEntries;
+    }
+    
+    public EquippableItem getEquippedItem(EquipSlot slot)
+    {
+        return gameModel.getPlayer().getInventory().getEquippedItem(slot);
     }
 }

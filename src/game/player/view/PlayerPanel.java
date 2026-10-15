@@ -2,6 +2,8 @@ package game.player.view;
 
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
+import game.items.EquipSlot;
+import game.items.EquippableItem;
 import game.player.controller.PlayerAction;
 import game.player.model.StatEntry;
 
@@ -39,5 +41,11 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
     public void updatePlayerStats(List<StatEntry> statEntries)
     {
         playerStatsPanel.updatePlayerStats(statEntries);
+    }
+    
+    @Override
+    public void updateEquippedItem(EquipSlot slot, EquippableItem item)
+    {
+        playerEquippedPanel.updateEquippedItem(slot, item);
     }
 }

@@ -103,6 +103,11 @@ public class Inventory
         return itemList.toArray(result);
     }
     
+    public EquippableItem getEquippedItem(EquipSlot slot)
+    {
+        return equippedItemsMap.get(slot);
+    }
+    
     public int getItemCount(Item item) { return storedItemsMap.getOrDefault(item, 0); }
     
     public void setInventory(Map<Item, Integer> loadedStoredMap) { storedItemsMap.putAll(loadedStoredMap); }
