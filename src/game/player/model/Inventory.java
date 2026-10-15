@@ -108,6 +108,21 @@ public class Inventory
         return equippedItemsMap.get(slot);
     }
     
+    public EquipSlot[] getAllEquippedSlots()
+    {
+        WeaponSlot[] weaponSlots = WeaponSlot.values();
+        ArmourSlot[] armourSlots = ArmourSlot.values();
+        EquipSlot[] equipSlots = new EquipSlot[weaponSlots.length + armourSlots.length];
+        int i = 0;
+        
+        for(WeaponSlot weaponSlot : weaponSlots)
+            equipSlots[i++] = weaponSlot;
+        for(ArmourSlot armourSlot : armourSlots)
+            equipSlots[i++] = armourSlot;
+        
+        return equipSlots;
+    }
+    
     public int getItemCount(Item item) { return storedItemsMap.getOrDefault(item, 0); }
     
     public void setInventory(Map<Item, Integer> loadedStoredMap) { storedItemsMap.putAll(loadedStoredMap); }

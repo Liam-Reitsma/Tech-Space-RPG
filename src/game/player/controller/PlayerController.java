@@ -21,6 +21,8 @@
         @Override
         public void requestUpdate()
         {
+            for(EquipSlot slot : playerModel.getAllEquippedSlots())
+                requestEquippedItemChange(slot);
             playerViewAction.updatePlayerStats(playerModel.getPlayerStatEntries());
         }
         

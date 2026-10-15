@@ -1,6 +1,7 @@
 package game.player.model;
 
 import game.items.EquipSlot;
+import game.items.Equippable;
 import game.items.EquippableItem;
 import game.maingame.model.GameModel;
 
@@ -51,5 +52,10 @@ public class PlayerModel
     public EquippableItem getEquippedItem(EquipSlot slot)
     {
         return gameModel.getPlayer().getInventory().getEquippedItem(slot);
+    }
+    
+    public EquipSlot[] getAllEquippedSlots()
+    {
+        return gameModel.getPlayer().getInventory().getAllEquippedSlots();
     }
 }
