@@ -36,14 +36,4 @@ public enum ArmourSlot implements EquipSlot
             default -> null;
         };
     }
-    
-    public static ArmourSlot parse(String slot)
-    {
-        for(ArmourSlot armourSlot : ArmourSlot.values())
-        {
-            if(armourSlot.toString().equalsIgnoreCase(slot)) return armourSlot;
-        }
-        
-        return null;
-    }
 }

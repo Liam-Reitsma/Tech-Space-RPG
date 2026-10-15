@@ -62,14 +62,4 @@ public enum WeaponType
     {
         return values()[Math.round((float)(Math.random() * values().length))];
     }
-    
-    public static WeaponType parseWeaponType(String type)
-    {
-        for(WeaponType weaponType : WeaponType.values())
-        {
-            if(weaponType.toString().equalsIgnoreCase(type)) return weaponType;
-        }
-        
-        return null;
-    }
 }
