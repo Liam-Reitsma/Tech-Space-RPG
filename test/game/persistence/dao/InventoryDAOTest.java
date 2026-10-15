@@ -121,7 +121,7 @@ public class InventoryDAOTest
     {
         assertTrue(inventoryDAO.insertEquippedItems(SAVE_NAME, testPlayer));
         assertTrue(inventoryDAO.updateEquippedEquipment(SAVE_NAME, testPlayer.getInventory()));
-        testPlayer.equipItem(new Armour(ArmourMaterial.FABRIC, ArmourSlot.BOOTS));
+        testPlayer.equipItem(new Armour(ArmourMaterial.FABRIC, ArmourSlot.BOOTS), ArmourSlot.BOOTS);
         assertTrue(inventoryDAO.updateEquippedEquipment(SAVE_NAME, testPlayer.getInventory()));
         
         EquippableItem[] equippedItems = inventoryDAO.loadEquippedItems(SAVE_NAME);

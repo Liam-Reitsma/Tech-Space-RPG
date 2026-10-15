@@ -50,7 +50,8 @@ public class Player extends Entities implements Persistable
         classType = type;
         point = new Point(0, 0);
         inventory = new Inventory();
-        inventory.equipItem(new Weapon(classType.getStartingWeapon(), level));
+        Weapon startingWeapon = new Weapon(classType.getStartingWeapon(), level);
+        inventory.equipItem(startingWeapon, startingWeapon.getEquipSlot());
         
         statTypeMap = new HashMap<>();
         statTypeMap.put(STR, type.getStatStrength());
@@ -78,7 +79,8 @@ public class Player extends Entities implements Persistable
         point = loadedPoint;
 
         inventory = new Inventory();
-        inventory.equipItem(new Weapon(classType.getStartingWeapon(), level));
+        Weapon loadedWeapon = new Weapon(classType.getStartingWeapon(), level);
+        inventory.equipItem(loadedWeapon, loadedWeapon.getEquipSlot());
         
         statTypeMap = new HashMap<>();
         statTypeMap.put(STR, loadedSTR);
@@ -196,9 +198,9 @@ public class Player extends Entities implements Persistable
         recalculateStats();
     }
     
-    public void equipItem(EquippableItem item)
+    public void equipItem(EquippableItem item, EquipSlot slot)
     {
-        inventory.equipItem(item);
+        inventory.equipItem(item, slot);
     }
     
     public void unequipItem(EquippableItem item)

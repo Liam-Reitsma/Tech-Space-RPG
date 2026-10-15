@@ -5,6 +5,7 @@ import game.items.armour.Armour;
 import game.items.armour.ArmourSlot;
 import game.items.weapon.Weapon;
 import game.items.weapon.WeaponSlot;
+import game.items.weapon.WeaponType;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -25,6 +26,11 @@ public class Inventory
         for(int i = 0; i < INVENTORY_CAPACITY; i++)
             inventorySlots[i] = new ItemStack();
         equippedItemsMap = new HashMap<>();
+        for(WeaponSlot weaponSlot : WeaponSlot.values())
+            equippedItemsMap.put(weaponSlot, null);
+        
+        for(ArmourSlot armourSlot : ArmourSlot.values())
+            equippedItemsMap.put(armourSlot, null);
     }
     
     public void setInventory(ItemStack[] loadedItemStacks)
@@ -71,19 +77,31 @@ public class Inventory
         }
     }
     
-    public void equipItem(EquippableItem item)
+    public boolean equipItem(Item originalItem, EquipSlot targetEquipSlot)
     {
-        if(item == null) return;
+        if(originalItem instanceof EquippableItem item)
+        {
+            if(item.getEquipSlot() == targetEquipSlot)
+            {
+                int originalIndex = getItemIndex(originalItem);
+                if(originalIndex == -1)
+                    return false;
+                EquippableItem oldItem = equippedItemsMap.get(targetEquipSlot);
+                
+                equippedItemsMap.replace(item.getEquipSlot(), item);
+                removeFromInventory(item, false);
+                
+                if(oldItem == null)
+                    return true;
+                
+                addToInventory(oldItem);
+                if(getItemCount(item) == 0 && getItemCount(oldItem) == 1)
+                    swapItems(originalIndex, getItemIndex(oldItem));
+                return true;
+            }
+        }
         
-        if(equippedItemsMap.containsKey(item.getEquipSlot()))
-        {
-            addToInventory(item);
-            equippedItemsMap.replace(item.getEquipSlot(), item);
-        }
-        else
-        {
-            equippedItemsMap.put(item.getEquipSlot(), item);
-        }
+        return false;
     }
     
     public void unequipItem(EquippableItem item)
