@@ -92,6 +92,18 @@ public class Inventory
         equippedItemsMap.remove(item.getEquipSlot());
     }
     
+    public void swapItems(int originalIndex, int targetIndex)
+    {
+        if(originalIndex < 0 || originalIndex >= INVENTORY_CAPACITY || targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
+            return;
+        
+        ItemStack originalItemStack = inventorySlots[originalIndex];
+        ItemStack targetItemStack = inventorySlots[targetIndex];
+        
+        inventorySlots[targetIndex] = originalItemStack;
+        inventorySlots[originalIndex] = targetItemStack;
+    }
+    
     public Item[] getItemsInInventory()
     {
         Item[] items = new Item[INVENTORY_CAPACITY];
