@@ -1,9 +1,5 @@
 package game.items;
 
-import game.entities.EnemyType;
-
-import java.util.Random;
-
 public enum PotionType
 {
     SMALL_HEALTH(20),
