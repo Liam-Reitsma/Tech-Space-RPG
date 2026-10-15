@@ -172,4 +172,106 @@ public class InventoryTest
         assertFalse(inventory.equipItem(weapon, WeaponSlot.MAIN_HAND));
         assertNull(inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
     }
+    
+    @Test
+    public void testUnequipItemIntoEmptySlot()
+    {
+        Weapon weapon = new Weapon(WeaponType.ENERGY_SWORD, 2);
+        
+        inventory.addToInventory(weapon);
+        inventory.equipItem(weapon, WeaponSlot.MAIN_HAND);
+        
+        assertTrue(inventory.unequipItem(weapon, 3));
+        assertNull(inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertSame(weapon, inventory.getInventorySlots()[3].getItem());
+    }
+    
+    @Test
+    public void testUnequipItemToReplaceEquippedItem()
+    {
+        Weapon equipped = new Weapon(WeaponType.ENERGY_SWORD, 2);
+        Weapon replacement = new Weapon(WeaponType.SHOCK_HAMMER, 2);
+        
+        inventory.addToInventory(equipped);
+        inventory.equipItem(equipped, WeaponSlot.MAIN_HAND);
+        inventory.addToInventory(replacement);
+        
+        int targetIndex = inventory.getItemIndex(replacement);
+        
+        assertTrue(inventory.unequipItem(equipped, targetIndex));
+        assertSame(replacement, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(1, inventory.getItemCount(equipped));
+        assertEquals(0, inventory.getItemCount(replacement));
+    }
+    
+    @Test
+    public void testUnequipItemWithIncompatibleTargetItem()
+    {
+        Weapon weapon = new Weapon(WeaponType.ENERGY_SWORD, 2);
+        Potion potion = new Potion(PotionType.SMALL_HEALTH);
+        
+        inventory.addToInventory(weapon);
+        inventory.equipItem(weapon, WeaponSlot.MAIN_HAND);
+        inventory.addToInventory(potion);
+        
+        int targetIndex = inventory.getItemIndex(potion);
+        
+        assertTrue(inventory.unequipItem(weapon, targetIndex));
+        assertNull(inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(1, inventory.getItemCount(weapon));
+        assertEquals(1, inventory.getItemCount(potion));
+    }
+    
+    @Test
+    public void testUnequipItemWithExistingItemStack()
+    {
+        Weapon weapon = new Weapon(WeaponType.ENERGY_SWORD, 2);
+        Potion potion = new Potion(PotionType.SMALL_HEALTH);
+        
+        inventory.addToInventory(weapon);
+        inventory.addToInventory(weapon);
+        inventory.equipItem(weapon, WeaponSlot.MAIN_HAND);
+        inventory.addToInventory(potion);
+        
+        int originalIndex = inventory.getItemIndex(weapon);
+        int targetIndex = inventory.getItemIndex(potion);
+        
+        assertTrue(inventory.unequipItem(weapon, targetIndex));
+        assertNull(inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(2, inventory.getItemCount(weapon));
+        assertSame(weapon, inventory.getInventorySlots()[originalIndex].getItem());
+        assertSame(potion, inventory.getInventorySlots()[targetIndex].getItem());
+    }
+    
+    @Test
+    public void testUnequipItemWithNullItem()
+    {
+        assertFalse(inventory.unequipItem(null, 0));
+    }
+    
+    @Test
+    public void testUnequipItemWithItemNotEquipped()
+    {
+        Weapon weapon = new Weapon(WeaponType.ENERGY_SWORD, 2);
+        
+        inventory.addToInventory(weapon);
+        
+        assertFalse(inventory.unequipItem(weapon, 0));
+        assertEquals(1, inventory.getItemCount(weapon));
+    }
+    
+    @Test
+    public void testUnequipItemWithInvalidTargetIndex()
+    {
+        Weapon weapon = new Weapon(WeaponType.ENERGY_SWORD, 2);
+        
+        inventory.addToInventory(weapon);
+        inventory.equipItem(weapon, WeaponSlot.MAIN_HAND);
+        
+        assertFalse(inventory.unequipItem(weapon, -1));
+        assertFalse(inventory.unequipItem(weapon, Inventory.INVENTORY_CAPACITY));
+        
+        assertSame(weapon, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(0, inventory.getItemCount(weapon));
+    }
 }

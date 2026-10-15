@@ -203,9 +203,9 @@ public class Player extends Entities implements Persistable
         inventory.equipItem(item, slot);
     }
     
-    public void unequipItem(EquippableItem item)
+    public void unequipItem(EquippableItem item, int targetIndex)
     {
-        inventory.unequipItem(item);
+        inventory.unequipItem(item, targetIndex);
     }
     
     public void addToInventory(Item item)

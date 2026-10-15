@@ -104,10 +104,23 @@ public class Inventory
         return false;
     }
     
-    public void unequipItem(EquippableItem item)
+    public boolean unequipItem(EquippableItem item, int targetIndex)
     {
-        addToInventory(equippedItemsMap.get(item.getEquipSlot()));
-        equippedItemsMap.remove(item.getEquipSlot());
+        if(item == null || equippedItemsMap.get(item.getEquipSlot()) == null || !equippedItemsMap.containsValue(item))
+            return false;
+        
+        if(targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
+            return false;
+        
+        if(inventorySlots[targetIndex].getItem() instanceof EquippableItem equippableItem)
+            if(equippableItem.getEquipSlot().equals(item.getEquipSlot()))
+                return equipItem(equippableItem, item.getEquipSlot());
+        
+        addToInventory(item);
+        if(getItemCount(item) == 1)
+            swapItems(getItemIndex(item), targetIndex);
+        equippedItemsMap.replace(item.getEquipSlot(), null);
+        return true;
     }
     
     public void swapItems(int originalIndex, int targetIndex)
@@ -188,7 +201,7 @@ public class Inventory
         List<Armour> armourlist = new ArrayList<>();
         
         for(ArmourSlot armourSlot : ArmourSlot.values())
-            if(equippedItemsMap.containsKey(armourSlot)) armourlist.add((Armour)equippedItemsMap.get(armourSlot));
+            if(equippedItemsMap.containsKey(armourSlot) && equippedItemsMap.get(armourSlot) != null) armourlist.add((Armour)equippedItemsMap.get(armourSlot));
         
         return armourlist.toArray(new Armour[0]);
     }
