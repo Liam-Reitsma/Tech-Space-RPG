@@ -119,7 +119,7 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
     @Override
     public void changeCharacterPanel(ClassType classType)
     {
-        picturePreview.setImage(new ImageIcon(classType.getImagePath()).getImage());
+        picturePreview.setImage(new ImageIcon("resources/images/classes/" + classType.toFileName() + ".png").getImage());
         classDescriptionTextArea.setText(classType.getStartingDescription());
     }
     

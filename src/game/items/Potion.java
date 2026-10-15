@@ -55,6 +55,6 @@ public class Potion extends Item
     @Override
     public String getImageURL()
     {
-        return "resources/images/items" + potionType.toString() + ".png";
+        return "resources/images/items" + potionType.toFileName() + ".png";
     }
 }

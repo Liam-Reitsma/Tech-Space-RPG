@@ -19,7 +19,20 @@ public enum ArmourSlot implements EquipSlot
     }
     
     @Override
-    public String toString() { return this.name().charAt(0) + this.name().substring(1).toLowerCase(); }
+    public String toString()
+    {
+        String[] words = name().split("_");
+        
+        for(int i = 0; i < words.length; i++)
+            words[i] = words[i].charAt(0) + words[i].substring(1).toLowerCase();
+        
+        return String.join(" ", words);
+    }
+    
+    public String toFileName()
+    {
+        return toString().replace(" ", "_");
+    }
     
     public float getProtWeight() { return protWeight; }
     

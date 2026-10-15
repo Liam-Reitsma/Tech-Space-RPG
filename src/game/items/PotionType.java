@@ -27,7 +27,16 @@ public enum PotionType
     @Override
     public String toString()
     {
-        String[] s = this.name().split("_");
-        return s[0].charAt(0) + s[0].substring(1).toLowerCase() + " " + s[1].charAt(0) + s[1].substring(1).toLowerCase();
+        String[] words = name().split("_");
+        
+        for(int i = 0; i < words.length; i++)
+            words[i] = words[i].charAt(0) + words[i].substring(1).toLowerCase();
+        
+        return String.join(" ", words);
+    }
+    
+    public String toFileName()
+    {
+        return toString().replace(" ", "_");
     }
 }

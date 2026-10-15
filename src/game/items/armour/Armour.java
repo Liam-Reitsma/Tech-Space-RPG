@@ -19,7 +19,7 @@ public class Armour extends EquippableItem
 
     public float calculateProtection() { return Math.round(armourSlot.getProtWeight() * armourMaterial.getProtValue() * 10000f) / 10000f; }
     
-    public String getImageURL() { return "resources/images/items/" + armourMaterial.toString() + "_" + armourSlot.toString() + ".png"; }
+    public String getImageURL() { return "resources/images/items/" + armourMaterial.toFileName() + "_" + armourSlot.toFileName() + ".png"; }
     
     public ArmourMaterial getArmourMaterial() { return armourMaterial; }
     
