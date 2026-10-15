@@ -1,7 +1,7 @@
 package game.player.view;
 
 import game.items.EquipSlot;
-import game.items.EquippableItem;
+import game.items.Item;
 import game.items.armour.ArmourSlot;
 import game.items.weapon.WeaponSlot;
 
@@ -21,22 +21,25 @@ public class ItemSlot extends JPanel
     
     private Image image;
     private int quantity;
+    private EquipSlot equipSlot;
     
     public ItemSlot()
     {
         image = EMPTY_SLOT;
         quantity = 0;
+        equipSlot = null;
     }
     
     public ItemSlot(EquipSlot slot, int count)
     {
         image = getImageFromSlot(slot);
         quantity = count;
+        equipSlot = slot;
         
         repaint();
     }
     
-    public void setItem(EquippableItem item, int count)
+    public void setItem(Item item, int count)
     {
         //TODO get image from item;
         quantity = count;
@@ -44,9 +47,9 @@ public class ItemSlot extends JPanel
         repaint();
     }
     
-    public void removeItem(EquipSlot slot)
+    public void removeItem()
     {
-        image = getImageFromSlot(slot);
+        image = getImageFromSlot(equipSlot);
         quantity = 0;
         
         repaint();

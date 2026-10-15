@@ -40,7 +40,7 @@ public class PlayerEquippedPanel extends JPanel
     {
         ItemSlot itemSlot = equippedInventoryMap.get(slot);
         if(item == null)
-            itemSlot.removeItem(slot);
+            itemSlot.removeItem();
         else
             itemSlot.setItem(item, 1);
     }
