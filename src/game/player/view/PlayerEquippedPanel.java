@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class PlayerEquippedPanel extends JPanel
 {
-    private final static Image EQUIPPED_BACKGROUND = new ImageIcon("resources/images/Character_Equipped_Screen.png").getImage();
+    private final static Image EQUIPPED_BACKGROUND = new ImageIcon("resources/images/Equipped_Screen.png").getImage();
     
     private final Map<EquipSlot, ItemSlot> equippedInventoryMap;
     
