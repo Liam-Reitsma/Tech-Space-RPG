@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 public class PlayerStatsPanel extends JPanel
 {
     private static final Logger LOGGER = Logger.getLogger(PlayerStatsPanel.class.getName());
+    private static final Image STATS_BACKGROUND = new ImageIcon("resources/images/Stats_Panel.png").getImage();
     
     private final StyledDocument statTextDocument;
     private final StyledDocument statValueDocument;
@@ -38,16 +39,16 @@ public class PlayerStatsPanel extends JPanel
         statTextPane.setToolTipText("");
         statTextPane.setEditable(false);
         statTextPane.setOpaque(false);
-        statTextPane.setFont(new Font("Agency FB", Font.BOLD, 17));
-        statTextPane.setForeground(Color.BLACK);
-        add(statTextPane, boxes[0]);
+        statTextPane.setFont(new Font("Agency FB", Font.BOLD, 16));
+        statTextPane.setForeground(Color.WHITE);
+        add(statTextPane, boxes[0].insets(10, 0, 0, 0));
         statTextDocument = statTextPane.getStyledDocument();
         
         JTextPane statValuePane = new JTextPane();
         statValuePane.setEditable(false);
         statValuePane.setOpaque(false);
-        statValuePane.setFont(new Font("Agency FB", Font.PLAIN, 17));
-        statValuePane.setForeground(Color.BLACK);
+        statValuePane.setFont(new Font("Agency FB", Font.PLAIN, 16));
+        statValuePane.setForeground(Color.WHITE);
         add(statValuePane, boxes[1]);
         statValueDocument = statValuePane.getStyledDocument();
     }
@@ -78,5 +79,12 @@ public class PlayerStatsPanel extends JPanel
         {
             LOGGER.log(Level.SEVERE, "Failed to update player stats", e);
         }
+    }
+    
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        g.drawImage(STATS_BACKGROUND, 0, 0, getWidth(), getHeight(), null);
     }
 }
