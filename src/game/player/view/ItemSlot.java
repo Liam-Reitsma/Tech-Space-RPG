@@ -80,7 +80,7 @@ public class ItemSlot extends JPanel
                     repaint();
                 }
                 
-                dragged.onDrag(e, dragSlot);
+                dragged.onDrag();
             }
             
             @Override
@@ -90,7 +90,7 @@ public class ItemSlot extends JPanel
                 {
                     isDragging = false;
                     repaint();
-                    released.onRelease(e, dragSlot);
+                    released.onRelease();
                 }
             }
         };

@@ -4,11 +4,7 @@
     import game.frame.controller.FrameAction;
     import game.items.EquipSlot;
     import game.player.model.PlayerModel;
-    import game.player.view.ItemSlot;
     import game.player.view.PlayerViewAction;
-    
-    import javax.swing.*;
-    import java.awt.event.MouseEvent;
     
     public class PlayerController implements PlayerAction, Updatable
     {
@@ -42,15 +38,15 @@
         }
         
         @Override
-        public void requestSlotDragged(int index, MouseEvent e, ItemSlot dragSlot)
+        public void requestSlotDragged(int index)
         {
-            frameAction.requestDisplayDrag(e, dragSlot);
+        
         }
         
         @Override
-        public void requestSlotDragged(EquipSlot slot, MouseEvent e, ItemSlot dragSlot)
+        public void requestSlotDragged(EquipSlot slot)
         {
-            frameAction.requestDisplayDrag(e, dragSlot);
+        
         }
         
         @Override
@@ -60,14 +56,14 @@
         }
         
         @Override
-        public void requestSlotReleased(int index, MouseEvent e, ItemSlot dragSlot)
+        public void requestSlotReleased(int index)
         {
-            frameAction.requestRemoveDrag(dragSlot);
+        
         }
         
         @Override
-        public void requestSlotReleased(EquipSlot slot, MouseEvent e, ItemSlot dragSlot)
+        public void requestSlotReleased(EquipSlot slot)
         {
-            frameAction.requestRemoveDrag(dragSlot);
+        
         }
     }

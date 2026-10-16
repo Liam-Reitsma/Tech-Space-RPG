@@ -20,7 +20,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.util.Map;
 
-public class GameFrame extends JFrame implements FrameViewAction
+public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
 {
     private final OverlayContainer overlayContainer;
     
@@ -141,6 +141,13 @@ public class GameFrame extends JFrame implements FrameViewAction
         component.setSize(e.getComponent().getSize());
         component.setBounds(position.x - component.getWidth() / 2, position.y - component.getHeight() / 2,
                 component.getWidth(), component.getHeight());
+    }
+    
+    @Override
+    public Component getDropTarget(MouseEvent e)
+    {
+        Point position = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), getLayeredPane());
+        return SwingUtilities.getDeepestComponentAt(getLayeredPane(), position.x, position.y);
     }
     
     @Override
