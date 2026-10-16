@@ -23,47 +23,63 @@ public class ItemSlot extends JPanel
     
     private Image image;
     private int quantity;
+    private boolean isDragging;
     
-    private final EquipSlot equipSlot;
+    private ItemSlot dragSlot;
+    private EquipSlot equipSlot;
     
-    public ItemSlot(ItemSlotPressed action)
+    public ItemSlot(ItemSlot itemSlot)
+    {
+        image = itemSlot.image;
+        quantity = itemSlot.quantity;
+        equipSlot = itemSlot.equipSlot;
+    }
+    
+    public ItemSlot(ItemSlotPressed pressed, ItemSlotDragged dragged)
     {
         image = EMPTY_SLOT;
         quantity = 0;
+        dragSlot = new ItemSlot(this);
         equipSlot = null;
         
-        MouseAdapter adapter = createMouseAdapter(action);
+        MouseAdapter adapter = createMouseAdapter(pressed, dragged);
         addMouseListener(adapter);
         addMouseMotionListener(adapter);
     }
     
-    public ItemSlot(EquipSlot slot, int count, ItemSlotPressed action)
+    public ItemSlot(EquipSlot slot, int count, ItemSlotPressed itemSlotPressed, ItemSlotDragged dragged)
     {
         image = getImageFromSlot(slot);
         quantity = count;
+        dragSlot = new ItemSlot(this);
         equipSlot = slot;
         
         repaint();
         
-        MouseAdapter adapter = createMouseAdapter(action);
+        MouseAdapter adapter = createMouseAdapter(itemSlotPressed, dragged);
         addMouseListener(adapter);
         addMouseMotionListener(adapter);
     }
     
-    private MouseAdapter createMouseAdapter(ItemSlotPressed action)
+    private MouseAdapter createMouseAdapter(ItemSlotPressed pressed, ItemSlotDragged dragged)
     {
         return new MouseAdapter()
         {
             @Override
             public void mousePressed(MouseEvent e)
             {
-                action.onPressed();
+                pressed.onPressed();
             }
             
             @Override
             public void mouseDragged(MouseEvent e)
             {
-            
+                if(!isDragging)
+                {
+                    isDragging = true;
+                    repaint();
+                }
+                dragged.onDrag(e, dragSlot);
             }
             
             @Override
@@ -78,6 +94,8 @@ public class ItemSlot extends JPanel
     {
         image = new ImageIcon(item.getImageURL()).getImage();
         quantity = count;
+        dragSlot.image = image;
+        dragSlot.quantity = quantity;
         
         repaint();
     }
@@ -86,6 +104,8 @@ public class ItemSlot extends JPanel
     {
         image = getImageFromSlot(equipSlot);
         quantity = 0;
+        dragSlot.image = image;
+        dragSlot.quantity = quantity;
         
         repaint();
     }
@@ -104,7 +124,7 @@ public class ItemSlot extends JPanel
                 case SHINS ->   { return SHINS_IMAGE; }
                 case BOOTS ->   { return BOOTS_IMAGE; }
             }
-            
+        
         return EMPTY_SLOT;
     }
     
@@ -112,9 +132,15 @@ public class ItemSlot extends JPanel
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-        int textWidth = g.getFontMetrics().stringWidth(String.valueOf(quantity));
-        if(quantity > 1)
-            g.drawString(String.valueOf(quantity), getWidth() - textWidth - 15, 15);
+        
+        if(isDragging)
+            g.drawImage(EMPTY_SLOT, 0, 0, getWidth(), getHeight(), null);
+        else
+        {
+            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+            int textWidth = g.getFontMetrics().stringWidth(String.valueOf(quantity));
+            if(quantity > 1)
+                g.drawString(String.valueOf(quantity), getWidth() - textWidth - 15, 15);
+        }
     }
 }
