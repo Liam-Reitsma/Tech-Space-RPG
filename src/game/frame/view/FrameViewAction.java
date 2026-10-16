@@ -16,5 +16,6 @@ public interface FrameViewAction
     void display(DisplayTarget display);
     void displayError(DisplayError error, ActionListener leftButton, ActionListener rightButton);
     void displayOnOverlay(MouseEvent e, JComponent component);
+    void removeFromOverlay(JComponent component);
     void resizeGameFrame(DisplayResolution resolution);
 }

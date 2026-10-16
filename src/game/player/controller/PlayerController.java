@@ -42,12 +42,6 @@
         }
         
         @Override
-        public void requestSlotPressed(int index)
-        {
-        
-        }
-        
-        @Override
         public void requestSlotDragged(int index, MouseEvent e, ItemSlot dragSlot)
         {
             frameAction.requestDisplayDrag(e, dragSlot);
@@ -57,5 +51,23 @@
         public void requestSlotDragged(EquipSlot slot, MouseEvent e, ItemSlot dragSlot)
         {
             frameAction.requestDisplayDrag(e, dragSlot);
+        }
+        
+        @Override
+        public void requestSlotPressed(int index)
+        {
+        
+        }
+        
+        @Override
+        public void requestSlotReleased(int index, MouseEvent e, ItemSlot dragSlot)
+        {
+            frameAction.requestRemoveDrag(dragSlot);
+        }
+        
+        @Override
+        public void requestSlotReleased(EquipSlot slot, MouseEvent e, ItemSlot dragSlot)
+        {
+            frameAction.requestRemoveDrag(dragSlot);
         }
     }

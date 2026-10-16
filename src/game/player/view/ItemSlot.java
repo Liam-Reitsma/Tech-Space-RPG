@@ -35,19 +35,19 @@ public class ItemSlot extends JPanel
         equipSlot = itemSlot.equipSlot;
     }
     
-    public ItemSlot(ItemSlotPressed pressed, ItemSlotDragged dragged)
+    public ItemSlot(ItemSlotPressed pressed, ItemSlotDragged dragged, ItemSlotReleased released)
     {
         image = EMPTY_SLOT;
         quantity = 0;
         dragSlot = new ItemSlot(this);
         equipSlot = null;
         
-        MouseAdapter adapter = createMouseAdapter(pressed, dragged);
+        MouseAdapter adapter = createMouseAdapter(pressed, dragged, released);
         addMouseListener(adapter);
         addMouseMotionListener(adapter);
     }
     
-    public ItemSlot(EquipSlot slot, int count, ItemSlotPressed itemSlotPressed, ItemSlotDragged dragged)
+    public ItemSlot(EquipSlot slot, int count, ItemSlotPressed itemSlotPressed, ItemSlotDragged dragged, ItemSlotReleased released)
     {
         image = getImageFromSlot(slot);
         quantity = count;
@@ -56,12 +56,12 @@ public class ItemSlot extends JPanel
         
         repaint();
         
-        MouseAdapter adapter = createMouseAdapter(itemSlotPressed, dragged);
+        MouseAdapter adapter = createMouseAdapter(itemSlotPressed, dragged, released);
         addMouseListener(adapter);
         addMouseMotionListener(adapter);
     }
     
-    private MouseAdapter createMouseAdapter(ItemSlotPressed pressed, ItemSlotDragged dragged)
+    private MouseAdapter createMouseAdapter(ItemSlotPressed pressed, ItemSlotDragged dragged, ItemSlotReleased released)
     {
         return new MouseAdapter()
         {
@@ -79,13 +79,19 @@ public class ItemSlot extends JPanel
                     isDragging = true;
                     repaint();
                 }
+                
                 dragged.onDrag(e, dragSlot);
             }
             
             @Override
             public void mouseReleased(MouseEvent e)
             {
-            
+                if(isDragging)
+                {
+                    isDragging = false;
+                    repaint();
+                    released.onRelease(e, dragSlot);
+                }
             }
         };
     }

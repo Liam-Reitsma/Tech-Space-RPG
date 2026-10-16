@@ -36,7 +36,9 @@ public class PlayerInventoryPanel extends JPanel
             for(int horizontal = 0; horizontal < 6; horizontal++)
             {
                 int index = vertical * 6 + horizontal;
-                ItemSlot itemSlot = new ItemSlot(() -> playerAction.requestSlotPressed(index), (e, dragSlot) -> playerAction.requestSlotDragged(index, e, dragSlot));
+                ItemSlot itemSlot = new ItemSlot(() -> playerAction.requestSlotPressed(index),
+                        (e, dragSlot) -> playerAction.requestSlotDragged(index, e, dragSlot),
+                        (e, dragSlot) -> playerAction.requestSlotReleased(index, e, dragSlot));
                 if(vertical == 0)
                     add(itemSlot, topBoxes[horizontal].insets(10, 25));
                 else

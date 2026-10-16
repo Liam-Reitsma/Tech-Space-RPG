@@ -41,15 +41,21 @@ public class FrameController implements FrameAction
     }
     
     @Override
+    public void requestDisplayDrag(MouseEvent e, JComponent drag)
+    {
+        frameViewAction.displayOnOverlay(e , drag);
+    }
+    
+    @Override
     public void requestDisplayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
     {
         frameViewAction.displayError(error, leftButton, rightButton);
     }
     
     @Override
-    public void requestDisplayDrag(MouseEvent e, JComponent drag)
+    public void requestRemoveDrag(JComponent drag)
     {
-        frameViewAction.displayOnOverlay(e , drag);
+        frameViewAction.removeFromOverlay(drag);
     }
     
     @Override

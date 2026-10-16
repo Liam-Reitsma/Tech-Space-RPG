@@ -135,12 +135,19 @@ public class GameFrame extends JFrame implements FrameViewAction
     @Override
     public void displayOnOverlay(MouseEvent e, JComponent component)
     {
-        if(component.getParent() !=  getLayeredPane())
+        if(component.getParent() != getLayeredPane())
             getLayeredPane().add(component, JLayeredPane.DRAG_LAYER);
         Point position = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), getLayeredPane());
         component.setSize(e.getComponent().getSize());
         component.setBounds(position.x - component.getWidth() / 2, position.y - component.getHeight() / 2,
                 component.getWidth(), component.getHeight());
+    }
+    
+    @Override
+    public void removeFromOverlay(JComponent component)
+    {
+        getLayeredPane().remove(component);
+        getLayeredPane().repaint();
     }
     
     @Override

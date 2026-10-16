@@ -15,5 +15,6 @@ public interface FrameAction
     void requestDisplay(DisplayTarget display);
     void requestDisplayDrag(MouseEvent e, JComponent drag);
     void requestDisplayError(DisplayError error, ActionListener leftButton, ActionListener rightButton);
+    void requestRemoveDrag(JComponent drag);
     void requestResolutionChange(DisplayResolution resolution);
 }
