@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
 import java.util.Map;
 
 public class GameFrame extends JFrame implements FrameViewAction
@@ -69,17 +70,29 @@ public class GameFrame extends JFrame implements FrameViewAction
     }
     
     @Override
-    public void displayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
+    public void closeError()
     {
         if(currentDisplayedError != null)
+        {
             currentDisplayedError.closeDisplay();
-        
-        currentDisplayedError = error.createOverlay(leftButton, rightButton);
-        overlayContainer.add(currentDisplayedError.getDisplay(), new LayoutBox(null, 15, 30, ScaledLayoutAnchor.CENTER));
-        currentDisplayedError.openDisplay();
-        
-        overlayContainer.revalidate();
-        overlayContainer.repaint();
+            currentDisplayedError = null;
+        }
+    }
+    
+    @Override
+    public void closeGameFrame()
+    {
+        dispose();
+    }
+    
+    @Override
+    public void closeOverlay()
+    {
+        if(currentDisplayedOverlay != null)
+        {
+            currentDisplayedOverlay.closeDisplay();
+            currentDisplayedOverlay = null;
+        }
     }
     
     @Override
@@ -106,23 +119,28 @@ public class GameFrame extends JFrame implements FrameViewAction
     }
     
     @Override
-    public void closeOverlay()
+    public void displayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
     {
-        if(currentDisplayedOverlay != null)
-        {
-            currentDisplayedOverlay.closeDisplay();
-            currentDisplayedOverlay = null;
-        }
+        if(currentDisplayedError != null)
+            currentDisplayedError.closeDisplay();
+        
+        currentDisplayedError = error.createOverlay(leftButton, rightButton);
+        overlayContainer.add(currentDisplayedError.getDisplay(), new LayoutBox(null, 15, 30, ScaledLayoutAnchor.CENTER));
+        currentDisplayedError.openDisplay();
+        
+        overlayContainer.revalidate();
+        overlayContainer.repaint();
     }
     
     @Override
-    public void closeError()
+    public void displayOnOverlay(MouseEvent e, JComponent component)
     {
-        if(currentDisplayedError != null)
-        {
-            currentDisplayedError.closeDisplay();
-            currentDisplayedError = null;
-        }
+        if(component.getParent() !=  getLayeredPane())
+            getLayeredPane().add(component, JLayeredPane.DRAG_LAYER);
+        Point position = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), getLayeredPane());
+        component.setSize(e.getComponent().getSize());
+        component.setBounds(position.x - component.getWidth() / 2, position.y - component.getHeight() / 2,
+                component.getWidth(), component.getHeight());
     }
     
     @Override
@@ -131,11 +149,5 @@ public class GameFrame extends JFrame implements FrameViewAction
         getContentPane().setPreferredSize(new Dimension(resolution.getWidth(), resolution.getHeight()));
         pack();
         setLocationRelativeTo(null);
-    }
-    
-    @Override
-    public void closeGameFrame()
-    {
-        dispose();
     }
 }

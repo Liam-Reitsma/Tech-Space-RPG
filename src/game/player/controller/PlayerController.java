@@ -50,12 +50,12 @@
         @Override
         public void requestSlotDragged(int index, MouseEvent e, ItemSlot dragSlot)
         {
-        
+            frameAction.requestDisplayDrag(e, dragSlot);
         }
         
         @Override
         public void requestSlotDragged(EquipSlot slot, MouseEvent e, ItemSlot dragSlot)
         {
-        
+            frameAction.requestDisplayDrag(e, dragSlot);
         }
     }

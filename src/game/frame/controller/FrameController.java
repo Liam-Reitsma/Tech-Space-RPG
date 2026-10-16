@@ -6,6 +6,7 @@ import game.gui.errors.DisplayError;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 public class FrameController implements FrameAction
 {
@@ -19,15 +20,15 @@ public class FrameController implements FrameAction
     public void setFrameViewAction(FrameViewAction fvAction) { frameViewAction = fvAction; }
     
     @Override
-    public void requestResolutionChange(DisplayResolution resolution)
+    public void requestCloseOverlay()
     {
-        frameViewAction.resizeGameFrame(resolution);
+        frameViewAction.closeOverlay();
     }
     
     @Override
-    public void requestDisplayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
+    public void requestCloseError()
     {
-        frameViewAction.displayError(error, leftButton, rightButton);
+        frameViewAction.closeError();
     }
     
     @Override
@@ -40,14 +41,20 @@ public class FrameController implements FrameAction
     }
     
     @Override
-    public void requestCloseOverlay()
+    public void requestDisplayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
     {
-        frameViewAction.closeOverlay();
+        frameViewAction.displayError(error, leftButton, rightButton);
     }
     
     @Override
-    public void requestCloseError()
+    public void requestDisplayDrag(MouseEvent e, JComponent drag)
     {
-        frameViewAction.closeError();
+        frameViewAction.displayOnOverlay(e , drag);
+    }
+    
+    @Override
+    public void requestResolutionChange(DisplayResolution resolution)
+    {
+        frameViewAction.resizeGameFrame(resolution);
     }
 }
