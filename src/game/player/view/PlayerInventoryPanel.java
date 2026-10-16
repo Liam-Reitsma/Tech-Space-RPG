@@ -7,6 +7,7 @@ import game.gui.common.scaledlayout.ScaledLayout;
 import game.items.EquipSlot;
 import game.items.armour.ArmourSlot;
 import game.items.weapon.WeaponSlot;
+import game.player.controller.PlayerAction;
 import game.player.model.ItemStack;
 
 import javax.swing.*;
@@ -20,7 +21,7 @@ public class PlayerInventoryPanel extends JPanel
     
     private final ItemSlot[] itemSlots;
     
-    public PlayerInventoryPanel()
+    public PlayerInventoryPanel(PlayerAction playerAction)
     {
         setLayout(new ScaledLayout());
         setBackground(Color.blue);
@@ -34,13 +35,14 @@ public class PlayerInventoryPanel extends JPanel
         {
             for(int horizontal = 0; horizontal < 6; horizontal++)
             {
-                ItemSlot itemSlot = new ItemSlot();
+                int index = vertical * 6 + horizontal;
+                ItemSlot itemSlot = new ItemSlot(() -> playerAction.requestSlotPressed(index));
                 if(vertical == 0)
                     add(itemSlot, topBoxes[horizontal].insets(10, 25));
                 else
                     add(itemSlot, botBoxes[horizontal].insets(10, 25));
                     
-                itemSlots[vertical * 6 + horizontal] = itemSlot;
+                itemSlots[index] = itemSlot;
             }
         }
     }

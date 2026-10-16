@@ -32,4 +32,10 @@
         {
             playerViewAction.updateEquippedItem(slot, playerModel.getEquippedItem(slot));
         }
+        
+        @Override
+        public void requestSlotPressed(int index)
+        {
+        
+        }
     }

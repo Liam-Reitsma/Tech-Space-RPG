@@ -17,13 +17,9 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
     private final PlayerEquippedPanel playerEquippedPanel;
     private final PlayerInventoryPanel playerInventoryPanel;
     
-    private final PlayerAction playerAction;
-    
-    public PlayerPanel(PlayerAction pAction)
+    public PlayerPanel(PlayerAction playerAction)
     {
         setLayout(new ScaledLayout());
-        
-        playerAction = pAction;
         
         LayoutBox[] verticalBoxes = new LayoutBox().splitVertical(60, 40);
         LayoutBox[] horizontalBoxes = verticalBoxes[0].splitHorizontal(40, 60);
@@ -31,10 +27,10 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
         playerStatsPanel = new PlayerStatsPanel();
         add(playerStatsPanel, horizontalBoxes[0]);
         
-        playerEquippedPanel = new PlayerEquippedPanel();
+        playerEquippedPanel = new PlayerEquippedPanel(playerAction);
         add(playerEquippedPanel, horizontalBoxes[1]);
         
-        playerInventoryPanel = new PlayerInventoryPanel();
+        playerInventoryPanel = new PlayerInventoryPanel(playerAction);
         add(playerInventoryPanel, verticalBoxes[1]);
     }
     

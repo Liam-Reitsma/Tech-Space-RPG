@@ -7,6 +7,8 @@ import game.items.weapon.WeaponSlot;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ItemSlot extends JPanel
 {
@@ -24,20 +26,52 @@ public class ItemSlot extends JPanel
     
     private final EquipSlot equipSlot;
     
-    public ItemSlot()
+    public ItemSlot(ItemSlotPressed action)
     {
         image = EMPTY_SLOT;
         quantity = 0;
         equipSlot = null;
+        
+        MouseAdapter adapter = createMouseAdapter(action);
+        addMouseListener(adapter);
+        addMouseMotionListener(adapter);
     }
     
-    public ItemSlot(EquipSlot slot, int count)
+    public ItemSlot(EquipSlot slot, int count, ItemSlotPressed action)
     {
         image = getImageFromSlot(slot);
         quantity = count;
         equipSlot = slot;
         
         repaint();
+        
+        MouseAdapter adapter = createMouseAdapter(action);
+        addMouseListener(adapter);
+        addMouseMotionListener(adapter);
+    }
+    
+    private MouseAdapter createMouseAdapter(ItemSlotPressed action)
+    {
+        return new MouseAdapter()
+        {
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                action.onPressed();
+            }
+            
+            @Override
+            public void mouseDragged(MouseEvent e)
+            {
+            
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e)
+            {
+            
+            }
+        };
     }
     
     public void setItem(Item item, int count)
