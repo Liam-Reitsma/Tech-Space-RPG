@@ -91,8 +91,6 @@ public class ItemSlot extends JPanel
                     Component component = dragViewAction.getDropTarget(e);
                     if(component instanceof ItemSlot newItemSlot)
                         released.onRelease(newItemSlot.slotIdentity);
-                    else
-                        released.onRelease(null);
                 }
             }
         };

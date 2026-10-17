@@ -25,7 +25,7 @@
             for(EquipSlot slot : playerModel.getAllEquippedSlots())
                 requestEquippedItemChange(slot);
             playerViewAction.updatePlayerStats(playerModel.getPlayerStatEntries());
-            playerViewAction.updateInventory(playerModel.getInventory());
+            playerViewAction.updateInventory(playerModel.getInventorySlots());
         }
         
         @Override
@@ -43,6 +43,24 @@
         @Override
         public void requestSlotReleased(SlotIdentity sources, SlotIdentity destination)
         {
-        
+            boolean isFromInventory = sources.equipSlot() == null;
+            boolean isToEquip = destination.equipSlot() != null;
+            
+            if(isFromInventory)
+            {
+                if(isToEquip)
+                    playerModel.getInventory().equipItem(sources.inventorySlot(), destination.equipSlot());
+                else
+                    playerModel.getInventory().swapItems(sources.inventorySlot(), destination.inventorySlot());
+            }
+            else
+            {
+                if(isToEquip)
+                    return;
+                else
+                    playerModel.getInventory().unequipItem(sources.equipSlot(), destination.inventorySlot());
+            }
+            
+            requestUpdate();
         }
     }

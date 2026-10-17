@@ -77,6 +77,13 @@ public class Inventory
         }
     }
     
+    public boolean equipItem(int itemIndex, EquipSlot targetEquipSlot)
+    {
+        if(itemIndex < 0 || itemIndex >= INVENTORY_CAPACITY)
+            return false;
+        return equipItem(inventorySlots[itemIndex].getItem(), targetEquipSlot);
+    }
+    
     public boolean equipItem(Item originalItem, EquipSlot targetEquipSlot)
     {
         if(originalItem instanceof EquippableItem item)
@@ -102,6 +109,13 @@ public class Inventory
         }
         
         return false;
+    }
+    
+    public boolean unequipItem(EquipSlot equipSlot, int itemIndex)
+    {
+        if(itemIndex < 0 || itemIndex >= INVENTORY_CAPACITY)
+            return false;
+        return unequipItem(equippedItemsMap.get(equipSlot), itemIndex);
     }
     
     public boolean unequipItem(EquippableItem item, int targetIndex)
