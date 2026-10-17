@@ -4,6 +4,7 @@
     import game.frame.controller.FrameAction;
     import game.gui.popup.PopupMessage;
     import game.items.EquipSlot;
+    import game.items.EquippableItem;
     import game.player.model.ItemStack;
     import game.player.model.PlayerModel;
     import game.player.model.SlotIdentity;
@@ -45,7 +46,10 @@
         {
             if(destination == null)
             {
-                requestDiscard(playerModel.getInventory().getItemStack(sources.inventorySlot()));
+                if(sources.inventorySlot() != null)
+                    requestDiscard(playerModel.getInventory().getItemStack(sources.inventorySlot()));
+                else
+                    requestDiscard(playerModel.getInventory().getEquippedItem(sources.equipSlot()));
                 return;
             }
             
@@ -84,6 +88,25 @@
                     e->
                     {
                         playerModel.getInventory().removeFromInventory(itemStack.getItem(), true);
+                        requestUpdate();
+                        frameAction.requestClosePopup();
+                    });
+        }
+        
+        private void requestDiscard(EquippableItem item)
+        {
+            PopupMessage popupMessage = new PopupMessage("Discarding " + item.getName(),
+                    "You are about to discard " + item.getName(),
+                    "Cancel", "Discard");
+            frameAction.requestDisplayConfirmation(popupMessage,
+                    e->
+                    {
+                        requestUpdate();
+                        frameAction.requestClosePopup();
+                    },
+                    e->
+                    {
+                        playerModel.getInventory().removeFromEquipped(item);
                         requestUpdate();
                         frameAction.requestClosePopup();
                     });

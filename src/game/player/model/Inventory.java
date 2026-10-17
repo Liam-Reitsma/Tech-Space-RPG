@@ -76,6 +76,11 @@ public class Inventory
         }
     }
     
+    public void removeFromEquipped(EquippableItem item)
+    {
+        equippedItemsMap.replace(item.getEquipSlot(), null);
+    }
+    
     public boolean equipItem(int itemIndex, EquipSlot targetEquipSlot)
     {
         if(itemIndex < 0 || itemIndex >= INVENTORY_CAPACITY)
