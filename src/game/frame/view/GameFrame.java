@@ -73,7 +73,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     }
     
     @Override
-    public void closeError()
+    public void closePopup()
     {
         if(currentDisplayedPopup != null)
         {
@@ -123,7 +123,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     }
     
     @Override
-    public void displayError(PopupError error, ActionListener leftButton, ActionListener rightButton)
+    public void displayPopupError(PopupError error, ActionListener leftButton, ActionListener rightButton)
     {
         if(currentDisplayedPopup != null)
             currentDisplayedPopup.closeDisplay();
@@ -137,7 +137,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     }
     
     @Override
-    public void displayConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm)
+    public void displayPopupConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm)
     {
         if(currentDisplayedPopup != null)
             currentDisplayedPopup.closeDisplay();

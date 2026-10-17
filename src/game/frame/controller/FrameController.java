@@ -31,7 +31,7 @@ public class FrameController implements FrameAction
     @Override
     public void requestCloseError()
     {
-        frameViewAction.closeError();
+        popupViewAction.closePopup();
     }
     
     @Override
@@ -46,13 +46,13 @@ public class FrameController implements FrameAction
     @Override
     public void requestDisplayError(PopupError error, ActionListener onCancel, ActionListener onConfirm)
     {
-        popupViewAction.displayError(error, onCancel, onConfirm);
+        popupViewAction.displayPopupError(error, onCancel, onConfirm);
     }
     
     @Override
     public void requestDisplayConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm)
     {
-        popupViewAction.displayConfirmation(popupMessage, onCancel, onConfirm);
+        popupViewAction.displayPopupConfirmation(popupMessage, onCancel, onConfirm);
     }
     
     @Override

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 public interface PopupViewAction
 {
-    void displayError(PopupError error, ActionListener onCancel, ActionListener onConfirm);
-    void displayConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm);
+    void closePopup();
+    void displayPopupError(PopupError error, ActionListener onCancel, ActionListener onConfirm);
+    void displayPopupConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm);
 }

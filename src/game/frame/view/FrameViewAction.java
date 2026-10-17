@@ -5,7 +5,6 @@ import game.gui.config.DisplayResolution;
 
 public interface FrameViewAction
 {
-    void closeError();
     void closeGameFrame();
     void closeOverlay();
     void display(DisplayTarget display);
