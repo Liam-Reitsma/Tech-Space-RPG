@@ -1,10 +1,10 @@
-package game.gui.errors;
+package game.gui.popup;
 
 import game.gui.common.PanelButton;
 
 import java.awt.event.ActionListener;
 
-public enum DisplayError
+public enum PopupError
 {
     DUPLICATE_SAVE_NAME("Sorry, that save name already exists. Would you like to overwrite?", "Cancel", "Confirm");
     
@@ -12,18 +12,18 @@ public enum DisplayError
     private final String leftButtonText;
     private final String rightButtonText;
     
-    DisplayError(String message, String left, String right)
+    PopupError(String message, String left, String right)
     {
         errorMessage = message;
         leftButtonText = left;
         rightButtonText = right;
     }
     
-    public ErrorOverlay createOverlay(ActionListener leftButtonAction, ActionListener rightButtonAction)
+    public PopupOverlay createOverlay(ActionListener leftButtonAction, ActionListener rightButtonAction)
     {
         PanelButton leftButton = new PanelButton(leftButtonText, leftButtonAction);
         PanelButton rightButton = new PanelButton(rightButtonText, rightButtonAction);
-        return new ErrorOverlay(toString(), errorMessage, leftButton, rightButton);
+        return new PopupOverlay(toString(), errorMessage, leftButton, rightButton);
     }
     
     @Override

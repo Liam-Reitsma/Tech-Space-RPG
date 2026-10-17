@@ -3,6 +3,7 @@ package game.frame.view;
 import static game.gui.config.GUIConfig.*;
 
 import game.frame.controller.DisplayTarget;
+import game.gui.common.PanelButton;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.common.scaledlayout.ScaledLayoutAnchor;
@@ -10,7 +11,9 @@ import game.gui.config.DisplayResolution;
 import game.gui.config.Displayable;
 import game.gui.config.DisplayableOverlay;
 import game.gui.config.DisplayableScreen;
-import game.gui.errors.DisplayError;
+import game.gui.popup.PopupError;
+import game.gui.popup.PopupMessage;
+import game.gui.popup.PopupOverlay;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,13 +23,13 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.util.Map;
 
-public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
+public class GameFrame extends JFrame implements DragViewAction, FrameViewAction, PopupViewAction
 {
     private final OverlayContainer overlayContainer;
     
     private Displayable currentDisplayedScreen;
     private Displayable currentDisplayedOverlay;
-    private Displayable currentDisplayedError;
+    private Displayable currentDisplayedPopup;
     
     private Map<DisplayTarget, Displayable> displayMap;
     
@@ -72,10 +75,10 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     @Override
     public void closeError()
     {
-        if(currentDisplayedError != null)
+        if(currentDisplayedPopup != null)
         {
-            currentDisplayedError.closeDisplay();
-            currentDisplayedError = null;
+            currentDisplayedPopup.closeDisplay();
+            currentDisplayedPopup = null;
         }
     }
     
@@ -120,14 +123,31 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     }
     
     @Override
-    public void displayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
+    public void displayError(PopupError error, ActionListener leftButton, ActionListener rightButton)
     {
-        if(currentDisplayedError != null)
-            currentDisplayedError.closeDisplay();
+        if(currentDisplayedPopup != null)
+            currentDisplayedPopup.closeDisplay();
         
-        currentDisplayedError = error.createOverlay(leftButton, rightButton);
-        overlayContainer.add(currentDisplayedError.getDisplay(), new LayoutBox(null, 15, 30, ScaledLayoutAnchor.CENTER));
-        currentDisplayedError.openDisplay();
+        currentDisplayedPopup = error.createOverlay(leftButton, rightButton);
+        overlayContainer.add(currentDisplayedPopup.getDisplay(), new LayoutBox(null, 15, 30, ScaledLayoutAnchor.CENTER));
+        currentDisplayedPopup.openDisplay();
+        
+        overlayContainer.revalidate();
+        overlayContainer.repaint();
+    }
+    
+    @Override
+    public void displayConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm)
+    {
+        if(currentDisplayedPopup != null)
+            currentDisplayedPopup.closeDisplay();
+        
+        PanelButton cancelButton = new PanelButton(popupMessage.leftButtonText(), onCancel);
+        PanelButton confirmButton = new PanelButton(popupMessage.rightButtonText(), onConfirm);
+        
+        currentDisplayedPopup = new PopupOverlay(popupMessage.title(), popupMessage.description(), cancelButton, confirmButton);
+        overlayContainer.add(currentDisplayedPopup.getDisplay(), new LayoutBox(null, 15, 30, ScaledLayoutAnchor.CENTER));
+        currentDisplayedPopup.openDisplay();
         
         overlayContainer.revalidate();
         overlayContainer.repaint();

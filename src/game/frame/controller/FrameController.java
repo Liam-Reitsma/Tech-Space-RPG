@@ -1,14 +1,17 @@
 package game.frame.controller;
 
 import game.frame.view.FrameViewAction;
+import game.frame.view.PopupViewAction;
 import game.gui.config.DisplayResolution;
-import game.gui.errors.DisplayError;
+import game.gui.popup.PopupError;
+import game.gui.popup.PopupMessage;
 
 import java.awt.event.ActionListener;
 
 public class FrameController implements FrameAction
 {
     private FrameViewAction frameViewAction;
+    private PopupViewAction popupViewAction;
     
     public FrameController()
     {
@@ -16,6 +19,8 @@ public class FrameController implements FrameAction
     }
     
     public void setFrameViewAction(FrameViewAction fvAction) { frameViewAction = fvAction; }
+    
+    public void setPopupViewAction(PopupViewAction pvAction) { popupViewAction = pvAction;}
     
     @Override
     public void requestCloseOverlay()
@@ -39,9 +44,15 @@ public class FrameController implements FrameAction
     }
     
     @Override
-    public void requestDisplayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
+    public void requestDisplayError(PopupError error, ActionListener onCancel, ActionListener onConfirm)
     {
-        frameViewAction.displayError(error, leftButton, rightButton);
+        popupViewAction.displayError(error, onCancel, onConfirm);
+    }
+    
+    @Override
+    public void requestDisplayConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm)
+    {
+        popupViewAction.displayConfirmation(popupMessage, onCancel, onConfirm);
     }
     
     @Override

@@ -1,13 +1,13 @@
-package game.gui.errors;
+package game.gui.popup;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ErrorTextDisplay extends JTextArea
+public class PopupTextDisplay extends JTextArea
 {
     private static final Image IMAGE = new ImageIcon("resources/images/Options Content.png").getImage();
     
-    public ErrorTextDisplay(String message)
+    public PopupTextDisplay(String message)
     {
         super(message);
         setLineWrap(true);

@@ -1,17 +1,16 @@
-package game.gui.errors;
+package game.gui.popup;
 
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
-import game.gui.common.scaledlayout.ScaledLayoutAnchor;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ErrorTitlePanel extends JPanel
+public class PopupTitlePanel extends JPanel
 {
     private static final Image IMAGE = new ImageIcon("resources/images/Options Title Content.png").getImage();
     
-    public ErrorTitlePanel(String title)
+    public PopupTitlePanel(String title)
     {
         setLayout(new ScaledLayout());
         

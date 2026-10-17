@@ -10,10 +10,10 @@ import game.combat.controller.CombatAction;
 import game.combat.controller.CombatListener;
 import game.combat.model.CombatOutcome;
 import game.entities.Enemy;
+import game.gui.popup.PopupError;
 import game.player.model.Player;
 import game.frame.controller.FrameAction;
 import game.items.Item;
-import game.gui.errors.DisplayError;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
 import game.persistence.InventoryChange;
@@ -81,7 +81,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         Map<Point, RuntimeRoom> world = worldAction.requestGenerateWorld();
         if(persistenceService.doesSaveExist(newPlayer.getName()))
             frameAction.requestDisplayError(
-                    DisplayError.DUPLICATE_SAVE_NAME,
+                    PopupError.DUPLICATE_SAVE_NAME,
                     e -> frameAction.requestCloseError(),
                     e -> forceStartNewGame(newPlayer, world));
         else
