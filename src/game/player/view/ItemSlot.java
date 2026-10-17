@@ -90,36 +90,9 @@ public class ItemSlot extends JPanel
                     dragViewAction.removeFromOverlay(dragSlot);
                     Component component = dragViewAction.getDropTarget(e);
                     if(component instanceof ItemSlot newItemSlot)
-                    {
-                        ItemSlot oldItemSlot = ItemSlot.this;
-                        if(oldItemSlot.slotIdentity.equipSlot() == null)
-                        {
-                            if(newItemSlot.slotIdentity.equipSlot() == null)
-                            {
-                                //Is inventory so call swap
-                            }
-                            else
-                            {
-                                //Equip
-                            }
-                        }
-                        else
-                        {
-                            if(newItemSlot.slotIdentity.equipSlot() == null)
-                            {
-                                //Unequip
-                            }
-                            else
-                            {
-                                //Fail as wrong location
-                            }
-                        }
-                    }
+                        released.onRelease(newItemSlot.slotIdentity);
                     else
-                    {
-                        //Fail as wrong location
-                    }
-                    released.onRelease();
+                        released.onRelease(null);
                 }
             }
         };

@@ -1,9 +1,9 @@
     package game.player.controller;
     
     import game.Updatable;
-    import game.frame.controller.FrameAction;
     import game.items.EquipSlot;
     import game.player.model.PlayerModel;
+    import game.player.model.SlotIdentity;
     import game.player.view.PlayerViewAction;
     
     public class PlayerController implements PlayerAction, Updatable
@@ -35,31 +35,13 @@
         }
         
         @Override
-        public void requestSlotDragged(int index)
+        public void requestSlotPressed(SlotIdentity source)
         {
         
         }
         
         @Override
-        public void requestSlotDragged(EquipSlot slot)
-        {
-        
-        }
-        
-        @Override
-        public void requestSlotPressed(int index)
-        {
-        
-        }
-        
-        @Override
-        public void requestSlotReleased(int index)
-        {
-        
-        }
-        
-        @Override
-        public void requestSlotReleased(EquipSlot slot)
+        public void requestSlotReleased(SlotIdentity sources, SlotIdentity destination)
         {
         
         }

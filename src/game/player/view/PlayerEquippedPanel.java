@@ -34,9 +34,10 @@ public class PlayerEquippedPanel extends JPanel
         for(int i = 0; i < equipSlots.length; i++)
         {
             int index = i;
-            ItemSlot itemSlot = new ItemSlot(new SlotIdentity(null, equipSlots[i]), 0, dragViewAction,
-                    () -> playerAction.requestSlotPressed(index),
-                    () -> playerAction.requestSlotReleased(equipSlots[index]));
+            SlotIdentity source = new SlotIdentity(null, equipSlots[i]);
+            ItemSlot itemSlot = new ItemSlot(source, 0, dragViewAction,
+                    () -> playerAction.requestSlotPressed(source),
+                    (destination) -> playerAction.requestSlotReleased(source, destination));
             equippedInventoryMap.put(equipSlots[i], itemSlot);
             add(itemSlot, verticalBoxes[i].insets(0, 10));
         }
