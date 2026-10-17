@@ -105,6 +105,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
             if(currentDisplayedOverlay != null)
                 currentDisplayedOverlay.closeDisplay();
             currentDisplayedOverlay = overlay;
+            overlayContainer.setVisible(true);
         }
         else if(displayScreen instanceof DisplayableScreen screen)
         {
@@ -155,6 +156,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     {
         getLayeredPane().remove(component);
         getLayeredPane().repaint();
+        overlayContainer.setVisible(false);
     }
     
     @Override

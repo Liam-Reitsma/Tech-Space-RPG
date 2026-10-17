@@ -80,7 +80,7 @@ public class Main
         MainMenuScreen mainMenuScreen = new MainMenuScreen("Tech Space RPG", mainMenuController);
         NewGameScreen newGameScreen = new NewGameScreen(newGameController);
         OptionsOverlay optionsOverlay = new OptionsOverlay(optionsController);
-        PlayerPanel playerPanel = new PlayerPanel(playerController);
+        PlayerPanel playerPanel = new PlayerPanel(playerController, gameFrame);
         SavesOverlay savesOverlay = new SavesOverlay(savesController);
         
         WorldMapPanel worldMapPanel = new WorldMapPanel();
