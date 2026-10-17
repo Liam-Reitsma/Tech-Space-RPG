@@ -35,12 +35,6 @@
         }
         
         @Override
-        public void requestSlotPressed(SlotIdentity source)
-        {
-        
-        }
-        
-        @Override
         public void requestSlotReleased(SlotIdentity sources, SlotIdentity destination)
         {
             boolean isFromInventory = sources.equipSlot() == null;

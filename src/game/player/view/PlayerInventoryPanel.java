@@ -40,7 +40,6 @@ public class PlayerInventoryPanel extends JPanel
                 int index = vertical * 6 + horizontal;
                 SlotIdentity source = new SlotIdentity(index, null);
                 ItemSlot itemSlot = new ItemSlot(source, 0, dragViewAction,
-                        () -> playerAction.requestSlotPressed(source),
                         (destination) -> playerAction.requestSlotReleased(source, destination));
                 if(vertical == 0)
                     add(itemSlot, topBoxes[horizontal].insets(10, 25));

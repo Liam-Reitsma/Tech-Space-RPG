@@ -40,7 +40,7 @@ public class ItemSlot extends JPanel
         dragViewAction = null;
     }
     
-    public ItemSlot(SlotIdentity slotType, int count, DragViewAction dvAction, ItemSlotPressed itemSlotPressed, ItemSlotReleased released)
+    public ItemSlot(SlotIdentity slotType, int count, DragViewAction dvAction, ItemSlotReleased released)
     {
         image = getImageFromSlot(slotType.equipSlot());
         quantity = count;
@@ -52,22 +52,16 @@ public class ItemSlot extends JPanel
         
         if(slotType.isValid())
         {
-            MouseAdapter adapter = createMouseAdapter(itemSlotPressed, released);
+            MouseAdapter adapter = createMouseAdapter(released);
             addMouseListener(adapter);
             addMouseMotionListener(adapter);
         }
     }
     
-    private MouseAdapter createMouseAdapter(ItemSlotPressed pressed, ItemSlotReleased released)
+    private MouseAdapter createMouseAdapter(ItemSlotReleased released)
     {
         return new MouseAdapter()
         {
-            @Override
-            public void mousePressed(MouseEvent e)
-            {
-                pressed.onPressed();
-            }
-            
             @Override
             public void mouseDragged(MouseEvent e)
             {
