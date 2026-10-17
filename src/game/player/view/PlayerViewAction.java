@@ -12,4 +12,5 @@ public interface PlayerViewAction
     void updatePlayerStats(List<StatEntry> statEntries);
     void updateEquippedItem(EquipSlot slot, EquippableItem item);
     void updateInventory(ItemStack[] itemStacks);
+    void flashEquipmentSlot(EquipSlot incorrectSlot, EquipSlot correctSlot);
 }

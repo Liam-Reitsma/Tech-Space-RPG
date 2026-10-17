@@ -52,4 +52,12 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
     {
         playerInventoryPanel.updateInventory(itemStacks);
     }
+    
+    @Override
+    public void flashEquipmentSlot(EquipSlot incorrectSlot, EquipSlot correctSlot)
+    {
+        playerEquippedPanel.highlightSlots(incorrectSlot, SlotHighlight.INVALID);
+        if(correctSlot != null && !correctSlot.equals(incorrectSlot))
+            playerEquippedPanel.highlightSlots(correctSlot, SlotHighlight.VALID);
+    }
 }

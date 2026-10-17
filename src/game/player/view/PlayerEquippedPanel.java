@@ -51,6 +51,11 @@ public class PlayerEquippedPanel extends JPanel
             itemSlot.setItem(item, 1);
     }
     
+    public void highlightSlots(EquipSlot slot, SlotHighlight highlight)
+    {
+        equippedInventoryMap.get(slot).flashHighlight(highlight);
+    }
+    
     @Override
     public void paintComponent(Graphics g)
     {

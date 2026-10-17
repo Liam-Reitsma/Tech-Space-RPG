@@ -59,14 +59,30 @@
             if(isFromInventory)
             {
                 if(isToEquip)
-                    playerModel.getInventory().equipItem(sources.inventorySlot(), destination.equipSlot());
+                {
+                    if(!playerModel.getInventory().equipItem(sources.inventorySlot(), destination.equipSlot()))
+                    {
+                        if(playerModel.getInventory().getItemStack(sources.inventorySlot()).getItem() instanceof EquippableItem item)
+                        {
+                            playerViewAction.flashEquipmentSlot(destination.equipSlot(), item.getEquipSlot());
+                        }
+                        else
+                        {
+                            for(EquipSlot slot : playerModel.getInventory().getAllEquippedSlots())
+                            {playerViewAction.flashEquipmentSlot(slot, null);}
+                        }
+                    }
+                }
                 else
                     playerModel.getInventory().swapItems(sources.inventorySlot(), destination.inventorySlot());
             }
             else
             {
                 if(isToEquip)
-                    return;
+                {
+                    playerViewAction.flashEquipmentSlot(sources.equipSlot(), null);
+                    playerViewAction.flashEquipmentSlot(destination.equipSlot(), null );
+                }
                 else
                     playerModel.getInventory().unequipItem(sources.equipSlot(), destination.inventorySlot());
             }
