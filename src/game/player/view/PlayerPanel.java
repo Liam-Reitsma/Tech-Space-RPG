@@ -1,5 +1,6 @@
 package game.player.view;
 
+import game.frame.view.DragViewAction;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.items.EquipSlot;
@@ -17,7 +18,7 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
     private final PlayerEquippedPanel playerEquippedPanel;
     private final PlayerInventoryPanel playerInventoryPanel;
     
-    public PlayerPanel(PlayerAction playerAction)
+    public PlayerPanel(PlayerAction playerAction, DragViewAction dvAction)
     {
         setLayout(new ScaledLayout());
         
@@ -27,10 +28,10 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
         playerStatsPanel = new PlayerStatsPanel();
         add(playerStatsPanel, horizontalBoxes[0]);
         
-        playerEquippedPanel = new PlayerEquippedPanel(playerAction);
+        playerEquippedPanel = new PlayerEquippedPanel(playerAction, dvAction);
         add(playerEquippedPanel, horizontalBoxes[1]);
         
-        playerInventoryPanel = new PlayerInventoryPanel(playerAction);
+        playerInventoryPanel = new PlayerInventoryPanel(playerAction, dvAction);
         add(playerInventoryPanel, verticalBoxes[1]);
     }
     

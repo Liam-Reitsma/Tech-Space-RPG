@@ -10,14 +10,11 @@
     {
         private final PlayerModel playerModel;
         
-        private final FrameAction frameAction;
-        
         private PlayerViewAction playerViewAction;
         
-        public PlayerController(PlayerModel pModel, FrameAction fAction)
+        public PlayerController(PlayerModel pModel)
         {
             playerModel = pModel;
-            frameAction = fAction;
         }
         
         public void setPlayerViewAction(PlayerViewAction pVAction) { playerViewAction = pVAction; }

@@ -1,9 +1,11 @@
 package game.player.view;
 
+import game.frame.view.DragViewAction;
 import game.items.EquipSlot;
 import game.items.Item;
 import game.items.armour.ArmourSlot;
 import game.items.weapon.WeaponSlot;
+import game.player.model.SlotIdentity;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,43 +27,38 @@ public class ItemSlot extends JPanel
     private int quantity;
     private boolean isDragging;
     
-    private ItemSlot dragSlot;
-    private EquipSlot equipSlot;
+    private final ItemSlot dragSlot;
+    private final SlotIdentity slotIdentity;
+    private final DragViewAction dragViewAction;
     
     public ItemSlot(ItemSlot itemSlot)
     {
         image = itemSlot.image;
         quantity = itemSlot.quantity;
-        equipSlot = itemSlot.equipSlot;
+        dragSlot = null;
+        slotIdentity = itemSlot.slotIdentity;
+        dragViewAction = null;
     }
     
-    public ItemSlot(ItemSlotPressed pressed, ItemSlotDragged dragged, ItemSlotReleased released)
+    public ItemSlot(SlotIdentity slotType, int count, DragViewAction dvAction, ItemSlotPressed itemSlotPressed, ItemSlotReleased released)
     {
-        image = EMPTY_SLOT;
-        quantity = 0;
-        dragSlot = new ItemSlot(this);
-        equipSlot = null;
-        
-        MouseAdapter adapter = createMouseAdapter(pressed, dragged, released);
-        addMouseListener(adapter);
-        addMouseMotionListener(adapter);
-    }
-    
-    public ItemSlot(EquipSlot slot, int count, ItemSlotPressed itemSlotPressed, ItemSlotDragged dragged, ItemSlotReleased released)
-    {
-        image = getImageFromSlot(slot);
+        image = getImageFromSlot(slotType.equipSlot());
         quantity = count;
-        dragSlot = new ItemSlot(this);
-        equipSlot = slot;
+        slotIdentity = slotType;
+        dragViewAction = dvAction;
         
+        dragSlot = new ItemSlot(this);
         repaint();
         
-        MouseAdapter adapter = createMouseAdapter(itemSlotPressed, dragged, released);
-        addMouseListener(adapter);
-        addMouseMotionListener(adapter);
+        if(slotType.isValid())
+        {
+            MouseAdapter adapter = createMouseAdapter(itemSlotPressed, released);
+            addMouseListener(adapter);
+            addMouseMotionListener(adapter);
+        }
     }
     
-    private MouseAdapter createMouseAdapter(ItemSlotPressed pressed, ItemSlotDragged dragged, ItemSlotReleased released)
+    private MouseAdapter createMouseAdapter(ItemSlotPressed pressed, ItemSlotReleased released)
     {
         return new MouseAdapter()
         {
@@ -80,7 +77,7 @@ public class ItemSlot extends JPanel
                     repaint();
                 }
                 
-                dragged.onDrag();
+                dragViewAction.displayOnOverlay(e, dragSlot);
             }
             
             @Override
@@ -90,6 +87,38 @@ public class ItemSlot extends JPanel
                 {
                     isDragging = false;
                     repaint();
+                    dragViewAction.removeFromOverlay(dragSlot);
+                    Component component = dragViewAction.getDropTarget(e);
+                    if(component instanceof ItemSlot newItemSlot)
+                    {
+                        ItemSlot oldItemSlot = ItemSlot.this;
+                        if(oldItemSlot.slotIdentity.equipSlot() == null)
+                        {
+                            if(newItemSlot.slotIdentity.equipSlot() == null)
+                            {
+                                //Is inventory so call swap
+                            }
+                            else
+                            {
+                                //Equip
+                            }
+                        }
+                        else
+                        {
+                            if(newItemSlot.slotIdentity.equipSlot() == null)
+                            {
+                                //Unequip
+                            }
+                            else
+                            {
+                                //Fail as wrong location
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //Fail as wrong location
+                    }
                     released.onRelease();
                 }
             }
@@ -108,7 +137,7 @@ public class ItemSlot extends JPanel
     
     public void removeItem()
     {
-        image = getImageFromSlot(equipSlot);
+        image = getImageFromSlot(slotIdentity.equipSlot());
         quantity = 0;
         dragSlot.image = image;
         dragSlot.quantity = quantity;

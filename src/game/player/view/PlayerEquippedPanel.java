@@ -1,5 +1,6 @@
 package game.player.view;
 
+import game.frame.view.DragViewAction;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
 import game.items.EquipSlot;
@@ -7,6 +8,7 @@ import game.items.EquippableItem;
 import game.items.armour.ArmourSlot;
 import game.items.weapon.WeaponSlot;
 import game.player.controller.PlayerAction;
+import game.player.model.SlotIdentity;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +21,7 @@ public class PlayerEquippedPanel extends JPanel
     
     private final Map<EquipSlot, ItemSlot> equippedInventoryMap;
     
-    public PlayerEquippedPanel(PlayerAction playerAction)
+    public PlayerEquippedPanel(PlayerAction playerAction, DragViewAction dragViewAction)
     {
         setLayout(new ScaledLayout());
         setBackground(Color.blue);
@@ -32,8 +34,8 @@ public class PlayerEquippedPanel extends JPanel
         for(int i = 0; i < equipSlots.length; i++)
         {
             int index = i;
-            ItemSlot itemSlot = new ItemSlot(equipSlots[i], 0, () -> playerAction.requestSlotPressed(index),
-                    () -> playerAction.requestSlotDragged(equipSlots[index]),
+            ItemSlot itemSlot = new ItemSlot(new SlotIdentity(null, equipSlots[i]), 0, dragViewAction,
+                    () -> playerAction.requestSlotPressed(index),
                     () -> playerAction.requestSlotReleased(equipSlots[index]));
             equippedInventoryMap.put(equipSlots[i], itemSlot);
             add(itemSlot, verticalBoxes[i].insets(0, 10));
