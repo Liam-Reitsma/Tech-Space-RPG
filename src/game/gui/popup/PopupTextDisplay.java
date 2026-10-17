@@ -12,7 +12,7 @@ public class PopupTextDisplay extends JTextArea
         super(message);
         setLineWrap(true);
         setWrapStyleWord(true);
-        setFont(new Font("OCR Extended A", Font.PLAIN, 1000 / message.length()));
+        setFont(new Font("OCR Extended A", Font.PLAIN, 750 / message.length()));
         setForeground(Color.WHITE);
         setOpaque(false);
     }

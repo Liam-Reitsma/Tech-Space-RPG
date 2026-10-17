@@ -18,9 +18,11 @@ public class FrameController implements FrameAction
     
     }
     
-    public void setFrameViewAction(FrameViewAction fvAction) { frameViewAction = fvAction; }
-    
-    public void setPopupViewAction(PopupViewAction pvAction) { popupViewAction = pvAction;}
+    public <ViewAction extends FrameViewAction & PopupViewAction> void setViewActions(ViewAction viewAction)
+    {
+        frameViewAction = viewAction;
+        popupViewAction = viewAction;
+    }
     
     @Override
     public void requestCloseOverlay()
@@ -29,7 +31,7 @@ public class FrameController implements FrameAction
     }
     
     @Override
-    public void requestCloseError()
+    public void requestClosePopup()
     {
         popupViewAction.closePopup();
     }

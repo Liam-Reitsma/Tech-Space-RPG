@@ -85,6 +85,8 @@ public class ItemSlot extends JPanel
                     Component component = dragViewAction.getDropTarget(e);
                     if(component instanceof ItemSlot newItemSlot)
                         released.onRelease(newItemSlot.slotIdentity);
+                    else
+                        released.onRelease(null);
                 }
             }
         };
@@ -140,7 +142,10 @@ public class ItemSlot extends JPanel
             g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
             int textWidth = g.getFontMetrics().stringWidth(String.valueOf(quantity));
             if(quantity > 1)
-                g.drawString(String.valueOf(quantity), getWidth() - textWidth - 15, 15);
+            {
+                g.setColor(Color.WHITE);
+                g.drawString(String.valueOf(quantity), getWidth() - textWidth - 10, 20);
+            }
         }
     }
 }

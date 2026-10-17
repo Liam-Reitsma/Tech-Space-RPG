@@ -73,7 +73,7 @@ public class Main
         MainMenuController mainMenuController = new MainMenuController(frameController);
         MainGameMenuController mainGameMenuController = new MainGameMenuController(gameModel, frameController);
         NewGameController newGameController = new NewGameController(frameController, gameController);
-        PlayerController playerController = new PlayerController(playerModel);
+        PlayerController playerController = new PlayerController(playerModel, frameController);
         
         OverlayContainer overlayContainer = new OverlayContainer();
         GameFrame gameFrame = new GameFrame("Tech Space RPG", overlayContainer);
@@ -108,7 +108,7 @@ public class Main
 
         combatController.setCombatViewAction(combatPane);
         combatController.setCombatListener(gameController);
-        frameController.setFrameViewAction(gameFrame);
+        frameController.setViewActions(gameFrame);
         gameController.setGameViewAction(gameScreen);
         gameController.addUpdatable(combatController);
         gameController.addUpdatable(rewardController);

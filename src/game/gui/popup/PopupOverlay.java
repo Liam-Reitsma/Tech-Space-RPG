@@ -6,6 +6,7 @@ import game.gui.common.scaledlayout.ScaledLayout;
 import game.gui.config.Displayable;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class PopupOverlay extends JPanel implements Displayable
 {
@@ -13,13 +14,14 @@ public class PopupOverlay extends JPanel implements Displayable
     {
         setLayout(new ScaledLayout());
         setOpaque(false);
-        LayoutBox[] boxes = new LayoutBox().splitVertical(20, 60, 20);
+        LayoutBox[] boxes = new LayoutBox().insets(1).splitVertical(20, 60, 20);
         add(new PopupTitlePanel(title), boxes[0]);
         add(new PopupTextDisplay(message), boxes[1]);
         boxes = boxes[2].splitHorizontal(50, 50);
         
         add(leftButton, boxes[0]);
         add(rightButton, boxes[1]);
+        setBorder(BorderFactory.createLineBorder(Color.GRAY, 4));
     }
     
     @Override

@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 public interface FrameAction
 {
     void requestCloseOverlay();
-    void requestCloseError();
+    void requestClosePopup();
     void requestDisplay(DisplayTarget display);
     void requestDisplayError(PopupError error, ActionListener onCancel, ActionListener onConfirm);
     void requestDisplayConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm);

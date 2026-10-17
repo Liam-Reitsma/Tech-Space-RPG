@@ -5,7 +5,6 @@ import game.items.armour.Armour;
 import game.items.armour.ArmourSlot;
 import game.items.weapon.Weapon;
 import game.items.weapon.WeaponSlot;
-import game.items.weapon.WeaponType;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -224,6 +223,8 @@ public class Inventory
     {
         return equippedItemsMap.get(slot);
     }
+    
+    public ItemStack getItemStack(int index) { return inventorySlots[index]; }
     
     public EquipSlot[] getAllEquippedSlots()
     {

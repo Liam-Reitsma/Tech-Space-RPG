@@ -79,6 +79,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
         {
             currentDisplayedPopup.closeDisplay();
             currentDisplayedPopup = null;
+            overlayContainer.setVisible(false);
         }
     }
     
@@ -131,6 +132,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
         currentDisplayedPopup = error.createOverlay(leftButton, rightButton);
         overlayContainer.add(currentDisplayedPopup.getDisplay(), new LayoutBox(null, 15, 30, ScaledLayoutAnchor.CENTER));
         currentDisplayedPopup.openDisplay();
+        overlayContainer.setVisible(true);
         
         overlayContainer.revalidate();
         overlayContainer.repaint();
@@ -148,6 +150,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
         currentDisplayedPopup = new PopupOverlay(popupMessage.title(), popupMessage.description(), cancelButton, confirmButton);
         overlayContainer.add(currentDisplayedPopup.getDisplay(), new LayoutBox(null, 15, 30, ScaledLayoutAnchor.CENTER));
         currentDisplayedPopup.openDisplay();
+        overlayContainer.setVisible(true);
         
         overlayContainer.revalidate();
         overlayContainer.repaint();

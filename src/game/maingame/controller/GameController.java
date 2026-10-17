@@ -82,7 +82,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         if(persistenceService.doesSaveExist(newPlayer.getName()))
             frameAction.requestDisplayError(
                     PopupError.DUPLICATE_SAVE_NAME,
-                    e -> frameAction.requestCloseError(),
+                    e -> frameAction.requestClosePopup(),
                     e -> forceStartNewGame(newPlayer, world));
         else
         {
@@ -102,7 +102,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     private void forceStartNewGame(Player player, Map<Point, RuntimeRoom> world)
     {
         persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world);
-        frameAction.requestCloseError();
+        frameAction.requestClosePopup();
         startGame(player, world);
     }
 
