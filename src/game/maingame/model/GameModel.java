@@ -1,6 +1,6 @@
 package game.maingame.model;
 
-import game.entities.player.Player;
+import game.player.model.Player;
 import game.items.Item;
 import game.persistence.InventoryChange;
 import game.persistence.PersistenceService;

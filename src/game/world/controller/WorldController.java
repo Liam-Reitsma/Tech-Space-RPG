@@ -2,7 +2,7 @@ package game.world.controller;
 
 import game.maingame.model.GameModel;
 import game.Updatable;
-import game.entities.player.Player;
+import game.player.model.Player;
 import game.world.model.Direction;
 import game.world.model.Point;
 import game.world.model.WorldModel;

@@ -1,7 +1,7 @@
 package game.persistence.dao;
 
-import game.entities.player.ClassType;
-import game.entities.player.Player;
+import game.player.model.ClassType;
+import game.player.model.Player;
 import game.persistence.DBManager;
 import game.persistence.DatabaseSchemaManager;
 import game.world.model.Point;

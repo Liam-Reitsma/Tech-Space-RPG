@@ -1,7 +1,7 @@
 package game.combat.model;
 
 import game.entities.Enemy;
-import game.entities.player.Player;
+import game.player.model.Player;
 import game.items.Potion;
 import game.items.PotionType;
 import game.maingame.model.GameModel;

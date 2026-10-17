@@ -1,8 +1,8 @@
 package game.persistence.dao;
 
-import game.entities.player.ClassType;
-import game.entities.player.Inventory;
-import game.entities.player.Player;
+import game.player.model.ClassType;
+import game.player.model.ItemStack;
+import game.player.model.Player;
 import game.items.EquippableItem;
 import game.items.Item;
 import game.items.Potion;
@@ -18,9 +18,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class InventoryDAOTest
 {
@@ -62,38 +59,61 @@ public class InventoryDAOTest
     @Test
     public void testLoadEmptyInventory()
     {
-        Map<Item, Integer> inventory = inventoryDAO.loadInventory(SAVE_NAME);
+        ItemStack[] inventory = inventoryDAO.loadInventory(SAVE_NAME);
+        
         assertNotNull(inventory);
-        assertTrue(inventory.isEmpty());
+        
+        for(ItemStack stack : inventory)
+            assertTrue(stack == null || stack.getItem() == null);
     }
     
     @Test
     public void testAddAndRemoveStoredItems()
     {
         Item item = new Weapon(WeaponType.ENERGY_SWORD, 5);
-        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item)));
-        testPlayer.addToInventory(item);
-        Map<Item, Integer> inventory = inventoryDAO.loadInventory(SAVE_NAME);
-        assertEquals(1, (int)inventory.get(item));
         
-        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item)));
         testPlayer.addToInventory(item);
-        inventory = inventoryDAO.loadInventory(SAVE_NAME);
-        assertEquals(2, (int)inventory.get(item));
+        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) - 1, testPlayer.getInventory().getItemIndex(item)));
+        assertEquals(1, getItemCount(inventoryDAO.loadInventory(SAVE_NAME), item));
         
-        assertTrue(inventoryDAO.removeItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item)));
+        testPlayer.addToInventory(item);
+        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) - 1, testPlayer.getInventory().getItemIndex(item)));
+        assertEquals(2, getItemCount(inventoryDAO.loadInventory(SAVE_NAME), item));
+        
         testPlayer.removeFromInventory(item, false);
-        inventory = inventoryDAO.loadInventory(SAVE_NAME);
-        assertEquals(1, (int)inventory.get(item));
+        assertTrue(inventoryDAO.removeItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) + 1, testPlayer.getInventory().getItemIndex(item)));
+        assertEquals(1, getItemCount(inventoryDAO.loadInventory(SAVE_NAME), item));
         
         item = new Armour(ArmourMaterial.FABRIC, ArmourSlot.HEAD);
-        assertFalse(inventoryDAO.removeItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item)));
-        testPlayer.removeFromInventory(item, false);
         
-        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item)));
+        testPlayer.removeFromInventory(item, false);
+        assertFalse(inventoryDAO.removeItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) + 1, testPlayer.getInventory().getItemIndex(item)));
+        
         testPlayer.addToInventory(item);
-        inventory = inventoryDAO.loadInventory(SAVE_NAME);
-        assertEquals(2, inventory.size());
+        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) - 1, testPlayer.getInventory().getItemIndex(item)));
+        
+        ItemStack[] inventory = inventoryDAO.loadInventory(SAVE_NAME);
+        assertEquals(2, countOccupiedSlots(inventory));
+    }
+    
+    private int getItemCount(ItemStack[] inventory, Item item)
+    {
+        for(ItemStack stack : inventory)
+            if(stack != null && stack.getItem() != null && stack.getItem().equals(item))
+                return stack.getQuantity();
+        
+        return 0;
+    }
+    
+    private int countOccupiedSlots(ItemStack[] inventory)
+    {
+        int count = 0;
+        
+        for(ItemStack stack : inventory)
+            if(stack != null && stack.getItem() != null)
+                count++;
+        
+        return count;
     }
     
     @Test
@@ -101,7 +121,7 @@ public class InventoryDAOTest
     {
         assertTrue(inventoryDAO.insertEquippedItems(SAVE_NAME, testPlayer));
         assertTrue(inventoryDAO.updateEquippedEquipment(SAVE_NAME, testPlayer.getInventory()));
-        testPlayer.equipItem(new Armour(ArmourMaterial.FABRIC, ArmourSlot.BOOTS));
+        testPlayer.equipItem(new Armour(ArmourMaterial.FABRIC, ArmourSlot.BOOTS), ArmourSlot.BOOTS);
         assertTrue(inventoryDAO.updateEquippedEquipment(SAVE_NAME, testPlayer.getInventory()));
         
         EquippableItem[] equippedItems = inventoryDAO.loadEquippedItems(SAVE_NAME);
@@ -117,13 +137,17 @@ public class InventoryDAOTest
             testPlayer.addToInventory(item);
         
         assertTrue(inventoryDAO.updateStoredEquipment(SAVE_NAME, testPlayer.getInventory()));
-        Map<Item, Integer> inventory = inventoryDAO.loadInventory(SAVE_NAME);
         
-        Inventory playerInventory = testPlayer.getInventory();
+        ItemStack[] inventory = inventoryDAO.loadInventory(SAVE_NAME);
+        ItemStack[] playerInventory = testPlayer.getInventory().getInventorySlots();
         
-        assertEquals(playerInventory.getItemsInInventory().length, inventory.size());
-        for(Entry<Item, Integer> inventoryEntry : inventory.entrySet())
-            assertEquals(playerInventory.getItemCount(inventoryEntry.getKey()), (int)inventoryEntry.getValue());
+        assertEquals(playerInventory.length, inventory.length);
+        
+        for(int i = 0; i < inventory.length; i++)
+        {
+            assertEquals(playerInventory[i].getItem(), inventory[i].getItem());
+            assertEquals(playerInventory[i].getQuantity(), inventory[i].getQuantity());
+        }
     }
     
     @After

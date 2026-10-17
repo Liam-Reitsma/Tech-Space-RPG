@@ -3,16 +3,14 @@ package game.persistence.dao;
 import static game.persistence.PersistenceTable.*;
 import static game.persistence.SQLCommandFactory.*;
 
-import game.entities.player.ClassType;
-import game.entities.player.Player;
+import game.player.model.ClassType;
+import game.player.model.Player;
 import game.persistence.DBManager;
 import game.world.model.Point;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 public class PlayerDAO
 {

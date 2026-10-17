@@ -1,33 +1,39 @@
 package game.frame.controller;
 
 import game.frame.view.FrameViewAction;
+import game.frame.view.PopupViewAction;
 import game.gui.config.DisplayResolution;
-import game.gui.errors.DisplayError;
+import game.gui.popup.PopupError;
+import game.gui.popup.PopupMessage;
 
-import javax.swing.*;
 import java.awt.event.ActionListener;
 
 public class FrameController implements FrameAction
 {
     private FrameViewAction frameViewAction;
+    private PopupViewAction popupViewAction;
     
     public FrameController()
     {
     
     }
     
-    public void setFrameViewAction(FrameViewAction fvAction) { frameViewAction = fvAction; }
-    
-    @Override
-    public void requestResolutionChange(DisplayResolution resolution)
+    public <ViewAction extends FrameViewAction & PopupViewAction> void setViewActions(ViewAction viewAction)
     {
-        frameViewAction.resizeGameFrame(resolution);
+        frameViewAction = viewAction;
+        popupViewAction = viewAction;
     }
     
     @Override
-    public void requestDisplayError(DisplayError error, ActionListener leftButton, ActionListener rightButton)
+    public void requestCloseOverlay()
     {
-        frameViewAction.displayError(error, leftButton, rightButton);
+        frameViewAction.closeOverlay();
+    }
+    
+    @Override
+    public void requestClosePopup()
+    {
+        popupViewAction.closePopup();
     }
     
     @Override
@@ -40,14 +46,20 @@ public class FrameController implements FrameAction
     }
     
     @Override
-    public void requestCloseOverlay()
+    public void requestDisplayError(PopupError error, ActionListener onCancel, ActionListener onConfirm)
     {
-        frameViewAction.closeOverlay();
+        popupViewAction.displayPopupError(error, onCancel, onConfirm);
     }
     
     @Override
-    public void requestCloseError()
+    public void requestDisplayConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm)
     {
-        frameViewAction.closeError();
+        popupViewAction.displayPopupConfirmation(popupMessage, onCancel, onConfirm);
+    }
+    
+    @Override
+    public void requestResolutionChange(DisplayResolution resolution)
+    {
+        frameViewAction.resizeGameFrame(resolution);
     }
 }

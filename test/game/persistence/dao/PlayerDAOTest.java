@@ -1,7 +1,7 @@
 package game.persistence.dao;
 
-import game.entities.player.ClassType;
-import game.entities.player.Player;
+import game.player.model.ClassType;
+import game.player.model.Player;
 import game.persistence.DBManager;
 import game.persistence.DatabaseSchemaManager;
 import org.junit.After;
@@ -10,6 +10,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public class PlayerDAOTest
@@ -126,18 +128,18 @@ public class PlayerDAOTest
         assertTrue(playerDAO.insertPlayer(saveName2, player2));
         assertTrue(playerDAO.insertPlayer(saveName3, player3));
         
-        Player[] loadedPlayers = playerDAO.getAllSaves();
+        Map<String, Player> loadedPlayers = playerDAO.getAllSaves();
         assertNotNull(loadedPlayers);
-        assertEquals(3, loadedPlayers.length);
+        assertEquals(3, loadedPlayers.size());
         
         Set<String> loadedNames = new HashSet<>();
         
-        for(Player player : loadedPlayers)
-            loadedNames.add(player.getName());
+        for(Entry<String, Player> player : loadedPlayers.entrySet())
+            loadedNames.add(player.getKey());
         
-        assertTrue(loadedNames.contains("John"));
-        assertTrue(loadedNames.contains("Jack"));
-        assertTrue(loadedNames.contains("Jill"));
+        assertTrue(loadedNames.contains(saveName1));
+        assertTrue(loadedNames.contains(saveName2));
+        assertTrue(loadedNames.contains(saveName3));
     }
 
     @After

@@ -1,6 +1,6 @@
 package game.newgame.view;
 
-import game.entities.player.ClassType;
+import game.player.model.ClassType;
 import game.gui.common.PanelButton;
 import game.gui.common.PicturePreview;
 import game.gui.common.scaledlayout.LayoutBox;
@@ -119,7 +119,7 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
     @Override
     public void changeCharacterPanel(ClassType classType)
     {
-        picturePreview.setImage(new ImageIcon(classType.getImagePath()).getImage());
+        picturePreview.setImage(new ImageIcon("resources/images/classes/" + classType.toFileName() + ".png").getImage());
         classDescriptionTextArea.setText(classType.getStartingDescription());
     }
     
