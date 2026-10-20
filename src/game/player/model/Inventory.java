@@ -43,24 +43,26 @@ public class Inventory
             equippedItemsMap.put(loadedEquippedItem.getEquipSlot(), loadedEquippedItem);
     }
     
-    public void addToInventory(Item item)
+    public boolean addToInventory(Item item)
     {
         for(int i = 0; i < INVENTORY_CAPACITY; i++)
             if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(item))
             {
                 inventorySlots[i].addItem();
-                return;
+                return true;
             }
             
         for(int i = 0; i < INVENTORY_CAPACITY; i++)
             if(inventorySlots[i].getItem() == null)
             {
                 inventorySlots[i].setItem(item);
-                return;
+                return true;
             }
+        
+        return false;
     }
     
-    public void removeFromInventory(Item item, boolean removeStack)
+    public boolean removeFromInventory(Item item, boolean removeStack)
     {
         for(int i = 0; i < INVENTORY_CAPACITY; i++)
         {
@@ -71,9 +73,11 @@ public class Inventory
                 else
                     inventorySlots[i].removeItem();
                 
-                return;
+                return true;
             }
         }
+        
+        return false;
     }
     
     public void removeFromEquipped(EquippableItem item)
@@ -99,16 +103,32 @@ public class Inventory
                     return false;
                 EquippableItem oldItem = equippedItemsMap.get(targetEquipSlot);
                 
+                if(oldItem != null && getItemCount(item) > 1 && getItemCount(oldItem) == 0 && !hasOpenItemSlot())
+                    return false;
+                
                 equippedItemsMap.replace(item.getEquipSlot(), item);
                 removeFromInventory(item, false);
                 
                 if(oldItem == null)
                     return true;
                 
-                addToInventory(oldItem);
-                if(getItemCount(item) == 0 && getItemCount(oldItem) == 1)
-                    swapItems(originalIndex, getItemIndex(oldItem));
-                return true;
+                if(addToInventory(oldItem))
+                {
+                    if(getItemCount(item) == 0 && getItemCount(oldItem) == 1)
+                        swapItems(originalIndex, getItemIndex(oldItem));
+                    
+                    return true;
+                }
+                else
+                {
+                    equippedItemsMap.replace(item.getEquipSlot(), oldItem);
+                    if(inventorySlots[originalIndex].getItem() == null)
+                        inventorySlots[originalIndex].setItem(item);
+                    else
+                        inventorySlots[originalIndex].addItem();
+                    
+                    return false;
+                }
             }
         }
         
@@ -134,23 +154,39 @@ public class Inventory
             if(equippableItem.getEquipSlot().equals(item.getEquipSlot()))
                 return equipItem(equippableItem, item.getEquipSlot());
         
-        addToInventory(item);
-        if(getItemCount(item) == 1)
-            swapItems(getItemIndex(item), targetIndex);
-        equippedItemsMap.replace(item.getEquipSlot(), null);
-        return true;
+        if(addToInventory(item))
+        {
+            if(getItemCount(item) == 1)
+                swapItems(getItemIndex(item), targetIndex);
+                
+            equippedItemsMap.replace(item.getEquipSlot(), null);
+            return true;
+        }
+        
+        return false;
     }
     
-    public void swapItems(int originalIndex, int targetIndex)
+    public boolean swapItems(int originalIndex, int targetIndex)
     {
         if(originalIndex < 0 || originalIndex >= INVENTORY_CAPACITY || targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
-            return;
+            return false;
         
         ItemStack originalItemStack = inventorySlots[originalIndex];
         ItemStack targetItemStack = inventorySlots[targetIndex];
         
         inventorySlots[targetIndex] = originalItemStack;
         inventorySlots[originalIndex] = targetItemStack;
+        
+        return true;
+    }
+    
+    public boolean hasOpenItemSlot()
+    {
+        for(ItemStack itemStack : inventorySlots)
+            if(itemStack.getItem() == null)
+                return true;
+        
+        return false;
     }
     
     public Item[] getItemsInInventory()
