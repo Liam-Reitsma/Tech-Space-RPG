@@ -8,7 +8,6 @@ import game.combat.view.CombatViewAction;
 import game.entities.Enemy;
 import game.items.PotionType;
 
-
 public class CombatController implements CombatAction, Updatable
 {
     private final CombatModel combatModel;

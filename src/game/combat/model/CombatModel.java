@@ -16,6 +16,8 @@ public class CombatModel
     private final GameModel gameModel;
 
     private Enemy currentEnemy;
+    
+    private String enemyName;
 
     public CombatModel(GameModel gModel)
     {
@@ -25,6 +27,7 @@ public class CombatModel
     public void startCombat(Enemy newEnemy)
     {
         currentEnemy = newEnemy;
+        enemyName = currentEnemy.getName();
     }
 
     public boolean notInCombat()
@@ -59,18 +62,18 @@ public class CombatModel
     {
         Player player = gameModel.getPlayer();
 
-        float damage = player.attack();
+        float damage = player.calculateAttackDamage();
         float armourPen = player.getArmourPenetration();
         float oldEnemyHealth = currentEnemy.getHealth();
-        currentEnemy.takeDamage(damage, armourPen);
+        currentEnemy.applyDamage(damage, armourPen);
 
-        String playerAttackResult = player.getName() + " inflicted " + Math.round(oldEnemyHealth - currentEnemy.getHealth()) + " to " + currentEnemy.getName() + ".\n" +
-                currentEnemy.getName() + " has " + Math.round(Math.max(0, currentEnemy.getHealth())) + " health.\n";
+        String playerAttackResult = player.getName() + " inflicted " + Math.round(oldEnemyHealth - currentEnemy.getHealth()) + " to " + enemyName + ".\n" +
+                enemyName + " has " + Math.round(Math.max(0, currentEnemy.getHealth())) + " health.\n";
 
         if(currentEnemy.getHealth() <= 0)
         {
             endCombat();
-            return new ActionResult(WIN, playerAttackResult + currentEnemy.getName() + " has been defeated!");
+            return new ActionResult(WIN, playerAttackResult + enemyName + " has been defeated!");
         }
 
         return enemyTurn(player, playerAttackResult);
@@ -79,10 +82,10 @@ public class CombatModel
     private ActionResult enemyTurn(Player player, String playerResult)
     {
         float oldPlayerHealth = player.getHealth();
-        float enemyDamage = currentEnemy.attack();
-        player.takeDamage(enemyDamage, 0);
+        float enemyDamage = currentEnemy.calculateAttackDamage();
+        player.applyDamage(enemyDamage, 0);
 
-        String resultText = currentEnemy.getName() + Math.round(oldPlayerHealth - player.getHealth()) + " to the player.\n" +
+        String resultText = enemyName + Math.round(oldPlayerHealth - player.getHealth()) + " to the player.\n" +
                 player.getName() + " has " + Math.round(player.getHealth()) + " health.\n";
 
         if(player.getHealth() <= 0)
@@ -102,7 +105,7 @@ public class CombatModel
 
         if(potionCount == 0) return new ActionResult(ONGOING, "No potions " + potionType + " in inventory!");
 
-        player.healing(potion.use());
+        player.applyHealing(potion.use());
         player.removeFromInventory(potion, false);
 
         String playerHealString = player.getName() + " has healed for " + Math.round(player.getHealth() - oldPlayerHealth) + " hp.\n" +
