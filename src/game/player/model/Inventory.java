@@ -79,10 +79,23 @@ public class Inventory implements ReadInventory
         if(originalIndex < 0 || originalIndex >= INVENTORY_CAPACITY)
             return INDEX_OUT_OF_BOUNDS;
         
-        return equipItem(inventorySlots[originalIndex].getItem(), targetEquipSlot);
+        return equipItem(inventorySlots[originalIndex].getItem(), targetEquipSlot, false);
     }
     
     public InventoryResult equipItem(Item originalItem, EquipSlot targetEquipSlot)
+    {
+        return equipItem(originalItem, targetEquipSlot, false);
+    }
+    
+    public InventoryResult equipItemDiscardingEquipped(int originalIndex, EquipSlot targetEquipSlot)
+    {
+        if(originalIndex < 0 || originalIndex >= INVENTORY_CAPACITY)
+            return INDEX_OUT_OF_BOUNDS;
+        
+        return equipItem(inventorySlots[originalIndex].getItem(), targetEquipSlot, true);
+    }
+    
+    private InventoryResult equipItem(Item originalItem, EquipSlot targetEquipSlot, boolean discardEquipped)
     {
         if(originalItem instanceof EquippableItem item)
         {
@@ -93,14 +106,14 @@ public class Inventory implements ReadInventory
                     return MISSING_ITEM;
                 EquippableItem oldItem = equippedItemsMap.get(targetEquipSlot);
                 
-                if(oldItem != null && getItemCount(item) > 1 && getItemCount(oldItem) == 0 && !hasOpenItemSlot())
+                if(!discardEquipped && oldItem != null && getItemCount(item) > 1 && getItemCount(oldItem) == 0 && !hasOpenItemSlot())
                     return INVENTORY_FULL;
                 
                 EquippableItem inventoryItem = (EquippableItem)inventorySlots[originalIndex].getItem();
                 equippedItemsMap.replace(targetEquipSlot, inventoryItem.copy());
                 removeFromInventory(inventoryItem, false);
                 
-                if(oldItem == null)
+                if(discardEquipped || oldItem == null)
                     return SUCCESS;
                 
                 if(addToInventory(oldItem))
@@ -130,10 +143,25 @@ public class Inventory implements ReadInventory
     {
         if(targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
             return INDEX_OUT_OF_BOUNDS;
-        return unequipItem(equippedItemsMap.get(originalEquipSlot), targetIndex);
+        return unequipItem(equippedItemsMap.get(originalEquipSlot), targetIndex, false);
     }
     
     public InventoryResult unequipItem(EquippableItem originalItem, int targetIndex)
+    {
+        if(targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
+            return INDEX_OUT_OF_BOUNDS;
+        return unequipItem(originalItem, targetIndex, false);
+    }
+    
+    public InventoryResult unequipItemDiscardingInventory(EquipSlot originalEquipSlot, int targetIndex)
+    {
+        if(targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
+            return INDEX_OUT_OF_BOUNDS;
+        
+        return unequipItem(equippedItemsMap.get(originalEquipSlot), targetIndex, true);
+    }
+    
+    private InventoryResult unequipItem(EquippableItem originalItem, int targetIndex, boolean discardInventory)
     {
         if(originalItem == null)
             return INVALID_ITEM;
@@ -145,6 +173,13 @@ public class Inventory implements ReadInventory
         
         if(targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
             return INDEX_OUT_OF_BOUNDS;
+        
+        if(discardInventory)
+        {
+            inventorySlots[targetIndex].setItem(equippedItem.copy());
+            equippedItemsMap.replace(equippedItem.getEquipSlot(), null);
+            return SUCCESS;
+        }
         
         if(inventorySlots[targetIndex].getItem() instanceof EquippableItem equippableItem)
             if(equippableItem.getEquipSlot().equals(equippedItem.getEquipSlot()))

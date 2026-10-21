@@ -1,6 +1,9 @@
 package game.persistence.dao;
 
+import static org.junit.Assert.*;
+
 import game.player.model.ClassType;
+import game.player.model.InventoryResult;
 import game.player.model.ItemStack;
 import game.player.model.Player;
 import game.items.EquippableItem;
@@ -17,7 +20,6 @@ import game.persistence.DatabaseSchemaManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class InventoryDAOTest
 {
@@ -123,7 +125,7 @@ public class InventoryDAOTest
         assertTrue(inventoryDAO.updateEquippedEquipment(SAVE_NAME, testPlayer.getInventory()));
         Armour armour =new Armour(ArmourMaterial.FABRIC, ArmourSlot.BOOTS);
         testPlayer.addToInventory(armour);
-        testPlayer.equipItem(armour, armour.getEquipSlot());
+        assertEquals(InventoryResult.SUCCESS, testPlayer.equipItem(armour, armour.getEquipSlot()));
         assertTrue(inventoryDAO.updateEquippedEquipment(SAVE_NAME, testPlayer.getInventory()));
         
         EquippableItem[] equippedItems = inventoryDAO.loadEquippedItems(SAVE_NAME);

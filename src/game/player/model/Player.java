@@ -190,6 +190,11 @@ public class Player extends Entities
         return inventory.equipItem(item, slot);
     }
     
+    public InventoryResult equipItemDiscardingEquipped(int originalIndex, EquipSlot targetEquipSlot)
+    {
+        return inventory.equipItemDiscardingEquipped(originalIndex, targetEquipSlot);
+    }
+    
     public InventoryResult unequipItem(EquipSlot equipSlot, int itemIndex)
     {
         return inventory.unequipItem(equipSlot, itemIndex);
@@ -200,14 +205,19 @@ public class Player extends Entities
         return inventory.unequipItem(item, targetIndex);
     }
     
+    public InventoryResult unequipItemDiscardingInventory(EquipSlot originalEquipSlot, int targetIndex)
+    {
+        return inventory.unequipItemDiscardingInventory(originalEquipSlot, targetIndex);
+    }
+    
     public void removeFromEquipped(EquippableItem equippedItem)
     {
         inventory.removeFromEquipped(equippedItem);
     }
     
-    public void swapItems(int originalIndex, int targetIndex)
+    public boolean swapItems(int originalIndex, int targetIndex)
     {
-        inventory.swapItems(originalIndex, targetIndex);
+        return inventory.swapItems(originalIndex, targetIndex);
     }
     
     public void movePoint(Direction direction)

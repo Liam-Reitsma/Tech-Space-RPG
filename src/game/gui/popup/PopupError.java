@@ -6,7 +6,9 @@ import java.awt.event.ActionListener;
 
 public enum PopupError
 {
-    DUPLICATE_SAVE_NAME("Sorry, that save name already exists. Would you like to overwrite?", "Cancel", "Confirm");
+    DUPLICATE_SAVE_NAME("That save name already exists. Would you like to overwrite?", "Cancel", "Confirm"),
+    INVENTORY_FULL_EQUIPPING("Your inventory is full. Would you like to discard your equipped item?", "Cancel", "Confirm"),
+    INVENTORY_FULL_UNEQUIPPING("Your inventory is full. Would you like to discard your inventory item?", "Cancel", "Confirm");
     
     private final String errorMessage;
     private final String leftButtonText;
