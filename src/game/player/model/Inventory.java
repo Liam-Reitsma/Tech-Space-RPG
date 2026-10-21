@@ -1,5 +1,7 @@
 package game.player.model;
 
+import static game.player.model.InventoryResult.*;
+
 import game.items.*;
 import game.items.armour.Armour;
 import game.items.armour.ArmourSlot;
@@ -72,15 +74,15 @@ public class Inventory implements ReadInventory
         return false;
     }
     
-    public boolean equipItem(int originalIndex, EquipSlot targetEquipSlot)
+    public InventoryResult equipItem(int originalIndex, EquipSlot targetEquipSlot)
     {
         if(originalIndex < 0 || originalIndex >= INVENTORY_CAPACITY)
-            return false;
+            return INDEX_OUT_OF_BOUNDS;
         
         return equipItem(inventorySlots[originalIndex].getItem(), targetEquipSlot);
     }
     
-    public boolean equipItem(Item originalItem, EquipSlot targetEquipSlot)
+    public InventoryResult equipItem(Item originalItem, EquipSlot targetEquipSlot)
     {
         if(originalItem instanceof EquippableItem item)
         {
@@ -88,25 +90,25 @@ public class Inventory implements ReadInventory
             {
                 int originalIndex = getItemIndex(originalItem);
                 if(originalIndex == -1)
-                    return false;
+                    return MISSING_ITEM;
                 EquippableItem oldItem = equippedItemsMap.get(targetEquipSlot);
                 
                 if(oldItem != null && getItemCount(item) > 1 && getItemCount(oldItem) == 0 && !hasOpenItemSlot())
-                    return false;
+                    return INVENTORY_FULL;
                 
                 EquippableItem inventoryItem = (EquippableItem)inventorySlots[originalIndex].getItem();
                 equippedItemsMap.replace(targetEquipSlot, inventoryItem.copy());
                 removeFromInventory(inventoryItem, false);
                 
                 if(oldItem == null)
-                    return true;
+                    return SUCCESS;
                 
                 if(addToInventory(oldItem))
                 {
                     if(getItemCount(item) == 0 && getItemCount(oldItem) == 1)
                         swapItems(originalIndex, getItemIndex(oldItem));
                     
-                    return true;
+                    return SUCCESS;
                 }
                 else
                 {
@@ -116,30 +118,33 @@ public class Inventory implements ReadInventory
                     else
                         inventorySlots[originalIndex].addItem();
                     
-                    return false;
+                    return INVENTORY_FULL;
                 }
             }
         }
         
-        return false;
+        return originalItem instanceof EquippableItem ? INVALID_SLOT : INVALID_ITEM;
     }
     
-    public boolean unequipItem(EquipSlot originalEquipSlot, int targetIndex)
+    public InventoryResult unequipItem(EquipSlot originalEquipSlot, int targetIndex)
     {
         if(targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
-            return false;
+            return INDEX_OUT_OF_BOUNDS;
         return unequipItem(equippedItemsMap.get(originalEquipSlot), targetIndex);
     }
     
-    public boolean unequipItem(EquippableItem originalItem, int targetIndex)
+    public InventoryResult unequipItem(EquippableItem originalItem, int targetIndex)
     {
-        EquippableItem equippedItem = originalItem == null ? null : equippedItemsMap.get(originalItem.getEquipSlot());
+        if(originalItem == null)
+            return INVALID_ITEM;
+        
+        EquippableItem equippedItem = equippedItemsMap.get(originalItem.getEquipSlot());
         
         if(equippedItem == null || !equippedItem.equals(originalItem))
-            return false;
+            return MISSING_ITEM;
         
         if(targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
-            return false;
+            return INDEX_OUT_OF_BOUNDS;
         
         if(inventorySlots[targetIndex].getItem() instanceof EquippableItem equippableItem)
             if(equippableItem.getEquipSlot().equals(equippedItem.getEquipSlot()))
@@ -151,10 +156,10 @@ public class Inventory implements ReadInventory
                 swapItems(getItemIndex(equippedItem), targetIndex);
                 
             equippedItemsMap.replace(equippedItem.getEquipSlot(), null);
-            return true;
+            return SUCCESS;
         }
         
-        return false;
+        return INVENTORY_FULL;
     }
     
     public void removeFromEquipped(EquippableItem equippedItem)

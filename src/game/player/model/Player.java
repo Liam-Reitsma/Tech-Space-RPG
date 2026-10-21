@@ -180,22 +180,22 @@ public class Player extends Entities
         return inventory.removeFromInventory(item, removeStack);
     }
     
-    public boolean equipItem(int itemIndex, EquipSlot targetEquipSlot)
+    public InventoryResult equipItem(int itemIndex, EquipSlot targetEquipSlot)
     {
         return inventory.equipItem(itemIndex, targetEquipSlot);
     }
     
-    public boolean equipItem(EquippableItem item, EquipSlot slot)
+    public InventoryResult equipItem(EquippableItem item, EquipSlot slot)
     {
         return inventory.equipItem(item, slot);
     }
     
-    public boolean unequipItem(EquipSlot equipSlot, int itemIndex)
+    public InventoryResult unequipItem(EquipSlot equipSlot, int itemIndex)
     {
         return inventory.unequipItem(equipSlot, itemIndex);
     }
     
-    public boolean unequipItem(EquippableItem item, int targetIndex)
+    public InventoryResult unequipItem(EquippableItem item, int targetIndex)
     {
         return inventory.unequipItem(item, targetIndex);
     }

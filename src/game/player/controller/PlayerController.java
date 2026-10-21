@@ -5,6 +5,7 @@
     import game.gui.popup.PopupMessage;
     import game.items.EquipSlot;
     import game.items.EquippableItem;
+    import game.player.model.InventoryResult;
     import game.player.model.ItemStack;
     import game.player.model.PlayerModel;
     import game.player.model.SlotIdentity;
@@ -72,7 +73,7 @@
             {
                 if(isToEquip)
                 {
-                    if(!playerModel.getPlayer().equipItem(sources.inventorySlot(), destination.equipSlot()))
+                    if(playerModel.getPlayer().equipItem(sources.inventorySlot(), destination.equipSlot()) != InventoryResult.SUCCESS)
                     {
                         if(playerModel.getInventory().getItemStack(sources.inventorySlot()).getItem() instanceof EquippableItem item)
                         {
@@ -95,7 +96,7 @@
                     playerViewAction.flashEquipmentSlot(sources.equipSlot(), null);
                     playerViewAction.flashEquipmentSlot(destination.equipSlot(), null );
                 }
-                else if(!playerModel.getPlayer().unequipItem(sources.equipSlot(), destination.inventorySlot()))
+                else if(playerModel.getPlayer().unequipItem(sources.equipSlot(), destination.inventorySlot()) != InventoryResult.SUCCESS)
                     playerViewAction.flashEquipmentSlot(sources.equipSlot(), null);
             }
             
