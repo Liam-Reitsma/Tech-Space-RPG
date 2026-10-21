@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Inventory
+public class Inventory implements ReadInventory
 {
     public static final int INVENTORY_CAPACITY = 12;
     
@@ -32,21 +32,13 @@ public class Inventory
             equippedItemsMap.put(armourSlot, null);
     }
     
-    public void setInventory(ItemStack[] loadedItemStacks)
+    public boolean addToInventory(Item itemToAdd)
     {
-        inventorySlots = loadedItemStacks;
-    }
-    
-    public void setEquipped(EquippableItem[] loadedEquippedArray)
-    {
-        for(EquippableItem loadedEquippedItem : loadedEquippedArray)
-            equippedItemsMap.put(loadedEquippedItem.getEquipSlot(), loadedEquippedItem);
-    }
-    
-    public boolean addToInventory(Item item)
-    {
+        if(itemToAdd == null)
+            return false;
+        
         for(int i = 0; i < INVENTORY_CAPACITY; i++)
-            if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(item))
+            if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(itemToAdd))
             {
                 inventorySlots[i].addItem();
                 return true;
@@ -55,21 +47,21 @@ public class Inventory
         for(int i = 0; i < INVENTORY_CAPACITY; i++)
             if(inventorySlots[i].getItem() == null)
             {
-                inventorySlots[i].setItem(item);
+                inventorySlots[i].setItem(itemToAdd);
                 return true;
             }
         
         return false;
     }
     
-    public boolean removeFromInventory(Item item, boolean removeStack)
+    public boolean removeFromInventory(Item itemToRemove, boolean removeStack)
     {
         for(int i = 0; i < INVENTORY_CAPACITY; i++)
         {
-            if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(item))
+            if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(itemToRemove))
             {
                 if(removeStack)
-                    inventorySlots[i].removeStack();
+                    inventorySlots[i].removeItemStack();
                 else
                     inventorySlots[i].removeItem();
                 
@@ -80,16 +72,12 @@ public class Inventory
         return false;
     }
     
-    public void removeFromEquipped(EquippableItem item)
+    public boolean equipItem(int originalIndex, EquipSlot targetEquipSlot)
     {
-        equippedItemsMap.replace(item.getEquipSlot(), null);
-    }
-    
-    public boolean equipItem(int itemIndex, EquipSlot targetEquipSlot)
-    {
-        if(itemIndex < 0 || itemIndex >= INVENTORY_CAPACITY)
+        if(originalIndex < 0 || originalIndex >= INVENTORY_CAPACITY)
             return false;
-        return equipItem(inventorySlots[itemIndex].getItem(), targetEquipSlot);
+        
+        return equipItem(inventorySlots[originalIndex].getItem(), targetEquipSlot);
     }
     
     public boolean equipItem(Item originalItem, EquipSlot targetEquipSlot)
@@ -106,8 +94,9 @@ public class Inventory
                 if(oldItem != null && getItemCount(item) > 1 && getItemCount(oldItem) == 0 && !hasOpenItemSlot())
                     return false;
                 
-                equippedItemsMap.replace(item.getEquipSlot(), item);
-                removeFromInventory(item, false);
+                EquippableItem inventoryItem = (EquippableItem)inventorySlots[originalIndex].getItem();
+                equippedItemsMap.replace(targetEquipSlot, inventoryItem.copy());
+                removeFromInventory(inventoryItem, false);
                 
                 if(oldItem == null)
                     return true;
@@ -123,7 +112,7 @@ public class Inventory
                 {
                     equippedItemsMap.replace(item.getEquipSlot(), oldItem);
                     if(inventorySlots[originalIndex].getItem() == null)
-                        inventorySlots[originalIndex].setItem(item);
+                        inventorySlots[originalIndex].setItem(inventoryItem);
                     else
                         inventorySlots[originalIndex].addItem();
                     
@@ -135,35 +124,46 @@ public class Inventory
         return false;
     }
     
-    public boolean unequipItem(EquipSlot equipSlot, int itemIndex)
+    public boolean unequipItem(EquipSlot originalEquipSlot, int targetIndex)
     {
-        if(itemIndex < 0 || itemIndex >= INVENTORY_CAPACITY)
+        if(targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
             return false;
-        return unequipItem(equippedItemsMap.get(equipSlot), itemIndex);
+        return unequipItem(equippedItemsMap.get(originalEquipSlot), targetIndex);
     }
     
-    public boolean unequipItem(EquippableItem item, int targetIndex)
+    public boolean unequipItem(EquippableItem originalItem, int targetIndex)
     {
-        if(item == null || equippedItemsMap.get(item.getEquipSlot()) == null || !equippedItemsMap.containsValue(item))
+        EquippableItem equippedItem = originalItem == null ? null : equippedItemsMap.get(originalItem.getEquipSlot());
+        
+        if(equippedItem == null || !equippedItem.equals(originalItem))
             return false;
         
         if(targetIndex < 0 || targetIndex >= INVENTORY_CAPACITY)
             return false;
         
         if(inventorySlots[targetIndex].getItem() instanceof EquippableItem equippableItem)
-            if(equippableItem.getEquipSlot().equals(item.getEquipSlot()))
-                return equipItem(equippableItem, item.getEquipSlot());
+            if(equippableItem.getEquipSlot().equals(equippedItem.getEquipSlot()))
+                return equipItem(equippableItem, equippedItem.getEquipSlot());
         
-        if(addToInventory(item))
+        if(addToInventory(equippedItem))
         {
-            if(getItemCount(item) == 1)
-                swapItems(getItemIndex(item), targetIndex);
+            if(getItemCount(equippedItem) == 1)
+                swapItems(getItemIndex(equippedItem), targetIndex);
                 
-            equippedItemsMap.replace(item.getEquipSlot(), null);
+            equippedItemsMap.replace(equippedItem.getEquipSlot(), null);
             return true;
         }
         
         return false;
+    }
+    
+    public void removeFromEquipped(EquippableItem equippedItem)
+    {
+        if(equippedItem == null)
+            return;
+        
+        
+        equippedItemsMap.replace(equippedItem.getEquipSlot(), null);
     }
     
     public boolean swapItems(int originalIndex, int targetIndex)
@@ -180,7 +180,7 @@ public class Inventory
         return true;
     }
     
-    public boolean hasOpenItemSlot()
+    private boolean hasOpenItemSlot()
     {
         for(ItemStack itemStack : inventorySlots)
             if(itemStack.getItem() == null)
@@ -189,27 +189,13 @@ public class Inventory
         return false;
     }
     
-    public Item[] getItemsInInventory()
-    {
-        Item[] items = new Item[INVENTORY_CAPACITY];
-        for(int i = 0; i < INVENTORY_CAPACITY; i++)
-            items[i] = inventorySlots[i].getItem();
-        
-        return items;
-    }
-    
     public int getItemCount(Item item)
     {
         for(int i = 0 ; i < INVENTORY_CAPACITY; i++)
             if(inventorySlots[i].getItem() != null && inventorySlots[i].getItem().equals(item))
                 return inventorySlots[i].getQuantity();
-            
+        
         return 0;
-    }
-    
-    public ItemStack[] getInventorySlots()
-    {
-        return inventorySlots.clone();
     }
     
     public int getItemIndex(Item item)
@@ -221,51 +207,57 @@ public class Inventory
         return -1;
     }
     
+    public ItemStack[] getInventorySlots()
+    {
+        ItemStack[] inventorySlotsCopy = new ItemStack[INVENTORY_CAPACITY];
+        for(int i = 0; i < INVENTORY_CAPACITY; i++)
+            inventorySlotsCopy[i] = inventorySlots[i].copy();
+        
+        return inventorySlotsCopy;
+    }
+    
+    public void setInventory(ItemStack[] loadedItemStacks)
+    {
+        if(loadedItemStacks == null || loadedItemStacks.length != INVENTORY_CAPACITY)
+            return;
+        
+        ItemStack[] copiedItemStacks = new ItemStack[INVENTORY_CAPACITY];
+        
+        for(int i = 0; i < INVENTORY_CAPACITY; i++)
+            if(loadedItemStacks[i] == null)
+                return;
+            else
+                copiedItemStacks[i] = loadedItemStacks[i].copy();
+        
+        inventorySlots = copiedItemStacks;
+    }
+    
+    public ItemStack getItemStack(int index)
+    {
+        return (index < 0 || index >= INVENTORY_CAPACITY) ? new ItemStack() : inventorySlots[index].copy();
+    }
+    
     public <I extends Item> I[] getAllItemTypeInInventory(Class<I> itemClass)
     {
         List<I> itemList = new ArrayList<>();
         
         for(Item item : getItemsInInventory())
-        {
             if(itemClass.isInstance(item))
-            {
-                itemList.add(itemClass.cast(item));
-            }
-        }
+                itemList.add(itemClass.cast(item.copy()));
         
         I[] result = (I[])Array.newInstance(itemClass, itemList.size());
         
         return itemList.toArray(result);
     }
     
-    public Weapon getEquippedWeapon()
+    private Item[] getItemsInInventory()
     {
-        for(WeaponSlot weaponSlot : WeaponSlot.values())
-        {
-            Weapon weapon = (Weapon)equippedItemsMap.get(weaponSlot);
-            
-            if(weapon != null) return weapon;
-        }
+        Item[] items = new Item[INVENTORY_CAPACITY];
+        for(int i = 0; i < INVENTORY_CAPACITY; i++)
+            items[i] = inventorySlots[i].getItem();
         
-        return null;
+        return items;
     }
-    
-    public Armour[] getEquippedArmour()
-    {
-        List<Armour> armourlist = new ArrayList<>();
-        
-        for(ArmourSlot armourSlot : ArmourSlot.values())
-            if(equippedItemsMap.containsKey(armourSlot) && equippedItemsMap.get(armourSlot) != null) armourlist.add((Armour)equippedItemsMap.get(armourSlot));
-        
-        return armourlist.toArray(new Armour[0]);
-    }
-    
-    public EquippableItem getEquippedItem(EquipSlot slot)
-    {
-        return equippedItemsMap.get(slot);
-    }
-    
-    public ItemStack getItemStack(int index) { return inventorySlots[index]; }
     
     public EquipSlot[] getAllEquippedSlots()
     {
@@ -280,5 +272,48 @@ public class Inventory
             equipSlots[i++] = armourSlot;
         
         return equipSlots;
+    }
+    
+    public EquippableItem getEquippedItem(EquipSlot slot)
+    {
+        EquippableItem item = equippedItemsMap.get(slot);
+        return item == null ? null : item.copy();
+    }
+    
+    public Armour[] getEquippedArmour()
+    {
+        List<Armour> armourlist = new ArrayList<>();
+        
+        for(ArmourSlot armourSlot : ArmourSlot.values())
+            if(equippedItemsMap.get(armourSlot) instanceof Armour armour)
+                armourlist.add(armour.copy());
+        
+        return armourlist.toArray(new Armour[0]);
+    }
+    
+    public Weapon getEquippedWeapon()
+    {
+        for(WeaponSlot weaponSlot : WeaponSlot.values())
+            if(equippedItemsMap.get(weaponSlot) instanceof Weapon weapon)
+                return weapon.copy();
+        
+        return null;
+    }
+    
+    public void setEquipped(EquippableItem[] loadedEquippedArray)
+    {
+        if(loadedEquippedArray == null)
+            return;
+        
+        Map<EquipSlot, EquippableItem> copiedEquippedMap = new HashMap<>();
+        
+        for(EquippableItem equippableItem : loadedEquippedArray)
+            if(equippableItem == null || !equippedItemsMap.containsKey(equippableItem.getEquipSlot()) || copiedEquippedMap.containsKey(equippableItem.getEquipSlot()))
+                return;
+            else
+                copiedEquippedMap.put(equippableItem.getEquipSlot(), equippableItem.copy());
+        
+        equippedItemsMap.replaceAll((slot, item) -> null);
+        equippedItemsMap.putAll(copiedEquippedMap);
     }
 }

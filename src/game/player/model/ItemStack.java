@@ -4,35 +4,27 @@ import game.items.Item;
 
 public class ItemStack
 {
-    private Item item;
     private int quantity;
+    private Item item;
     
     public ItemStack()
     {
-        item = null;
         quantity = 0;
+        item = null;
     }
     
     public ItemStack(Item newItem, int newQuantity)
     {
-        item = newItem;
-        quantity = newQuantity;
-    }
-    
-    public void setItem(Item newItem)
-    {
-        if(newItem == null)
-            return;
-        item = newItem;
-        quantity = 1;
-    }
-    
-    public void setItem(Item newItem, int newQuantity)
-    {
-        if(newItem == null || newQuantity <= 0)
-            return;
-        item = newItem;
-        quantity = newQuantity;
+        if(newQuantity <= 0 || newItem == null)
+        {
+            quantity = 0;
+            item = null;
+        }
+        else
+        {
+            quantity = newQuantity;
+            item = newItem;
+        }
     }
     
     public void addItem()
@@ -46,18 +38,28 @@ public class ItemStack
         if(item != null)
             if(quantity <= 1)
             {
-                item = null;
                 quantity = 0;
+                item = null;
             }
             else
                 quantity--;
     }
     
-    public void removeStack()
+    public void removeItemStack()
     {
-        item = null;
         quantity = 0;
+        item = null;
     }
+    
+    public void setItem(Item newItem)
+    {
+        if(newItem == null)
+            return;
+        quantity = 1;
+        item = newItem;
+    }
+    
+    public ItemStack copy() { return new ItemStack(item == null ? null : item.copy(), quantity); }
     
     public Item getItem() { return item; }
     

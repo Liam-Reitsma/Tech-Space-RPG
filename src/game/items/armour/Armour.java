@@ -21,6 +21,12 @@ public class Armour extends EquippableItem
     
     public String getImageURL() { return "resources/images/items/" + armourMaterial.toFileName() + "_" + armourSlot.toFileName() + ".png"; }
     
+    @Override
+    public Armour copy()
+    {
+        return new Armour(armourMaterial, armourSlot);
+    }
+    
     public ArmourMaterial getArmourMaterial() { return armourMaterial; }
     
     @Override
@@ -40,5 +46,4 @@ public class Armour extends EquippableItem
         
         return armourMaterial == armour.armourMaterial && armourSlot == armour.armourSlot;
     }
-    
 }

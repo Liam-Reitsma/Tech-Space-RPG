@@ -14,9 +14,9 @@ import java.util.List;
 
 public class PlayerPanel extends JPanel implements PlayerViewAction
 {
-    private final PlayerStatsPanel playerStatsPanel;
     private final PlayerEquippedPanel playerEquippedPanel;
     private final PlayerInventoryPanel playerInventoryPanel;
+    private final PlayerStatsPanel playerStatsPanel;
     
     public PlayerPanel(PlayerAction playerAction, DragViewAction dvAction)
     {
@@ -25,20 +25,14 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
         LayoutBox[] verticalBoxes = new LayoutBox().splitVertical(60, 40);
         LayoutBox[] horizontalBoxes = verticalBoxes[0].splitHorizontal(40, 60);
         
-        playerStatsPanel = new PlayerStatsPanel();
-        add(playerStatsPanel, horizontalBoxes[0]);
-        
         playerEquippedPanel = new PlayerEquippedPanel(playerAction, dvAction);
         add(playerEquippedPanel, horizontalBoxes[1]);
         
         playerInventoryPanel = new PlayerInventoryPanel(playerAction, dvAction);
         add(playerInventoryPanel, verticalBoxes[1]);
-    }
-    
-    @Override
-    public void updatePlayerStats(List<StatEntry> statEntries)
-    {
-        playerStatsPanel.updatePlayerStats(statEntries);
+        
+        playerStatsPanel = new PlayerStatsPanel();
+        add(playerStatsPanel, horizontalBoxes[0]);
     }
     
     @Override
@@ -51,6 +45,12 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
     public void updateInventory(ItemStack[] itemStacks)
     {
         playerInventoryPanel.updateInventory(itemStacks);
+    }
+    
+    @Override
+    public void updatePlayerStats(List<StatEntry> statEntries)
+    {
+        playerStatsPanel.updatePlayerStats(statEntries);
     }
     
     @Override

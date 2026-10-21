@@ -26,17 +26,14 @@ public class Enemy extends Entities implements RoomContent
         armour = Math.min(0.7f, type.getArmourGrowth() * level);
     }
 
-    /** Used when loading the Enemy.*/
-    public Enemy(String[] data) { loadSaveInfo(data); }
-
     /** Gets the damage stat of the Enemy and rounds it to 4 decimal places.*/
     @Override
-    public float attack() { return Math.round(damage * 10000f) / 10000f; }
+    public float calculateAttackDamage() { return Math.round(damage * 10000f) / 10000f; }
 
     /** Gets the armour stat of the Enemy and subtracts it from 1, which then has the Player armour penetration stat added to it. The result of this is set to be between 0 and 1.
      * It is then multiplied by the Player's damage output and subtracted from Enemy health.*/
     @Override
-    public void takeDamage(float damage, float armourPen)
+    public void applyDamage(float damage, float armourPen)
     {
         health -= Math.round(damage * Math.clamp((1 - armour + armourPen), 0, 1));
     }

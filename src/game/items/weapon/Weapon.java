@@ -36,6 +36,12 @@ public class Weapon extends EquippableItem
     public String getImageURL() { return "resources/images/items/" + weaponType.toFileName() + ".png"; }
     
     @Override
+    public Weapon copy()
+    {
+        return new Weapon(weaponType, level);
+    }
+    
+    @Override
     public EquipSlot getEquipSlot() { return weaponSlot; }
     
     @Override

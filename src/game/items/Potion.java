@@ -1,11 +1,10 @@
 package game.items;
 
 import java.util.Objects;
-import java.util.Random;
 
 public class Potion extends Item
 {
-    private PotionType potionType;
+    private final PotionType potionType;
 
     public Potion(PotionType type)
     {
@@ -13,18 +12,7 @@ public class Potion extends Item
         potionType = type;
     }
 
-    public Potion(String[] data)
-    {
-        loadSaveInfo(data);
-    }
-
     public PotionType getPotionType() { return potionType; }
-
-    public PotionType getRandomPotionType()
-    {
-        int random = new Random().nextInt(PotionType.values().length);
-        return PotionType.values()[random];
-    }
 
     public int use()
     {
@@ -56,5 +44,11 @@ public class Potion extends Item
     public String getImageURL()
     {
         return "resources/images/items/" + potionType.toFileName() + ".png";
+    }
+    
+    @Override
+    public Potion copy()
+    {
+        return new Potion(potionType);
     }
 }

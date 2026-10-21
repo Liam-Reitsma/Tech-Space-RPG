@@ -94,16 +94,6 @@ public enum ClassType
         startingDescription = description;
     }
     
-    public int getStatStrength() { return statStrength; }
-    
-    public int getStatDexterity() { return statDexterity; }
-    
-    public int getStatIntelligence() { return statIntelligence; }
-
-    public WeaponType getStartingWeapon() { return startingWeapon; }
-    
-    public String getStartingDescription() { return startingDescription; }
-
     /** Returns enum values as first letter capitalised and lowercase for rest by overriding the default toString().*/
     @Override
     public String toString()
@@ -120,4 +110,14 @@ public enum ClassType
     {
         return toString().replace(" ", "_");
     }
+    
+    public int getStatStrength() { return statStrength; }
+    
+    public int getStatDexterity() { return statDexterity; }
+    
+    public int getStatIntelligence() { return statIntelligence; }
+
+    public WeaponType getStartingWeapon() { return startingWeapon; }
+    
+    public String getStartingDescription() { return startingDescription; }
 }

@@ -29,27 +29,39 @@
         @Override
         public void requestUpdate()
         {
-            for(EquipSlot slot : playerModel.getAllEquippedSlots())
+            for(EquipSlot slot : playerModel.getInventory().getAllEquippedSlots())
                 requestEquippedItemChange(slot);
             playerViewAction.updatePlayerStats(playerModel.getPlayerStatEntries());
-            playerViewAction.updateInventory(playerModel.getInventorySlots());
+            playerViewAction.updateInventory(playerModel.getInventory().getInventorySlots());
         }
         
-        @Override
-        public void requestEquippedItemChange(EquipSlot slot)
+        private void requestEquippedItemChange(EquipSlot slot)
         {
-            playerViewAction.updateEquippedItem(slot, playerModel.getEquippedItem(slot));
+            playerViewAction.updateEquippedItem(slot, playerModel.getInventory().getEquippedItem(slot));
         }
         
         @Override
         public void requestSlotReleased(SlotIdentity sources, SlotIdentity destination)
         {
+            if(sources == null || sources.isInvalid() || (destination != null && destination.isInvalid()))
+                return;
+            
             if(destination == null)
             {
                 if(sources.inventorySlot() != null)
-                    requestDiscard(playerModel.getInventory().getItemStack(sources.inventorySlot()));
+                {
+                    ItemStack itemStack = playerModel.getInventory().getItemStack(sources.inventorySlot());
+                    
+                    if(itemStack.getItem() != null)
+                        requestDiscard(itemStack);
+                }
                 else
-                    requestDiscard(playerModel.getInventory().getEquippedItem(sources.equipSlot()));
+                {
+                    EquippableItem equippableItem = playerModel.getInventory().getEquippedItem(sources.equipSlot());
+                    
+                    if(equippableItem != null)
+                        requestDiscard(equippableItem);
+                }
                 return;
             }
             
@@ -60,7 +72,7 @@
             {
                 if(isToEquip)
                 {
-                    if(!playerModel.getInventory().equipItem(sources.inventorySlot(), destination.equipSlot()))
+                    if(!playerModel.getPlayer().equipItem(sources.inventorySlot(), destination.equipSlot()))
                     {
                         if(playerModel.getInventory().getItemStack(sources.inventorySlot()).getItem() instanceof EquippableItem item)
                         {
@@ -69,12 +81,12 @@
                         else
                         {
                             for(EquipSlot slot : playerModel.getInventory().getAllEquippedSlots())
-                            {playerViewAction.flashEquipmentSlot(slot, null);}
+                                playerViewAction.flashEquipmentSlot(slot, null);
                         }
                     }
                 }
                 else
-                    playerModel.getInventory().swapItems(sources.inventorySlot(), destination.inventorySlot());
+                    playerModel.getPlayer().swapItems(sources.inventorySlot(), destination.inventorySlot());
             }
             else
             {
@@ -83,8 +95,8 @@
                     playerViewAction.flashEquipmentSlot(sources.equipSlot(), null);
                     playerViewAction.flashEquipmentSlot(destination.equipSlot(), null );
                 }
-                else
-                    playerModel.getInventory().unequipItem(sources.equipSlot(), destination.inventorySlot());
+                else if(!playerModel.getPlayer().unequipItem(sources.equipSlot(), destination.inventorySlot()))
+                    playerViewAction.flashEquipmentSlot(sources.equipSlot(), null);
             }
             
             requestUpdate();
@@ -103,7 +115,7 @@
                     },
                     e->
                     {
-                        playerModel.getInventory().removeFromInventory(itemStack.getItem(), true);
+                        playerModel.getPlayer().removeFromInventory(itemStack.getItem(), true);
                         requestUpdate();
                         frameAction.requestClosePopup();
                     });
@@ -122,7 +134,7 @@
                     },
                     e->
                     {
-                        playerModel.getInventory().removeFromEquipped(item);
+                        playerModel.getPlayer().removeFromEquipped(item);
                         requestUpdate();
                         frameAction.requestClosePopup();
                     });

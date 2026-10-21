@@ -17,6 +17,7 @@ import game.items.armour.ArmourSlot;
 import game.items.weapon.Weapon;
 import game.items.weapon.WeaponType;
 import game.persistence.DBManager;
+import game.player.model.ReadInventory;
 
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class InventoryDAO
         return dbManager.updateDB(buildInsertIntoSQL(EQUIPPED_TABLE_NAME, EQUIPPED_COLUMNS), args);
     }
     
-    public boolean updateEquippedEquipment(String saveName, Inventory inventory)
+    public boolean updateEquippedEquipment(String saveName, ReadInventory inventory)
     {
         String[] equippedColumns = Arrays.copyOfRange(EQUIPPED_COLUMNS, 1, EQUIPPED_COLUMNS.length);
         Object[] args = new Object[equippedColumns.length + 1];
@@ -73,7 +74,7 @@ public class InventoryDAO
         return dbManager.updateDB(buildUpdateTableSQL(EQUIPPED_ITEMS.name(), SAVE_NAME_COLUMN, equippedColumns), args);
     }
     
-    public boolean updateStoredEquipment(String saveName, Inventory inventory)
+    public boolean updateStoredEquipment(String saveName, ReadInventory inventory)
     {
         if(!dbManager.updateDB(buildDeleteAllRowsSQL(STORED_ARMOUR.name(), SAVE_NAME_COLUMN), saveName))
             return false;

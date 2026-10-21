@@ -57,7 +57,6 @@ public class PlayerStatsPanel extends JPanel
     {
         try
         {
-            SimpleAttributeSet textAttributeSet = new SimpleAttributeSet();
             SimpleAttributeSet valueAttributeSet = new SimpleAttributeSet();
             StyleConstants.setAlignment(valueAttributeSet, StyleConstants.ALIGN_CENTER);
             
@@ -66,14 +65,13 @@ public class PlayerStatsPanel extends JPanel
             
             for(StatEntry statEntry : statEntries)
             {
-                textAttributeSet = new SimpleAttributeSet();
+                SimpleAttributeSet textAttributeSet = new SimpleAttributeSet();
                 textAttributeSet.addAttribute("tooltip", statEntry.tooltip());
                 
                 statTextDocument.insertString(statTextDocument.getLength(), statEntry.name() + "\n", textAttributeSet);
                 statValueDocument.insertString(statValueDocument.getLength(), statEntry.value() + "\n", valueAttributeSet);
             }
             
-            statTextDocument.setParagraphAttributes(0, statTextDocument.getLength(), textAttributeSet, false);
             statValueDocument.setParagraphAttributes(0, statValueDocument.getLength(), valueAttributeSet, false);
         } catch(BadLocationException e)
         {

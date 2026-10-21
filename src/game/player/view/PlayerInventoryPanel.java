@@ -5,21 +5,16 @@ import static game.player.model.Inventory.INVENTORY_CAPACITY;
 import game.frame.view.DragViewAction;
 import game.gui.common.scaledlayout.LayoutBox;
 import game.gui.common.scaledlayout.ScaledLayout;
-import game.items.EquipSlot;
-import game.items.armour.ArmourSlot;
-import game.items.weapon.WeaponSlot;
 import game.player.controller.PlayerAction;
 import game.player.model.ItemStack;
 import game.player.model.SlotIdentity;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PlayerInventoryPanel extends JPanel
 {
-    private final static Image INVENTORY_BACKGROUND = new ImageIcon("resources/images/Inventory_Screen.png").getImage();
+    private static final Image INVENTORY_BACKGROUND = new ImageIcon("resources/images/Inventory_Screen.png").getImage();
     
     private final ItemSlot[] itemSlots;
     
