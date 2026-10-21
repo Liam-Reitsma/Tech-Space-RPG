@@ -25,17 +25,17 @@ public class InventoryTest
     @Test
     public void testSwapItemsTwoSlots()
     {
-        ItemStack[] slots = inventory.getInventorySlots();
+        assertTrue(inventory.addToInventory(new Potion(PotionType.SMALL_HEALTH)));
+        assertTrue(inventory.addToInventory(new Weapon(WeaponType.ENERGY_SWORD, 2)));
         
-        slots[0].setItem(new Potion(PotionType.SMALL_HEALTH));
-        slots[1].setItem(new Weapon(WeaponType.ENERGY_SWORD, 2));
+        ItemStack[] original = inventory.getInventorySlots();
         
-        inventory.swapItems(0, 1);
+        assertTrue(inventory.swapItems(0, 1));
         
         ItemStack[] result = inventory.getInventorySlots();
         
-        assertSame(slots[1], result[0]);
-        assertSame(slots[0], result[1]);
+        assertEquals(original[1], result[0]);
+        assertEquals(original[0], result[1]);
     }
     
     @Test
@@ -51,7 +51,7 @@ public class InventoryTest
         ItemStack[] result = inventory.getInventorySlots();
         
         for(int i = 0; i < original.length; i++)
-            assertSame(original[i], result[i]);
+            assertEquals(original[i], result[i]);
     }
     
     @Test
@@ -62,7 +62,7 @@ public class InventoryTest
         assertTrue(inventory.addToInventory(weapon));
         
         assertTrue(inventory.equipItem(weapon, WeaponSlot.MAIN_HAND));
-        assertSame(weapon, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(weapon, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
         assertEquals(0, inventory.getItemCount(weapon));
     }
     
@@ -78,12 +78,12 @@ public class InventoryTest
         
         assertTrue(inventory.equipItem(replacement, WeaponSlot.MAIN_HAND));
         
-        assertSame(replacement, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(replacement, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
         assertEquals(1, inventory.getItemCount(original));
         assertEquals(0, inventory.getItemCount(replacement));
         
         // The returned item occupies the original source slot.
-        assertSame(original, inventory.getInventorySlots()[0].getItem());
+        assertEquals(original, inventory.getInventorySlots()[0].getItem());
     }
     
     @Test
@@ -102,10 +102,10 @@ public class InventoryTest
         
         assertTrue(inventory.equipItem(replacement, WeaponSlot.MAIN_HAND));
         
-        assertSame(replacement, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(replacement, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
         assertEquals(1, inventory.getItemCount(replacement));
         assertEquals(1, inventory.getItemCount(original));
-        assertSame(replacement, inventory.getInventorySlots()[sourceIndex].getItem());
+        assertEquals(replacement, inventory.getInventorySlots()[sourceIndex].getItem());
     }
     
     @Test
@@ -122,7 +122,7 @@ public class InventoryTest
         
         assertTrue(inventory.equipItem(replacement, WeaponSlot.MAIN_HAND));
         
-        assertSame(replacement, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(replacement, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
         assertEquals(2, inventory.getItemCount(original));
         assertEquals(0, inventory.getItemCount(replacement));
     }
@@ -137,7 +137,7 @@ public class InventoryTest
         
         assertTrue(inventory.equipItem(armour, ArmourSlot.SHINS));
         
-        assertSame(armour, inventory.getEquippedItem(ArmourSlot.SHINS));
+        assertEquals(armour, inventory.getEquippedItem(ArmourSlot.SHINS));
         assertEquals(1, inventory.getItemCount(armour));
     }
     
@@ -184,7 +184,7 @@ public class InventoryTest
         
         assertTrue(inventory.unequipItem(weapon, 3));
         assertNull(inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
-        assertSame(weapon, inventory.getInventorySlots()[3].getItem());
+        assertEquals(weapon, inventory.getInventorySlots()[3].getItem());
     }
     
     @Test
@@ -200,7 +200,7 @@ public class InventoryTest
         int targetIndex = inventory.getItemIndex(replacement);
         
         assertTrue(inventory.unequipItem(equipped, targetIndex));
-        assertSame(replacement, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(replacement, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
         assertEquals(1, inventory.getItemCount(equipped));
         assertEquals(0, inventory.getItemCount(replacement));
     }
@@ -240,8 +240,8 @@ public class InventoryTest
         assertTrue(inventory.unequipItem(weapon, targetIndex));
         assertNull(inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
         assertEquals(2, inventory.getItemCount(weapon));
-        assertSame(weapon, inventory.getInventorySlots()[originalIndex].getItem());
-        assertSame(potion, inventory.getInventorySlots()[targetIndex].getItem());
+        assertEquals(weapon, inventory.getInventorySlots()[originalIndex].getItem());
+        assertEquals(potion, inventory.getInventorySlots()[targetIndex].getItem());
     }
     
     @Test
@@ -272,7 +272,7 @@ public class InventoryTest
         assertFalse(inventory.unequipItem(weapon, -1));
         assertFalse(inventory.unequipItem(weapon, Inventory.INVENTORY_CAPACITY));
         
-        assertSame(weapon, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
+        assertEquals(weapon, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
         assertEquals(0, inventory.getItemCount(weapon));
     }
 }

@@ -1,6 +1,9 @@
 package game.player.model;
 
 import game.items.Item;
+import game.items.weapon.Weapon;
+
+import java.util.Objects;
 
 public class ItemStack
 {
@@ -64,4 +67,21 @@ public class ItemStack
     public Item getItem() { return item; }
     
     public int getQuantity() { return quantity; }
+    
+    @Override
+    public boolean equals(Object object)
+    {
+        if(this == object)
+            return true;
+        if(!(object instanceof ItemStack otherStack))
+            return false;
+        else
+            return quantity == otherStack.quantity && Objects.equals(item, otherStack.item);
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(item, quantity);
+    }
 }
