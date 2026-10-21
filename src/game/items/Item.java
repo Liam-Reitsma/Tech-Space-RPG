@@ -1,9 +1,8 @@
 package game.items;
 
-import game.entities.Persistable;
 import game.world.model.room.RoomContent;
 
-public abstract class Item implements Persistable, RoomContent
+public abstract class Item implements RoomContent
 {
     protected String name;
 

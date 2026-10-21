@@ -12,14 +12,11 @@ import game.world.model.Point;
 import java.util.*;
 
 /** Player extends Entities and implements Persistable. It holds all the methods that apply to the {@link Player}*/
-public class Player extends Entities implements Persistable
+public class Player extends Entities
 {
-    @SaveExclude
     private static final int STARTING_LEVEL_XP = 15;
-    @SaveExclude
     private static final float XP_GAIN_FACTOR = 1.25f;
     
-    @SaveExclude
     private int xpToLevelUp;
     private int xp;
     private int gold;
@@ -28,16 +25,11 @@ public class Player extends Entities implements Persistable
     private final ClassType classType;
     private final Map<StatType, Integer> statTypeMap;
     
-    @SaveExclude
     private float maximumHealth;
-    @SaveExclude
     private float armourPenetration;
-    @SaveExclude
     private float damageMultiplier;
-    @SaveExclude
     private float armourMultiplier;
     
-    @SaveExclude
     private final Inventory inventory;
 
     /** Used when creating character at the start of a new game.*/

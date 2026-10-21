@@ -1,9 +1,8 @@
 package game.world.model.room;
 
-import game.entities.Persistable;
 import game.world.model.Point;
 
-public class RuntimeRoom implements Persistable
+public class RuntimeRoom
 {
     private final Point point;
     private final RoomState roomState;
