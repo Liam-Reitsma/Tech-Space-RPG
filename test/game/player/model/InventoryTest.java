@@ -1,5 +1,6 @@
 package game.player.model;
 
+import game.items.EquippableItem;
 import game.items.Potion;
 import game.items.PotionType;
 import game.items.armour.Armour;
@@ -58,7 +59,7 @@ public class InventoryTest
     {
         Weapon weapon = new Weapon(WeaponType.ENERGY_SWORD, 2);
         
-        inventory.addToInventory(weapon);
+        assertTrue(inventory.addToInventory(weapon));
         
         assertTrue(inventory.equipItem(weapon, WeaponSlot.MAIN_HAND));
         assertSame(weapon, inventory.getEquippedItem(WeaponSlot.MAIN_HAND));
@@ -246,7 +247,7 @@ public class InventoryTest
     @Test
     public void testUnequipItemWithNullItem()
     {
-        assertFalse(inventory.unequipItem(null, 0));
+        assertFalse(inventory.unequipItem((EquippableItem)null, 0));
     }
     
     @Test

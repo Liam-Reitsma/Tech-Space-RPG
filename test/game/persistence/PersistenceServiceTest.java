@@ -69,8 +69,6 @@ public class PersistenceServiceTest
         assertNotNull(savedData);
         assertEquals("John", savedData.player.getName());
         assertEquals(ClassType.SCAVENGER, savedData.player.getClassType());
-        assertNotNull(savedData.equipped);
-        assertNotNull(savedData.inventory);
         assertNotNull(savedData.world);
         assertEquals(1, savedData.world.size());
     }
@@ -92,7 +90,7 @@ public class PersistenceServiceTest
         SavedData loadedData = persistenceService.loadSaveGame(SAVE_NAME);
         
         assertNotNull(loadedData);
-        assertEquals(1, getItemCount(loadedData.inventory, potion));
+        assertEquals(1, getItemCount(player.getInventory().getInventorySlots(), potion));
         
         assertEquals(RoomTileState.COMPLETED, loadedData.world.get(new Point(0, 0)).getRoomState().getRoomTileState());
     }

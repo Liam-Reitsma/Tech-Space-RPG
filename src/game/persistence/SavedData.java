@@ -12,15 +12,11 @@ import java.util.Map;
 public class SavedData
 {
     public final Player player;
-    public final EquippableItem[] equipped;
-    public final ItemStack[] inventory;
     public final Map<Point, RuntimeRoom> world;
     
-    public SavedData(Player loadedPlayer, EquippableItem[] loadedEquipped, ItemStack[] loadedInventory, Map<Point, RuntimeRoom> loadedWorld)
+    public SavedData(Player loadedPlayer, Map<Point, RuntimeRoom> loadedWorld)
     {
         player = loadedPlayer;
-        equipped = loadedEquipped;
-        inventory = loadedInventory;
         world = loadedWorld;
     }
 }

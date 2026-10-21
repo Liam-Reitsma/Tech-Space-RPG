@@ -51,6 +51,7 @@ public class Player extends Entities implements Persistable
         point = new Point(0, 0);
         inventory = new Inventory();
         Weapon startingWeapon = new Weapon(classType.getStartingWeapon(), level);
+        inventory.addToInventory(startingWeapon);
         inventory.equipItem(startingWeapon, startingWeapon.getEquipSlot());
         
         statTypeMap = new HashMap<>();

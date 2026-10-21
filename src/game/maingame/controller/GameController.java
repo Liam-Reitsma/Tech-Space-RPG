@@ -94,8 +94,6 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     @Override
     public void requestLoadGame(SavedData savedData)
     {
-        savedData.player.setInventory(savedData.inventory);
-        savedData.player.setEquipped(savedData.equipped);
         startGame(savedData.player, savedData.world);
     }
     

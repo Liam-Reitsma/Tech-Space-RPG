@@ -50,7 +50,10 @@ public class PersistenceService
         
         iKey = saveName;
         
-        return new SavedData(player, equipped, inventory, world);
+        player.setEquipped(equipped);
+        player.setInventory(inventory);
+        
+        return new SavedData(player, world);
     }
     
     public boolean doesSaveExist(String saveName)
