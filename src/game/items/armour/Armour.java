@@ -17,6 +17,11 @@ public class Armour extends EquippableItem
         name = armourMaterial + " " + armourSlot;
     }
 
+    /**
+     * Calculates the protection value by considering the slot's protection weight and material's protection value.
+     *
+     * @return The protection value as a decimal fraction, rounded to four decimal places.
+     */
     public float calculateProtection()
     {
         return Math.round(armourSlot.getProtWeight() * armourMaterial.getProtValue() * 10000f) / 10000f;
