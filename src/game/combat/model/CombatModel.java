@@ -114,7 +114,7 @@ public class CombatModel
         if(potionCount == 0)
             return new ActionResult(ONGOING, 0f);
 
-        player.applyHealing(potion.use());
+        player.applyHealing(potion.getHealAmount());
         player.removeFromInventory(potion, false);
         
         return new ActionResult(ONGOING, player.getHealth() - oldPlayerHealth);
