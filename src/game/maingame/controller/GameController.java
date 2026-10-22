@@ -80,7 +80,13 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     {
         startGame(savedData.player, savedData.world);
     }
-    
+
+    /**
+     * Generates a new world and checks if a save already exists with the same name.
+     * Displays a confirmation popup if a save already exists before overwriting it, otherwise creates the save and starts the game.
+     *
+     * @param newPlayer The new player object created for the game.
+     */
     @Override
     public void requestNewGame(Player newPlayer)
     {
@@ -123,7 +129,10 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         if(!isDead)
             onRoomEntered(currentRoom);
     }
-    
+
+    /**
+     * Plays the main game backstory soundbite and the ambient music.
+     */
     @Override
     public void requestOpenGameScreen()
     {
@@ -137,7 +146,12 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         for(Updatable controller : updatables)
             controller.requestUpdate();
     }
-    
+
+    /**
+     * Handles the combat outcome, updating the room state and clearing the encounter.
+     *
+     * @param combatOutcome The outcome of the combat.
+     */
     @Override
     public void onCombatEnded(CombatOutcome combatOutcome)
     {
@@ -162,6 +176,12 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         requestGameUpdate();
     }
 
+    /**
+     * Ignores completed rooms and generates content for incomplete rooms.
+     * Starts combat for enemies, offers rewards for items, and completes empty rooms.
+     *
+     * @param room The room that the player has entered.
+     */
     @Override
     public void onRoomEntered(RuntimeRoom room)
     {
