@@ -16,15 +16,19 @@ public class LabelFontFit implements FontFitStrategy
         if(comp instanceof JLabel label)
         {
             String text = label.getText();
-            if(text == null || text.isEmpty()) return font.getSize2D();
+            if(text == null || text.isEmpty())
+                return font.getSize2D();
             
             FontMetrics fontMetrics = label.getFontMetrics(font);
             
             float availableWidth = label.getWidth();
             float availableHeight = label.getHeight();
             
-            float widthScale = availableWidth / fontMetrics.stringWidth(text);
-            float heightScale = availableHeight / fontMetrics.getHeight();
+            if(availableWidth <= 0 || availableHeight <= 0)
+                return font.getSize2D();
+            
+            float widthScale = availableWidth / Math.max(fontMetrics.stringWidth(text), 1f);
+            float heightScale = availableHeight / Math.max(fontMetrics.getHeight(), 1f);
             
             return (Math.min(Math.min(widthScale, heightScale), 1f) * font.getSize2D());
         }
