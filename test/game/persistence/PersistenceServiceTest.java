@@ -67,10 +67,10 @@ public class PersistenceServiceTest
         
         SavedData savedData = persistenceService.loadSaveGame(SAVE_NAME);
         assertNotNull(savedData);
-        assertEquals("John", savedData.player.getName());
-        assertEquals(ClassType.SCAVENGER, savedData.player.getClassType());
-        assertNotNull(savedData.world);
-        assertEquals(1, savedData.world.size());
+        assertEquals("John", savedData.player().getName());
+        assertEquals(ClassType.SCAVENGER, savedData.player().getClassType());
+        assertNotNull(savedData.world());
+        assertEquals(1, savedData.world().size());
     }
     
     @Test
@@ -80,7 +80,7 @@ public class PersistenceServiceTest
         assertTrue(persistenceService.createNewSaveGame(SAVE_NAME, "John", ClassType.SHADOW, world));
         
         SavedData savedData = persistenceService.loadSaveGame(SAVE_NAME);
-        Player player = savedData.player;
+        Player player = savedData.player();
         Item potion = new Potion(PotionType.SMALL_HEALTH);
         player.addToInventory(potion);
         RuntimeRoom room = world.get(new Point(0, 0));
@@ -92,7 +92,7 @@ public class PersistenceServiceTest
         assertNotNull(loadedData);
         assertEquals(1, getItemCount(player.getInventory().getInventorySlots(), potion));
         
-        assertEquals(RoomTileState.COMPLETED, loadedData.world.get(new Point(0, 0)).getRoomState().getRoomTileState());
+        assertEquals(RoomTileState.COMPLETED, loadedData.world().get(new Point(0, 0)).getRoomState().getRoomTileState());
     }
     
     private int getItemCount(ItemStack[] inventory, Item item)
