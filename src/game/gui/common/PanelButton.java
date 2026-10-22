@@ -34,7 +34,13 @@ public class PanelButton extends ConfirmButton
         rolloverImage = new ImageIcon("resources/images/Apply_Button_Rollover.png").getImage();
         pressedImage = new ImageIcon("resources/images/Apply_Button_Pressed.png").getImage();
     }
-    
+
+    /**
+     * Rescales the button's normal, rollover and pressed images, as well as its font.
+     *
+     * @param fWidth The target width of the button images.
+     * @param fHeight The target height of the button images.
+     */
     public void resizeButton(float fWidth, float fHeight)
     {
         int width = Math.round(fWidth);
