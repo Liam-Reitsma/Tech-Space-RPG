@@ -28,6 +28,8 @@ public class PanelCloseButton extends ConfirmButton
     
     protected void paintComponent(Graphics g)
     {
+        super.paintComponent(g);
+        
         Image image;
         
         if(getModel().isPressed())
@@ -38,7 +40,5 @@ public class PanelCloseButton extends ConfirmButton
             image = normalImage;
         
         g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-        
-        super.paintComponent(g);
     }
 }
