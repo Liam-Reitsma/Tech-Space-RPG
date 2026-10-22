@@ -92,7 +92,7 @@ public class Main
 
         CombatButtonPanel combatButtonPanel = new CombatButtonPanel(combatController);
         CombatTextPane combatTextPane = new CombatTextPane();
-        CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane, rewardStatPanel, chestPanel);
+        CombatPane combatPane = new CombatPane(chestPanel, combatButtonPanel, combatTextPane, rewardStatPanel);
 
         MainGameMenuPanel mainGameMenuPanel = new MainGameMenuPanel(mainGameMenuController);
 
@@ -109,11 +109,17 @@ public class Main
         combatController.setCombatViewAction(combatPane);
         combatController.setCombatListener(gameController);
         frameController.setViewActions(gameFrame);
-        gameController.setGameViewAction(gameScreen);
         gameController.addUpdatable(combatController);
-        gameController.addUpdatable(rewardController);
-        gameController.addUpdatable(worldController);
+        combatController.setGameAction(gameController);
+        
         gameController.addUpdatable(playerController);
+        playerController.setGameAction(gameController);
+        
+        gameController.addUpdatable(rewardController);
+        rewardController.setGameAction(gameController);
+        
+        gameController.addUpdatable(worldController);
+        worldController.setGameAction(gameController);
         
         newGameController.setNewGameViewAction(newGameScreen);
         optionsController.setOptionsViewAction(optionsOverlay);
