@@ -4,10 +4,8 @@ import static game.items.weapon.WeaponType.*;
 
 import game.items.weapon.WeaponType;
 
-/** Enum of class types that a player can pick.*/
 public enum ClassType
 {
-    /** Guardian class starts with 5 strength, 3 dexterity, and 3 intelligence. It starts with an Energy Sword.*/
     GUARDIAN(5, 3, 3, ENERGY_SWORD,
             """
             Once a front-line soldier who held ground longer than anyone expected, he earned \
@@ -18,7 +16,6 @@ public enum ClassType
             order he didn't feel like following. When the moment came, he drove his shoulder \
             into the door until the frame gave way around it. \
             """),
-    /** Scoundrel class starts with 3 strength, 5 dexterity, and 3 intelligence. It starts with a Pulse Pistol.*/
     SCOUNDREL(3, 5, 3, PULSE_PISTOL,
             """
             He'd talked his way out of worse scrapes than this one, right up until the job \
@@ -27,7 +24,6 @@ public enum ClassType
             him in a good mood. When the moment came, he slipped the cuffs and was through \
             the door and gone before the guard could even turn around. \
             """),
-    /** Sage class starts with 3 strength, 3 dexterity, and 5 intelligence. It starts with a Gravity Conduit.*/
     SAGE(3, 3, 5, GRAVITY_CONDUIT,
             """
             He'd been brought in for asking questions the ship's officers didn't want answered, \
@@ -37,7 +33,6 @@ public enum ClassType
             cycle from the sound of it resetting, and he walked out the second it clicked open \
             on its own. \
             """),
-    /** Mercenary class starts with 4 strength, 4 dexterity, and 3 intelligence. It starts with a Shock Dagger.*/
     MERCENARY(4, 4, 3, SHOCK_DAGGER,
             """
             He'd taken plenty of contracts that paid well for staying quiet about who signed them, \
@@ -48,7 +43,6 @@ public enum ClassType
             hauled him into the door, and used the man's own keycard before he'd finished hitting \
             the floor. \
             """),
-    /** Shadow class starts with 3 strength, 4 dexterity, and 4 intelligence. It starts with a Shock Dagger.*/
     SHADOW(3, 4, 4, SHOCK_DAGGER,
             """
             He'd been hired to settle a dispute the quiet way, the kind that wasn't supposed to \
@@ -58,7 +52,6 @@ public enum ClassType
             already traced the door's control line to a junction panel within arm's reach, and \
             he shorted it at the exact second the guard's patrol put his back to the cell. \
             """),
-    /** Powertech class starts with 4 strength, 3 dexterity, and 4 intelligence. It starts with an Energy Sword.*/
     POWERTECH(4, 3, 4, ENERGY_SWORD,
             """
             He'd been chasing a bounty worth enough to retire on when the mark turned out to have \
@@ -68,7 +61,6 @@ public enum ClassType
             conduit into the door's bolt housing, overloaded it until the steel warped, and put his \
             shoulder through what was left. \
             """),
-    /** Scavenger is the bare-bone class with 2 strength, 2 dexterity, and 2 intelligence. It starts with a Rusted Knife.*/
     SCAVENGER(2, 2, 2, RUSTED_KNIFE,
             """
             Nobody on this ship could say for certain why he was in the brig, least of all the guards \
@@ -94,7 +86,6 @@ public enum ClassType
         startingDescription = description;
     }
     
-    /** Returns enum values as first letter capitalised and lowercase for rest by overriding the default toString().*/
     @Override
     public String toString()
     {
