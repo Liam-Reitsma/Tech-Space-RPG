@@ -1,5 +1,7 @@
 package game.persistence.dao;
 
+import static org.junit.Assert.*;
+
 import game.player.model.ClassType;
 import game.player.model.Player;
 import game.persistence.DBManager;
@@ -10,9 +12,7 @@ import game.world.model.room.RoomTileState;
 import game.world.model.room.RoomType;
 import game.world.model.room.RuntimeRoom;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,25 +21,19 @@ public class WorldDAOTest
 {
     private static final String SAVE_NAME = "Test Save";
     
-    private DBManager dbManager;
-    private WorldDAO worldDAO;
-    
-    private Player testPlayer;
+    private final DBManager dbManager;
+    private final WorldDAO worldDAO;
     
     public WorldDAOTest()
     {
-    
-    }
-    
-    @Before
-    public void setUp()
-    {
-        testPlayer = new Player("John", ClassType.MERCENARY);
-        dbManager = new DBManager();
+        dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_DB;create=true", "TSDB", "tsdb");
         worldDAO = new WorldDAO(dbManager);
+        Player testPlayer = new Player("John", ClassType.MERCENARY);
+        
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
         databaseSchemaManager.dropTables();
         databaseSchemaManager.createTables();
+        
         PlayerDAO playerDAO = new PlayerDAO(dbManager);
         playerDAO.insertPlayer(SAVE_NAME, testPlayer);
     }

@@ -37,7 +37,7 @@ public class PersistenceServiceTest
     @Before
     public void setUp()
     {
-        dbManager = new DBManager();
+        DBManager dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_DB;create=true", "TSDB", "tsdb");
         InventoryDAO inventoryDAO = new InventoryDAO(dbManager);
         PlayerDAO playerDAO = new PlayerDAO(dbManager);
         WorldDAO worldDAO = new WorldDAO(dbManager);

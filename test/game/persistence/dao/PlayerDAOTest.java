@@ -1,13 +1,13 @@
 package game.persistence.dao;
 
+import static org.junit.Assert.*;
+
 import game.player.model.ClassType;
 import game.player.model.Player;
 import game.persistence.DBManager;
 import game.persistence.DatabaseSchemaManager;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -16,19 +16,14 @@ import java.util.Set;
 
 public class PlayerDAOTest
 {
-    private DBManager dbManager;
-    private PlayerDAO playerDAO;
+    private final DBManager dbManager;
+    private final PlayerDAO playerDAO;
     
     public PlayerDAOTest()
     {
-    
-    }
-    
-    @Before
-    public void setUp()
-    {
-        dbManager = new DBManager();
+        dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_DB;create=true", "TSDB", "tsdb");
         playerDAO = new PlayerDAO(dbManager);
+        
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
         databaseSchemaManager.dropTables();
         databaseSchemaManager.createTables();

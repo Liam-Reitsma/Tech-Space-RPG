@@ -50,7 +50,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-        DBManager dbManager = new DBManager();
+        DBManager dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_DB;create=true", "TSDB", "tsdb");
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
         InventoryDAO inventoryDAO = new InventoryDAO(dbManager);
         PlayerDAO playerDAO = new PlayerDAO(dbManager);

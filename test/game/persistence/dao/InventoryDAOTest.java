@@ -18,32 +18,26 @@ import game.items.weapon.WeaponType;
 import game.persistence.DBManager;
 import game.persistence.DatabaseSchemaManager;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class InventoryDAOTest
 {
     private static final String SAVE_NAME = "Test Save";
     
-    private DBManager dbManager;
-    private InventoryDAO inventoryDAO;
-    
-    private Player testPlayer;
+    private final DBManager dbManager;
+    private final InventoryDAO inventoryDAO;
+    private final Player testPlayer;
     
     public InventoryDAOTest()
     {
-    
-    }
-    
-    @Before
-    public void setUp()
-    {
-        testPlayer = new Player("John", ClassType.MERCENARY);
-        dbManager = new DBManager();
+        dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_DB;create=true", "TSDB", "tsdb");
         inventoryDAO = new InventoryDAO(dbManager);
+        testPlayer = new Player("John", ClassType.MERCENARY);
+        
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
         databaseSchemaManager.dropTables();
         databaseSchemaManager.createTables();
+        
         PlayerDAO playerDAO = new PlayerDAO(dbManager);
         playerDAO.insertPlayer(SAVE_NAME, testPlayer);
     }

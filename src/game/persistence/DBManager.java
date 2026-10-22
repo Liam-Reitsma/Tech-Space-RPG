@@ -8,22 +8,18 @@ import java.util.Map;
 
 public class DBManager
 {
-    private final static String URL = "jdbc:derby:database/TechSpaceRPG_DB;create=true";
-    private final static String username = "TSDB";
-    private final static String password = "tsdb";
-    
     private Connection connection;
     
-    public DBManager()
+    public DBManager(String url, String username, String password)
     {
-        establishConnection();
+        establishConnection(url, username, password);
     }
     
-    private void establishConnection()
+    private void establishConnection(String url, String username, String password)
     {
         try
         {
-            connection = DriverManager.getConnection(URL, username, password);
+            connection = DriverManager.getConnection(url, username, password);
         } catch(SQLException e)
         {
             System.out.println(e.getMessage());
