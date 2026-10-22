@@ -84,17 +84,27 @@ public class Player extends Entities
         
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
-    
-    /** First checks for equipped weapon and if there is no weapon equipped, it returns the strength value of {@link Player}. Otherwise, it gets the equipped weapons damage by using calculateDamage() and multiplying by the {@link Player} damage multiplier field. It is then rounded to 4 decimal places.*/
+
+    /**
+     * Calculates the attack damage using the equipped weapon and the damage multiplier.
+     * If the player does not have a weapon equipped, the damage will be just their strength value.
+     *
+     * @return The calculated damage, or strength value when unarmed.
+     */
     @Override
     public float calculateAttackDamage()
     {
         Weapon weapon = inventory.getEquippedWeapon();
         return weapon == null ? statTypeMap.get(STR) : damageMultiplier * weapon.calculateDamage(statTypeMap.get(weapon.getScalingStat()));
     }
-    
-    /** Calculates the damage that is applied to the {@link Player} by first, going through the equipped armours and totalling the damage that the armour pieces blocks, second, subtracting the total protection value from 1, third, adding it to armour penetration value, finally, multiplying by the damage that is given to the {@link Player}.
-     * If the health results in being less than or equal to 0, it sets to 0.*/
+
+    /**
+     * Applies incoming damage after accounting for armour protection and penetration.
+     * Prevents health from dropping below zero.
+     *
+     * @param damage Incoming damage.
+     * @param armourPen The attacker's armour penetration value.
+     */
     @Override
     public void applyDamage(float damage, float armourPen)
     {
@@ -105,7 +115,7 @@ public class Player extends Entities
         
         health = Math.max(health, 0);
     }
-    
+
     public float getProtectionValue()
     {
         float totalArmour = 0;
@@ -114,7 +124,12 @@ public class Player extends Entities
         
         return totalArmour;
     }
-    
+
+    /**
+     * Applies healing, scaling with Strength, without exceeding maximum health.
+     *
+     * @param healAmount The base healing amount before Strength scaling.
+     */
     public void applyHealing(int healAmount)
     {
         if(healAmount <= 0)
@@ -127,7 +142,13 @@ public class Player extends Entities
         else
             health += healthGain;
     }
-    
+
+    /**
+     * Adds XP to the player, allowing multiple level-ups and carrying over excess XP.
+     *
+     * @param xpGain The amount of XP gained.
+     * @return The number of levels gained, or zero if no level-up occurs.
+     */
     public int applyXPGain(int xpGain)
     {
         int currentLevel = level;
@@ -148,13 +169,11 @@ public class Player extends Entities
         statTypeMap.put(stat, statTypeMap.get(stat) + 1);
         recalculateStats();
     }
-    
-    /** Used to recalculate the stat of the {@link Player} after increasing a stat when levelling up.
-     * The ratio is used to get the ratio of the {@link Player} current health and current maximum health due to the maximum health increasing when the strength stat increases.
-     * The ratio will allow the current health to increase with the same ratio as before.
-     * Armour penetration gets the dexterity stat and multiplies it by a fixed multiplier.
-     * Damage multiplier gets the intelligence stat, multiplies it by a fixed multiplier, and adding 1 to it so that the damage value increases when damage multiplier is applied.
-     * Armour multiplier gets the intelligence stat, multiplies it by a fixed multiplier, and adding 1 to it so that the armour value increases when armour multiplier is applied.*/
+
+    /**
+     * Recalculates the player's stats after an attribute increase.
+     * Preserves the player's current health percentage when maximum health changes.
+     */
     private void recalculateStats()
     {
         float ratio = health / maximumHealth;
