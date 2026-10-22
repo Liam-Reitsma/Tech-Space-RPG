@@ -26,7 +26,12 @@ public class OptionsOverlay extends JPanel implements OptionsViewAction, Display
         
         setOpaque(false);
     }
-    
+
+    /**
+     * Makes the overlay invisible.
+     *
+     * @return The options overlay's JPanel instance.
+     */
     @Override
     public JPanel getDisplay()
     {
@@ -39,7 +44,10 @@ public class OptionsOverlay extends JPanel implements OptionsViewAction, Display
     {
         setVisible(true);
     }
-    
+
+    /**
+     * Resets the sliders to the last applied value and makes the overlay invisible.
+     */
     @Override
     public void closeDisplay()
     {
