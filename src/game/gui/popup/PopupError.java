@@ -34,9 +34,9 @@ public enum PopupError
         StringBuilder result = new StringBuilder();
         String[] words = name().split("_");
         for(String word : words)
-        {
             result.append(word.charAt(0)).append(word.substring(1).toLowerCase()).append(" ");
-        }
+        
+        result.deleteCharAt(result.length() - 1);
         
         return result.toString();
     }
