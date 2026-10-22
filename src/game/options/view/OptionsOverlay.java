@@ -12,19 +12,16 @@ import java.util.Map;
 
 public class OptionsOverlay extends JPanel implements OptionsViewAction, DisplayableOverlay
 {
-    private final OptionsAction optionsAction;
-    
     private final OptionsPanel optionsPanel;
     
     public OptionsOverlay(OptionsAction oAction)
     {
         setLayout(new ScaledLayout());
-        optionsAction = oAction;
         
         LayoutBox overlayBox = new LayoutBox(0, 0, 100, 100);
         LayoutBox[] boxes = overlayBox.splitVertical(22, 78);
-        add(new OptionsTitlePanel(optionsAction), boxes[0]);
-        optionsPanel = new OptionsPanel(optionsAction);
+        add(new OptionsTitlePanel(oAction), boxes[0]);
+        optionsPanel = new OptionsPanel(oAction);
         add(optionsPanel, boxes[1]);
         
         setOpaque(false);
