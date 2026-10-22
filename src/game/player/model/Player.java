@@ -116,6 +116,11 @@ public class Player extends Entities
         health = Math.max(health, 0);
     }
 
+    /**
+     * Calculates the combined protection provided by equipped armour, accounting for the armour multiplier.
+     *
+     * @return The damage reduction as a fraction between 0 and 1.
+     */
     public float getProtectionValue()
     {
         float totalArmour = 0;
