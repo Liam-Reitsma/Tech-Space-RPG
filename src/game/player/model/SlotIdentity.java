@@ -9,7 +9,12 @@ public record SlotIdentity(Integer inventorySlot, EquipSlot equipSlot)
     {
         return !isValid();
     }
-    
+
+    /**
+     * Checks that exactly one slot is specified and any inventory index is within bounds.
+     *
+     * @return True if both validation checks pass, otherwise false.
+     */
     public boolean isValid()
     {
         return ((inventorySlot == null) != (equipSlot == null)) &&

@@ -48,6 +48,11 @@ public class CombatModel
         currentEnemy = null;
     }
 
+    /**
+     * Attacks the enemy, ending combat if the enemy's health reaches zero.
+     *
+     * @return An ActionResult containing actual damage dealt and WIN or ONGOING.
+     */
     public ActionResult attack()
     {
         Player player = gameModel.getPlayer();
@@ -68,6 +73,11 @@ public class CombatModel
         return new ActionResult(ONGOING, damageDealt);
     }
 
+    /**
+     * Attacks the player, ending combat if the player's health reaches zero.
+     *
+     * @return An ActionResult containing actual damage dealt and LOSE or ONGOING.
+     */
     public ActionResult enemyAttack()
     {
         Player player = gameModel.getPlayer();
@@ -87,6 +97,12 @@ public class CombatModel
         return new ActionResult(ONGOING, damageTaken);
     }
 
+    /**
+     * Uses a potion if one is available.
+     *
+     * @param potionType The type of potion to use.
+     * @return An ActionResult containing ONGOING and the actual health restored, or zero if unavailable.
+     */
     public ActionResult heal(PotionType potionType)
     {
         Player player = gameModel.getPlayer();
