@@ -41,20 +41,23 @@ public enum PersistenceTable
             "WEAPON_SLOT", "VARCHAR(25)",
             "WEAPON_TYPE", "VARCHAR(25)",
             "LEVEL", "INT",
-            "COUNT", "INT"
+            "COUNT", "INT",
+            "SLOT_INDEX", "INT"
             ),
     STORED_ARMOUR
             (new String[]{"SAVE_NAME", "ARMOUR_SLOT", "ARMOUR_MATERIAL"},
             "SAVE_NAME", "VARCHAR(50)",
             "ARMOUR_SLOT", "VARCHAR(25)",
             "ARMOUR_MATERIAL", "VARCHAR(25)",
-            "COUNT", "INT"
+            "COUNT", "INT",
+            "SLOT_INDEX", "INT"
             ),
     STORED_POTIONS
             (new String[]{"SAVE_NAME", "POTION_TYPE"},
             "SAVE_NAME", "VARCHAR(50)",
             "POTION_TYPE", "VARCHAR(25)",
-            "COUNT", "INT"
+            "COUNT", "INT",
+            "SLOT_INDEX", "INT"
             ),
     ROOMS
             (new String[]{"SAVE_NAME", "X_POINT", "Y_POINT"},

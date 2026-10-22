@@ -1,6 +1,6 @@
 package game.saves.controller;
 
-import game.entities.player.Player;
+import game.player.model.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
 import game.persistence.PersistenceService;

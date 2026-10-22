@@ -6,8 +6,8 @@ import game.audio.AudioManager;
 import game.audio.MusicTrack;
 import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
-import game.entities.player.ClassType;
-import game.entities.player.Player;
+import game.player.model.ClassType;
+import game.player.model.Player;
 import game.newgame.view.NewGameViewAction;
 
 public class NewGameController implements NewGameAction

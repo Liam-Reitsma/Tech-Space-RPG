@@ -51,4 +51,10 @@ public class Potion extends Item
         
         return potionType == potion.potionType;
     }
+    
+    @Override
+    public String getImageURL()
+    {
+        return "resources/images/items/" + potionType.toFileName() + ".png";
+    }
 }

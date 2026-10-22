@@ -11,4 +11,6 @@ public abstract class Item implements Persistable, RoomContent
     {
         return name;
     }
+    
+    abstract public String getImageURL();
 }

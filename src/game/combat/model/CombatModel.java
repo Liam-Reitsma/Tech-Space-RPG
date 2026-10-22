@@ -1,7 +1,7 @@
 package game.combat.model;
 
 import game.entities.Enemy;
-import game.entities.player.Player;
+import game.player.model.Player;
 import game.items.Potion;
 import game.items.PotionType;
 import game.maingame.model.GameModel;
@@ -64,13 +64,13 @@ public class CombatModel
         float oldEnemyHealth = currentEnemy.getHealth();
         currentEnemy.takeDamage(damage, armourPen);
 
-        String playerAttackResult = "Player inflicted " + Math.round(oldEnemyHealth - currentEnemy.getHealth()) + " to the enemy.\n" +
-                "Enemy has " + Math.round(Math.max(0, currentEnemy.getHealth())) + " health.\n";
+        String playerAttackResult = player.getName() + " inflicted " + Math.round(oldEnemyHealth - currentEnemy.getHealth()) + " to " + currentEnemy.getName() + ".\n" +
+                currentEnemy.getName() + " has " + Math.round(Math.max(0, currentEnemy.getHealth())) + " health.\n";
 
         if(currentEnemy.getHealth() <= 0)
         {
             endCombat();
-            return new ActionResult(WIN, playerAttackResult + "The enemy has been defeated!");
+            return new ActionResult(WIN, playerAttackResult + currentEnemy.getName() + " has been defeated!");
         }
 
         return enemyTurn(player, playerAttackResult);
@@ -83,7 +83,7 @@ public class CombatModel
         player.takeDamage(enemyDamage, 0);
 
         String resultText = currentEnemy.getName() + Math.round(oldPlayerHealth - player.getHealth()) + " to the player.\n" +
-                "Player has " + Math.round(player.getHealth()) + " health.\n";
+                player.getName() + " has " + Math.round(player.getHealth()) + " health.\n";
 
         if(player.getHealth() <= 0)
         {
@@ -105,8 +105,8 @@ public class CombatModel
         player.healing(potion.use());
         player.removeFromInventory(potion, false);
 
-        String playerHealString =  "Player has healed for " + Math.round(player.getHealth() - oldPlayerHealth) + " hp.\n" +
-                "Player has " + Math.round(player.getHealth()) + " health.\n";
+        String playerHealString = player.getName() + " has healed for " + Math.round(player.getHealth() - oldPlayerHealth) + " hp.\n" +
+                player.getName() + " has " + Math.round(player.getHealth()) + " health.\n";
 
         return enemyTurn(player, playerHealString);
     }

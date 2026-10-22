@@ -10,10 +10,10 @@ import game.combat.controller.CombatAction;
 import game.combat.controller.CombatListener;
 import game.combat.model.CombatOutcome;
 import game.entities.Enemy;
-import game.entities.player.Player;
+import game.gui.popup.PopupError;
+import game.player.model.Player;
 import game.frame.controller.FrameAction;
 import game.items.Item;
-import game.gui.errors.DisplayError;
 import game.maingame.model.GameModel;
 import game.maingame.view.GameViewAction;
 import game.persistence.InventoryChange;
@@ -22,7 +22,6 @@ import game.persistence.PersistenceService;
 import game.persistence.SavedData;
 import game.reward.controller.RewardListener;
 import game.world.controller.RoomListener;
-import game.world.controller.WorldAction;
 import game.world.controller.WorldAction;
 import game.world.model.Point;
 import game.world.model.room.RoomContent;
@@ -82,8 +81,8 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         Map<Point, RuntimeRoom> world = worldAction.requestGenerateWorld();
         if(persistenceService.doesSaveExist(newPlayer.getName()))
             frameAction.requestDisplayError(
-                    DisplayError.DUPLICATE_SAVE_NAME,
-                    e -> frameAction.requestCloseError(),
+                    PopupError.DUPLICATE_SAVE_NAME,
+                    e -> frameAction.requestClosePopup(),
                     e -> forceStartNewGame(newPlayer, world));
         else
         {
@@ -103,7 +102,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     private void forceStartNewGame(Player player, Map<Point, RuntimeRoom> world)
     {
         persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world);
-        frameAction.requestCloseError();
+        frameAction.requestClosePopup();
         startGame(player, world);
     }
 

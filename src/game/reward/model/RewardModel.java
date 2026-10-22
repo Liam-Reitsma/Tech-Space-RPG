@@ -2,7 +2,7 @@ package game.reward.model;
 
 import game.entities.Enemy;
 import game.entities.StatType;
-import game.entities.player.Player;
+import game.player.model.Player;
 import game.items.Item;
 import game.items.Potion;
 import game.items.PotionType;
@@ -88,7 +88,7 @@ public class RewardModel
         if(levelsGained > 0)
             rewardMessage += "You have leveled up!\n" + unspentPoints + " stat points to spend.\n";
 
-        rewardMessage += "Enemy has dropped a " + potionTypeReceived + " potion.\n";
+        rewardMessage += enemy.getName() + " has dropped a " + potionTypeReceived + " potion.\n";
 
         return rewardMessage;
     }

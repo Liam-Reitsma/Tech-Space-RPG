@@ -1,6 +1,6 @@
 package game.newgame.view;
 
-import game.entities.player.ClassType;
+import game.player.model.ClassType;
 
 public interface NewGameViewAction
 {
