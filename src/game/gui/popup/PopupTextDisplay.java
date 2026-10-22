@@ -19,7 +19,7 @@ public class PopupTextDisplay extends JTextArea
     
     protected void paintComponent(Graphics g)
     {
-        super.paintComponent(g);
         g.drawImage(IMAGE, 0, 0, getWidth(), getHeight(), this);
+        super.paintComponent(g);
     }
 }

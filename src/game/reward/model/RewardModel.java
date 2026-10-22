@@ -65,7 +65,7 @@ public class RewardModel
             for(int i = 0; i < entry.getValue(); i++)
                 gameModel.getPlayer().applyStatGain(entry.getKey());
             if(entry.getValue() != 0)
-                resultMessage += entry.getKey().getMessage() + " + " +  entry.getValue() + " | ";
+                resultMessage += entry.getKey().getFullName() + " + " +  entry.getValue() + " | ";
         }
 
         statsLeveledUp.clear();
