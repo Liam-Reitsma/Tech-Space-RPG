@@ -25,13 +25,13 @@ import java.util.Map;
 
 public class GameFrame extends JFrame implements DragViewAction, FrameViewAction, PopupViewAction
 {
-    private final OverlayContainer overlayContainer;
-    
-    private Displayable currentDisplayedScreen;
     private Displayable currentDisplayedOverlay;
     private Displayable currentDisplayedPopup;
+    private Displayable currentDisplayedScreen;
     
     private Map<DisplayTarget, Displayable> displayMap;
+    
+    private final OverlayContainer overlayContainer;
     
     public GameFrame(String name, OverlayContainer oContainer)
     {
@@ -63,12 +63,11 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
         displayMap = map;
         
         for(Displayable display : displayMap.values())
-        {
             if(display instanceof DisplayableOverlay)
                 overlayContainer.add(display.getDisplay(), new LayoutBox(null, 35, 70, ScaledLayoutAnchor.CENTER));
             else if(display instanceof DisplayableScreen)
                 add(display.getDisplay(), new LayoutBox());
-        }
+            
         revalidate();
     }
     
@@ -78,8 +77,14 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
         if(currentDisplayedPopup != null)
         {
             currentDisplayedPopup.closeDisplay();
+            overlayContainer.remove(currentDisplayedPopup.getDisplay());
             currentDisplayedPopup = null;
-            overlayContainer.setVisible(false);
+            
+            if(currentDisplayedOverlay == null)
+                overlayContainer.setVisible(false);
+            
+            overlayContainer.revalidate();
+            overlayContainer.repaint();
         }
     }
     
@@ -96,6 +101,9 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
         {
             currentDisplayedOverlay.closeDisplay();
             currentDisplayedOverlay = null;
+            
+            if(currentDisplayedPopup == null)
+                overlayContainer.setVisible(false);
         }
     }
     
@@ -104,10 +112,13 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     {
         Displayable displayScreen = displayMap.get(display);
         
+        if(displayScreen == null)
+            return;
+        
+        closeOverlay();
+        
         if(displayScreen instanceof DisplayableOverlay overlay)
         {
-            if(currentDisplayedOverlay != null)
-                currentDisplayedOverlay.closeDisplay();
             currentDisplayedOverlay = overlay;
             overlayContainer.setVisible(true);
         }
@@ -115,8 +126,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
         {
             if(currentDisplayedScreen != null)
                 currentDisplayedScreen.closeDisplay();
-            if(currentDisplayedOverlay != null)
-                currentDisplayedOverlay.closeDisplay();
+            
             currentDisplayedScreen = screen;
         }
         
@@ -126,8 +136,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     @Override
     public void displayPopupError(PopupError error, ActionListener leftButton, ActionListener rightButton)
     {
-        if(currentDisplayedPopup != null)
-            currentDisplayedPopup.closeDisplay();
+        closePopup();
         
         currentDisplayedPopup = error.createOverlay(leftButton, rightButton);
         overlayContainer.add(currentDisplayedPopup.getDisplay(), new LayoutBox(null, 15, 30, ScaledLayoutAnchor.CENTER));
@@ -141,8 +150,7 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     @Override
     public void displayPopupConfirmation(PopupMessage popupMessage, ActionListener onCancel, ActionListener onConfirm)
     {
-        if(currentDisplayedPopup != null)
-            currentDisplayedPopup.closeDisplay();
+        closePopup();
         
         PanelButton cancelButton = new PanelButton(popupMessage.leftButtonText(), onCancel);
         PanelButton confirmButton = new PanelButton(popupMessage.rightButtonText(), onConfirm);
@@ -179,7 +187,6 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
     {
         getLayeredPane().remove(component);
         getLayeredPane().repaint();
-        overlayContainer.setVisible(false);
     }
     
     @Override
