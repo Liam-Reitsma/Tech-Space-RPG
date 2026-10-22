@@ -1,7 +1,5 @@
 package game.options.controller;
 
-import static game.frame.controller.DisplayTarget.OPTIONS;
-
 import game.audio.AudioManager;
 import game.audio.VolumeType;
 import game.frame.controller.FrameAction;
@@ -13,10 +11,10 @@ import java.util.Map;
 
 public class OptionsController implements OptionsAction
 {
-    private final Map<VolumeType, Integer> pendingVolumeMap;
     private DisplayResolution displayResolution;
     
     private final AudioManager audioManager;
+    private final Map<VolumeType, Integer> pendingVolumeMap;
     
     private final FrameAction frameAction;
     
@@ -35,9 +33,21 @@ public class OptionsController implements OptionsAction
     public void setOptionsViewAction(OptionsViewAction optionsVA) { optionsViewAction = optionsVA; }
     
     @Override
-    public void requestSetVolume(VolumeType volumeType, int volume)
+    public void requestApplyChanges()
     {
-        pendingVolumeMap.replace(volumeType, volume);
+        for(VolumeType volumeType : VolumeType.values())
+            audioManager.setVolume(volumeType, pendingVolumeMap.get(volumeType));
+        
+        if(displayResolution != null)
+            frameAction.requestResolutionChange(displayResolution);
+        
+        optionsViewAction.setNewVolume(pendingVolumeMap);
+    }
+    
+    @Override
+    public void requestCloseOptions()
+    {
+        frameAction.requestCloseOverlay();
     }
     
     @Override
@@ -46,22 +56,9 @@ public class OptionsController implements OptionsAction
         displayResolution = resolution;
     }
     
-    
     @Override
-    public void requestApplyChanges()
+    public void requestSetVolume(VolumeType volumeType, int volume)
     {
-        for(VolumeType volumeType : VolumeType.values())
-            audioManager.setVolume(volumeType, pendingVolumeMap.get(volumeType));
-        
-        if(displayResolution == null)
-            displayResolution = DisplayResolution.HD;
-        frameAction.requestResolutionChange(displayResolution);
-        optionsViewAction.setNewVolume(pendingVolumeMap);
-    }
-    
-    @Override
-    public void requestCloseOptions()
-    {
-        frameAction.requestCloseOverlay();
+        pendingVolumeMap.replace(volumeType, volume);
     }
 }

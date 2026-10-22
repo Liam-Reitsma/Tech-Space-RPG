@@ -12,7 +12,7 @@ import game.world.view.WorldPanel;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameScreen extends JPanel implements GameViewAction, DisplayableScreen
+public class GameScreen extends JPanel implements DisplayableScreen
 {
     private static final Image MAIN_BACKGROUND = new ImageIcon("resources/images/Main Game.png").getImage();
 
@@ -46,14 +46,7 @@ public class GameScreen extends JPanel implements GameViewAction, DisplayableScr
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        
         g.drawImage(MAIN_BACKGROUND,0, 0, getWidth(), getHeight(), null);
-    }
-    
-    @Override
-    public void updateMainGameScreen()
-    {
-    
     }
     
     @Override

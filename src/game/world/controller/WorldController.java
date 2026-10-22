@@ -1,5 +1,6 @@
 package game.world.controller;
 
+import game.maingame.controller.GameAction;
 import game.maingame.model.GameModel;
 import game.Updatable;
 import game.player.model.Player;
@@ -13,20 +14,24 @@ import java.util.Map;
 
 public class WorldController implements WorldAction, Updatable
 {
-    private WorldViewAction worldViewAction;
+    private boolean movementLocked;
 
     private RoomListener roomListener;
     
     private final GameModel gameModel;
     private final WorldModel worldModel;
-
-    private boolean movementLocked;
+    
+    private GameAction gameAction;
+    
+    private WorldViewAction worldViewAction;
     
     public WorldController(GameModel gModel)
     {
         gameModel = gModel;
         worldModel = new WorldModel();
     }
+    
+    public void setGameAction(GameAction gAction) { gameAction = gAction;}
     
     public void setWorldViewAction(WorldViewAction wvAction) { worldViewAction = wvAction; }
 
@@ -49,7 +54,7 @@ public class WorldController implements WorldAction, Updatable
         gameModel.getPlayer().movePoint(direction);
         gameModel.getWorld().get(gameModel.getPlayer().getPoint()).setCurrent();
         if(roomListener != null) roomListener.onRoomEntered(gameModel.getWorld().get(gameModel.getPlayer().getPoint()));
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
     
     @Override
