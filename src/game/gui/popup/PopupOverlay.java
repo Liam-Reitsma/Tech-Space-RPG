@@ -23,7 +23,12 @@ public class PopupOverlay extends JPanel implements Displayable
         add(rightButton, boxes[1]);
         setBorder(BorderFactory.createLineBorder(Color.GRAY, 4));
     }
-    
+
+    /**
+     * Returns the popup while making it invisible.
+     *
+     * @return The popup's JPanel instance.
+     */
     @Override
     public JPanel getDisplay()
     {
