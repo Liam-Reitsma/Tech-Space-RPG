@@ -1,7 +1,5 @@
 package game.mainmenu.controller;
 
-import static game.frame.controller.DisplayTarget.*;
-
 import game.audio.AudioManager;
 import game.audio.MusicTrack;
 import game.audio.SoundEffect;
