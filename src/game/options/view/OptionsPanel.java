@@ -92,13 +92,21 @@ public class OptionsPanel extends JPanel
         
         return label;
     }
-    
+
+    /**
+     * Restores the sliders to their last applied volume settings rather than their default values.
+     */
     public void resetValues()
     {
         for(Entry<VolumeType, JSlider> volumeTypeJSliderEntry : volumeTypeJSliderMap.entrySet())
             volumeTypeJSliderEntry.getValue().setValue(appliedVolumeMap.get(volumeTypeJSliderEntry.getKey()));
     }
-    
+
+    /**
+     * Updates the stored volume values with the supplied volume values.
+     *
+     * @param volumeMap The volume settings to store as the last applied values.
+     */
     public void setNewVolume(Map<VolumeType, Integer> volumeMap)
     {
         for(Entry<VolumeType, Integer> volumeEntry : volumeMap.entrySet())
