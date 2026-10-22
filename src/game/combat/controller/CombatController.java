@@ -42,6 +42,9 @@ public class CombatController implements CombatAction, Updatable
         requestUpdate();
     }
 
+    /**
+     * Requests a player attack and automatically triggers the enemy's turn if the combat remains active.
+     */
     @Override
     public void requestAttack()
     {
@@ -57,6 +60,11 @@ public class CombatController implements CombatAction, Updatable
         requestUpdate();
     }
 
+    /**
+     * Requests heal and automatically triggers the enemy's turn if the combat remains active.
+     *
+     * @param potionType Type of potion that is being used.
+     */
     @Override
     public void requestHeal(PotionType potionType)
     {
@@ -109,6 +117,12 @@ public class CombatController implements CombatAction, Updatable
                 """);
     }
 
+    /**
+     * Displays the combat message and notifies the listener if combat has ended.
+     *
+     * @param combatOutcome The outcome of the combat.
+     * @param message The message that is going to be displayed.
+     */
     private void showResult(CombatOutcome combatOutcome, String message)
     {
         combatViewAction.displayMessage(message);

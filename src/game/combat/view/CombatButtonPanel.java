@@ -53,6 +53,11 @@ public class CombatButtonPanel extends JPanel
         potionSelection.setSelectedItem(potionType);
     }
 
+    /**
+     * Enables or disables combat controls, only enables heal and potions selection when potions are available.
+     *
+     * @param enabled Whether combat controls should be enabled.
+     */
     public void setControlEnabled(boolean enabled)
     {
         boolean potionPresent = potionSelection.getItemCount() > 0;
