@@ -7,8 +7,10 @@ public interface CombatAction
 {
     void requestStartCombat(Enemy enemy);
     void requestResetCombat();
+    
     void requestAttack();
     void requestHeal(PotionType potionType);
     void requestRun();
+    
     void requestDeathMessage();
 }

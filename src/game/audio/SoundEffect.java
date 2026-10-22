@@ -10,9 +10,9 @@ public enum SoundEffect
     
     private final String urlPath;
     
-    SoundEffect(String URL)
+    SoundEffect(String url)
     {
-        urlPath = URL;
+        urlPath = url;
     }
     
     public String getUrlPath() { return urlPath; }

@@ -11,13 +11,12 @@ import java.awt.*;
 
 public class CombatButtonPanel extends JPanel
 {
-    private final CombatAction combatAction;
-
     private final PanelButton fightButton;
     private final PanelButton healthButton;
     private final PanelButton runButton;
-
     private final JComboBox<PotionType> potionSelection;
+    
+    private final CombatAction combatAction;
 
     public CombatButtonPanel(CombatAction cAction)
     {
@@ -29,7 +28,7 @@ public class CombatButtonPanel extends JPanel
         potionSelection = new JComboBox<>();
 
         fightButton = new PanelButton("Fight", e -> combatAction.requestAttack());
-        healthButton = new PanelButton("Health",
+        healthButton = new PanelButton("Heal",
                 e ->combatAction.requestHeal(potionSelection.getItemAt(potionSelection.getSelectedIndex())));
         runButton = new PanelButton("Run", e ->combatAction.requestRun());
 
@@ -45,11 +44,13 @@ public class CombatButtonPanel extends JPanel
 
     public void updatePotions(PotionType[] potionList)
     {
+        PotionType potionType = (PotionType)potionSelection.getSelectedItem();
         potionSelection.removeAllItems();
+        
         for(PotionType potion : potionList)
-        {
             potionSelection.addItem(potion);
-        }
+        
+        potionSelection.setSelectedItem(potionType);
     }
 
     public void setControlEnabled(boolean enabled)
