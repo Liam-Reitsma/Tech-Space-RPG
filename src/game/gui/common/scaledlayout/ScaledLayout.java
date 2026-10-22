@@ -50,14 +50,11 @@ public class ScaledLayout implements LayoutManager2
     private void registerFonts(Component comp)
     {
         if(comp instanceof Container container)
-        {
             for(Component component : container.getComponents())
-            {
                 registerFonts(component);
-            }
-        }
         
-        if(comp.isFontSet()) baseFonts.put(comp, comp.getFont());
+        if(comp.isFontSet())
+            baseFonts.put(comp, comp.getFont());
     }
     
     @Override
@@ -76,12 +73,8 @@ public class ScaledLayout implements LayoutManager2
     private void deregisterFonts(Component comp)
     {
         if(comp instanceof Container container)
-        {
             for(Component component : container.getComponents())
-            {
                 deregisterFonts(component);
-            }
-        }
         
         baseFonts.remove(comp);
     }
@@ -112,7 +105,7 @@ public class ScaledLayout implements LayoutManager2
         
         float xScale = (float)parent.getWidth() / panelWidth;
         float yScale = (float)parent.getHeight() / panelHeight;
-        float fontScale = Math.min(xScale, yScale);
+        float fontScale = Math.max(0.01f, Math.min(xScale, yScale));
         
         for(Entry<Component, ScaledLayoutConstraint> entry : baseBounds.entrySet())
         {
@@ -145,9 +138,7 @@ public class ScaledLayout implements LayoutManager2
             baseY = Math.clamp(baseY, 0, panelHeight - baseHeight);
             
             if(component instanceof Container container && container.getLayout() instanceof ScaledLayout scaledLayout)
-            {
                 scaledLayout.setReferenceSize(baseWidth, baseHeight);
-            }
             
             component.setBounds(Math.round(xScale * baseX), Math.round(yScale * baseY), Math.round(xScale * baseWidth), Math.round(yScale * baseHeight));
         }
@@ -163,12 +154,8 @@ public class ScaledLayout implements LayoutManager2
         }
         
         for(Component component : baseBounds.keySet())
-        {
             if(component instanceof Container container)
-            {
                 container.doLayout();
-            }
-        }
         
         Map<Class<?>, Float> largestPossibleFonts = FontFitter.getFontFittingSizes(scaledFonts);
         
