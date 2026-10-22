@@ -89,7 +89,14 @@ public class ItemSlot extends JPanel
         dragViewAction = null;
         flashTimer = new Timer(FLASH_INTERVAL, null);
     }
-    
+
+    /**
+     * Creates a mouse listener for dragging items between inventory and equipment slots.
+     * Displays the dragged item on an overlay and reports its destination upon release.
+     *
+     * @param released Callback receiving the destination slot, or null if dropped outside a valid slot.
+     * @return A MouseAdapter handling item dragging and releasing.
+     */
     private MouseAdapter createMouseAdapter(ItemSlotReleased released)
     {
         return new MouseAdapter()
