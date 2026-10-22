@@ -52,7 +52,12 @@ public class PlayerStatsPanel extends JPanel
         add(statValuePane, boxes[1]);
         statValueDocument = statValuePane.getStyledDocument();
     }
-    
+
+    /**
+     * Updates the displayed stat names and values.
+     *
+     * @param statEntries The stats, values, and the tooltips to display.
+     */
     public void updatePlayerStats(List<StatEntry> statEntries)
     {
         try
