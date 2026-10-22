@@ -106,7 +106,13 @@ public class GameFrame extends JFrame implements DragViewAction, FrameViewAction
                 overlayContainer.setVisible(false);
         }
     }
-    
+
+    /**
+     * Closes the currently displayed overlay before opening a new display.
+     * Overlays preserve the current screen, while new screens replace it.
+     *
+     * @param display The screen or overlay to display.
+     */
     @Override
     public void display(DisplayTarget display)
     {
