@@ -36,7 +36,12 @@ public class AudioManager
         
         return audioManager;
     }
-    
+
+    /**
+     * Stops the currently playing music, starts the requested music and loops it continuously.
+     *
+     * @param music The music to play.
+     */
     public void playMusic(MusicTrack music)
     {
         stopMusic();
@@ -87,7 +92,15 @@ public class AudioManager
             LOGGER.log(Level.SEVERE, "Playing sound failed.", e);
         }
     }
-    
+
+    /**
+     * Sets the volume category using a 0–100 scale, clamping values outside this range.
+     * Master volume affects both music and sound effects.
+     * Changes to music or master volume immediately affect currently playing music.
+     *
+     * @param volumeType The volume category to adjust.
+     * @param newVolume The requested volume percentage.
+     */
     public void setVolume(VolumeType volumeType, int newVolume)
     {
         if(volumeType == null)
