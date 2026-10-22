@@ -37,6 +37,11 @@ public class CombatTextPane extends JPanel
         textPane.setText("");
     }
 
+    /**
+     * Appends the message to the existing combat log rather than replacing it, then scrolls to the latest entry.
+     *
+     * @param text The message to display in the log.
+     */
     public void updateLog(String text)
     {
         try
