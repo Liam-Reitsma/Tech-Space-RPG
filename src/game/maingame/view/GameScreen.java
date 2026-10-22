@@ -48,14 +48,22 @@ public class GameScreen extends JPanel implements DisplayableScreen
         super.paintComponent(g);
         g.drawImage(MAIN_BACKGROUND,0, 0, getWidth(), getHeight(), null);
     }
-    
+
+    /**
+     * Returns the game screen panel while making it invisible.
+     *
+     * @return The JPanel instance.
+     */
     @Override
     public JPanel getDisplay()
     {
         setVisible(false);
         return this;
     }
-    
+
+    /**
+     * Makes the screen visible and triggers the screen's soundbite and ambient music.
+     */
     @Override
     public void openDisplay()
     {
