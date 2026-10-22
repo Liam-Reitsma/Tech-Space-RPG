@@ -42,7 +42,7 @@ public class PersistenceServiceTest
         PlayerDAO playerDAO = new PlayerDAO(dbManager);
         WorldDAO worldDAO = new WorldDAO(dbManager);
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
-        databaseSchemaManager.dropTables();
+        assertTrue(databaseSchemaManager.dropTables());
         databaseSchemaManager.createTables();
         
         persistenceService = new PersistenceService(databaseSchemaManager, inventoryDAO, playerDAO, worldDAO);

@@ -27,11 +27,9 @@ public class DatabaseSchemaManager
             if(table == PLAYER)
                 continue;
             if(table == EQUIPPED_ITEMS)
-            {
                 if(!dbManager.createTable(table.name(), buildCreateTableSQL(table.name(), table.getColumns(), table.getPrimaryKeys(),
                         table.getPrimaryKeys(), new String[]{PLAYER.name()}, new String[]{COLUMN_NAME})))
                     return false;
-            }
             else if(!dbManager.createTable(table.name(), buildCreateTableSQL(table.name(), table.getColumns(), table.getPrimaryKeys(),
                     table.getColumnStrings(), new String[]{PLAYER.name()}, new String[]{COLUMN_NAME})))
                 return false;
@@ -45,9 +43,7 @@ public class DatabaseSchemaManager
         boolean success = true;
         PersistenceTable[] tables = PersistenceTable.values();
         for(int i = tables.length - 1; i >= 0; i--)
-        {
-            success = success && dbManager.dropTableIfExists(tables[i].name());
-        }
+            success = dbManager.dropTableIfExists(tables[i].name()) && success;
         
         return success;
     }

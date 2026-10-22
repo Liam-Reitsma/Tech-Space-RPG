@@ -31,7 +31,7 @@ public class WorldDAOTest
         Player testPlayer = new Player("John", ClassType.MERCENARY);
         
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
-        databaseSchemaManager.dropTables();
+        assertTrue(databaseSchemaManager.dropTables());
         databaseSchemaManager.createTables();
         
         PlayerDAO playerDAO = new PlayerDAO(dbManager);

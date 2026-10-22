@@ -25,7 +25,7 @@ public class PlayerDAOTest
         playerDAO = new PlayerDAO(dbManager);
         
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
-        databaseSchemaManager.dropTables();
+        assertTrue(databaseSchemaManager.dropTables());
         databaseSchemaManager.createTables();
     }
 
