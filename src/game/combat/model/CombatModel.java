@@ -13,49 +13,34 @@ import static game.combat.model.CombatOutcome.*;
 
 public class CombatModel
 {
-    private final GameModel gameModel;
-
+    private boolean combatActive;
     private Enemy currentEnemy;
     
-    private String enemyName;
-
+    private final GameModel gameModel;
+    
     public CombatModel(GameModel gModel)
     {
         gameModel = gModel;
     }
 
-    public void startCombat(Enemy newEnemy)
+    public void startCombat(Enemy enemy)
     {
-        currentEnemy = newEnemy;
-        enemyName = currentEnemy.getName();
+        if(enemy == null || combatActive || enemy.getHealth() <= 0)
+            return;
+        
+        currentEnemy = enemy;
+        combatActive = true;
     }
-
-    public boolean notInCombat()
-    {
-        return currentEnemy == null;
-    }
-
+    
     public void resetCombat()
     {
         endCombat();
     }
-
+    
     private void endCombat()
     {
-        currentEnemy =  null;
-    }
-
-    public PotionType[] getAvailablePotions()
-    {
-        Player player = gameModel.getPlayer();
-        Potion[] potionsFromInventory = player.getInventory().getAllItemTypeInInventory(Potion.class);
-        List<PotionType> potionTypes = new ArrayList<>();
-        for(Potion potion : potionsFromInventory)
-        {
-            if(player.getInventory().getItemCount(potion) > 0)
-                potionTypes.add(potion.getPotionType());
-        }
-        return potionTypes.toArray(new PotionType[0]);
+        combatActive = false;
+        currentEnemy = null;
     }
 
     public ActionResult attack()
@@ -66,57 +51,77 @@ public class CombatModel
         float armourPen = player.getArmourPenetration();
         float oldEnemyHealth = currentEnemy.getHealth();
         currentEnemy.applyDamage(damage, armourPen);
-
-        String playerAttackResult = player.getName() + " inflicted " + Math.round(oldEnemyHealth - currentEnemy.getHealth()) + " to " + enemyName + ".\n" +
-                enemyName + " has " + Math.round(Math.max(0, currentEnemy.getHealth())) + " health.\n";
+        
+        float damageDealt = oldEnemyHealth - currentEnemy.getHealth();
 
         if(currentEnemy.getHealth() <= 0)
         {
             endCombat();
-            return new ActionResult(WIN, playerAttackResult + enemyName + " has been defeated!");
+            return new ActionResult(WIN, damageDealt);
         }
-
-        return enemyTurn(player, playerAttackResult);
+        
+        return new ActionResult(ONGOING, damageDealt);
     }
 
-    private ActionResult enemyTurn(Player player, String playerResult)
+    public ActionResult enemyAttack()
     {
+        Player player = gameModel.getPlayer();
+        
         float oldPlayerHealth = player.getHealth();
         float enemyDamage = currentEnemy.calculateAttackDamage();
         player.applyDamage(enemyDamage, 0);
-
-        String resultText = enemyName + Math.round(oldPlayerHealth - player.getHealth()) + " to the player.\n" +
-                player.getName() + " has " + Math.round(player.getHealth()) + " health.\n";
+        
+        float damageTaken = oldPlayerHealth - player.getHealth();
 
         if(player.getHealth() <= 0)
         {
             endCombat();
-            return new ActionResult(LOSE, playerResult + "\n" + resultText + "You have been defeated!");
+            return new ActionResult(LOSE, damageTaken);
         }
-        return new ActionResult(ONGOING, playerResult + "\n" + resultText);
+        
+        return new ActionResult(ONGOING, damageTaken);
     }
 
     public ActionResult heal(PotionType potionType)
     {
+        if(potionType == null)
+            return new ActionResult(ONGOING, 0f);
+        
         Player player = gameModel.getPlayer();
-        float oldPlayerHealth = player.getHealth();
         Potion potion = new Potion(potionType);
+        
+        float oldPlayerHealth = player.getHealth();
         int potionCount = player.getInventory().getItemCount(potion);
 
-        if(potionCount == 0) return new ActionResult(ONGOING, "No potions " + potionType + " in inventory!");
+        if(potionCount == 0)
+            return new ActionResult(ONGOING, 0f);
 
         player.applyHealing(potion.use());
         player.removeFromInventory(potion, false);
-
-        String playerHealString = player.getName() + " has healed for " + Math.round(player.getHealth() - oldPlayerHealth) + " hp.\n" +
-                player.getName() + " has " + Math.round(player.getHealth()) + " health.\n";
-
-        return enemyTurn(player, playerHealString);
+        
+        return new ActionResult(ONGOING, player.getHealth() - oldPlayerHealth);
     }
 
     public ActionResult run()
     {
         endCombat();
-        return new ActionResult(FLEE, "You ran away.");
+        return new ActionResult(FLEE, 0f);
+    }
+    
+    public PotionType[] getAvailablePotions()
+    {
+        Player player = gameModel.getPlayer();
+        Potion[] potionsFromInventory = player.getInventory().getAllItemTypeInInventory(Potion.class);
+        List<PotionType> potionTypes = new ArrayList<>();
+        
+        for(Potion potion : potionsFromInventory)
+            potionTypes.add(potion.getPotionType());
+        
+        return potionTypes.toArray(new PotionType[0]);
+    }
+    
+    public boolean isInCombat()
+    {
+        return combatActive;
     }
 }
