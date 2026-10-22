@@ -67,8 +67,8 @@ public class OptionsPanel extends JPanel
             add(createSlider(volumeType), horizontalBoxes[1].insets(0, 25, 10, 25));
         }
         
-        PanelButton applyResButton = new PanelButton("Apply", e -> optionsAction.requestApplyChanges());
-        add(applyResButton, verticalBoxes[4]);
+        PanelButton applyButton = new PanelButton("Apply", e -> optionsAction.requestApplyChanges());
+        add(applyButton, verticalBoxes[4]);
         
         addMouseListener(new MouseAdapter() {});
     }
