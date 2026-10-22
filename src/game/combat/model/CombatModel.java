@@ -14,6 +14,7 @@ import static game.combat.model.CombatOutcome.*;
 public class CombatModel
 {
     private boolean combatActive;
+    private String enemyName;
     private Enemy currentEnemy;
     
     private final GameModel gameModel;
@@ -23,18 +24,22 @@ public class CombatModel
         gameModel = gModel;
     }
 
-    public void startCombat(Enemy enemy)
+    public boolean startCombat(Enemy enemy)
     {
         if(enemy == null || combatActive || enemy.getHealth() <= 0)
-            return;
+            return false;
         
         currentEnemy = enemy;
+        enemyName = enemy.getName();
         combatActive = true;
+        
+        return true;
     }
     
     public void resetCombat()
     {
         endCombat();
+        enemyName = null;
     }
     
     private void endCombat()
@@ -84,9 +89,6 @@ public class CombatModel
 
     public ActionResult heal(PotionType potionType)
     {
-        if(potionType == null)
-            return new ActionResult(ONGOING, 0f);
-        
         Player player = gameModel.getPlayer();
         Potion potion = new Potion(potionType);
         
@@ -120,8 +122,7 @@ public class CombatModel
         return potionTypes.toArray(new PotionType[0]);
     }
     
-    public boolean isInCombat()
-    {
-        return combatActive;
-    }
+    public boolean isInCombat() { return combatActive; }
+    
+    public String getEnemyName() { return enemyName; }
 }
