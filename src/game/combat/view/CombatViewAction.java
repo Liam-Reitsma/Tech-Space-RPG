@@ -4,8 +4,8 @@ import game.items.PotionType;
 
 public interface CombatViewAction
 {
-    void showAvailablePotions(PotionType[] potions);
-    void displayMessage(String message);
     void clearMessage();
+    void displayMessage(String message);
     void setActionEnabled(boolean actionEnabled);
+    void showAvailablePotions(PotionType[] potions);
 }
