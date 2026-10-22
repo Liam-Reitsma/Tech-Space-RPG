@@ -53,7 +53,13 @@ public class ItemStack
         quantity = 0;
         item = null;
     }
-    
+
+    /**
+     * Replaces the current item and resets the stack quantity to one.
+     * If the new item is null, nothing changes.
+     *
+     * @param newItem The item to place in the stack.
+     */
     public void setItem(Item newItem)
     {
         if(newItem == null)

@@ -13,7 +13,12 @@ public class PlayerModel
     {
         gameModel = gModel;
     }
-    
+
+    /**
+     * Constructs a list of player statistics formatted for display, including values and tooltips.
+     *
+     * @return A list of StatEntry objects containing formatted player stats.
+     */
     public List<StatEntry> getPlayerStatEntries()
     {
         Player player = gameModel.getPlayer();

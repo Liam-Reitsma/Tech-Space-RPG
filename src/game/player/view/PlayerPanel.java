@@ -52,7 +52,13 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
     {
         playerStatsPanel.updatePlayerStats(statEntries);
     }
-    
+
+    /**
+     * Flashes the incorrect equipment slot red and the correct slot green, if provided.
+     *
+     * @param incorrectSlot The slot flash as red.
+     * @param correctSlot The valid equipment slot to flash green, or null if none.
+     */
     @Override
     public void flashEquipmentSlot(EquipSlot incorrectSlot, EquipSlot correctSlot)
     {

@@ -45,7 +45,14 @@ public class PlayerController implements PlayerAction, Updatable
     {
         playerViewAction.updateEquippedItem(slot, playerModel.getInventory().getEquippedItem(slot));
     }
-    
+
+    /**
+     * Handles drag-and-drop operations to equip, unequip, swap or discard items.
+     * Requests confirmation before discarding and provides feedback for invalid operations.
+     *
+     * @param source The inventory or equip slot that the item originates from.
+     * @param destination The slot where the item was released, or null if dropped outside a slot.
+     */
     @Override
     public void requestSlotReleased(SlotIdentity source, SlotIdentity destination)
     {
