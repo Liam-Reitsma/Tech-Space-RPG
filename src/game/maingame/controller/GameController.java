@@ -15,7 +15,6 @@ import game.player.model.Player;
 import game.frame.controller.FrameAction;
 import game.items.Item;
 import game.maingame.model.GameModel;
-import game.maingame.view.GameViewAction;
 import game.persistence.InventoryChange;
 import game.reward.controller.RewardAction;
 import game.persistence.PersistenceService;
@@ -34,6 +33,8 @@ import java.util.Map;
 
 public class GameController implements GameAction, CombatListener, RoomListener, RewardListener
 {
+    private Enemy currentEncounter;
+    
     private final AudioManager audioManager;
     private final List<Updatable> updatables;
     
@@ -45,11 +46,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     private final FrameAction frameAction;
     private final RewardAction rewardAction;
 
-    private final WorldAction worldAction; //TODO: WorldAction
-
-    private Enemy currentEncounter;
-
-    private GameViewAction gameViewAction;
+    private final WorldAction worldAction;
     
     public GameController(PersistenceService pService, GameModel gModel, CombatAction cAction, FrameAction fAction, RewardAction rAction, WorldAction wAction)
     {
@@ -65,14 +62,23 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         rewardAction = rAction;
         worldAction = wAction;
     }
-
-    public void setGameViewAction(GameViewAction gvAction) { gameViewAction = gvAction; }
+    
+    public void addUpdatable(Updatable updatable)
+    {
+        updatables.add(updatable);
+    }
+    
+    private void forceStartNewGame(Player player, Map<Point, RuntimeRoom> world)
+    {
+        persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world);
+        frameAction.requestClosePopup();
+        startGame(player, world);
+    }
     
     @Override
-    public void requestOpenGameScreen()
+    public void requestLoadGame(SavedData savedData)
     {
-        audioManager.playSound(SoundEffect.MAIN_GAME_BACKSTORY_SOUNDBITE);
-        audioManager.playMusic(MusicTrack.MAIN_GAME_AMBIANCE);
+        startGame(savedData.player, savedData.world);
     }
     
     @Override
@@ -90,53 +96,48 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             startGame(newPlayer, world);
         }
     }
-    
-    @Override
-    public void requestLoadGame(SavedData savedData)
-    {
-        startGame(savedData.player, savedData.world);
-    }
-    
-    private void forceStartNewGame(Player player, Map<Point, RuntimeRoom> world)
-    {
-        persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world);
-        frameAction.requestClosePopup();
-        startGame(player, world);
-    }
 
     private void startGame(Player player, Map<Point, RuntimeRoom> world)
     {
+        RuntimeRoom currentRoom = world.get(player.getPoint());
+        
+        if(currentRoom == null)
+            return;
+        
         gameModel.setGame(player, world);
+        currentRoom.setCurrent();
+        
         boolean isDead = player.getHealth() <= 0;
-        world.get(player.getPoint()).setCurrent();
         worldAction.requestSetMovementLocked(isDead);
         combatAction.requestResetCombat();
         currentEncounter = null;
         rewardAction.requestResetReward();
-        if(isDead) combatAction.requestDeathMessage();
-        requestOpenGameScreen();
+        
+        if(isDead)
+            combatAction.requestDeathMessage();
 
         frameAction.requestDisplay(MAIN_GAME);
 
-        gameViewAction.updateMainGameScreen();
         requestGameUpdate();
-        if(!isDead) onRoomEntered(world.get(player.getPoint()));
+        
+        if(!isDead)
+            onRoomEntered(currentRoom);
+    }
+    
+    @Override
+    public void requestOpenGameScreen()
+    {
+        audioManager.playSound(SoundEffect.MAIN_GAME_BACKSTORY_SOUNDBITE);
+        audioManager.playMusic(MusicTrack.MAIN_GAME_AMBIANCE);
     }
     
     @Override
     public void requestGameUpdate()
     {
         for(Updatable controller : updatables)
-        {
             controller.requestUpdate();
-        }
     }
-
-    public void addUpdatable(Updatable updatable)
-    {
-        updatables.add(updatable);
-    }
-
+    
     @Override
     public void onCombatEnded(CombatOutcome combatOutcome)
     {
@@ -156,7 +157,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             default -> { }
         }
         currentEncounter = null;
-        gameModel.quickSave(room, InventoryChange.NONE, null);
+        gameModel.quickSave(room, InventoryChange.ADD, null); //TODO Add item
         worldAction.requestSetMovementLocked(false);
         requestGameUpdate();
     }
@@ -164,7 +165,8 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     @Override
     public void onRoomEntered(RuntimeRoom room)
     {
-        if(room.isCompleted()) return;
+        if(room.isCompleted())
+            return;
 
         RoomContent content = roomModel.createRoomContent(room.getRoomState().getRoomType(), gameModel.getPlayer());
 
@@ -186,6 +188,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             room.setCompleted();
             gameModel.quickSave(room, InventoryChange.NONE, null);
         }
+        
         requestGameUpdate();
     }
 

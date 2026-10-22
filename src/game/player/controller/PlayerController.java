@@ -6,6 +6,7 @@ import game.gui.popup.PopupError;
 import game.gui.popup.PopupMessage;
 import game.items.EquipSlot;
 import game.items.EquippableItem;
+import game.maingame.controller.GameAction;
 import game.player.model.InventoryResult;
 import game.player.model.ItemStack;
 import game.player.model.PlayerModel;
@@ -21,6 +22,7 @@ public class PlayerController implements PlayerAction, Updatable
     private final PlayerModel playerModel;
     
     private final FrameAction frameAction;
+    private GameAction gameAction;
     
     private PlayerViewAction playerViewAction;
     
@@ -30,16 +32,9 @@ public class PlayerController implements PlayerAction, Updatable
         frameAction = fAction;
     }
     
-    public void setPlayerViewAction(PlayerViewAction pVAction) { playerViewAction = pVAction; }
+    public void setGameAction(GameAction gAction) { gameAction = gAction;}
     
-    @Override
-    public void requestUpdate()
-    {
-        for(EquipSlot slot : playerModel.getInventory().getAllEquippedSlots())
-            requestEquippedItemChange(slot);
-        playerViewAction.updatePlayerStats(playerModel.getPlayerStatEntries());
-        playerViewAction.updateInventory(playerModel.getInventory().getInventorySlots());
-    }
+    public void setPlayerViewAction(PlayerViewAction pVAction) { playerViewAction = pVAction; }
     
     private void requestEquippedItemChange(EquipSlot slot)
     {
@@ -104,13 +99,13 @@ public class PlayerController implements PlayerAction, Updatable
                         frameAction.requestDisplayError(PopupError.INVENTORY_FULL_EQUIPPING,
                                 e->
                                 {
-                                    requestUpdate();
+                                    gameAction.requestGameUpdate();
                                     frameAction.requestClosePopup();
                                 },
                                 e ->
                                 {
                                     playerModel.getPlayer().equipItemDiscardingEquipped(source.inventorySlot(), destination.equipSlot());
-                                    requestUpdate();
+                                    gameAction.requestGameUpdate();
                                     frameAction.requestClosePopup();
                                 });
                     }
@@ -141,13 +136,13 @@ public class PlayerController implements PlayerAction, Updatable
                         frameAction.requestDisplayError(PopupError.INVENTORY_FULL_UNEQUIPPING,
                                 e->
                                 {
-                                    requestUpdate();
+                                    gameAction.requestGameUpdate();
                                     frameAction.requestClosePopup();
                                 },
                                 e ->
                                 {
                                     playerModel.getPlayer().unequipItemDiscardingInventory(source.equipSlot(), destination.inventorySlot());
-                                    requestUpdate();
+                                    gameAction.requestGameUpdate();
                                     frameAction.requestClosePopup();
                                 });
                     }
@@ -160,7 +155,7 @@ public class PlayerController implements PlayerAction, Updatable
             }
         }
         
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
     
     private void requestDiscard(ItemStack itemStack)
@@ -171,13 +166,13 @@ public class PlayerController implements PlayerAction, Updatable
         frameAction.requestDisplayConfirmation(popupMessage,
                 e->
                 {
-                    requestUpdate();
+                    gameAction.requestGameUpdate();
                     frameAction.requestClosePopup();
                 },
                 e->
                 {
                     playerModel.getPlayer().removeFromInventory(itemStack.getItem(), true);
-                    requestUpdate();
+                    gameAction.requestGameUpdate();
                     frameAction.requestClosePopup();
                 });
     }
@@ -190,14 +185,23 @@ public class PlayerController implements PlayerAction, Updatable
         frameAction.requestDisplayConfirmation(popupMessage,
                 e->
                 {
-                    requestUpdate();
+                    gameAction.requestGameUpdate();
                     frameAction.requestClosePopup();
                 },
                 e->
                 {
                     playerModel.getPlayer().removeFromEquipped(item);
-                    requestUpdate();
+                    gameAction.requestGameUpdate();
                     frameAction.requestClosePopup();
                 });
+    }
+    
+    @Override
+    public void requestUpdate()
+    {
+        for(EquipSlot slot : playerModel.getInventory().getAllEquippedSlots())
+            requestEquippedItemChange(slot);
+        playerViewAction.updatePlayerStats(playerModel.getPlayerStatEntries());
+        playerViewAction.updateInventory(playerModel.getInventory().getInventorySlots());
     }
 }

@@ -1,6 +1,7 @@
 package game.reward.controller;
 
 import game.Updatable;
+import game.maingame.controller.GameAction;
 import game.reward.view.RewardPanelType;
 import game.entities.*;
 import game.items.Item;
@@ -10,13 +11,18 @@ import game.reward.view.RewardViewAction;
 public class RewardController implements RewardAction, Updatable
 {
     private final RewardModel rewardModel;
-    private RewardViewAction rewardViewAction;
 
+    private GameAction gameAction;
+    
+    private RewardViewAction rewardViewAction;
     private RewardListener rewardListener;
 
-    public RewardController(RewardModel rModel) {
+    public RewardController(RewardModel rModel)
+    {
         rewardModel = rModel;
     }
+    
+    public void setGameAction(GameAction gAction) { gameAction = gAction;}
 
     public void setRewardViewAction(RewardViewAction rvAction)
     {
@@ -31,9 +37,61 @@ public class RewardController implements RewardAction, Updatable
     public void requestEnemyReward(Enemy enemy)
     {
         rewardViewAction.displayMessage(rewardModel.applyEnemyReward(enemy));
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
 
+    @Override
+    public void requestTemporaryStatIncrease(StatType stat)
+    {
+        rewardModel.planIncrease(stat);
+        gameAction.requestGameUpdate();
+    }
+
+    @Override
+    public void requestTemporaryStatDecrease(StatType stat)
+    {
+        rewardModel.planDecrease(stat);
+        gameAction.requestGameUpdate();
+    }
+
+    @Override
+    public void requestConfirmStat()
+    {
+        rewardViewAction.displayMessage(rewardModel.confirmLeveledUp());
+        gameAction.requestGameUpdate();
+    }
+
+    @Override
+    public void requestKeepItem()
+    {
+        rewardViewAction.displayMessage(rewardModel.takeOfferedItem());
+        gameAction.requestGameUpdate();
+        if(rewardListener != null)
+            rewardListener.onChestDecision();
+    }
+
+    @Override
+    public void requestDiscardItem()
+    {
+        rewardViewAction.displayMessage(rewardModel.discardOfferedItem());
+        gameAction.requestGameUpdate();
+        if(rewardListener != null)
+            rewardListener.onChestDecision();
+    }
+
+    @Override
+    public void requestOfferChestReward(Item item)
+    {
+        rewardViewAction.displayMessage(rewardModel.offerChestItem(item));
+        gameAction.requestGameUpdate();
+    }
+
+    @Override
+    public void requestResetReward()
+    {
+        rewardModel.resetReward();
+    }
+    
     @Override
     public void requestUpdate()
     {
@@ -45,55 +103,5 @@ public class RewardController implements RewardAction, Updatable
         if(rewardModel.hasOfferedItem()) rewardViewAction.showRewardPanel(RewardPanelType.CHEST);
         else if(rewardModel.hasPointsToAllocate()) rewardViewAction.showRewardPanel(RewardPanelType.STAT_POINTS);
         else rewardViewAction.showRewardPanel(RewardPanelType.NONE);
-    }
-
-    @Override
-    public void requestTemporaryStatIncrease(StatType stat)
-    {
-        rewardModel.planIncrease(stat);
-        requestUpdate();
-    }
-
-    @Override
-    public void requestTemporaryStatDecrease(StatType stat)
-    {
-        rewardModel.planDecrease(stat);
-        requestUpdate();
-    }
-
-    @Override
-    public void requestConfirmStat()
-    {
-        rewardViewAction.displayMessage(rewardModel.confirmLeveledUp());
-        requestUpdate();
-    }
-
-    @Override
-    public void requestKeepItem()
-    {
-        rewardViewAction.displayMessage(rewardModel.takeOfferedItem());
-        requestUpdate();
-        if(rewardListener != null) rewardListener.onChestDecision();
-    }
-
-    @Override
-    public void requestDiscardItem()
-    {
-        rewardViewAction.displayMessage(rewardModel.discardOfferedItem());
-        requestUpdate();
-        if(rewardListener != null) rewardListener.onChestDecision();
-    }
-
-    @Override
-    public void requestOfferChestReward(Item item)
-    {
-        rewardViewAction.displayMessage(rewardModel.offerChestItem(item));
-        requestUpdate();
-    }
-
-    @Override
-    public void requestResetReward()
-    {
-        rewardModel.resetReward();
     }
 }

@@ -9,18 +9,23 @@ import game.combat.model.CombatOutcome;
 import game.combat.view.CombatViewAction;
 import game.entities.Enemy;
 import game.items.PotionType;
+import game.maingame.controller.GameAction;
 
 public class CombatController implements CombatAction, Updatable
 {
     private final CombatModel combatModel;
     
+    private GameAction gameAction;
+    
     private CombatListener combatListener;
     private CombatViewAction combatViewAction;
-
+    
     public CombatController(CombatModel cModel)
     {
         combatModel = cModel;
     }
+    
+    public void setGameAction(GameAction gAction) { gameAction = gAction;}
     
     public void setCombatListener(CombatListener cListener) { combatListener = cListener;}
     
@@ -31,7 +36,7 @@ public class CombatController implements CombatAction, Updatable
     {
         if(combatModel.startCombat(enemy))
             combatViewAction.displayMessage(enemy.getName() + " has appeared!");
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
 
     @Override
@@ -39,7 +44,7 @@ public class CombatController implements CombatAction, Updatable
     {
         combatModel.resetCombat();
         combatViewAction.clearMessage();
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
 
     /**
@@ -57,7 +62,7 @@ public class CombatController implements CombatAction, Updatable
             requestEnemyTurn();
         }
         
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
 
     /**
@@ -80,7 +85,7 @@ public class CombatController implements CombatAction, Updatable
             requestEnemyTurn();
         }
         
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
     
     private void requestEnemyTurn()
@@ -103,7 +108,7 @@ public class CombatController implements CombatAction, Updatable
             showResult(result.combatOutcome(), message);
         }
         
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
 
     @Override
