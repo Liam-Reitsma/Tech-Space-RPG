@@ -56,6 +56,12 @@ public enum EnemyType
     @Override
     public String toString() { return this.name().charAt(0) + this.name().substring(1).toLowerCase(); }
 
+    /**
+     * Randomly selects an enemy type associated with the room type.
+     *
+     * @param roomType The room type to filter eligible enemies.
+     * @return A randomly selected matching enemy type, or null if none exists.
+     */
     public static EnemyType getRandomEnemyType(RoomType roomType)
     {
         int length = 0;
