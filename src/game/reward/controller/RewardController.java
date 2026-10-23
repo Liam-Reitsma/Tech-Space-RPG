@@ -74,6 +74,11 @@ public class RewardController implements RewardAction, Updatable
         gameAction.requestGameUpdate();
     }
 
+    /**
+     * Attempts to add the offered item to the player's inventory.
+     * If adding fails, prompts the player to discard the item or cancel.
+     * Cancelling preserves the item, while confirming discards it.
+     */
     @Override
     public void requestKeepItem()
     {
@@ -98,6 +103,10 @@ public class RewardController implements RewardAction, Updatable
         gameAction.requestGameUpdate();
     }
 
+    /**
+     * Attempts to discard the offered item and displays the resulting message.
+     * Notifies the listener that the chest decision is complete.
+     */
     @Override
     public void requestDiscardItem()
     {
@@ -123,7 +132,12 @@ public class RewardController implements RewardAction, Updatable
     {
         rewardModel.resetReward();
     }
-    
+
+    /**
+     * Updates the displayed stats and remaining allocation points.
+     * Displays the chest panel if an item is offered, otherwise the stat allocation
+     * panel if points are available, or no reward panel if neither applies.
+     */
     @Override
     public void requestUpdate()
     {
