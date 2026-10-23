@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 
 public class SQLCommandFactory
 {
-    private static final String separator = ", ";
+    private static final String SEPARATOR = ", ";
     
     private SQLCommandFactory()
     {
@@ -19,7 +19,7 @@ public class SQLCommandFactory
     
     public static String buildCreateTableSQL(String tableName, LinkedHashMap<String, String> columns, String[] pKeys, String[] notNullables)
     {
-        return buildCreateTableSQL(tableName, columns, pKeys, notNullables,null, null);
+        return buildCreateTableSQL(tableName, columns, pKeys, notNullables, null, null);
     }
     
     public static String buildCreateTableSQL(String tableName, LinkedHashMap<String, String> columns, String[] pKeys, String[] notNullables, String[] parentTableNames, String[] fKeys)
@@ -33,38 +33,35 @@ public class SQLCommandFactory
             sql.append(column.getKey()).append(" ").append(column.getValue());
             
             if(notNullables != null)
-            {
                 for(String notNullable : notNullables)
-                {
                     if(column.getKey().equalsIgnoreCase(notNullable))
                     {
                         sql.append(" NOT NULL");
                         break;
                     }
-                }
-            }
             
-            sql.append(separator);
+            sql.append(SEPARATOR);
         }
         
         sql.append("PRIMARY KEY(");
         
         for(String pKey : pKeys)
+            sql.append(pKey).append(SEPARATOR);
+        
+        sql.delete((sql.length()) - SEPARATOR.length(), sql.length()).append(")");
+        
+        if(parentTableNames == null)
         {
-            sql.append(pKey).append(separator);
+            sql.append(")");
+            return sql.toString();
         }
         
-        sql.delete((sql.length()) - separator.length(), sql.length()).append(")");
-        
-        if(parentTableNames == null) { sql.append(")"); return sql.toString(); }
-        else sql.append(separator);
+        sql.append(SEPARATOR);
         
         for(int i = 0; i < parentTableNames.length; i++)
-        {
-            sql.append("FOREIGN KEY(").append(fKeys[i]).append(") REFERENCES ").append(parentTableNames[i]).append("(").append(fKeys[i]).append(")").append(separator);
-        }
+            sql.append("FOREIGN KEY(").append(fKeys[i]).append(") REFERENCES ").append(parentTableNames[i]).append("(").append(fKeys[i]).append(")").append(SEPARATOR);
         
-        sql.delete(sql.length() - separator.length(), sql.length()).append(")");
+        sql.delete(sql.length() - SEPARATOR.length(), sql.length()).append(")");
         
         return sql.toString();
     }
@@ -76,13 +73,11 @@ public class SQLCommandFactory
         sql.append("INSERT INTO ").append(tableName).append("(");
         
         for(String column : columns)
-        {
-            sql.append(column).append(separator);
-        }
+            sql.append(column).append(SEPARATOR);
         
-        sql.delete((sql.length()) - separator.length(), sql.length()).append(")");
+        sql.delete((sql.length()) - SEPARATOR.length(), sql.length()).append(")");
         sql.append(" VALUES(").repeat("?, ", columns.length);
-        sql.delete((sql.length()) - separator.length(), sql.length()).append(")");
+        sql.delete((sql.length()) - SEPARATOR.length(), sql.length()).append(")");
         
         return sql.toString();
     }
@@ -114,10 +109,10 @@ public class SQLCommandFactory
         {
             if(column.equalsIgnoreCase(columnName))
                 continue;
-            sql.append(column).append(" = ?").append(separator);
+            sql.append(column).append(" = ?").append(SEPARATOR);
         }
         
-        sql.delete((sql.length()) - separator.length(), sql.length());
+        sql.delete((sql.length()) - SEPARATOR.length(), sql.length());
         sql.append(" WHERE ").append(columnName).append(" = ?");
         
         return sql.toString();
@@ -130,7 +125,8 @@ public class SQLCommandFactory
         sql.append("UPDATE ").append(tableName).append(" SET ").append(columnName).append(" = ? ").append("WHERE ");
         for(String column : columns)
         {
-            if(columnName.equalsIgnoreCase(column)) continue;
+            if(columnName.equalsIgnoreCase(column))
+                continue;
             sql.append(column).append(" = ?").append(" AND ");
         }
         
@@ -145,9 +141,7 @@ public class SQLCommandFactory
         
         sql.append("DELETE FROM ").append(tableName).append(" WHERE ");
         for(String column : columns)
-        {
             sql.append(column).append(" = ?").append(" AND ");
-        }
         
         sql.delete(sql.length() - " AND ".length(), sql.length());
         

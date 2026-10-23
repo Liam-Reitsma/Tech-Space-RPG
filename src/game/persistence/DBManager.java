@@ -5,53 +5,52 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DBManager
 {
-    private final static String URL = "jdbc:derby:database/TechSpaceRPG_DB;create=true";
-    private final static String username = "TSDB";
-    private final static String password = "tsdb";
+    private static final Logger LOGGER = Logger.getLogger(DBManager.class.getName());
     
     private Connection connection;
     
-    public DBManager()
+    public DBManager(String url, String username, String password)
     {
-        establishConnection();
+        establishConnection(url, username, password);
     }
     
-    private void establishConnection()
+    private void establishConnection(String url, String username, String password)
     {
         try
         {
-            connection = DriverManager.getConnection(URL, username, password);
+            connection = DriverManager.getConnection(url, username, password);
         } catch(SQLException e)
         {
-            System.out.println(e.getMessage());
+            LOGGER.log(Level.SEVERE, "DBManager failed to connect to the Database.", e);
         }
     }
     
-    public void closeSQLConnection()
+    public void closeConnection()
     {
-        closeConnection();
-    }
-    
-    private void closeConnection()
-    {
-        if(connection != null)
+        if(connection == null)
+            return;
+        
+        try
         {
-            try
-            {
-                connection.close();
-            } catch(SQLException e)
-            {
-                System.out.println(e.getMessage());
-            }
+            connection.close();
+        } catch(SQLException e)
+        {
+            LOGGER.log(Level.SEVERE, "DBManager failed to close the connection to the Database.", e);
         }
     }
     
     public boolean createTable(String tableName, String sql)
     {
-        if(tableExists(tableName)) return true;
+        if(tableExists(tableName))
+            return true;
+        
+        if(connection == null)
+            return false;
         
         try(Statement statement = connection.createStatement())
         {
@@ -80,6 +79,9 @@ public class DBManager
     
     public boolean updateDB(String templateSQL, Object... args)
     {
+        if(connection == null)
+            return false;
+        
         try(PreparedStatement ps = connection.prepareStatement(templateSQL))
         {
             for(int i = 1; i <= args.length; i++)
@@ -89,12 +91,16 @@ public class DBManager
             return true;
         } catch(SQLException e)
         {
+            LOGGER.log(Level.SEVERE, "Database update failed: " + templateSQL, e);
             return false;
         }
     }
     
     public List<Map<String, Object>> queryDB(String templateSQL, Object... args)
     {
+        if(connection == null)
+            return null;
+        
         List<Map<String, Object>> objectList = new ArrayList<>();
         Map<String, Object> row;
         int i = 0;
@@ -130,6 +136,9 @@ public class DBManager
     
     public boolean dropTableIfExists(String tableName)
     {
+        if(connection == null)
+            return false;
+        
         try
         {
             try(Statement statement = connection.createStatement())

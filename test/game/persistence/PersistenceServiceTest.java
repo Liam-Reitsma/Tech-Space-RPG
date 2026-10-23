@@ -15,7 +15,6 @@ import game.world.model.room.RoomTileState;
 import game.world.model.room.RoomType;
 import game.world.model.room.RuntimeRoom;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,24 +25,18 @@ public class PersistenceServiceTest
 {
     private static final String SAVE_NAME = "Test Save";
     
-    private DBManager dbManager;
-    private PersistenceService persistenceService;
+    private final DBManager dbManager;
+    private final PersistenceService persistenceService;
     
     public PersistenceServiceTest()
     {
-    
-    }
-    
-    @Before
-    public void setUp()
-    {
-        dbManager = new DBManager();
+        dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_TEST_DB;create=true", "TSDB", "tsdb");
         InventoryDAO inventoryDAO = new InventoryDAO(dbManager);
         PlayerDAO playerDAO = new PlayerDAO(dbManager);
         WorldDAO worldDAO = new WorldDAO(dbManager);
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
-        databaseSchemaManager.dropTables();
-        databaseSchemaManager.createTables();
+        assertTrue(databaseSchemaManager.dropTables());
+        assertTrue(databaseSchemaManager.createTables());
         
         persistenceService = new PersistenceService(databaseSchemaManager, inventoryDAO, playerDAO, worldDAO);
     }
@@ -67,10 +60,10 @@ public class PersistenceServiceTest
         
         SavedData savedData = persistenceService.loadSaveGame(SAVE_NAME);
         assertNotNull(savedData);
-        assertEquals("John", savedData.player.getName());
-        assertEquals(ClassType.SCAVENGER, savedData.player.getClassType());
-        assertNotNull(savedData.world);
-        assertEquals(1, savedData.world.size());
+        assertEquals("John", savedData.player().getName());
+        assertEquals(ClassType.SCAVENGER, savedData.player().getClassType());
+        assertNotNull(savedData.world());
+        assertEquals(1, savedData.world().size());
     }
     
     @Test
@@ -80,7 +73,7 @@ public class PersistenceServiceTest
         assertTrue(persistenceService.createNewSaveGame(SAVE_NAME, "John", ClassType.SHADOW, world));
         
         SavedData savedData = persistenceService.loadSaveGame(SAVE_NAME);
-        Player player = savedData.player;
+        Player player = savedData.player();
         Item potion = new Potion(PotionType.SMALL_HEALTH);
         player.addToInventory(potion);
         RuntimeRoom room = world.get(new Point(0, 0));
@@ -90,9 +83,9 @@ public class PersistenceServiceTest
         SavedData loadedData = persistenceService.loadSaveGame(SAVE_NAME);
         
         assertNotNull(loadedData);
-        assertEquals(1, getItemCount(player.getInventory().getInventorySlots(), potion));
+        assertEquals(1, getItemCount(loadedData.player().getInventory().getInventorySlots(), potion));
         
-        assertEquals(RoomTileState.COMPLETED, loadedData.world.get(new Point(0, 0)).getRoomState().getRoomTileState());
+        assertEquals(RoomTileState.COMPLETED, loadedData.world().get(new Point(0, 0)).getRoomState().getRoomTileState());
     }
     
     private int getItemCount(ItemStack[] inventory, Item item)
@@ -117,6 +110,7 @@ public class PersistenceServiceTest
     @After
     public void tearDown()
     {
-        dbManager.closeSQLConnection();
+        if(dbManager != null)
+            dbManager.closeConnection();
     }
 }

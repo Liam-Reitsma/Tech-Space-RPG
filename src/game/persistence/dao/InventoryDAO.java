@@ -4,7 +4,6 @@ import static game.persistence.PersistenceTable.*;
 import static game.persistence.SQLCommandFactory.*;
 import static game.player.model.Inventory.INVENTORY_CAPACITY;
 
-import game.player.model.Inventory;
 import game.player.model.ItemStack;
 import game.player.model.Player;
 import game.items.EquippableItem;
@@ -122,14 +121,17 @@ public class InventoryDAO
         return true;
     }
     
-    public boolean addItem(String saveName, Item item, int oldCount, int slotIndex)
+    public boolean addItem(String saveName, Item item, int newCount, int slotIndex)
     {
-        return updateItemEntry(saveName, item, oldCount, oldCount + 1, slotIndex);
+        return updateItemEntry(saveName, item, newCount - 1, newCount, slotIndex);
     }
     
-    public boolean removeItem(String saveName, Item item, int oldCount, int slotIndex)
+    public boolean removeItem(String saveName, Item item, int newCount, int slotIndex)
     {
-        return oldCount > 0 && updateItemEntry(saveName, item, oldCount, oldCount - 1, slotIndex);
+        if(item == null || slotIndex < 0 || newCount < 0)
+            return false;
+        
+        return updateItemEntry(saveName, item, newCount + 1, newCount, slotIndex);
     }
     
     private boolean updateItemEntry(String saveName, Item item, int oldCount, int newCount, int slotIndex)
@@ -151,7 +153,7 @@ public class InventoryDAO
         {
             case 0 ->
             {
-                args = new Object[]{saveName, armour.getEquipSlot().name(), armour.getArmourMaterial().name(), slotIndex};
+                args = new Object[]{saveName, armour.getEquipSlot().name(), armour.getArmourMaterial().name()};
                 return dbManager.updateDB(buildDeleteRowSQL(
                         ARMOR_TABLE_NAME, STORED_ARMOUR.getPrimaryKeys()), args);
             }
@@ -185,7 +187,7 @@ public class InventoryDAO
         {
             case 0 ->
             {
-                args = new Object[]{saveName, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel(), slotIndex};
+                args = new Object[]{saveName, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel()};
                 return dbManager.updateDB(buildDeleteRowSQL(
                         WEAPON_TABLE_NAME, STORED_WEAPONS.getPrimaryKeys()), args);
             }
@@ -218,7 +220,7 @@ public class InventoryDAO
         {
             case 0 ->
             {
-                args = new Object[]{saveName, potion.getPotionType().name(), slotIndex};
+                args = new Object[]{saveName, potion.getPotionType().name()};
                 return dbManager.updateDB(buildDeleteRowSQL(
                         POTION_TABLE_NAME, STORED_POTIONS.getPrimaryKeys()), args);
             }
@@ -312,8 +314,10 @@ public class InventoryDAO
     
     public boolean deleteInventory(String saveName)
     {
-        return  dbManager.updateDB(buildDeleteRowSQL(ARMOR_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
-                dbManager.updateDB(buildDeleteRowSQL(WEAPON_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
-                dbManager.updateDB(buildDeleteRowSQL(POTION_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        boolean success = dbManager.updateDB(buildDeleteRowSQL(ARMOR_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        success = dbManager.updateDB(buildDeleteRowSQL(WEAPON_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && success;
+        success = dbManager.updateDB(buildDeleteRowSQL(POTION_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && success;
+        
+        return success;
     }
 }
