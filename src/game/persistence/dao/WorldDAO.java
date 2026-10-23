@@ -74,7 +74,7 @@ public class WorldDAO
         if(roomDataList == null)
             return null;
         if(roomDataList.isEmpty())
-            return new HashMap<>();
+            return world;
         
         for(Map<String, Object> roomData : roomDataList)
         {
