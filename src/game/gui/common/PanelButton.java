@@ -34,7 +34,6 @@ public class PanelButton extends ConfirmButton
         rolloverImage = new ImageIcon("resources/images/Apply_Button_Rollover.png").getImage();
         pressedImage = new ImageIcon("resources/images/Apply_Button_Pressed.png").getImage();
     }
-    
     protected void paintComponent(Graphics g)
     {
         Image image;

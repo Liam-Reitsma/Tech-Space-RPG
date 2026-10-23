@@ -122,14 +122,23 @@ public class NewGameScreen extends JPanel implements NewGameViewAction, Displaya
         picturePreview.setImage(new ImageIcon("resources/images/classes/" + classType.toFileName() + ".png").getImage());
         classDescriptionTextArea.setText(classType.getStartingDescription());
     }
-    
+
+    /**
+     * Makes the screen invisible.
+     *
+     * @return The new game screen's JPanel instance.
+     */
     @Override
     public JPanel getDisplay()
     {
         setVisible(false);
         return this;
     }
-    
+
+    /**
+     * Makes the screen visible and plays the new game screen's music.
+     * Also resets the player name to the default text and the selected class to its default.
+     */
     @Override
     public void openDisplay()
     {

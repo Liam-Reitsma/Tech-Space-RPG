@@ -36,7 +36,13 @@ public enum ArmourMaterial
     public int getRequiredLevel() { return  requiredLevel; }
     
     public float getProtValue() { return protValue; }
-    
+
+    /**
+     * Randomly selects an armour material whose required level does not exceed the supplied level. Defaults to FABRIC if none qualify.
+     *
+     * @param level The level used to determine the eligible material.
+     * @return The randomly selected armour material, or fabric if none qualify.
+     */
     public static ArmourMaterial getRandomMaterial(int level)
     {
         int i = 0;

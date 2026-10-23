@@ -18,7 +18,10 @@ public class MainMenuController implements MainMenuAction
         
         frameAction = fAction;
     }
-    
+
+    /**
+     * Plays the soundbite and ambient music for the main menu.
+     */
     @Override
     public void requestOpenMainMenu()
     {
