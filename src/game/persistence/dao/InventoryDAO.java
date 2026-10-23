@@ -72,7 +72,15 @@ public class InventoryDAO
         
         return dbManager.updateDB(buildUpdateTableSQL(EQUIPPED_ITEMS.name(), SAVE_NAME_COLUMN, equippedColumns), args);
     }
-    
+
+    /**
+     * Deletes all stored armour, weapons and potions for the specified save.
+     * Recreates their database records using the supplied inventory.
+     *
+     * @param saveName The save whose stored inventory is being updated.
+     * @param inventory The inventory containing the items to persist.
+     * @return True if every database operation succeeds; otherwise false.
+     */
     public boolean updateStoredEquipment(String saveName, ReadInventory inventory)
     {
         if(!dbManager.updateDB(buildDeleteAllRowsSQL(STORED_ARMOUR.name(), SAVE_NAME_COLUMN), saveName))
@@ -246,7 +254,13 @@ public class InventoryDAO
             }
         }
     }
-    
+
+    /**
+     * Retrieves all the player's equipped items.
+     *
+     * @param saveName The save whose equipped items are being loaded.
+     * @return An array of equipped items, an empty array if no record exists, or null if the query fails.
+     */
     public EquippableItem[] loadEquippedItems(String saveName)
     {
         List<Map<String, Object>> itemDataList = dbManager.queryDB(buildSelectSQL(EQUIPPED_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
@@ -274,7 +288,14 @@ public class InventoryDAO
         
         return equippableItems.toArray(new EquippableItem[0]);
     }
-    
+
+    /**
+     * Reconstructs the inventory, restoring items to their original slots.
+     * Unoccupied slots are initialised with empty ItemStack objects.
+     *
+     * @param saveName The save whose inventory is being loaded.
+     * @return A fixed-capacity array of restored item stacks, or null if a database query fails.
+     */
     public ItemStack[] loadInventory(String saveName)
     {
         List<Map<String, Object>> storedWeaponList = dbManager.queryDB(buildSelectSQL(WEAPON_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
