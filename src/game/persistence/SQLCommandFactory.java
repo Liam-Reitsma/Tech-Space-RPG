@@ -117,7 +117,16 @@ public class SQLCommandFactory
         
         return sql.toString();
     }
-    
+
+    /**
+     * Generates an SQL UPDATE statement using columnName as the column to update.
+     * Uses ? placeholders for the updated value and WHERE conditions.
+     *
+     * @param tableName The table to update.
+     * @param columnName The column whose value will be updated.
+     * @param columns The columns used to identify rows, excluding columnName.
+     * @return The parameterised SQL UPDATE statement.
+     */
     public static String buildUpdateCellEntrySQL(String tableName, String columnName, String[] columns)
     {
         StringBuilder sql = new StringBuilder();

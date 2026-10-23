@@ -46,7 +46,14 @@ public class WorldDAO
         
         return true;
     }
-    
+
+    /**
+     * Deletes all existing rooms associated with the save and inserts the supplied rooms if the deletion was successful.
+     *
+     * @param saveName The save whose world is being updated.
+     * @param world The world containing the rooms to persist.
+     * @return True if all database operations succeed; otherwise false.
+     */
     public boolean updateMap(String saveName, Map<Point, RuntimeRoom> world)
     {
         if(!dbManager.updateDB(buildDeleteAllRowsSQL(TABLE_NAME, SAVE_NAME_COLUMN), saveName))
@@ -66,7 +73,13 @@ public class WorldDAO
         
         return dbManager.updateDB(buildUpdateCellEntrySQL(TABLE_NAME, columnName, primaryKeys), args);
     }
-    
+
+    /**
+     * Retrieves the rooms associated with the save and reconstructs each room with its position, type and tile state.
+     *
+     * @param saveName The identifier of the save whose world is being loaded.
+     * @return A map of room coordinates to reconstructed rooms, an empty map if no rooms exist, or null if the query fails.
+     */
     public Map<Point, RuntimeRoom> loadSavedWorld(String saveName)
     {
         List<Map<String, Object>> roomDataList = dbManager.queryDB(buildSelectSQL(TABLE_NAME, SAVE_NAME_COLUMN), saveName);
