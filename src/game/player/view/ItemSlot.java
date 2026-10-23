@@ -29,41 +29,32 @@ public class ItemSlot extends JPanel
     private static final Image SHINS_IMAGE = new ImageIcon("resources/images/inventory/Shins.png").getImage();
     private static final Image BOOTS_IMAGE = new ImageIcon("resources/images/inventory/Boots.png").getImage();
     
-    private Image image;
+    private int flashCounter;
     private int quantity;
     private boolean isDragging;
+
+    private Image image;
     private SlotHighlight slotHighlight;
     private SlotHighlight flashHighlight;
-    
-    private int flashCounter;
     
     private final ItemSlot dragSlot;
     private final SlotIdentity slotIdentity;
     private final DragViewAction dragViewAction;
     private final Timer flashTimer;
     
-    public ItemSlot(ItemSlot itemSlot)
-    {
-        image = itemSlot.image;
-        quantity = itemSlot.quantity;
-        isDragging = false;
-        slotHighlight = NONE;
-        dragSlot = null;
-        slotIdentity = itemSlot.slotIdentity;
-        dragViewAction = null;
-        flashTimer = new Timer(FLASH_INTERVAL, null);
-    }
-    
     public ItemSlot(SlotIdentity slotType, int count, DragViewAction dvAction, ItemSlotReleased released)
     {
-        image = getImageFromSlot(slotType.equipSlot());
         quantity = count;
         isDragging = false;
+
+        image = getImageFromSlot(slotType.equipSlot());
         slotHighlight = NONE;
+        
+        dragSlot = new ItemSlot(this);
         slotIdentity = slotType;
         dragViewAction = dvAction;
-        dragSlot = new ItemSlot(this);
         flashTimer = new Timer(FLASH_INTERVAL, null);
+        
         flashTimer.addActionListener(e ->
         {
             setSlotHighlight(slotHighlight == NONE ? flashHighlight : NONE);
@@ -85,6 +76,27 @@ public class ItemSlot extends JPanel
         }
     }
     
+    private ItemSlot(ItemSlot itemSlot)
+    {
+        quantity = itemSlot.quantity;
+        isDragging = false;
+        
+        image = itemSlot.image;
+        slotHighlight = NONE;
+        
+        dragSlot = null;
+        slotIdentity = itemSlot.slotIdentity;
+        dragViewAction = null;
+        flashTimer = new Timer(FLASH_INTERVAL, null);
+    }
+
+    /**
+     * Creates a mouse listener for dragging items between inventory and equipment slots.
+     * Displays the dragged item on an overlay and reports its destination upon release.
+     *
+     * @param released Callback receiving the destination slot, or null if dropped outside a valid slot.
+     * @return A MouseAdapter handling item dragging and releasing.
+     */
     private MouseAdapter createMouseAdapter(ItemSlotReleased released)
     {
         return new MouseAdapter()
@@ -92,6 +104,9 @@ public class ItemSlot extends JPanel
             @Override
             public void mouseDragged(MouseEvent e)
             {
+                if(quantity == 0)
+                    return;
+                
                 if(!isDragging)
                 {
                     isDragging = true;
@@ -157,6 +172,23 @@ public class ItemSlot extends JPanel
         return EMPTY_SLOT;
     }
     
+    public void flashHighlight(SlotHighlight highlight)
+    {
+        flashTimer.stop();
+        flashCounter = 0;
+        flashHighlight = highlight;
+        setSlotHighlight(NONE);
+        
+        flashTimer.setRepeats(true);
+        flashTimer.start();
+    }
+    
+    private void setSlotHighlight(SlotHighlight highlight)
+    {
+        slotHighlight = highlight;
+        repaint();
+    }
+    
     @Override
     public void paintComponent(Graphics g)
     {
@@ -188,22 +220,5 @@ public class ItemSlot extends JPanel
             
             g2D.dispose();
         }
-    }
-    
-    public void setSlotHighlight(SlotHighlight highlight)
-    {
-        slotHighlight = highlight;
-        repaint();
-    }
-    
-    public void flashHighlight(SlotHighlight highlight)
-    {
-        flashTimer.stop();
-        flashCounter = 0;
-        flashHighlight = highlight;
-        setSlotHighlight(NONE);
-        
-        flashTimer.setRepeats(true);
-        flashTimer.start();
     }
 }

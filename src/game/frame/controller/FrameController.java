@@ -35,7 +35,12 @@ public class FrameController implements FrameAction
     {
         popupViewAction.closePopup();
     }
-    
+
+    /**
+     * Displays the requested screen or overlay, or closes the game window if EXIT is specified.
+     *
+     * @param display The target screen, overlay, or EXIT action.
+     */
     @Override
     public void requestDisplay(DisplayTarget display)
     {

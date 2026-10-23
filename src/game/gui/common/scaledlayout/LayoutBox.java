@@ -42,7 +42,8 @@ public class LayoutBox implements ScaledLayoutConstraint
         
         for(float arg : args)
         {
-            if(arg <= 0) return boxes;
+            if(arg <= 0)
+                return boxes;
             totalWeight += arg;
         }
         
@@ -65,7 +66,8 @@ public class LayoutBox implements ScaledLayoutConstraint
         
         for(float arg : args)
         {
-            if(arg <= 0) return boxes;
+            if(arg <= 0)
+                return boxes;
             totalWeight += arg;
         }
         

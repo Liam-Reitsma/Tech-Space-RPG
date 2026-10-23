@@ -50,7 +50,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-        DBManager dbManager = new DBManager();
+        DBManager dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_DB;create=true", "TSDB", "tsdb");
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
         InventoryDAO inventoryDAO = new InventoryDAO(dbManager);
         PlayerDAO playerDAO = new PlayerDAO(dbManager);
@@ -67,7 +67,7 @@ public class Main
         FrameController frameController = new FrameController();
         OptionsController optionsController = new OptionsController(frameController);
         WorldController worldController = new WorldController(gameModel);
-        RewardController rewardController = new RewardController(rewardModel);
+        RewardController rewardController = new RewardController(rewardModel, frameController);
         GameController gameController = new GameController(persistenceService, gameModel, combatController, frameController, rewardController, worldController);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
         MainMenuController mainMenuController = new MainMenuController(frameController);
@@ -92,7 +92,7 @@ public class Main
 
         CombatButtonPanel combatButtonPanel = new CombatButtonPanel(combatController);
         CombatTextPane combatTextPane = new CombatTextPane();
-        CombatPane combatPane = new CombatPane(combatButtonPanel, combatTextPane, rewardStatPanel, chestPanel);
+        CombatPane combatPane = new CombatPane(chestPanel, combatButtonPanel, combatTextPane, rewardStatPanel);
 
         MainGameMenuPanel mainGameMenuPanel = new MainGameMenuPanel(mainGameMenuController);
 
@@ -109,11 +109,17 @@ public class Main
         combatController.setCombatViewAction(combatPane);
         combatController.setCombatListener(gameController);
         frameController.setViewActions(gameFrame);
-        gameController.setGameViewAction(gameScreen);
         gameController.addUpdatable(combatController);
-        gameController.addUpdatable(rewardController);
-        gameController.addUpdatable(worldController);
+        combatController.setGameAction(gameController);
+        
         gameController.addUpdatable(playerController);
+        playerController.setGameAction(gameController);
+        
+        gameController.addUpdatable(rewardController);
+        rewardController.setGameAction(gameController);
+        
+        gameController.addUpdatable(worldController);
+        worldController.setGameAction(gameController);
         
         newGameController.setNewGameViewAction(newGameScreen);
         optionsController.setOptionsViewAction(optionsOverlay);
@@ -127,6 +133,6 @@ public class Main
         frameController.requestDisplay(MAIN_MENU);
         gameFrame.setVisible(true);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(dbManager::closeSQLConnection));
+        Runtime.getRuntime().addShutdownHook(new Thread(dbManager::closeConnection));
     }
 }

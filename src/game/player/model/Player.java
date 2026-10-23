@@ -12,32 +12,24 @@ import game.world.model.Point;
 import java.util.*;
 
 /** Player extends Entities and implements Persistable. It holds all the methods that apply to the {@link Player}*/
-public class Player extends Entities implements Persistable
+public class Player extends Entities
 {
-    @SaveExclude
     private static final int STARTING_LEVEL_XP = 15;
-    @SaveExclude
     private static final float XP_GAIN_FACTOR = 1.25f;
     
-    @SaveExclude
-    private int xpToLevelUp;
-    private int xp;
     private int gold;
+    private int xp;
+    private int xpToLevelUp;
+    
+    private float armourMultiplier;
+    private float armourPenetration;
+    private float damageMultiplier;
+    private float maximumHealth;
     
     private Point point;
+    
     private final ClassType classType;
     private final Map<StatType, Integer> statTypeMap;
-    
-    @SaveExclude
-    private float maximumHealth;
-    @SaveExclude
-    private float armourPenetration;
-    @SaveExclude
-    private float damageMultiplier;
-    @SaveExclude
-    private float armourMultiplier;
-    
-    @SaveExclude
     private final Inventory inventory;
 
     /** Used when creating character at the start of a new game.*/
@@ -51,6 +43,7 @@ public class Player extends Entities implements Persistable
         point = new Point(0, 0);
         inventory = new Inventory();
         Weapon startingWeapon = new Weapon(classType.getStartingWeapon(), level);
+        inventory.addToInventory(startingWeapon);
         inventory.equipItem(startingWeapon, startingWeapon.getEquipSlot());
         
         statTypeMap = new HashMap<>();
@@ -79,9 +72,6 @@ public class Player extends Entities implements Persistable
         point = loadedPoint;
 
         inventory = new Inventory();
-        Weapon loadedWeapon = new Weapon(classType.getStartingWeapon(), level);
-        inventory.equipItem(loadedWeapon, loadedWeapon.getEquipSlot());
-        
         statTypeMap = new HashMap<>();
         statTypeMap.put(STR, loadedSTR);
         statTypeMap.put(DEX, loadedDEX);
@@ -94,76 +84,81 @@ public class Player extends Entities implements Persistable
         
         xpToLevelUp = Math.round(STARTING_LEVEL_XP * (float)Math.pow(level, XP_GAIN_FACTOR));
     }
-    
-    /** First checks for equipped weapon and if there is no weapon equipped, it returns the strength value of {@link Player}. Otherwise, it gets the equipped weapons damage by using calculateDamage() and multiplying by the {@link Player} damage multiplier field. It is then rounded to 4 decimal places.*/
+
+    /**
+     * Calculates the attack damage using the equipped weapon and the damage multiplier.
+     * If the player does not have a weapon equipped, the damage will be just their strength value.
+     *
+     * @return The calculated damage, or strength value when unarmed.
+     */
     @Override
-    public float attack()
+    public float calculateAttackDamage()
     {
         Weapon weapon = inventory.getEquippedWeapon();
-        if(weapon != null) return Math.round((damageMultiplier * weapon.calculateDamage(statTypeMap.get(weapon.getScalingStat())) * 10000f) / 10000f);
-        return statTypeMap.get(STR);
-    }
-    
-    public void healing(int healAmount)
-    {
-        float healthGain = healAmount * statTypeMap.get(STR) * 0.01f;
-        
-        if(healthGain + health >= maximumHealth)
-        {
-            health = maximumHealth;
-        }
-        else
-        {
-            health += healthGain;
-        }
+        return weapon == null ? statTypeMap.get(STR) : damageMultiplier * weapon.calculateDamage(statTypeMap.get(weapon.getScalingStat()));
     }
 
-    /** Calculates the damage that is applied to the {@link Player} by first, going through the equipped armours and totalling the damage that the armour pieces blocks, second, subtracting the total protection value from 1, third, adding it to armour penetration value, finally, multiplying by the damage that is given to the {@link Player}.
-     * If the health results in being less than or equal to 0, it sets to 0.*/
+    /**
+     * Applies incoming damage after accounting for armour protection and penetration.
+     * Prevents health from dropping below zero.
+     *
+     * @param damage Incoming damage.
+     * @param armourPen The attacker's armour penetration value.
+     */
     @Override
-    public void takeDamage(float damage, float armourPen)
+    public void applyDamage(float damage, float armourPen)
+    {
+        if(damage <= 0)
+            return;
+        
+        health -= damage * Math.clamp((1 - getProtectionValue() + armourPen), 0f, 1f);
+        
+        health = Math.max(health, 0);
+    }
+
+    /**
+     * Calculates the combined protection provided by equipped armour, accounting for the armour multiplier.
+     *
+     * @return The damage reduction as a fraction between 0 and 1.
+     */
+    public float getProtectionValue()
     {
         float totalArmour = 0;
         for(Armour armour : inventory.getEquippedArmour())
-        {
             totalArmour += (1 - totalArmour) * Math.min(armour.calculateProtection() * armourMultiplier, 1);
-        }
         
-        health -= Math.round(damage * Math.clamp((1 - totalArmour + armourPen), 0, 1));
+        return totalArmour;
+    }
+
+    /**
+     * Applies healing, scaling with Strength, without exceeding maximum health.
+     *
+     * @param healAmount The base healing amount before Strength scaling.
+     */
+    public void applyHealing(int healAmount)
+    {
+        if(healAmount <= 0)
+            return;
         
-        if(health <= 0) health = 0;
-    }
-    
-    public int getProtectionValue()
-    {
-        float totalArmour = 0;
-        for(Armour armour : inventory.getEquippedArmour())
-        {
-            totalArmour += (1 - totalArmour) * Math.min(armour.calculateProtection() * armourMultiplier, 1);
-        }
+        float healthGain = healAmount * (1 + statTypeMap.get(STR) * 0.05f);
         
-        return Math.round(totalArmour);
+        if(healthGain + health >= maximumHealth)
+            health = maximumHealth;
+        else
+            health += healthGain;
     }
-    
-    public String getArmourPenetrationS()
-    {
-        return Math.round(armourPenetration * 100) + "%";
-    }
-    
-    public String getDamageAmplification()
-    {
-        return Math.round(damageMultiplier * 100) + "%";
-    }
-    
-    public String getDamageReduction()
-    {
-        return Math.round(armourMultiplier * 100) + "%";
-    }
-    
+
+    /**
+     * Adds XP to the player, allowing multiple level-ups and carrying over excess XP.
+     *
+     * @param xpGain The amount of XP gained.
+     * @return The number of levels gained, or zero if no level-up occurs.
+     */
     public int applyXPGain(int xpGain)
     {
         int currentLevel = level;
         xp += xpGain;
+        
         while(xp >= xpToLevelUp)
         {
             level++;
@@ -173,13 +168,17 @@ public class Player extends Entities implements Persistable
         
         return level - currentLevel;
     }
+    
+    public void applyStatGain(StatType stat)
+    {
+        statTypeMap.put(stat, statTypeMap.get(stat) + 1);
+        recalculateStats();
+    }
 
-    /** Used to recalculate the stat of the {@link Player} after increasing a stat when levelling up.
-     * The ratio is used to get the ratio of the {@link Player} current health and current maximum health due to the maximum health increasing when the strength stat increases.
-     * The ratio will allow the current health to increase with the same ratio as before.
-     * Armour penetration gets the dexterity stat and multiplies it by a fixed multiplier.
-     * Damage multiplier gets the intelligence stat, multiplies it by a fixed multiplier, and adding 1 to it so that the damage value increases when damage multiplier is applied.
-     * Armour multiplier gets the intelligence stat, multiplies it by a fixed multiplier, and adding 1 to it so that the armour value increases when armour multiplier is applied.*/
+    /**
+     * Recalculates the player's stats after an attribute increase.
+     * Preserves the player's current health percentage when maximum health changes.
+     */
     private void recalculateStats()
     {
         float ratio = health / maximumHealth;
@@ -190,32 +189,59 @@ public class Player extends Entities implements Persistable
         armourMultiplier = 1 + statTypeMap.get(INT) * 0.003f;
     }
     
-    public void applyGoldGain(int goldGain) { gold += goldGain; }
-    
-    public void applyStatGain(StatType stat)
+    public void applyGoldGain(int goldGain)
     {
-        statTypeMap.put(stat, statTypeMap.get(stat) + 1);
-        recalculateStats();
+        gold += goldGain;
     }
     
-    public void equipItem(EquippableItem item, EquipSlot slot)
+    public boolean addToInventory(Item item)
     {
-        inventory.equipItem(item, slot);
+        return inventory.addToInventory(item);
     }
     
-    public void unequipItem(EquippableItem item, int targetIndex)
+    public boolean removeFromInventory(Item item, boolean removeStack)
     {
-        inventory.unequipItem(item, targetIndex);
+        return inventory.removeFromInventory(item, removeStack);
     }
     
-    public void addToInventory(Item item)
+    public InventoryResult equipItem(int itemIndex, EquipSlot targetEquipSlot)
     {
-        inventory.addToInventory(item);
+        return inventory.equipItem(itemIndex, targetEquipSlot);
     }
     
-    public void removeFromInventory(Item item, boolean removeWholeStack)
+    public InventoryResult equipItem(EquippableItem item, EquipSlot slot)
     {
-        inventory.removeFromInventory(item, removeWholeStack);
+        return inventory.equipItem(item, slot);
+    }
+    
+    public InventoryResult equipItemDiscardingEquipped(int originalIndex, EquipSlot targetEquipSlot)
+    {
+        return inventory.equipItemDiscardingEquipped(originalIndex, targetEquipSlot);
+    }
+    
+    public InventoryResult unequipItem(EquipSlot equipSlot, int itemIndex)
+    {
+        return inventory.unequipItem(equipSlot, itemIndex);
+    }
+    
+    public InventoryResult unequipItem(EquippableItem item, int targetIndex)
+    {
+        return inventory.unequipItem(item, targetIndex);
+    }
+    
+    public InventoryResult unequipItemDiscardingInventory(EquipSlot originalEquipSlot, int targetIndex)
+    {
+        return inventory.unequipItemDiscardingInventory(originalEquipSlot, targetIndex);
+    }
+    
+    public void removeFromEquipped(EquippableItem equippedItem)
+    {
+        inventory.removeFromEquipped(equippedItem);
+    }
+    
+    public boolean swapItems(int originalIndex, int targetIndex)
+    {
+        return inventory.swapItems(originalIndex, targetIndex);
     }
     
     public void movePoint(Direction direction)
@@ -223,19 +249,25 @@ public class Player extends Entities implements Persistable
         point = point.move(direction);
     }
     
-    public Inventory getInventory() { return inventory; }
-    
-    public void setInventory(ItemStack[] loadedItemStacks) { inventory.setInventory(loadedItemStacks); }
-    
-    public ItemStack[] getInventorySlots() { return inventory.getInventorySlots(); }
-    
-    public void setEquipped(EquippableItem[] loadedEquippedArray) { inventory.setEquipped(loadedEquippedArray); }
+    public int getGold() { return gold; }
     
     public int getXP() { return xp; }
     
     public int getXpToLevelUp() { return xpToLevelUp; }
     
-    public int getGold() { return gold; }
+    public float getMaximumHealth() { return maximumHealth; }
+    
+    public float getArmourPenetration() { return armourPenetration; }
+    
+    public float getDamageAmplification() { return damageMultiplier; }
+    
+    public float getDamageReduction() { return armourMultiplier; }
+    
+    public Point getPoint() { return point; }
+    
+    public ClassType getClassType() { return classType; }
+    
+    public int getStatValue(StatType statType) { return statTypeMap.get(statType); }
     
     public int getSTR() { return statTypeMap.get(STR); }
     
@@ -243,13 +275,11 @@ public class Player extends Entities implements Persistable
     
     public int getINT() { return statTypeMap.get(INT); }
     
-    public float getMaximumHealth() { return maximumHealth; }
+    public ReadInventory getInventory() { return inventory; }
     
-    public float getArmourPenetration() { return armourPenetration; }
+    public void setInventory(ItemStack[] loadedItemStacks) { inventory.setInventory(loadedItemStacks); }
     
-    public Point getPoint() { return point; }
+    public ItemStack[] getInventorySlots() { return inventory.getInventorySlots(); }
     
-    public ClassType getClassType() { return classType; }
-
-    public int getStatValue(StatType statType) { return statTypeMap.get(statType); }
+    public void setEquipped(EquippableItem[] loadedEquippedArray) { inventory.setEquipped(loadedEquippedArray); }
 }

@@ -9,9 +9,9 @@ public enum MusicTrack
     
     private final String urlPath;
     
-    MusicTrack(String URL)
+    MusicTrack(String url)
     {
-        urlPath = URL;
+        urlPath = url;
     }
     
     public String getUrlPath() { return urlPath; }

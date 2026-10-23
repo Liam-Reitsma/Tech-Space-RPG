@@ -24,13 +24,14 @@ public class SavesTitlePanel extends JPanel
     private static final int SAVES_TITLE_IMAGE_BORDER_HEIGHT = (SAVES_TITLE_IMAGE_TOTAL_HEIGHT - SAVES_TITLE_CONTENT.getHeight(null)) / 2;
     
     private static final int LABEL_FONT_SIZE = 46;
-    public SavesTitlePanel(SavesAction saveSaction)
+    public SavesTitlePanel(SavesAction savesAction)
     {
         setLayout(new ScaledLayout());
         
-        ActionListener closeButtonListener = e -> saveSaction.requestCloseSaves();
+        ActionListener closeButtonListener = e -> savesAction.requestCloseSaves();
         
         LayoutBox[] box = new LayoutBox().splitHorizontal(50, 50);
+        
         JLabel label = new JLabel("Save Games");
         label.setFont(new Font("Agency FB", Font.BOLD, LABEL_FONT_SIZE));
         label.setForeground(Color.WHITE);

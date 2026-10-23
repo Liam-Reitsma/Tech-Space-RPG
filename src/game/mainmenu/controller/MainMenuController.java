@@ -1,7 +1,5 @@
 package game.mainmenu.controller;
 
-import static game.frame.controller.DisplayTarget.*;
-
 import game.audio.AudioManager;
 import game.audio.MusicTrack;
 import game.audio.SoundEffect;
@@ -20,7 +18,10 @@ public class MainMenuController implements MainMenuAction
         
         frameAction = fAction;
     }
-    
+
+    /**
+     * Plays the soundbite and ambient music for the main menu.
+     */
     @Override
     public void requestOpenMainMenu()
     {

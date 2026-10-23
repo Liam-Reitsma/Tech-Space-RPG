@@ -15,65 +15,100 @@ import java.util.Map;
 
 public class RewardModel
 {
-    private final GameModel gameModel;
     private int unspentPoints;
-    private final Map<StatType, Integer> statsLeveledUp;
     private Item offeredItem;
-
+    
+    private final Map<StatType, Integer> statsLeveledUp;
+    
+    private final GameModel gameModel;
+    
     public RewardModel(GameModel gModel)
     {
         gameModel = gModel;
         statsLeveledUp = new EnumMap<>(StatType.class);
     }
 
-    public int getPlannedStatPoint(StatType stat) { return statsLeveledUp.getOrDefault(stat, 0); }
-
-    public int getRemainingStatPoint() { return unspentPoints; }
-
-    public int getCurrentStatPoint(StatType stat) { return gameModel.getPlayer().getStatValue(stat); }
-
+    /**
+     * Increases the planned stat allocation by one if unspent points are available.
+     * The player's actual stats remain unchanged until confirmation.
+     *
+     * @param stat The stat type to increase.
+     */
     public void planIncrease(StatType stat)
     {
-        if(getRemainingStatPoint() <= 0) return;
+        if(getRemainingStatPoint() <= 0)
+            return;
+        
         unspentPoints--;
         statsLeveledUp.put(stat, getPlannedStatPoint(stat) + 1);
     }
 
+    /**
+     * Decreases the planned stat allocation by one if an increase was previously planned.
+     * Returns the point to the unspent pool without changing the player's actual stats.
+     *
+     * @param stat The stat type whose planned allocation is decreased.
+     */
     public void planDecrease(StatType stat)
     {
-        if(getPlannedStatPoint(stat) <= 0) return;
+        if(getPlannedStatPoint(stat) <= 0)
+            return;
+        
         statsLeveledUp.put(stat, getPlannedStatPoint(stat) - 1);
         unspentPoints++;
     }
 
+    /**
+     * Checks whether the player has either unspent stat points or pending stat allocations.
+     *
+     * @return True if unspent points or planned increases exist; otherwise false.
+     */
     public boolean hasPointsToAllocate()
     {
-        if(unspentPoints > 0) return true;
+        if(unspentPoints > 0)
+            return true;
         for(int planned : statsLeveledUp.values())
-            if(planned > 0) return true;
+            if(planned > 0)
+                return true;
 
         return false;
     }
 
-    public String confirmLeveledUp()
+    /**
+     * Applies the planned stat increases to the player and clears the allocations.
+     *
+     * @return A RewardResult containing the confirmation message and error status.
+     */
+    public RewardResult confirmLeveledUp()
     {
         String resultMessage = "| ";
-        if(statsLeveledUp.isEmpty()) return "No stat point available.";
+        
+        if(statsLeveledUp.isEmpty())
+            return new RewardResult("No stat point available.", false);
 
         for(Map.Entry<StatType, Integer> entry : statsLeveledUp.entrySet())
         {
             for(int i = 0; i < entry.getValue(); i++)
                 gameModel.getPlayer().applyStatGain(entry.getKey());
             if(entry.getValue() != 0)
-                resultMessage += entry.getKey().getMessage() + " + " +  entry.getValue() + " | ";
+                resultMessage += entry.getKey().getFullName() + " + " +  entry.getValue() + " | ";
         }
 
         statsLeveledUp.clear();
-        if(resultMessage.length() == 2) return "Nothing has been leveled up.";
-        return resultMessage;
+        if(resultMessage.length() == 2)
+            return new RewardResult("Nothing has been leveled up.", true);
+        
+        return new RewardResult(resultMessage, false);
     }
 
-    public String applyEnemyReward(Enemy enemy)
+    /**
+     * Gives the player the XP and gold dropped by the enemy, and attempts to add a random potion to their inventory.
+     * Increases unspent stat points for each level gained.
+     *
+     * @param enemy The defeated enemy whose rewards are awarded.
+     * @return A RewardResult containing the reward message.
+     */
+    public RewardResult applyEnemyReward(Enemy enemy)
     {
         Player player = gameModel.getPlayer();
 
@@ -90,23 +125,26 @@ public class RewardModel
 
         rewardMessage += enemy.getName() + " has dropped a " + potionTypeReceived + " potion.\n";
 
-        return rewardMessage;
+        return new RewardResult(rewardMessage, false);
     }
 
-    public String offerChestItem(Item item)
+    /**
+     * Offers the player an item from a chest without immediately adding it to their inventory.
+     *
+     * @param item The item being offered to the player.
+     * @return A RewardResult containing the item's description.
+     */
+    public RewardResult offerChestItem(Item item)
     {
         offeredItem = item;
         String returnMessage = "The chest contained a " + item.getName();
         if(item instanceof Weapon weapon)
-        {
             returnMessage += " which deals " +
                     Math.round(weapon.calculateDamage(gameModel.getPlayer().getStatValue(weapon.getScalingStat()))) + " damage.";
-        }
         else if(item instanceof Armour armour)
-        {
             returnMessage += " which has " + Math.round(armour.calculateProtection() * 100) + "% protection.";
-        }
-        return returnMessage;
+        
+        return new RewardResult(returnMessage, false);
     }
 
     public boolean hasOfferedItem()
@@ -114,20 +152,33 @@ public class RewardModel
         return offeredItem != null;
     }
 
-    public String takeOfferedItem()
+    /**
+     * Attempts to add the offered item to the player's inventory.
+     * Clears the offered item on success, but preserves it if adding fails.
+     *
+     * @return A RewardResult describing the outcome, with an error if adding fails.
+     */
+    public RewardResult takeOfferedItem()
     {
-        if(offeredItem == null) return "There is no item available to take.";
-        gameModel.getPlayer().addToInventory(offeredItem);
+        if(offeredItem == null)
+            return new RewardResult("There is no item available to take.", false);
+        
+        if(!gameModel.getPlayer().addToInventory(offeredItem))
+            return new RewardResult("Inventory is full. Cannot take " + offeredItem.getName() + ".", true);
+        
         String returnMessage = offeredItem.getName() + " has been added to the inventory.";
+        
         offeredItem = null;
-        return returnMessage;
+        return new RewardResult(returnMessage, false);
     }
 
-    public String discardOfferedItem()
+    public RewardResult discardOfferedItem()
     {
-        if(offeredItem == null) return "There is no item available to discard.";
+        if(offeredItem == null)
+            return new RewardResult("There is no item available to discard.", false);
+        
         offeredItem = null;
-        return "Item has been discarded.";
+        return new RewardResult("Item has been discarded.", false);
     }
 
     public void resetReward()
@@ -136,4 +187,10 @@ public class RewardModel
         unspentPoints = 0;
         statsLeveledUp.clear();
     }
+    
+    public int getPlannedStatPoint(StatType stat) { return statsLeveledUp.getOrDefault(stat, 0); }
+    
+    public int getRemainingStatPoint() { return unspentPoints; }
+    
+    public int getCurrentStatPoint(StatType stat) { return gameModel.getPlayer().getStatValue(stat); }
 }

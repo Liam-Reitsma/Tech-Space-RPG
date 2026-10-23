@@ -45,9 +45,7 @@ public class DatabaseSchemaManager
         boolean success = true;
         PersistenceTable[] tables = PersistenceTable.values();
         for(int i = tables.length - 1; i >= 0; i--)
-        {
-            success = success && dbManager.dropTableIfExists(tables[i].name());
-        }
+            success = dbManager.dropTableIfExists(tables[i].name()) && success;
         
         return success;
     }

@@ -16,41 +16,55 @@ public class Point
     public int getX() { return x; }
     
     public int getY() { return y; }
-    
+
+    /**
+     * Gives the cardinal direction from otherPoint to this.
+     * The points don't have to be adjacent.
+     *
+     * @param otherPoint The point used as the reference position.
+     * @return The relative direction, or null if no cardinal direction applies.
+     */
     public Direction returnRelativeDirection(Point otherPoint)
     {
-        if(this.x == otherPoint.x && this.y > otherPoint.y) return Direction.NORTH;
-        if(this.x == otherPoint.x && this.y < otherPoint.y) return Direction.SOUTH;
-        if(this.x > otherPoint.x && this.y == otherPoint.y) return Direction.EAST;
-        if(this.x < otherPoint.x && this.y == otherPoint.y) return Direction.WEST;
+        if(this.x == otherPoint.x && this.y > otherPoint.y)
+            return Direction.NORTH;
+        if(this.x == otherPoint.x && this.y < otherPoint.y)
+            return Direction.SOUTH;
+        if(this.x > otherPoint.x && this.y == otherPoint.y)
+            return Direction.EAST;
+        if(this.x < otherPoint.x && this.y == otherPoint.y)
+            return Direction.WEST;
         
         return null;
     }
-    
+
+    /**
+     * Creates a new point that is one coordinate away in the specified direction, leaving the original unchanged.
+     *
+     * @param direction The direction to move.
+     * @return A new point in that direction, or null if the direction is null.
+     */
     public Point move(Direction direction)
     {
-        if(direction == Direction.NORTH) return new Point(getX(), getY() + 1);
-        if(direction == Direction.SOUTH) return new Point(getX(), getY() - 1);
-        if(direction == Direction.EAST)  return new Point(getX() + 1, getY());
-        if(direction == Direction.WEST)  return new Point(getX() - 1, getY());
+        if(direction == Direction.NORTH)
+            return new Point(getX(), getY() + 1);
+        if(direction == Direction.SOUTH)
+            return new Point(getX(), getY() - 1);
+        if(direction == Direction.EAST)
+            return new Point(getX() + 1, getY());
+        if(direction == Direction.WEST)
+            return new Point(getX() - 1, getY());
         
         return null;
     }
-    
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(x, y);
-    }
-    
-    @Override
-    public boolean equals(Object otherPoint)
-    {
-        if(otherPoint == null) return false;
-        if(otherPoint.getClass() != this.getClass()) return false;
-        return (((Point)otherPoint).getX() == this.getX() && ((Point)otherPoint).getY() == this.getY());
-    }
-    
+
+    /**
+     * Returns four new Point instances adjacent to the supplied point in the order of North, East, South, West.
+     * Does not modify the supplied point.
+     *
+     * @param playerPoint The reference point.
+     * @return Four adjacent points ordered North, East, South, West.
+     */
     public static Point[] getOrthogonalPoints(Point playerPoint)
     {
         Point[] orthogonalPoints = new Point[4];
@@ -64,22 +78,18 @@ public class Point
     }
     
     @Override
-    public String toString()
+    public int hashCode()
     {
-        return x + "&" + y;
+        return Objects.hash(x, y);
     }
     
-    public static Point parsePoint(String data)
+    @Override
+    public boolean equals(Object otherPoint)
     {
-        try
-        {
-            int dx = Integer.parseInt(data.trim().split("&")[0]);
-            int dy = Integer.parseInt(data.trim().split("&")[1]);
-            
-            return new Point(dx, dy);
-        } catch(RuntimeException e)
-        {
-            return null;
-        }
+        if(otherPoint == null)
+            return false;
+        if(otherPoint.getClass() != this.getClass())
+            return false;
+        return (((Point)otherPoint).getX() == this.getX() && ((Point)otherPoint).getY() == this.getY());
     }
 }

@@ -71,9 +71,9 @@ public enum PersistenceTable
     private final String[] primaryKeys;
     private final LinkedHashMap<String, String> columns;
     
-    PersistenceTable(String[] PKs, String... args)
+    PersistenceTable(String[] primaryKeyArray, String... args)
     {
-        primaryKeys = PKs;
+        primaryKeys = primaryKeyArray;
         columns = new LinkedHashMap<>();
         
         for(int i = 0; i < args.length; i += 2)

@@ -1,5 +1,6 @@
 package game.world.controller;
 
+import game.maingame.controller.GameAction;
 import game.maingame.model.GameModel;
 import game.Updatable;
 import game.player.model.Player;
@@ -13,20 +14,24 @@ import java.util.Map;
 
 public class WorldController implements WorldAction, Updatable
 {
-    private WorldViewAction worldViewAction;
+    private boolean movementLocked;
 
     private RoomListener roomListener;
     
     private final GameModel gameModel;
     private final WorldModel worldModel;
-
-    private boolean movementLocked;
+    
+    private GameAction gameAction;
+    
+    private WorldViewAction worldViewAction;
     
     public WorldController(GameModel gModel)
     {
         gameModel = gModel;
         worldModel = new WorldModel();
     }
+    
+    public void setGameAction(GameAction gAction) { gameAction = gAction;}
     
     public void setWorldViewAction(WorldViewAction wvAction) { worldViewAction = wvAction; }
 
@@ -40,18 +45,52 @@ public class WorldController implements WorldAction, Updatable
     {
         return worldModel.generateWorld();
     }
-    
+
+    /**
+     * Attempts to move the player to the next room, ignoring invalid or locked movement.
+     * On success, updates the current room and notifies the room listener.
+     *
+     * @param direction The direction in which the player attempts to move.
+     */
     @Override
     public void requestMoveNextRoom(Direction direction)
     {
-        if(movementLocked) return;
-        gameModel.getWorld().get(gameModel.getPlayer().getPoint()).clearCurrent();
-        gameModel.getPlayer().movePoint(direction);
-        gameModel.getWorld().get(gameModel.getPlayer().getPoint()).setCurrent();
-        if(roomListener != null) roomListener.onRoomEntered(gameModel.getWorld().get(gameModel.getPlayer().getPoint()));
-        requestUpdate();
+        if(movementLocked)
+            return;
+        
+        Player player = gameModel.getPlayer();
+        Point playerLocation = player.getPoint();
+        Map<Point, RuntimeRoom> world = gameModel.getWorld();
+        
+        boolean availableDirection = false;
+        for(Direction possibleDirections : worldModel.getPossibleDirections(world, playerLocation))
+            if(possibleDirections == direction)
+            {
+                availableDirection = true;
+                break;
+            }
+        
+        if(!availableDirection)
+            return;
+        
+        world.get(playerLocation).clearCurrent();
+        player.movePoint(direction);
+        
+        Point newLocation = player.getPoint();
+        RuntimeRoom nextRoom = world.get(newLocation);
+        
+        nextRoom.setCurrent();
+        
+        if(roomListener != null)
+            roomListener.onRoomEntered(world.get(newLocation));
+        
+        gameAction.requestGameUpdate();
     }
-    
+
+    /**
+     * Updates the available movement directions, displaying none if movement is locked.
+     * Updates the world map and marks nearby unseen rooms as seen.
+     */
     @Override
     public void requestUpdate()
     {

@@ -1,9 +1,8 @@
 package game.world.model.room;
 
-import game.entities.Persistable;
 import game.world.model.Point;
 
-public class RuntimeRoom implements Persistable
+public class RuntimeRoom
 {
     private final Point point;
     private final RoomState roomState;
@@ -13,7 +12,14 @@ public class RuntimeRoom implements Persistable
         point = roomPoint;
         roomState = state;
     }
-    
+
+    /**
+     * Creates a room from an array containing its coordinates and state.
+     * Indices 0 and 1 contain integer coordinates, while indices 2 and 3
+     * contain the room type and tile state enum names as strings.
+     *
+     * @param data The room coordinates, type and tile state in that order.
+     */
     public RuntimeRoom(Object[] data)
     {
         point = new Point((int)data[0], (int)data[1]);

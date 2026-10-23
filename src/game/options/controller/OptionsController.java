@@ -1,7 +1,5 @@
 package game.options.controller;
 
-import static game.frame.controller.DisplayTarget.OPTIONS;
-
 import game.audio.AudioManager;
 import game.audio.VolumeType;
 import game.frame.controller.FrameAction;
@@ -13,10 +11,10 @@ import java.util.Map;
 
 public class OptionsController implements OptionsAction
 {
-    private final Map<VolumeType, Integer> pendingVolumeMap;
     private DisplayResolution displayResolution;
     
     private final AudioManager audioManager;
+    private final Map<VolumeType, Integer> pendingVolumeMap;
     
     private final FrameAction frameAction;
     
@@ -33,29 +31,20 @@ public class OptionsController implements OptionsAction
     }
     
     public void setOptionsViewAction(OptionsViewAction optionsVA) { optionsViewAction = optionsVA; }
-    
-    @Override
-    public void requestSetVolume(VolumeType volumeType, int volume)
-    {
-        pendingVolumeMap.replace(volumeType, volume);
-    }
-    
-    @Override
-    public void requestSetDisplayResolution(DisplayResolution resolution)
-    {
-        displayResolution = resolution;
-    }
-    
-    
+
+    /**
+     * Applies pending volume settings and changes the resolution if one has been selected.
+     * Updates the view's stored applied volume values, allowing sliders to reset to them later.
+     */
     @Override
     public void requestApplyChanges()
     {
         for(VolumeType volumeType : VolumeType.values())
             audioManager.setVolume(volumeType, pendingVolumeMap.get(volumeType));
         
-        if(displayResolution == null)
-            displayResolution = DisplayResolution.HD;
-        frameAction.requestResolutionChange(displayResolution);
+        if(displayResolution != null)
+            frameAction.requestResolutionChange(displayResolution);
+        
         optionsViewAction.setNewVolume(pendingVolumeMap);
     }
     
@@ -63,5 +52,28 @@ public class OptionsController implements OptionsAction
     public void requestCloseOptions()
     {
         frameAction.requestCloseOverlay();
+    }
+
+    /**
+     * Stores the pending resolution setting without immediately applying it.
+     *
+     * @param resolution The pending resolution.
+     */
+    @Override
+    public void requestSetDisplayResolution(DisplayResolution resolution)
+    {
+        displayResolution = resolution;
+    }
+
+    /**
+     * Stores the pending volume setting without immediately applying it.
+     *
+     * @param volumeType The volume category to update.
+     * @param volume The pending volume value (0–100).
+     */
+    @Override
+    public void requestSetVolume(VolumeType volumeType, int volume)
+    {
+        pendingVolumeMap.replace(volumeType, volume);
     }
 }
