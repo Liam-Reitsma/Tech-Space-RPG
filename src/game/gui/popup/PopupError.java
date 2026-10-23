@@ -9,7 +9,9 @@ public enum PopupError
     DUPLICATE_SAVE_NAME("That save name already exists. Would you like to overwrite?", "Cancel", "Confirm"),
     SAVE_FAILED("Saving failed. Just letting you know.", "Okay", "Damn That Sucks"),
     INVENTORY_FULL_EQUIPPING("Your inventory is full. Would you like to discard your equipped item?", "Cancel", "Confirm"),
-    INVENTORY_FULL_UNEQUIPPING("Your inventory is full. Would you like to discard your inventory item?", "Cancel", "Confirm");
+    INVENTORY_FULL_UNEQUIPPING("Your inventory is full. Would you like to discard your inventory item?", "Cancel", "Confirm"),
+    INVENTORY_FULL_ADDING("Your inventory is full. Would you like to discard the item to pickup?", "Cancel", "Confirm"),
+    NO_STATS_INCREASED("You have unspent stats points. Please spend them.", "Okay", "Okay");
     
     private final String errorMessage;
     private final String leftButtonText;

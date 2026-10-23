@@ -15,50 +15,54 @@ import java.util.Map;
 
 public class RewardModel
 {
-    private final GameModel gameModel;
     private int unspentPoints;
-    private final Map<StatType, Integer> statsLeveledUp;
     private Item offeredItem;
-
+    
+    private final Map<StatType, Integer> statsLeveledUp;
+    
+    private final GameModel gameModel;
+    
     public RewardModel(GameModel gModel)
     {
         gameModel = gModel;
         statsLeveledUp = new EnumMap<>(StatType.class);
     }
 
-    public int getPlannedStatPoint(StatType stat) { return statsLeveledUp.getOrDefault(stat, 0); }
-
-    public int getRemainingStatPoint() { return unspentPoints; }
-
-    public int getCurrentStatPoint(StatType stat) { return gameModel.getPlayer().getStatValue(stat); }
-
     public void planIncrease(StatType stat)
     {
-        if(getRemainingStatPoint() <= 0) return;
+        if(getRemainingStatPoint() <= 0)
+            return;
+        
         unspentPoints--;
         statsLeveledUp.put(stat, getPlannedStatPoint(stat) + 1);
     }
 
     public void planDecrease(StatType stat)
     {
-        if(getPlannedStatPoint(stat) <= 0) return;
+        if(getPlannedStatPoint(stat) <= 0)
+            return;
+        
         statsLeveledUp.put(stat, getPlannedStatPoint(stat) - 1);
         unspentPoints++;
     }
 
     public boolean hasPointsToAllocate()
     {
-        if(unspentPoints > 0) return true;
+        if(unspentPoints > 0)
+            return true;
         for(int planned : statsLeveledUp.values())
-            if(planned > 0) return true;
+            if(planned > 0)
+                return true;
 
         return false;
     }
 
-    public String confirmLeveledUp()
+    public RewardResult confirmLeveledUp()
     {
         String resultMessage = "| ";
-        if(statsLeveledUp.isEmpty()) return "No stat point available.";
+        
+        if(statsLeveledUp.isEmpty())
+            return new RewardResult("No stat point available.", false);
 
         for(Map.Entry<StatType, Integer> entry : statsLeveledUp.entrySet())
         {
@@ -69,11 +73,13 @@ public class RewardModel
         }
 
         statsLeveledUp.clear();
-        if(resultMessage.length() == 2) return "Nothing has been leveled up.";
-        return resultMessage;
+        if(resultMessage.length() == 2)
+            return new RewardResult("Nothing has been leveled up.", true);
+        
+        return new RewardResult(resultMessage, false);
     }
 
-    public String applyEnemyReward(Enemy enemy)
+    public RewardResult applyEnemyReward(Enemy enemy)
     {
         Player player = gameModel.getPlayer();
 
@@ -90,23 +96,20 @@ public class RewardModel
 
         rewardMessage += enemy.getName() + " has dropped a " + potionTypeReceived + " potion.\n";
 
-        return rewardMessage;
+        return new RewardResult(rewardMessage, false);
     }
 
-    public String offerChestItem(Item item)
+    public RewardResult offerChestItem(Item item)
     {
         offeredItem = item;
         String returnMessage = "The chest contained a " + item.getName();
         if(item instanceof Weapon weapon)
-        {
             returnMessage += " which deals " +
                     Math.round(weapon.calculateDamage(gameModel.getPlayer().getStatValue(weapon.getScalingStat()))) + " damage.";
-        }
         else if(item instanceof Armour armour)
-        {
             returnMessage += " which has " + Math.round(armour.calculateProtection() * 100) + "% protection.";
-        }
-        return returnMessage;
+        
+        return new RewardResult(returnMessage, false);
     }
 
     public boolean hasOfferedItem()
@@ -114,20 +117,27 @@ public class RewardModel
         return offeredItem != null;
     }
 
-    public String takeOfferedItem()
+    public RewardResult takeOfferedItem()
     {
-        if(offeredItem == null) return "There is no item available to take.";
-        gameModel.getPlayer().addToInventory(offeredItem);
+        if(offeredItem == null)
+            return new RewardResult("There is no item available to take.", false);
+        
+        if(!gameModel.getPlayer().addToInventory(offeredItem))
+            return new RewardResult("Inventory is full. Cannot take " + offeredItem.getName() + ".", true);
+        
         String returnMessage = offeredItem.getName() + " has been added to the inventory.";
+        
         offeredItem = null;
-        return returnMessage;
+        return new RewardResult(returnMessage, false);
     }
 
-    public String discardOfferedItem()
+    public RewardResult discardOfferedItem()
     {
-        if(offeredItem == null) return "There is no item available to discard.";
+        if(offeredItem == null)
+            return new RewardResult("There is no item available to discard.", false);
+        
         offeredItem = null;
-        return "Item has been discarded.";
+        return new RewardResult("Item has been discarded.", false);
     }
 
     public void resetReward()
@@ -136,4 +146,10 @@ public class RewardModel
         unspentPoints = 0;
         statsLeveledUp.clear();
     }
+    
+    public int getPlannedStatPoint(StatType stat) { return statsLeveledUp.getOrDefault(stat, 0); }
+    
+    public int getRemainingStatPoint() { return unspentPoints; }
+    
+    public int getCurrentStatPoint(StatType stat) { return gameModel.getPlayer().getStatValue(stat); }
 }
