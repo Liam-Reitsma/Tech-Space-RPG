@@ -11,11 +11,13 @@ import game.world.view.WorldViewAction;
 import game.world.model.room.RuntimeRoom;
 
 import java.util.Map;
+import java.util.Set;
 
 public class WorldController implements WorldAction, Updatable
 {
     private boolean movementLocked;
 
+    private Point previousPoint;
     private RoomListener roomListener;
     
     private final GameModel gameModel;
@@ -53,6 +55,24 @@ public class WorldController implements WorldAction, Updatable
      * @param direction The direction in which the player attempts to move.
      */
     @Override
+    public Set<RuntimeRoom> requestGetUnsavedDiscoveredRooms()
+    {
+        return worldModel.getUnsavedDiscoveredRooms();
+    }
+    
+    @Override
+    public void requestClearUnsavedDiscoveredRooms()
+    {
+        worldModel.clearUnsavedDiscoveredRooms();
+    }
+    
+    @Override
+    public void requestMarkDiscoveredRoomSaved(RuntimeRoom room)
+    {
+        worldModel.markDiscoveredRoomSaved(room);
+    }
+    
+    @Override
     public void requestMoveNextRoom(Direction direction)
     {
         if(movementLocked)
@@ -73,6 +93,8 @@ public class WorldController implements WorldAction, Updatable
         if(!availableDirection)
             return;
         
+        previousPoint = player.getPoint();
+        
         world.get(playerLocation).clearCurrent();
         player.movePoint(direction);
         
@@ -91,6 +113,30 @@ public class WorldController implements WorldAction, Updatable
      * Updates the available movement directions, displaying none if movement is locked.
      * Updates the world map and marks nearby unseen rooms as seen.
      */
+    @Override
+    public void requestReturnPreviousRoom()
+    {
+        if(previousPoint == null)
+            return;
+        
+        Player player = gameModel.getPlayer();
+        Map<Point, RuntimeRoom> world = gameModel.getWorld();
+        
+        RuntimeRoom currentRoom = world.get(player.getPoint());
+        RuntimeRoom previousRoom = world.get(previousPoint);
+        Direction returnDirection = previousPoint.returnRelativeDirection(player.getPoint());
+        
+        if(currentRoom == null || previousRoom == null || returnDirection == null)
+            return;
+        
+        
+        currentRoom.clearCurrent();
+        player.movePoint(returnDirection);
+        previousRoom.setCurrent();
+        
+        previousPoint = null;
+    }
+    
     @Override
     public void requestUpdate()
     {

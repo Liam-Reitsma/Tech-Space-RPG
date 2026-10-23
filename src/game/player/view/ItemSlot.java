@@ -32,6 +32,7 @@ public class ItemSlot extends JPanel
     private int flashCounter;
     private int quantity;
     private boolean isDragging;
+    private boolean requirementsMet;
 
     private Image image;
     private SlotHighlight slotHighlight;
@@ -46,6 +47,7 @@ public class ItemSlot extends JPanel
     {
         quantity = count;
         isDragging = false;
+        requirementsMet = true;
 
         image = getImageFromSlot(slotType.equipSlot());
         slotHighlight = NONE;
@@ -80,6 +82,7 @@ public class ItemSlot extends JPanel
     {
         quantity = itemSlot.quantity;
         isDragging = false;
+        requirementsMet = true;
         
         image = itemSlot.image;
         slotHighlight = NONE;
@@ -134,13 +137,17 @@ public class ItemSlot extends JPanel
         };
     }
     
-    public void setItem(Item item, int count)
+    public void setItem(Item item, int count, boolean canEquip, String tooltip)
     {
         image = new ImageIcon(item.getImageURL()).getImage();
         quantity = count;
+        requirementsMet = canEquip;
+        
         dragSlot.image = image;
         dragSlot.quantity = quantity;
+        dragSlot.requirementsMet = canEquip;
         
+        setToolTipText(tooltip);
         repaint();
     }
     
@@ -148,9 +155,13 @@ public class ItemSlot extends JPanel
     {
         image = getImageFromSlot(slotIdentity.equipSlot());
         quantity = 0;
+        requirementsMet = true;
+        
         dragSlot.image = image;
         dragSlot.quantity = quantity;
+        dragSlot.requirementsMet = true;
         
+        setToolTipText(null);
         repaint();
     }
     
@@ -205,6 +216,20 @@ public class ItemSlot extends JPanel
                 g.setColor(Color.WHITE);
                 g.drawString(String.valueOf(quantity), getWidth() - textWidth - 10, 20);
             }
+        }
+        
+        if(!requirementsMet)
+        {
+            Graphics2D g2D = (Graphics2D)g.create();
+            
+            g2D.setColor(new Color(120, 0, 0, 140));
+            g2D.fillRect(0, 0, getWidth(), getHeight());
+            
+            g2D.setColor(new Color(255, 0, 0, 60));
+            g2D.fillRect(Math.round(getWidth() * 0.1f), Math.round(getHeight() * 0.1f),
+                    Math.round(getWidth() * 0.8f), Math.round(getHeight() * 0.8f));
+            
+            g2D.dispose();
         }
         
         if(slotHighlight != NONE)

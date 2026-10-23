@@ -204,19 +204,47 @@ public class Player extends Entities
         return inventory.removeFromInventory(item, removeStack);
     }
     
-    public InventoryResult equipItem(int itemIndex, EquipSlot targetEquipSlot)
+    public InventoryResult equipItem(int originalIndex, EquipSlot targetEquipSlot)
     {
-        return inventory.equipItem(itemIndex, targetEquipSlot);
+        InventoryResult result = validateEquipRequirements(inventory.getItemStack(originalIndex).getItem());
+        
+        return result == InventoryResult.SUCCESS ? inventory.equipItem(originalIndex, targetEquipSlot) : result;
     }
     
-    public InventoryResult equipItem(EquippableItem item, EquipSlot slot)
+    public InventoryResult equipItem(EquippableItem item, EquipSlot targetEquipSlot)
     {
-        return inventory.equipItem(item, slot);
+        InventoryResult result = validateEquipRequirements(item);
+        
+        return result == InventoryResult.SUCCESS ? inventory.equipItem(item, targetEquipSlot) : result;
     }
     
     public InventoryResult equipItemDiscardingEquipped(int originalIndex, EquipSlot targetEquipSlot)
     {
-        return inventory.equipItemDiscardingEquipped(originalIndex, targetEquipSlot);
+        InventoryResult result = validateEquipRequirements(inventory.getItemStack(originalIndex).getItem());
+        
+        return result == InventoryResult.SUCCESS ? inventory.equipItemDiscardingEquipped(originalIndex, targetEquipSlot) : result;
+    }
+    
+    public InventoryResult equipRequirements(Item item)
+    {
+        return validateEquipRequirements(item);
+    }
+    
+    private InventoryResult validateEquipRequirements(Item item)
+    {
+        if(item instanceof Armour armour && armour.getArmourMaterial().getRequiredLevel() > level)
+            return InventoryResult.LEVEL_TOO_LOW;
+        
+        if(item instanceof Weapon weapon)
+        {
+            if(weapon.getLevel() > level)
+                return InventoryResult.LEVEL_TOO_LOW;
+            
+            if(!weapon.canUseWeapon(statTypeMap.get(weapon.getScalingStat())))
+                return InventoryResult.STAT_TOO_LOW;
+        }
+        
+        return InventoryResult.SUCCESS;
     }
     
     public InventoryResult unequipItem(EquipSlot equipSlot, int itemIndex)

@@ -13,4 +13,5 @@ public interface CombatAction
     void requestRun();
     
     void requestDeathMessage();
+    void requestDisplayMessage(String message);
 }
