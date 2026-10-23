@@ -45,7 +45,6 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     private final CombatAction combatAction;
     private final FrameAction frameAction;
     private final RewardAction rewardAction;
-
     private final WorldAction worldAction;
     
     public GameController(PersistenceService pService, GameModel gModel, CombatAction cAction, FrameAction fAction, RewardAction rAction, WorldAction wAction)
@@ -70,7 +69,19 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     
     private void forceStartNewGame(Player player, Map<Point, RuntimeRoom> world)
     {
-        persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world);
+        if(persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world))
+            frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                    e ->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    },
+                    e->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    });
+        
         frameAction.requestClosePopup();
         startGame(player, world);
     }
@@ -78,7 +89,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     @Override
     public void requestLoadGame(SavedData savedData)
     {
-        startGame(savedData.player, savedData.world);
+        startGame(savedData.player(), savedData.world());
     }
 
     /**
@@ -160,7 +171,18 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         if(combatOutcome == CombatOutcome.LOSE)
         {
             currentEncounter = null;
-            gameModel.quickSave(room, InventoryChange.NONE, null);
+            if(!gameModel.quickSave(room, InventoryChange.NONE, null))
+                frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        },
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        });
             requestGameUpdate();
             return;
         }
@@ -171,7 +193,18 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             default -> { }
         }
         currentEncounter = null;
-        gameModel.quickSave(room, InventoryChange.ADD, null); //TODO Add item
+        if(!gameModel.quickSave(room, InventoryChange.NONE, null)) //TODO Add item
+            frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                    e->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    },
+                    e->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    });
         worldAction.requestSetMovementLocked(false);
         requestGameUpdate();
     }
@@ -201,12 +234,34 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             worldAction.requestSetMovementLocked(true);
             rewardAction.requestOfferChestReward(item);
             room.setCompleted();
-            gameModel.quickSave(room, InventoryChange.NONE, null); //TODO Add item
+            if(!gameModel.quickSave(room, InventoryChange.NONE, null)) //TODO Add item
+                frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        },
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        });
         }
         else
         {
             room.setCompleted();
-            gameModel.quickSave(room, InventoryChange.NONE, null);
+            if(!gameModel.quickSave(room, InventoryChange.NONE, null))
+                frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        },
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        });
         }
         
         requestGameUpdate();

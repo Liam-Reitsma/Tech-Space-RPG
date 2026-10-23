@@ -32,9 +32,9 @@ public class GameModel
         persistenceService.fullSave(player, world);
     }
     
-    public void quickSave(RuntimeRoom room, InventoryChange change, Item item)
+    public boolean quickSave(RuntimeRoom room, InventoryChange change, Item item)
     {
-        persistenceService.quickSave(player, room, change, item);
+        return persistenceService.quickSave(player, room, change, item);
     }
     
     public Player getPlayer() { return player; }
