@@ -1,3 +1,3 @@
 package game.items;
 
-public interface Equippable{}
+public interface Equippable {}

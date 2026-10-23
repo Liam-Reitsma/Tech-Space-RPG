@@ -37,10 +37,11 @@ public class RoomModel
     private Item createChest(int level)
     {
         int newLevel = Math.max(1, level + (int)Math.round((ITEM_LEVEL_RANGE * (Math.random() - 0.5))));
-        Armour returnArmour = new Armour(ArmourMaterial.getRandomMaterial(newLevel), ArmourSlot.getRandomSlot());
-        Weapon returnWeapon = new Weapon(WeaponType.getRandomWeaponType(), newLevel);
         
-        return Math.round((float)Math.random()) == 0 ? returnArmour : returnWeapon;
+        if(Math.random() < 0.5)
+            return new Armour(ArmourMaterial.getRandomMaterial(newLevel), ArmourSlot.getRandomSlot());
+        else
+            return new Weapon(WeaponType.getRandomWeaponType(), newLevel);
     }
     
     private Enemy createEnemy(RoomType roomType, int level)
