@@ -122,14 +122,14 @@ public class InventoryDAO
         return true;
     }
     
-    public boolean addItem(String saveName, Item item, int oldCount, int slotIndex)
+    public boolean addItem(String saveName, Item item, int newCount, int slotIndex)
     {
-        return updateItemEntry(saveName, item, oldCount, oldCount + 1, slotIndex);
+        return updateItemEntry(saveName, item, newCount - 1, newCount, slotIndex);
     }
     
-    public boolean removeItem(String saveName, Item item, int oldCount, int slotIndex)
+    public boolean removeItem(String saveName, Item item, int newCount, int slotIndex)
     {
-        return oldCount > 0 && updateItemEntry(saveName, item, oldCount, oldCount - 1, slotIndex);
+        return newCount >= 0 && updateItemEntry(saveName, item, newCount + 1, newCount, slotIndex);
     }
     
     private boolean updateItemEntry(String saveName, Item item, int oldCount, int newCount, int slotIndex)
