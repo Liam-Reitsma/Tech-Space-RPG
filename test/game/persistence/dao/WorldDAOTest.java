@@ -115,6 +115,6 @@ public class WorldDAOTest
     @After
     public void tearDown()
     {
-        dbManager.closeSQLConnection();
+        dbManager.closeConnection();
     }
 }

@@ -133,6 +133,6 @@ public class Main
         frameController.requestDisplay(MAIN_MENU);
         gameFrame.setVisible(true);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(dbManager::closeSQLConnection));
+        Runtime.getRuntime().addShutdownHook(new Thread(dbManager::closeConnection));
     }
 }

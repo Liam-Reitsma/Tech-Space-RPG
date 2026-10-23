@@ -30,22 +30,17 @@ public class DBManager
         }
     }
     
-    public void closeSQLConnection()
+    public void closeConnection()
     {
-        closeConnection();
-    }
-    
-    private void closeConnection()
-    {
-        if(connection != null)
+        if(connection == null)
+            return;
+        
+        try
         {
-            try
-            {
-                connection.close();
-            } catch(SQLException e)
-            {
-                LOGGER.log(Level.SEVERE, "DBManager failed to close the connection to the Database.", e);
-            }
+            connection.close();
+        } catch(SQLException e)
+        {
+            LOGGER.log(Level.SEVERE, "DBManager failed to close the connection to the Database.", e);
         }
     }
     

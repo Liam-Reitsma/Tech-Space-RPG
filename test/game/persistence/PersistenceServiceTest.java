@@ -117,6 +117,6 @@ public class PersistenceServiceTest
     @After
     public void tearDown()
     {
-        dbManager.closeSQLConnection();
+        dbManager.closeConnection();
     }
 }

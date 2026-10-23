@@ -151,6 +151,6 @@ public class InventoryDAOTest
     @After
     public void tearDown()
     {
-        dbManager.closeSQLConnection();
+        dbManager.closeConnection();
     }
 }

@@ -140,6 +140,6 @@ public class PlayerDAOTest
     @After
     public void tearDown()
     {
-        dbManager.closeSQLConnection();
+        dbManager.closeConnection();
     }
 }
