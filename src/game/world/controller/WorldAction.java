@@ -10,5 +10,6 @@ public interface WorldAction
 {
     Map<Point, RuntimeRoom> requestGenerateWorld();
     void requestMoveNextRoom(Direction direction);
+    void requestReturnPreviousRoom();
     void requestSetMovementLocked(boolean locked);
 }

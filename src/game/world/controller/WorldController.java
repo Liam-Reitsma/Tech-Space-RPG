@@ -16,6 +16,7 @@ public class WorldController implements WorldAction, Updatable
 {
     private boolean movementLocked;
 
+    private Point previousPoint;
     private RoomListener roomListener;
     
     private final GameModel gameModel;
@@ -67,6 +68,8 @@ public class WorldController implements WorldAction, Updatable
         if(!availableDirection)
             return;
         
+        previousPoint = player.getPoint();
+        
         world.get(playerLocation).clearCurrent();
         player.movePoint(direction);
         
@@ -79,6 +82,30 @@ public class WorldController implements WorldAction, Updatable
             roomListener.onRoomEntered(world.get(newLocation));
         
         gameAction.requestGameUpdate();
+    }
+    
+    @Override
+    public void requestReturnPreviousRoom()
+    {
+        if(previousPoint == null)
+            return;
+        
+        Player player = gameModel.getPlayer();
+        Map<Point, RuntimeRoom> world = gameModel.getWorld();
+        
+        RuntimeRoom currentRoom = world.get(player.getPoint());
+        RuntimeRoom previousRoom = world.get(previousPoint);
+        Direction returnDirection = previousPoint.returnRelativeDirection(player.getPoint());
+        
+        if(currentRoom == null || previousRoom == null || returnDirection == null)
+            return;
+        
+        
+        currentRoom.clearCurrent();
+        player.movePoint(returnDirection);
+        previousRoom.setCurrent();
+        
+        previousPoint = null;
     }
     
     @Override

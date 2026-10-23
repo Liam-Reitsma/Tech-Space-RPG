@@ -189,7 +189,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         switch(combatOutcome)
         {
             case WIN -> { room.setCompleted(); rewardAction.requestEnemyReward(currentEncounter); }
-            case FLEE -> room.setFled();
+            case FLEE -> { room.setFled(); worldAction.requestReturnPreviousRoom(); }
             default -> { }
         }
         currentEncounter = null;
