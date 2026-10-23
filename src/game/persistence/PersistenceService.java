@@ -98,10 +98,10 @@ public class PersistenceService
         if(iKey == null)
             return false;
         
-        boolean success = playerDAO.updatePlayer(iKey, player) && worldDAO.updateRoomStatus(iKey, room);
-        
         if(item == null && (change == InventoryChange.ADD || change == InventoryChange.REMOVE))
             return false;
+        
+        boolean success = playerDAO.updatePlayer(iKey, player) && worldDAO.updateRoomStatus(iKey, room);
         
         return switch(change)
         {
