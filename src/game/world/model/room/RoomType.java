@@ -4,14 +4,14 @@ import java.util.Random;
 
 public enum RoomType
 {
-    WALL(false, new String[]{
+    WALL(new String[]{
             "How did you get here?",
             "He's in the walls!",
             "How did you get into the backrooms?",
             "Did bro just vent?",
             "Nice any% route, bro!",
     }),
-    COMBAT(true, new String[] {
+    COMBAT(new String[] {
             "As the door opens, a lone figure turns towards you and raises their weapon.",
             "A single hostile steps into view from the far side of the room.",
             "One armed enemy stands ahead, watching your approach carefully.",
@@ -19,7 +19,7 @@ public enum RoomType
             "A solitary combatant waits inside, clearly prepared for a fight."
     }),
     
-    CHEST(true, new String[] {
+    CHEST(new String[] {
             "At the centre of the room sits a sealed storage container.",
             "Against the far wall, you spot a locked supply crate.",
             "Among the scattered equipment rests an intact storage chest.",
@@ -27,7 +27,7 @@ public enum RoomType
             "Near the back of the room, a closed equipment crate catches your attention."
     }),
     
-    MINIBOSS(true, new String[] {
+    MINIBOSS(new String[] {
             "A heavily armoured figure stands ahead, blocking the way forward.",
             "A larger and more imposing enemy turns towards you as you enter.",
             "At the centre of the room waits a well-equipped opponent, clearly stronger than those before.",
@@ -35,7 +35,7 @@ public enum RoomType
             "The door closes behind you as a heavily armed enemy prepares to engage."
     }),
     
-    BOSS(true, new String[] {
+    BOSS(new String[] {
             "The doors open into a large chamber, where a powerful figure waits at the far end.",
             "As you enter, your final opponent turns to face you.",
             "The room falls silent as the figure ahead rises to meet you.",
@@ -43,7 +43,7 @@ public enum RoomType
             "The doors seal behind you as the room's most dangerous occupant steps forward."
     }),
     
-    EMPTY(false, new String[] {
+    EMPTY(new String[] {
             "The door opens onto a quiet, unoccupied room.",
             "Inside, you find only scattered equipment and inactive machinery.",
             "The room appears abandoned, with no sign of movement.",
@@ -51,19 +51,14 @@ public enum RoomType
             "Aside from a few damaged objects, there seems to be nothing here."
     });
     
-    private final boolean hasReward;
     private final String[] messages;
     private final Random random;
     
-    RoomType(boolean reward, String[] messageArray)
+    RoomType(String[] messageArray)
     {
-        hasReward = reward;
         messages = messageArray;
-        
         random = new Random();
     }
-    
-    public boolean hasReward() { return hasReward; }
     
     public String getRoomFlavourText()
     {

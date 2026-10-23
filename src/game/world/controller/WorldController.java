@@ -49,11 +49,35 @@ public class WorldController implements WorldAction, Updatable
     @Override
     public void requestMoveNextRoom(Direction direction)
     {
-        if(movementLocked) return;
-        gameModel.getWorld().get(gameModel.getPlayer().getPoint()).clearCurrent();
-        gameModel.getPlayer().movePoint(direction);
-        gameModel.getWorld().get(gameModel.getPlayer().getPoint()).setCurrent();
-        if(roomListener != null) roomListener.onRoomEntered(gameModel.getWorld().get(gameModel.getPlayer().getPoint()));
+        if(movementLocked)
+            return;
+        
+        Player player = gameModel.getPlayer();
+        Point playerLocation = player.getPoint();
+        Map<Point, RuntimeRoom> world = gameModel.getWorld();
+        
+        boolean availableDirection = false;
+        for(Direction possibleDirections : worldModel.getPossibleDirections(world, playerLocation))
+            if(possibleDirections == direction)
+            {
+                availableDirection = true;
+                break;
+            }
+        
+        if(!availableDirection)
+            return;
+        
+        world.get(playerLocation).clearCurrent();
+        player.movePoint(direction);
+        
+        Point newLocation = player.getPoint();
+        RuntimeRoom nextRoom = world.get(newLocation);
+        
+        nextRoom.setCurrent();
+        
+        if(roomListener != null)
+            roomListener.onRoomEntered(world.get(newLocation));
+        
         gameAction.requestGameUpdate();
     }
     

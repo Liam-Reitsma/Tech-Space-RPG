@@ -1,6 +1,3 @@
 package game.gui.config;
 
-public interface DisplayableOverlay extends Displayable
-{
-
-}
+public interface DisplayableOverlay extends Displayable {}
