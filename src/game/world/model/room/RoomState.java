@@ -25,7 +25,10 @@ public class RoomState
     public void setCompleted() { roomTileState = COMPLETED; }
     
     public boolean isSeen() { return roomTileState != UNSEEN; }
-    
+
+    /**
+     * Transitions UNSEEN to UNVISITED, leaving COMPLETED, FLED and other states unchanged.
+     */
     public void setSeen()
     {
         if(roomTileState == UNSEEN)
