@@ -121,6 +121,8 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         if(currentRoom == null)
             return;
         
+        worldAction.requestClearUnsavedDiscoveredRooms();
+        
         gameModel.setGame(player, world);
         currentRoom.setCurrent();
         
@@ -156,6 +158,8 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     {
         for(Updatable controller : updatables)
             controller.requestUpdate();
+        
+        saveDiscoveredRooms();
     }
 
     /**
@@ -171,7 +175,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         if(combatOutcome == CombatOutcome.LOSE)
         {
             currentEncounter = null;
-            if(!gameModel.quickSave(room, InventoryChange.NONE, null))
+            if(!gameModel.quickSave(room, InventoryChange.NONE, null) | !saveDiscoveredRooms())
                 frameAction.requestDisplayError(PopupError.SAVE_FAILED,
                         e->
                         {
@@ -193,7 +197,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             default -> { }
         }
         currentEncounter = null;
-        if(!gameModel.quickSave(room, InventoryChange.NONE, null)) //TODO Add item
+        if(!gameModel.quickSave(room, InventoryChange.NONE, null) | !saveDiscoveredRooms())
             frameAction.requestDisplayError(PopupError.SAVE_FAILED,
                     e->
                     {
@@ -221,7 +225,11 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         combatAction.requestDisplayMessage(room.getRoomState().getRoomType().getRoomFlavourText());
         
         if(room.isCompleted())
+        {
+            gameModel.quickSave(room, InventoryChange.NONE, null);
+            saveDiscoveredRooms();
             return;
+        }
 
         RoomContent content = roomModel.createRoomContent(room.getRoomState().getRoomType(), gameModel.getPlayer());
 
@@ -236,7 +244,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             worldAction.requestSetMovementLocked(true);
             rewardAction.requestOfferChestReward(item);
             room.setCompleted();
-            if(!gameModel.quickSave(room, InventoryChange.NONE, null)) //TODO Add item
+            if(!gameModel.quickSave(room, InventoryChange.NONE, null) | !saveDiscoveredRooms())
                 frameAction.requestDisplayError(PopupError.SAVE_FAILED,
                         e->
                         {
@@ -252,7 +260,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         else
         {
             room.setCompleted();
-            if(!gameModel.quickSave(room, InventoryChange.NONE, null))
+            if(!gameModel.quickSave(room, InventoryChange.NONE, null) | !saveDiscoveredRooms())
                 frameAction.requestDisplayError(PopupError.SAVE_FAILED,
                         e->
                         {
@@ -267,6 +275,21 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         }
         
         requestGameUpdate();
+    }
+    
+    private boolean saveDiscoveredRooms()
+    {
+        boolean success = true;
+        
+        for(RuntimeRoom room : worldAction.requestGetUnsavedDiscoveredRooms())
+        {
+            if(persistenceService.saveDiscoveredRooms(room))
+                worldAction.requestMarkDiscoveredRoomSaved(room);
+            else
+                success = false;
+        }
+        
+        return success;
     }
 
     @Override

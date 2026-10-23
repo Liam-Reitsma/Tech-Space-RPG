@@ -17,11 +17,13 @@ public class WorldModel
 {
     public static final int VIEWABLE_RANGE = 5;
     
+    private final Set<RuntimeRoom> unsavedDiscoveredRooms;
     private final Random random;
     private final WorldGenerator worldGenerator;
     
     public WorldModel()
     {
+        unsavedDiscoveredRooms = new HashSet<>();
         random = new Random();
         worldGenerator = new WorldGenerator();
     }
@@ -123,9 +125,18 @@ public class WorldModel
                 if(x < 0 || x >= MAX_RANGE * 2 + 1)
                     continue;
                 if(roomMap[y][x].getRoomState().getRoomTileState() == UNSEEN)
+                {
                     roomMap[y][x].setSeen();
+                    unsavedDiscoveredRooms.add(roomMap[y][x]);
+                }
             }
         
         return roomMap;
     }
+    
+    public Set<RuntimeRoom> getUnsavedDiscoveredRooms() { return Set.copyOf(unsavedDiscoveredRooms); }
+    
+    public void clearUnsavedDiscoveredRooms() { unsavedDiscoveredRooms.clear(); }
+    
+    public void markDiscoveredRoomSaved(RuntimeRoom room) { unsavedDiscoveredRooms.remove(room); }
 }

@@ -129,6 +129,14 @@ public class PersistenceService
             case REMOVE -> success && inventoryDAO.removeItem(iKey, item, player.getInventory().getItemCount(item), player.getInventory().getItemIndex(item));
         };
     }
+    
+    public boolean saveDiscoveredRooms(RuntimeRoom room)
+    {
+        if(iKey == null)
+            return false;
+        
+        return worldDAO.updateRoomStatus(iKey, room);
+    }
 
     /**
      * Loads the player, equipped items, inventory and world from the specified save.

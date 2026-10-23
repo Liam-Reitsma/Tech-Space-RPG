@@ -11,6 +11,7 @@ import game.world.view.WorldViewAction;
 import game.world.model.room.RuntimeRoom;
 
 import java.util.Map;
+import java.util.Set;
 
 public class WorldController implements WorldAction, Updatable
 {
@@ -45,6 +46,24 @@ public class WorldController implements WorldAction, Updatable
     public Map<Point, RuntimeRoom> requestGenerateWorld()
     {
         return worldModel.generateWorld();
+    }
+    
+    @Override
+    public Set<RuntimeRoom> requestGetUnsavedDiscoveredRooms()
+    {
+        return worldModel.getUnsavedDiscoveredRooms();
+    }
+    
+    @Override
+    public void requestClearUnsavedDiscoveredRooms()
+    {
+        worldModel.clearUnsavedDiscoveredRooms();
+    }
+    
+    @Override
+    public void requestMarkDiscoveredRoomSaved(RuntimeRoom room)
+    {
+        worldModel.markDiscoveredRoomSaved(room);
     }
     
     @Override
