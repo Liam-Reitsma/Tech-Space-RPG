@@ -137,7 +137,7 @@ public class ItemSlot extends JPanel
         };
     }
     
-    public void setItem(Item item, int count, boolean canEquip)
+    public void setItem(Item item, int count, boolean canEquip, String tooltip)
     {
         image = new ImageIcon(item.getImageURL()).getImage();
         quantity = count;
@@ -147,6 +147,7 @@ public class ItemSlot extends JPanel
         dragSlot.quantity = quantity;
         dragSlot.requirementsMet = canEquip;
         
+        setToolTipText(tooltip);
         repaint();
     }
     
@@ -155,12 +156,12 @@ public class ItemSlot extends JPanel
         image = getImageFromSlot(slotIdentity.equipSlot());
         quantity = 0;
         requirementsMet = true;
-        setToolTipText(null);
         
         dragSlot.image = image;
         dragSlot.quantity = quantity;
         dragSlot.requirementsMet = true;
         
+        setToolTipText(null);
         repaint();
     }
     

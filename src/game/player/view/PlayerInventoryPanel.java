@@ -46,13 +46,13 @@ public class PlayerInventoryPanel extends JPanel
         }
     }
     
-    public void updateInventory(ItemStack[] itemStacks, boolean[] canEquip)
+    public void updateInventory(ItemStack[] itemStacks, boolean[] canEquips, String[] tooltips)
     {
         for(int i = 0; i < itemStacks.length; i++)
             if(itemStacks[i].getItem() == null)
                 itemSlots[i].removeItem();
             else
-                itemSlots[i].setItem(itemStacks[i].getItem(), itemStacks[i].getQuantity(), canEquip[i]);
+                itemSlots[i].setItem(itemStacks[i].getItem(), itemStacks[i].getQuantity(), canEquips[i], tooltips[i]);
     }
     
     @Override

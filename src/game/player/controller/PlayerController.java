@@ -1,16 +1,17 @@
 package game.player.controller;
 
 import game.Updatable;
+import game.entities.StatType;
 import game.frame.controller.FrameAction;
 import game.gui.popup.PopupError;
 import game.gui.popup.PopupMessage;
 import game.items.EquipSlot;
 import game.items.EquippableItem;
+import game.items.Item;
+import game.items.armour.Armour;
+import game.items.weapon.Weapon;
 import game.maingame.controller.GameAction;
-import game.player.model.InventoryResult;
-import game.player.model.ItemStack;
-import game.player.model.PlayerModel;
-import game.player.model.SlotIdentity;
+import game.player.model.*;
 import game.player.view.PlayerViewAction;
 
 import java.util.logging.Logger;
@@ -228,10 +229,41 @@ public class PlayerController implements PlayerAction, Updatable
         
         ItemStack[] itemStacks = playerModel.getPlayer().getInventory().getInventorySlots();
         boolean[] canEquip = new boolean[itemStacks.length];
+        String[] tooltips = new String[itemStacks.length];
+        
         for(int i = 0; i < itemStacks.length; i++)
-            canEquip[i] = playerModel.getPlayer().equipRequirements(itemStacks[i].getItem()) == InventoryResult.SUCCESS;
+        {
+            Item item = itemStacks[i].getItem();
+            InventoryResult result = playerModel.getPlayer().equipRequirements(item);
+            
+            if(result == InventoryResult.SUCCESS)
+            {
+                canEquip[i] = true;
+                tooltips[i] = null;
+                continue;
+            }
+            
+            if(result == InventoryResult.LEVEL_TOO_LOW)
+            {
+                canEquip[i] = false;
+                if(item instanceof Armour armour)
+                    tooltips[i] = "Required Level is: " + armour.getArmourMaterial().getRequiredLevel();
+                else if(item instanceof Weapon weapon)
+                    tooltips[i] = "Required Level is: " + weapon.getLevel();
+            }
+            else if(result == InventoryResult.STAT_TOO_LOW)
+            {
+                canEquip[i] = false;
+                if(item instanceof Weapon weapon)
+                {
+                    StatType statType = weapon.getWeaponType().getScalingStat();
+                    tooltips[i] = "<html>Required Stat: " + statType.name() + "<br>";
+                    tooltips[i] += "Required Stat Value is: " + weapon.getWeaponType().calculateStatReq(weapon.getLevel());
+                }
+            }
+        }
         
         playerViewAction.updatePlayerStats(playerModel.getPlayerStatEntries());
-        playerViewAction.updateInventory(itemStacks, canEquip);
+        playerViewAction.updateInventory(itemStacks, canEquip, tooltips);
     }
 }
