@@ -92,7 +92,7 @@ public class PlayerDAO
         {
             Player result = loadPlayer(playerData, statsDataList);
             if(result == null)
-                return null;
+                continue;
             
             saveNameCharacterMap.put(playerData.get("SAVE_NAME").toString(), result);
         }
