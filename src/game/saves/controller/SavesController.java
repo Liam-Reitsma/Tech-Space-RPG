@@ -31,7 +31,11 @@ public class SavesController implements SavesAction
     }
     
     public void setSavesViewAction(SavesViewAction sVAction) { savesViewAction = sVAction; }
-    
+
+    /**
+     * Retrieves all saves from the database and refreshes the displayed save list.
+     * Clears the list if no saves are found or retrieval fails.
+     */
     @Override
     public void requestOpenSavesOverlay()
     {
@@ -54,7 +58,13 @@ public class SavesController implements SavesAction
         }
         savesViewAction.updateSavesList(displayData);
     }
-    
+
+    /**
+     * Attempts to delete the selected save if the index is valid.
+     * Displays an error if deletion fails; otherwise updates the saved-game list.
+     *
+     * @param deletedIndex The index of the save to delete.
+     */
     @Override
     public void requestDeleteSave(int deletedIndex)
     {
@@ -78,7 +88,13 @@ public class SavesController implements SavesAction
             saveNames = newSaveList;
         }
     }
-    
+
+    /**
+     * Attempts to load the selected save if the index is valid.
+     * Starts the game on success or displays an error popup if loading fails.
+     *
+     * @param selectedIndex The index of the save to load.
+     */
     @Override
     public void requestSelectSave(int selectedIndex)
     {
