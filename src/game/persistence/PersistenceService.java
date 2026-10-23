@@ -65,10 +65,13 @@ public class PersistenceService
     {
         if(iKey == null)
             return false;
-        return  playerDAO.updatePlayer(iKey, player) &&
-                inventoryDAO.updateEquippedEquipment(iKey, player.getInventory()) &&
-                inventoryDAO.updateStoredEquipment(iKey, player.getInventory()) &&
-                worldDAO.updateMap(iKey, world);
+        
+        boolean success = playerDAO.updatePlayer(iKey, player);
+        success = inventoryDAO.updateEquippedEquipment(iKey, player.getInventory()) && success;
+        success = inventoryDAO.updateStoredEquipment(iKey, player.getInventory()) && success;
+        success = worldDAO.updateMap(iKey, world) && success;
+        
+        return  success;
     }
     
     public boolean quickSave(Player player, RuntimeRoom room, InventoryChange change, Item item)
@@ -79,7 +82,8 @@ public class PersistenceService
         if(item == null && (change == InventoryChange.ADD || change == InventoryChange.REMOVE))
             return false;
         
-        boolean success = playerDAO.updatePlayer(iKey, player) && worldDAO.updateRoomStatus(iKey, room);
+        boolean success = playerDAO.updatePlayer(iKey, player);
+        success = worldDAO.updateRoomStatus(iKey, room) && success;
         
         return switch(change)
         {

@@ -134,10 +134,10 @@ public class PlayerDAO
     
     public boolean deletePlayer(String saveName)
     {
-        boolean result = dbManager.updateDB(buildDeleteRowSQL(STATS_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
-        result = dbManager.updateDB(buildDeleteRowSQL(PLAYER_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && result;
+        boolean success = dbManager.updateDB(buildDeleteRowSQL(STATS_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        success = dbManager.updateDB(buildDeleteRowSQL(PLAYER_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && success;
         
-        return result;
+        return success;
     }
     
     public boolean doesSaveExist(String saveName)

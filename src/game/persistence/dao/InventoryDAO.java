@@ -311,10 +311,10 @@ public class InventoryDAO
     
     public boolean deleteInventory(String saveName)
     {
-        boolean result = dbManager.updateDB(buildDeleteRowSQL(ARMOR_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
-        result = dbManager.updateDB(buildDeleteRowSQL(WEAPON_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && result;
-        result = dbManager.updateDB(buildDeleteRowSQL(POTION_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && result;
+        boolean success = dbManager.updateDB(buildDeleteRowSQL(ARMOR_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        success = dbManager.updateDB(buildDeleteRowSQL(WEAPON_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && success;
+        success = dbManager.updateDB(buildDeleteRowSQL(POTION_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && success;
         
-        return result;
+        return success;
     }
 }
