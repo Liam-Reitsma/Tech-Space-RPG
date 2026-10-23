@@ -25,7 +25,13 @@ public class WorldModel
         random = new Random();
         worldGenerator = new WorldGenerator();
     }
-    
+
+    /**
+     * Generates a world with an empty starting room, randomly assigned room types,
+     * a boss room towards the outer boundaries and walls surrounding accessible rooms.
+     *
+     * @return A new map containing the generated world's rooms and their coordinates.
+     */
     public Map<Point, RuntimeRoom> generateWorld()
     {
         Map<Point, GenerationRoom> generatedMap = worldGenerator.generate();
@@ -69,7 +75,15 @@ public class WorldModel
         
         return world;
     }
-    
+
+    /**
+     * Checks the four orthogonally adjacent coordinates.
+     *
+     * @param world The map of rooms already created.
+     * @param point The proposed room position.
+     * @param roomType The room type being considered.
+     * @return True if no existing adjacent room shares the requested type; otherwise false.
+     */
     private boolean checkRoomToBuild(Map<Point, RuntimeRoom> world, Point point, RoomType roomType)
     {
         RuntimeRoom testRoom;
@@ -89,7 +103,14 @@ public class WorldModel
         
         return true;
     }
-    
+
+    /**
+     * Finds directions leading to adjacent, non-wall rooms, regardless of visitation state.
+     *
+     * @param world The world containing the rooms.
+     * @param playerLocation The reference position for movement.
+     * @return An array of directions leading to accessible adjacent rooms.
+     */
     public Direction[] getPossibleDirections(Map<Point, RuntimeRoom> world, Point playerLocation)
     {
         List<Direction> directions = new ArrayList<>();
@@ -100,7 +121,14 @@ public class WorldModel
         
         return directions.toArray(new Direction[0]);
     }
-    
+
+    /**
+     * Converts the world into a 2D array and marks previously unseen rooms within the player's viewing range as seen.
+     *
+     * @param world The map containing the world's rooms.
+     * @param playerPoint The player's current position.
+     * @return A two-dimensional array of rooms representing the world.
+     */
     public RuntimeRoom[][] updateWorldInfo(Map<Point, RuntimeRoom> world, Point playerPoint)
     {
         RuntimeRoom[][] roomMap = new RuntimeRoom[MAX_RANGE * 2 + 1][MAX_RANGE * 2 + 1];

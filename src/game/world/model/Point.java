@@ -16,7 +16,14 @@ public class Point
     public int getX() { return x; }
     
     public int getY() { return y; }
-    
+
+    /**
+     * Gives the cardinal direction from otherPoint to this.
+     * The points don't have to be adjacent.
+     *
+     * @param otherPoint The point used as the reference position.
+     * @return The relative direction, or null if no cardinal direction applies.
+     */
     public Direction returnRelativeDirection(Point otherPoint)
     {
         if(this.x == otherPoint.x && this.y > otherPoint.y)
@@ -30,7 +37,13 @@ public class Point
         
         return null;
     }
-    
+
+    /**
+     * Creates a new point that is one coordinate away in the specified direction, leaving the original unchanged.
+     *
+     * @param direction The direction to move.
+     * @return A new point in that direction, or null if the direction is null.
+     */
     public Point move(Direction direction)
     {
         if(direction == Direction.NORTH)
@@ -44,7 +57,14 @@ public class Point
         
         return null;
     }
-    
+
+    /**
+     * Returns four new Point instances adjacent to the supplied point in the order of North, East, South, West.
+     * Does not modify the supplied point.
+     *
+     * @param playerPoint The reference point.
+     * @return Four adjacent points ordered North, East, South, West.
+     */
     public static Point[] getOrthogonalPoints(Point playerPoint)
     {
         Point[] orthogonalPoints = new Point[4];
