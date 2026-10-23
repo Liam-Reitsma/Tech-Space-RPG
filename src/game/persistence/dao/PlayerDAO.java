@@ -84,7 +84,7 @@ public class PlayerDAO
         List<Map<String, Object>> statsDataList = dbManager.queryDB(buildSelectTableSQL(STATS_TABLE_NAME));
         if(playerDataList == null || statsDataList == null)
             return null;
-        if(playerDataList.isEmpty() || statsDataList.isEmpty() || playerDataList.size() != statsDataList.size())
+        if(playerDataList.isEmpty() || statsDataList.isEmpty())
             return saveNameCharacterMap;
         
         
@@ -134,13 +134,15 @@ public class PlayerDAO
     
     public boolean deletePlayer(String saveName)
     {
-        return  dbManager.updateDB(buildDeleteRowSQL(STATS_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
-                dbManager.updateDB(buildDeleteRowSQL(PLAYER_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        boolean result = dbManager.updateDB(buildDeleteRowSQL(STATS_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        result = dbManager.updateDB(buildDeleteRowSQL(PLAYER_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && result;
+        
+        return result;
     }
     
     public boolean doesSaveExist(String saveName)
     {
         List<Map<String, Object>> result = dbManager.queryDB(buildSelectSQL(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
-        return !result.isEmpty();
+        return result != null && !result.isEmpty();
     }
 }
