@@ -2,7 +2,10 @@ package game.world.model.generation;
 
 public class WorldGenConfig
 {
-    private WorldGenConfig() {}
+    private WorldGenConfig()
+    {
+    
+    }
     
     public static final int MIN_RANGE = 8;
     public static final int MAX_RANGE = 15;
