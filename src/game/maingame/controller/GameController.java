@@ -69,7 +69,19 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     
     private void forceStartNewGame(Player player, Map<Point, RuntimeRoom> world)
     {
-        persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world);
+        if(persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world))
+            frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                    e ->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    },
+                    e->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    });
+        
         frameAction.requestClosePopup();
         startGame(player, world);
     }

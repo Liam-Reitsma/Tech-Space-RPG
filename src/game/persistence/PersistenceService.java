@@ -30,6 +30,66 @@ public class PersistenceService
         worldDAO = wDAO;
     }
     
+    public boolean forceCreateNewSaveGame(String saveName, String charName, ClassType classType, Map<Point, RuntimeRoom> world)
+    {
+        return deleteSaveGame(saveName) && createNewSaveGame(saveName, charName, classType, world);
+    }
+    
+    public boolean createNewSaveGame(String saveName, String charName, ClassType classType, Map<Point, RuntimeRoom> world)
+    {
+        Player player = new Player(charName, classType);
+        if(!databaseSchemaManager.createTables())
+            return false;
+        
+        boolean success = playerDAO.insertPlayer(saveName, player) &&
+                inventoryDAO.insertEquippedItems(saveName, player) &&
+                worldDAO.insertWorld(saveName, world);
+        
+        if(success)
+            iKey = saveName;
+        
+        return success;
+    }
+    
+    public boolean deleteSaveGame(String saveName)
+    {
+        boolean equippedDeleted = inventoryDAO.deleteEquipped(saveName);
+        boolean inventoryDeleted = inventoryDAO.deleteInventory(saveName);
+        boolean worldDeleted = worldDAO.deleteWorld(saveName);
+        boolean playerDeleted = playerDAO.deletePlayer(saveName);
+        
+        return equippedDeleted && inventoryDeleted && worldDeleted && playerDeleted;
+    }
+    
+    public boolean fullSave(Player player, Map<Point, RuntimeRoom> world)
+    {
+        if(iKey == null)
+            return false;
+        return  playerDAO.updatePlayer(iKey, player) &&
+                inventoryDAO.updateEquippedEquipment(iKey, player.getInventory()) &&
+                inventoryDAO.updateStoredEquipment(iKey, player.getInventory()) &&
+                worldDAO.updateMap(iKey, world);
+    }
+    
+    public boolean quickSave(Player player, RuntimeRoom room, InventoryChange change, Item item)
+    {
+        if(iKey == null)
+            return false;
+        
+        if(item == null && (change == InventoryChange.ADD || change == InventoryChange.REMOVE))
+            return false;
+        
+        boolean success = playerDAO.updatePlayer(iKey, player) && worldDAO.updateRoomStatus(iKey, room);
+        
+        return switch(change)
+        {
+            case NONE -> success;
+            case ADD -> success && inventoryDAO.addItem(iKey, item, player.getInventory().getItemCount(item), player.getInventory().getItemIndex(item));
+            case EQUIP -> success && inventoryDAO.updateStoredEquipment(iKey, player.getInventory()) && inventoryDAO.updateEquippedEquipment(iKey, player.getInventory());
+            case REMOVE -> success && inventoryDAO.removeItem(iKey, item, player.getInventory().getItemCount(item), player.getInventory().getItemIndex(item));
+        };
+    }
+    
     public SavedData loadSaveGame(String saveName)
     {
         Player player = playerDAO.loadSavedPlayer(saveName);
@@ -59,67 +119,6 @@ public class PersistenceService
     public boolean doesSaveExist(String saveName)
     {
         return playerDAO.doesSaveExist(saveName);
-    }
-    
-    public void forceCreateNewSaveGame(String saveName, String charName, ClassType classType, Map<Point, RuntimeRoom> world)
-    {
-        deleteSaveGame(saveName);
-        createNewSaveGame(saveName, charName, classType, world);
-    }
-    
-    public boolean createNewSaveGame(String saveName, String charName, ClassType classType, Map<Point, RuntimeRoom> world)
-    {
-        Player player = new Player(charName, classType);
-        if(!databaseSchemaManager.createTables())
-            return false;
-        
-        boolean success = playerDAO.insertPlayer(saveName, player) &&
-                inventoryDAO.insertEquippedItems(saveName, player) &&
-                worldDAO.insertWorld(saveName, world);
-        
-        if(success)
-            iKey = saveName;
-        
-        return success;
-    }
-    
-    public boolean deleteSaveGame(String saveName)
-    {
-        boolean equippedDeleted = inventoryDAO.deleteEquipped(saveName);
-        boolean inventoryDeleted = inventoryDAO.deleteInventory(saveName);
-        boolean worldDeleted = worldDAO.deleteWorld(saveName);
-        boolean playerDeleted = playerDAO.deletePlayer(saveName);
-        
-        return equippedDeleted && inventoryDeleted && worldDeleted && playerDeleted;
-    }
-    
-    public boolean quickSave(Player player, RuntimeRoom room, InventoryChange change, Item item)
-    {
-        if(iKey == null)
-            return false;
-        
-        if(item == null && (change == InventoryChange.ADD || change == InventoryChange.REMOVE))
-            return false;
-        
-        boolean success = playerDAO.updatePlayer(iKey, player) && worldDAO.updateRoomStatus(iKey, room);
-        
-        return switch(change)
-        {
-            case NONE -> success;
-            case ADD -> success && inventoryDAO.addItem(iKey, item, player.getInventory().getItemCount(item), player.getInventory().getItemIndex(item));
-            case EQUIP -> success && inventoryDAO.updateStoredEquipment(iKey, player.getInventory()) && inventoryDAO.updateEquippedEquipment(iKey, player.getInventory());
-            case REMOVE -> success && inventoryDAO.removeItem(iKey, item, player.getInventory().getItemCount(item), player.getInventory().getItemIndex(item));
-        };
-    }
-    
-    public boolean fullSave(Player player, Map<Point, RuntimeRoom> world)
-    {
-        if(iKey == null)
-            return false;
-        return  playerDAO.updatePlayer(iKey, player) &&
-                inventoryDAO.updateEquippedEquipment(iKey, player.getInventory()) &&
-                inventoryDAO.updateStoredEquipment(iKey, player.getInventory()) &&
-                worldDAO.updateMap(iKey, world);
     }
     
     public Map<String, Player> getAllSaves() { return playerDAO.getAllSaves(); }
