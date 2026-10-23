@@ -30,7 +30,7 @@ public class InventoryDAOTest
     
     public InventoryDAOTest()
     {
-        dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_DB;create=true", "TSDB", "tsdb");
+        dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_TEST_DB;create=true", "TSDB", "tsdb");
         inventoryDAO = new InventoryDAO(dbManager);
         testPlayer = new Player("John", ClassType.MERCENARY);
         
@@ -69,24 +69,24 @@ public class InventoryDAOTest
         Item item = new Weapon(WeaponType.ENERGY_SWORD, 5);
         
         testPlayer.addToInventory(item);
-        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) - 1, testPlayer.getInventory().getItemIndex(item)));
+        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item), testPlayer.getInventory().getItemIndex(item)));
         assertEquals(1, getItemCount(inventoryDAO.loadInventory(SAVE_NAME), item));
         
         testPlayer.addToInventory(item);
-        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) - 1, testPlayer.getInventory().getItemIndex(item)));
+        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item), testPlayer.getInventory().getItemIndex(item)));
         assertEquals(2, getItemCount(inventoryDAO.loadInventory(SAVE_NAME), item));
         
         testPlayer.removeFromInventory(item, false);
-        assertTrue(inventoryDAO.removeItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) + 1, testPlayer.getInventory().getItemIndex(item)));
+        assertTrue(inventoryDAO.removeItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item), testPlayer.getInventory().getItemIndex(item)));
         assertEquals(1, getItemCount(inventoryDAO.loadInventory(SAVE_NAME), item));
         
         item = new Armour(ArmourMaterial.FABRIC, ArmourSlot.HEAD);
         
         testPlayer.removeFromInventory(item, false);
-        assertFalse(inventoryDAO.removeItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) + 1, testPlayer.getInventory().getItemIndex(item)));
+        assertFalse(inventoryDAO.removeItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item), testPlayer.getInventory().getItemIndex(item)));
         
         testPlayer.addToInventory(item);
-        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item) - 1, testPlayer.getInventory().getItemIndex(item)));
+        assertTrue(inventoryDAO.addItem(SAVE_NAME, item, testPlayer.getInventory().getItemCount(item), testPlayer.getInventory().getItemIndex(item)));
         
         ItemStack[] inventory = inventoryDAO.loadInventory(SAVE_NAME);
         assertEquals(2, countOccupiedSlots(inventory));

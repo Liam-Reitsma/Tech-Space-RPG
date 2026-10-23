@@ -27,9 +27,11 @@ public class DatabaseSchemaManager
             if(table == PLAYER)
                 continue;
             if(table == EQUIPPED_ITEMS)
+            {
                 if(!dbManager.createTable(table.name(), buildCreateTableSQL(table.name(), table.getColumns(), table.getPrimaryKeys(),
                         table.getPrimaryKeys(), new String[]{PLAYER.name()}, new String[]{COLUMN_NAME})))
                     return false;
+            }
             else if(!dbManager.createTable(table.name(), buildCreateTableSQL(table.name(), table.getColumns(), table.getPrimaryKeys(),
                     table.getColumnStrings(), new String[]{PLAYER.name()}, new String[]{COLUMN_NAME})))
                 return false;

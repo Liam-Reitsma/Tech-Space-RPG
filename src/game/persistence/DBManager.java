@@ -91,6 +91,7 @@ public class DBManager
             return true;
         } catch(SQLException e)
         {
+            LOGGER.log(Level.SEVERE, "Database update failed: " + templateSQL, e);
             return false;
         }
     }

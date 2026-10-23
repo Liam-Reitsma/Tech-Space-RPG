@@ -128,7 +128,10 @@ public class InventoryDAO
     
     public boolean removeItem(String saveName, Item item, int newCount, int slotIndex)
     {
-        return newCount >= 0 && updateItemEntry(saveName, item, newCount + 1, newCount, slotIndex);
+        if(item == null || slotIndex < 0 || newCount < 0)
+            return false;
+        
+        return updateItemEntry(saveName, item, newCount + 1, newCount, slotIndex);
     }
     
     private boolean updateItemEntry(String saveName, Item item, int oldCount, int newCount, int slotIndex)

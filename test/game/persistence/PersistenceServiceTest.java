@@ -15,7 +15,6 @@ import game.world.model.room.RoomTileState;
 import game.world.model.room.RoomType;
 import game.world.model.room.RuntimeRoom;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,24 +25,18 @@ public class PersistenceServiceTest
 {
     private static final String SAVE_NAME = "Test Save";
     
-    private DBManager dbManager;
-    private PersistenceService persistenceService;
+    private final DBManager dbManager;
+    private final PersistenceService persistenceService;
     
     public PersistenceServiceTest()
     {
-    
-    }
-    
-    @Before
-    public void setUp()
-    {
-        DBManager dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_DB;create=true", "TSDB", "tsdb");
+        dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_TEST_DB;create=true", "TSDB", "tsdb");
         InventoryDAO inventoryDAO = new InventoryDAO(dbManager);
         PlayerDAO playerDAO = new PlayerDAO(dbManager);
         WorldDAO worldDAO = new WorldDAO(dbManager);
         DatabaseSchemaManager databaseSchemaManager = new DatabaseSchemaManager(dbManager);
         assertTrue(databaseSchemaManager.dropTables());
-        databaseSchemaManager.createTables();
+        assertTrue(databaseSchemaManager.createTables());
         
         persistenceService = new PersistenceService(databaseSchemaManager, inventoryDAO, playerDAO, worldDAO);
     }
@@ -90,7 +83,7 @@ public class PersistenceServiceTest
         SavedData loadedData = persistenceService.loadSaveGame(SAVE_NAME);
         
         assertNotNull(loadedData);
-        assertEquals(1, getItemCount(player.getInventory().getInventorySlots(), potion));
+        assertEquals(1, getItemCount(loadedData.player().getInventory().getInventorySlots(), potion));
         
         assertEquals(RoomTileState.COMPLETED, loadedData.world().get(new Point(0, 0)).getRoomState().getRoomTileState());
     }
@@ -117,6 +110,7 @@ public class PersistenceServiceTest
     @After
     public void tearDown()
     {
-        dbManager.closeConnection();
+        if(dbManager != null)
+            dbManager.closeConnection();
     }
 }

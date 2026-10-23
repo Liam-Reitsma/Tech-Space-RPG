@@ -26,7 +26,7 @@ public class WorldDAOTest
     
     public WorldDAOTest()
     {
-        dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_DB;create=true", "TSDB", "tsdb");
+        dbManager = new DBManager("jdbc:derby:database/TechSpaceRPG_TEST_DB;create=true", "TSDB", "tsdb");
         worldDAO = new WorldDAO(dbManager);
         Player testPlayer = new Player("John", ClassType.MERCENARY);
         
