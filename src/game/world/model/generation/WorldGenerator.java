@@ -20,7 +20,13 @@ public class WorldGenerator
         rooms = new HashMap<>();
         rng = new Random();
     }
-    
+
+    /**
+     * Clears previously generated rooms and creates an origin room with four adjacent rooms.
+     * Recursively expands from these initial rooms to generate the world.
+     *
+     * @return The generator's internal mutable map of generated rooms.
+     */
     public Map<Point, GenerationRoom> generate()
     {
         rooms.clear();
