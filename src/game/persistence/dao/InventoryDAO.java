@@ -4,7 +4,6 @@ import static game.persistence.PersistenceTable.*;
 import static game.persistence.SQLCommandFactory.*;
 import static game.player.model.Inventory.INVENTORY_CAPACITY;
 
-import game.player.model.Inventory;
 import game.player.model.ItemStack;
 import game.player.model.Player;
 import game.items.EquippableItem;
@@ -151,7 +150,7 @@ public class InventoryDAO
         {
             case 0 ->
             {
-                args = new Object[]{saveName, armour.getEquipSlot().name(), armour.getArmourMaterial().name(), slotIndex};
+                args = new Object[]{saveName, armour.getEquipSlot().name(), armour.getArmourMaterial().name()};
                 return dbManager.updateDB(buildDeleteRowSQL(
                         ARMOR_TABLE_NAME, STORED_ARMOUR.getPrimaryKeys()), args);
             }
@@ -185,7 +184,7 @@ public class InventoryDAO
         {
             case 0 ->
             {
-                args = new Object[]{saveName, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel(), slotIndex};
+                args = new Object[]{saveName, weapon.getEquipSlot().name(), weapon.getWeaponType().name(), weapon.getLevel()};
                 return dbManager.updateDB(buildDeleteRowSQL(
                         WEAPON_TABLE_NAME, STORED_WEAPONS.getPrimaryKeys()), args);
             }
@@ -218,7 +217,7 @@ public class InventoryDAO
         {
             case 0 ->
             {
-                args = new Object[]{saveName, potion.getPotionType().name(), slotIndex};
+                args = new Object[]{saveName, potion.getPotionType().name()};
                 return dbManager.updateDB(buildDeleteRowSQL(
                         POTION_TABLE_NAME, STORED_POTIONS.getPrimaryKeys()), args);
             }
@@ -312,8 +311,10 @@ public class InventoryDAO
     
     public boolean deleteInventory(String saveName)
     {
-        return  dbManager.updateDB(buildDeleteRowSQL(ARMOR_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
-                dbManager.updateDB(buildDeleteRowSQL(WEAPON_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
-                dbManager.updateDB(buildDeleteRowSQL(POTION_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        boolean result = dbManager.updateDB(buildDeleteRowSQL(ARMOR_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        result = dbManager.updateDB(buildDeleteRowSQL(WEAPON_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && result;
+        result = dbManager.updateDB(buildDeleteRowSQL(POTION_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && result;
+        
+        return result;
     }
 }
