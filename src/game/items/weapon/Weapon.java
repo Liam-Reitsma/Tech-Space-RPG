@@ -23,8 +23,6 @@ public class Weapon extends EquippableItem
 
     public float calculateDamage(int stat) { return weaponType.calculateDamage(stat, level); }
     
-    public int calculateStatReq() { return weaponType.calculateStatReq(level); }
-    
     public boolean canUseWeapon(int statValue) { return weaponType.canUseWeapon(statValue, level); }
     
     public int getLevel() { return level; }

@@ -10,7 +10,7 @@ import java.util.List;
 public interface PlayerViewAction
 {
     void updateEquippedItem(EquipSlot slot, EquippableItem item);
-    void updateInventory(ItemStack[] itemStacks);
+    void updateInventory(ItemStack[] itemStacks, boolean[] canEquip);
     void updatePlayerStats(List<StatEntry> statEntries);
     
     void flashEquipmentSlot(EquipSlot incorrectSlot, EquipSlot correctSlot);

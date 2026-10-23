@@ -131,6 +131,10 @@ public class PlayerController implements PlayerAction, Updatable
                             frameAction.requestClosePopup();
                         });
             }
+            case LEVEL_TOO_LOW, STAT_TOO_LOW ->
+            {
+                playerViewAction.flashEquipmentSlot(destination.equipSlot(), null);
+            }
             default ->
             {
                 LOGGER.warning("Unexpected inventory result when equipping item: " + result);
@@ -221,7 +225,13 @@ public class PlayerController implements PlayerAction, Updatable
     {
         for(EquipSlot slot : playerModel.getInventory().getAllEquippedSlots())
             requestEquippedItemChange(slot);
+        
+        ItemStack[] itemStacks = playerModel.getPlayer().getInventory().getInventorySlots();
+        boolean[] canEquip = new boolean[itemStacks.length];
+        for(int i = 0; i < itemStacks.length; i++)
+            canEquip[i] = playerModel.getPlayer().equipRequirements(itemStacks[i].getItem()) == InventoryResult.SUCCESS;
+        
         playerViewAction.updatePlayerStats(playerModel.getPlayerStatEntries());
-        playerViewAction.updateInventory(playerModel.getInventory().getInventorySlots());
+        playerViewAction.updateInventory(itemStacks, canEquip);
     }
 }

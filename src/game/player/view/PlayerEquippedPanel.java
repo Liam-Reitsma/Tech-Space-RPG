@@ -47,7 +47,7 @@ public class PlayerEquippedPanel extends JPanel
         if(item == null)
             itemSlot.removeItem();
         else
-            itemSlot.setItem(item, 1);
+            itemSlot.setItem(item, 1, true);
     }
     
     public void highlightSlots(EquipSlot slot, SlotHighlight highlight)

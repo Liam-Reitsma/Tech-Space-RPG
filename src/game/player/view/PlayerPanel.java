@@ -42,9 +42,9 @@ public class PlayerPanel extends JPanel implements PlayerViewAction
     }
     
     @Override
-    public void updateInventory(ItemStack[] itemStacks)
+    public void updateInventory(ItemStack[] itemStacks, boolean[] canEquip)
     {
-        playerInventoryPanel.updateInventory(itemStacks);
+        playerInventoryPanel.updateInventory(itemStacks, canEquip);
     }
     
     @Override
