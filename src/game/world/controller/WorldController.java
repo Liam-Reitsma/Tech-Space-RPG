@@ -45,7 +45,13 @@ public class WorldController implements WorldAction, Updatable
     {
         return worldModel.generateWorld();
     }
-    
+
+    /**
+     * Attempts to move the player to the next room, ignoring invalid or locked movement.
+     * On success, updates the current room and notifies the room listener.
+     *
+     * @param direction The direction in which the player attempts to move.
+     */
     @Override
     public void requestMoveNextRoom(Direction direction)
     {
@@ -80,7 +86,11 @@ public class WorldController implements WorldAction, Updatable
         
         gameAction.requestGameUpdate();
     }
-    
+
+    /**
+     * Updates the available movement directions, displaying none if movement is locked.
+     * Updates the world map and marks nearby unseen rooms as seen.
+     */
     @Override
     public void requestUpdate()
     {
