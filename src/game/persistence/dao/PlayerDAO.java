@@ -62,7 +62,13 @@ public class PlayerDAO
         
         return dbManager.updateDB(buildUpdateTableSQL(STATS_TABLE_NAME, SAVE_NAME_COLUMN, STATS_COLUMNS), args);
     }
-    
+
+    /**
+     * Retrieves the player's info and reconstructs the player using the retrieved data.
+     *
+     * @param saveName The identifier of the save to load.
+     * @return The reconstructed player, or null if loading fails.
+     */
     public Player loadSavedPlayer(String saveName)
     {
         List<Map<String, Object>> playerDataList = dbManager.queryDB(buildSelectSQL(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
@@ -76,7 +82,12 @@ public class PlayerDAO
         
         return loadPlayer(playerData, statsDataList);
     }
-    
+
+    /**
+     * Retrieves all the saved player and their stats, then reconstructs a player for each save.
+     *
+     * @return A map of save names to players, an empty map if no saves exist, or null if loading fails.
+     */
     public Map<String, Player> getAllSaves()
     {
         Map<String, Player> saveNameCharacterMap = new HashMap<>();
