@@ -67,7 +67,7 @@ public class Main
         FrameController frameController = new FrameController();
         OptionsController optionsController = new OptionsController(frameController);
         WorldController worldController = new WorldController(gameModel);
-        RewardController rewardController = new RewardController(rewardModel);
+        RewardController rewardController = new RewardController(rewardModel, frameController);
         GameController gameController = new GameController(persistenceService, gameModel, combatController, frameController, rewardController, worldController);
         SavesController savesController = new SavesController(persistenceService, frameController, gameController);
         MainMenuController mainMenuController = new MainMenuController(frameController);

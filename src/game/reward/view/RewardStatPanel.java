@@ -14,9 +14,9 @@ public class RewardStatPanel extends JPanel
 {
     private final RewardAction rewardAction;
 
-    private final Map<StatType, JLabel> statLabels = new EnumMap<>(StatType.class);
     private final Map<StatType, JButton> minusButtons = new EnumMap<>(StatType.class);
     private final Map<StatType, JButton> plusButtons = new EnumMap<>(StatType.class);
+    private final Map<StatType, JLabel> statLabels = new EnumMap<>(StatType.class);
 
     private final JLabel pointsToSpendLabel;
 
@@ -27,16 +27,16 @@ public class RewardStatPanel extends JPanel
         setOpaque(false);
 
         LayoutBox[] statBoxes = new LayoutBox().splitVertical(22.5f, 22.5f, 22.5f, 22.5f, 10);
-        pointsToSpendLabel = new JLabel("",  SwingConstants.CENTER);
+        pointsToSpendLabel = new JLabel("", SwingConstants.CENTER);
         JButton confirmButton = new JButton("Confirm");
 
-        confirmButton.addActionListener(e -> {rewardAction.requestConfirmStat();});
+        confirmButton.addActionListener(e -> rewardAction.requestConfirmStat());
 
         pointsToSpendLabel.setForeground(Color.WHITE);
         add(pointsToSpendLabel, statBoxes[0]);
 
         StatType[] stats = StatType.values();
-        for(int  i = 0; i < stats.length; i++)
+        for(int i = 0; i < stats.length; i++)
         {
             StatType stat = stats[i];
             LayoutBox[] statBox = statBoxes[i + 1].splitHorizontal(20, 60, 20);
@@ -61,7 +61,8 @@ public class RewardStatPanel extends JPanel
     public void updateStats(StatType stat, int currentValue, int planned)
     {
         String labelText = stat + " " + currentValue;
-        if(planned > 0) labelText += " (+" + planned + ")";
+        if(planned > 0)
+            labelText += " (+" + planned + ")";
         minusButtons.get(stat).setEnabled(planned > 0);
         statLabels.get(stat).setText(labelText);
     }
@@ -70,8 +71,6 @@ public class RewardStatPanel extends JPanel
     {
         pointsToSpendLabel.setText("Stat points to spend: " + remaining);
         for(JButton button : plusButtons.values())
-        {
             button.setEnabled(remaining > 0);
-        }
     }
 }

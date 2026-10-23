@@ -46,13 +46,14 @@ public class SavesPanel extends JPanel
         };
         
         LayoutBox[] buttonBoxes = boxes[1].splitHorizontal(50, 50);
+        
         PanelButton deleteSaveButton = new PanelButton("Delete", deleteButtonListener);
         add(deleteSaveButton, buttonBoxes[0]);
+        
         PanelButton selectSaveButton = new PanelButton("Select", saveButtonListener);
         add(selectSaveButton, buttonBoxes[1]);
         
         addMouseListener(new MouseAdapter() {});
-        
     }
     
     private void createSaveList(JList<String> saveList, LayoutBox box)
@@ -68,13 +69,9 @@ public class SavesPanel extends JPanel
             saveToDisplay.setOpaque(true);
             
             if(isSelected)
-            {
                 saveToDisplay.setBackground(Color.lightGray);
-            }
             else
-            {
                 saveToDisplay.setBackground(Color.white);
-            }
             
             return saveToDisplay;
         });
