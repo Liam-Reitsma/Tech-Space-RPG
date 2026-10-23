@@ -1,5 +1,6 @@
 package game.world.model;
 
+import static game.world.model.generation.WorldGenConfig.MIN_RANGE;
 import static game.world.model.room.RoomTileState.*;
 import static game.world.model.room.RoomType.*;
 import static game.world.model.generation.WorldGenConfig.MAX_RANGE;
@@ -29,26 +30,42 @@ public class WorldModel
     {
         Map<Point, GenerationRoom> generatedMap = worldGenerator.generate();
         Map<Point, RuntimeRoom> world = new HashMap<>();
-        if(generatedMap.isEmpty()) return world;
+        if(generatedMap.isEmpty())
+            return world;
         
         for(Point point : generatedMap.keySet())
         {
             int chance = random.nextInt(100);
-            if(point.getX() == 0 && point.getY() == 0) world.put(point, new RuntimeRoom(point, new RoomState(EMPTY)));
-            else if(chance < 5  && checkRoomToBuild(world, point, MINIBOSS)) world.put(point, new RuntimeRoom(point, new RoomState(MINIBOSS)));
-            else if(chance < 25 && checkRoomToBuild(world, point, CHEST)) world.put(point, new RuntimeRoom(point, new RoomState(CHEST)));
-            else if(chance < 40 && checkRoomToBuild(world, point, EMPTY)) world.put(point, new RuntimeRoom(point, new RoomState(EMPTY)));
-            else world.put(point, new RuntimeRoom(point, new RoomState(COMBAT)));
+            if(point.getX() == 0 && point.getY() == 0)
+                world.put(point, new RuntimeRoom(point, new RoomState(EMPTY)));
+            else if(chance < 5  && checkRoomToBuild(world, point, MINIBOSS))
+                world.put(point, new RuntimeRoom(point, new RoomState(MINIBOSS)));
+            else if(chance < 25 && checkRoomToBuild(world, point, CHEST))
+                world.put(point, new RuntimeRoom(point, new RoomState(CHEST)));
+            else if(chance < 40 && checkRoomToBuild(world, point, EMPTY))
+                world.put(point, new RuntimeRoom(point, new RoomState(EMPTY)));
+            else
+                world.put(point, new RuntimeRoom(point, new RoomState(COMBAT)));
         }
         
-        for(int y = 0; y < MAX_RANGE * 2 + 1; y++)
+        do
         {
+            int minRange = -MAX_RANGE + MIN_RANGE;
+            int maxRange = MAX_RANGE - MIN_RANGE;
+            Point randomPoint = new Point(random.nextInt(-MAX_RANGE, MAX_RANGE + 1), random.nextInt(-MAX_RANGE, MAX_RANGE + 1));
+            if(generatedMap.containsKey(randomPoint) && (randomPoint.getX() < minRange || randomPoint.getX() > maxRange || randomPoint.getY() < minRange || randomPoint.getY() > maxRange))
+            {
+                world.put(randomPoint, new RuntimeRoom(randomPoint, new RoomState(BOSS)));
+                break;
+            }
+        } while(true);
+        
+        for(int y = 0; y < MAX_RANGE * 2 + 1; y++)
             for(int x = 0; x < MAX_RANGE * 2 + 1; x++)
             {
                 Point point = new Point(x - MAX_RANGE, (-y) + MAX_RANGE);
                 world.put(point, world.getOrDefault(point, new RuntimeRoom(point, new RoomState(WALL))));
             }
-        }
         
         return world;
     }
@@ -61,15 +78,13 @@ public class WorldModel
         {
             testRoom = world.get(new Point(point.getX() + i, point.getY()));
             if(testRoom != null)
-            {
-                if(testRoom.getRoomState().getRoomType() == roomType) return false;
-            }
+                if(testRoom.getRoomState().getRoomType() == roomType)
+                    return false;
             
             testRoom = world.get(new Point(point.getX(), point.getY() + i));
             if(testRoom != null)
-            {
-                if(testRoom.getRoomState().getRoomType() == roomType) return false;
-            }
+                if(testRoom.getRoomState().getRoomType() == roomType)
+                    return false;
         }
         
         return true;
@@ -80,9 +95,8 @@ public class WorldModel
         List<Direction> directions = new ArrayList<>();
         
         for(Point orthogonalPoint : Point.getOrthogonalPoints(playerLocation))
-        {
-            if(world.containsKey(orthogonalPoint) && world.get(orthogonalPoint).getRoomState().getRoomType() != WALL) directions.add(orthogonalPoint.returnRelativeDirection(playerLocation));
-        }
+            if(world.containsKey(orthogonalPoint) && world.get(orthogonalPoint).getRoomState().getRoomType() != WALL)
+                directions.add(orthogonalPoint.returnRelativeDirection(playerLocation));
         
         return directions.toArray(new Direction[0]);
     }
@@ -92,12 +106,8 @@ public class WorldModel
         RuntimeRoom[][] roomMap = new RuntimeRoom[MAX_RANGE * 2 + 1][MAX_RANGE * 2 + 1];
         
         for(int y = 0; y < MAX_RANGE * 2 + 1; y++)
-        {
             for(int x = 0; x < MAX_RANGE * 2 + 1; x++)
-            {
                 roomMap[y][x] = world.get(new Point(x - MAX_RANGE, (-y) + MAX_RANGE));
-            }
-        }
         
         int viewingYLowRange = (-playerPoint.getY()) + MAX_RANGE - (VIEWABLE_RANGE / 2);
         int viewingYTopRange = (-playerPoint.getY()) + MAX_RANGE + 1 + (VIEWABLE_RANGE / 2);
@@ -106,7 +116,6 @@ public class WorldModel
         int viewingXTopRange = playerPoint.getX() + MAX_RANGE + 1 + (VIEWABLE_RANGE / 2);
         
         for(int y = viewingYLowRange; y < viewingYTopRange; y++)
-        {
             for(int x = viewingXLowRange; x < viewingXTopRange; x++)
             {
                 if(y < 0 || y >= MAX_RANGE * 2 + 1)
@@ -116,7 +125,6 @@ public class WorldModel
                 if(roomMap[y][x].getRoomState().getRoomTileState() == UNSEEN)
                     roomMap[y][x].setSeen();
             }
-        }
         
         return roomMap;
     }
