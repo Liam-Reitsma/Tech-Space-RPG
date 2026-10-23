@@ -43,7 +43,14 @@ public class DBManager
             LOGGER.log(Level.SEVERE, "DBManager failed to close the connection to the Database.", e);
         }
     }
-    
+
+    /**
+     * Checks if the table already exists and if not, it creates a table with the supplied SQL.
+     *
+     * @param tableName The name of the table to create.
+     * @param sql The SQL statement used to create the table.
+     * @return True if the table already exists or is created successfully; otherwise false.
+     */
     public boolean createTable(String tableName, String sql)
     {
         if(tableExists(tableName))
@@ -76,7 +83,14 @@ public class DBManager
             return false;
         }
     }
-    
+
+    /**
+     * Creates and executes a prepared statement using the supplied SQL template.
+     *
+     * @param templateSQL The SQL statement containing parameter placeholders.
+     * @param args The values to bind to those placeholders, in order.
+     * @return True if execution succeeds, even if no rows are affected; otherwise false.
+     */
     public boolean updateDB(String templateSQL, Object... args)
     {
         if(connection == null)
@@ -95,7 +109,14 @@ public class DBManager
             return false;
         }
     }
-    
+
+    /**
+     * Executes the prepared statement using the supplied SQL template.
+     *
+     * @param templateSQL The SQL query containing parameter placeholders.
+     * @param args The values to bind to those placeholders, in order.
+     * @return A list of maps representing the retrieved rows, an empty list if no rows match, or null if the query fails.
+     */
     public List<Map<String, Object>> queryDB(String templateSQL, Object... args)
     {
         if(connection == null)
