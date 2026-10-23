@@ -33,6 +33,9 @@ public class PicturePreview extends JComponent
             int imageWidth = image.getWidth(null);
             int imageHeight = image.getHeight(null);
             
+            if(imageWidth <= 0 || imageHeight <= 0)
+                return;
+            
             float scale = Math.min((float) getWidth() / imageWidth, (float) getHeight() / imageHeight);
             
             int drawWidth = Math.round(imageWidth * scale);

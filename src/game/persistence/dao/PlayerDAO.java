@@ -62,7 +62,13 @@ public class PlayerDAO
         
         return dbManager.updateDB(buildUpdateTableSQL(STATS_TABLE_NAME, SAVE_NAME_COLUMN, STATS_COLUMNS), args);
     }
-    
+
+    /**
+     * Retrieves the player's info and reconstructs the player using the retrieved data.
+     *
+     * @param saveName The identifier of the save to load.
+     * @return The reconstructed player, or null if loading fails.
+     */
     public Player loadSavedPlayer(String saveName)
     {
         List<Map<String, Object>> playerDataList = dbManager.queryDB(buildSelectSQL(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
@@ -76,7 +82,12 @@ public class PlayerDAO
         
         return loadPlayer(playerData, statsDataList);
     }
-    
+
+    /**
+     * Retrieves all the saved player and their stats, then reconstructs a player for each save.
+     *
+     * @return A map of save names to players, an empty map if no saves exist, or null if loading fails.
+     */
     public Map<String, Player> getAllSaves()
     {
         Map<String, Player> saveNameCharacterMap = new HashMap<>();
@@ -84,7 +95,7 @@ public class PlayerDAO
         List<Map<String, Object>> statsDataList = dbManager.queryDB(buildSelectTableSQL(STATS_TABLE_NAME));
         if(playerDataList == null || statsDataList == null)
             return null;
-        if(playerDataList.isEmpty() || statsDataList.isEmpty() || playerDataList.size() != statsDataList.size())
+        if(playerDataList.isEmpty() || statsDataList.isEmpty())
             return saveNameCharacterMap;
         
         
@@ -92,7 +103,7 @@ public class PlayerDAO
         {
             Player result = loadPlayer(playerData, statsDataList);
             if(result == null)
-                return null;
+                continue;
             
             saveNameCharacterMap.put(playerData.get("SAVE_NAME").toString(), result);
         }
@@ -134,13 +145,15 @@ public class PlayerDAO
     
     public boolean deletePlayer(String saveName)
     {
-        return  dbManager.updateDB(buildDeleteRowSQL(STATS_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) &&
-                dbManager.updateDB(buildDeleteRowSQL(PLAYER_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        boolean success = dbManager.updateDB(buildDeleteRowSQL(STATS_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName);
+        success = dbManager.updateDB(buildDeleteRowSQL(PLAYER_TABLE_NAME, new String[]{SAVE_NAME_COLUMN}), saveName) && success;
+        
+        return success;
     }
     
     public boolean doesSaveExist(String saveName)
     {
         List<Map<String, Object>> result = dbManager.queryDB(buildSelectSQL(PLAYER_TABLE_NAME, SAVE_NAME_COLUMN), saveName);
-        return !result.isEmpty();
+        return result != null && !result.isEmpty();
     }
 }

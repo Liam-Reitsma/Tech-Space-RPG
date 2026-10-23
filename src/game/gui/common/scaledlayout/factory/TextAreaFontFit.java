@@ -16,7 +16,11 @@ public class TextAreaFontFit implements FontFitStrategy
         if(comp instanceof JTextArea textArea)
         {
             String text = textArea.getText();
-            if(text == null || text.isEmpty()) return font.getSize2D();
+            if(text == null || text.isEmpty())
+                return font.getSize2D();
+            
+            if(textArea.getWidth() <= 0 || textArea.getHeight() <= 0)
+                return font.getSize2D();
             
             float fontSize = font.getSize2D();
             
@@ -26,9 +30,7 @@ public class TextAreaFontFit implements FontFitStrategy
             testTextArea.setWrapStyleWord(textArea.getWrapStyleWord());
             testTextArea.setSize(textArea.getWidth(), Integer.MAX_VALUE);
             
-            
             if(testTextArea.getPreferredSize().height > textArea.getHeight())
-            {
                 while(fontSize > 1f)
                 {
                     fontSize--;
@@ -37,7 +39,6 @@ public class TextAreaFontFit implements FontFitStrategy
                     if(testTextArea.getPreferredSize().height <= textArea.getHeight())
                         return fontSize;
                 }
-            }
             
             return fontSize;
         }

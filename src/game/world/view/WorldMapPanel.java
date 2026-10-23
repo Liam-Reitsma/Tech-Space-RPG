@@ -35,9 +35,8 @@ public class WorldMapPanel extends JPanel
         
         int i = 0;
         for(LayoutBox box : verticalBoxes)
-        {
             grid[i++] = box.splitHorizontal(splitArray);
-        }
+        
         roomTiles = new JPanel[arrayMaxRange][arrayMaxRange];
         
         for(int row = 0; row < arrayMaxRange; row++)
@@ -69,16 +68,17 @@ public class WorldMapPanel extends JPanel
                     roomTiles[row][col].setOpaque(true);
 
                     if(rooms[row][col].isCurrent())
-                    {
                         roomTiles[row][col].setBackground(Color.CYAN);
-                    }
-                    else {
+                    else
+                    {
                         switch (rooms[row][col].getRoomState().getRoomTileState()) {
                             case COMPLETED -> roomTiles[row][col].setBackground(Color.GREEN);
                             case FLED ->  roomTiles[row][col].setBackground(Color.ORANGE);
                             case CURRENT -> roomTiles[row][col].setBackground(Color.CYAN);
-                            default -> {
-                                switch (rooms[row][col].getRoomState().getRoomType()) {
+                            default ->
+                            {
+                                switch (rooms[row][col].getRoomState().getRoomType())
+                                {
                                     case WALL -> roomTiles[row][col].setBackground(Color.BLACK);
                                     case COMBAT -> roomTiles[row][col].setBackground(Color.RED);
                                     case BOSS -> roomTiles[row][col].setBackground(Color.MAGENTA);

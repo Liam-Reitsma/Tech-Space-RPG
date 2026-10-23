@@ -44,7 +44,6 @@ public class MainMenuButton extends JButton
         
         g2d.dispose();
         
-        
         super.paintComponent(g);
     }
 }

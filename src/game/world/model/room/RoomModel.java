@@ -21,7 +21,14 @@ public class RoomModel
     {
     
     }
-    
+
+    /**
+     * Creates an enemy or chest item based on the room type and player's level.
+     *
+     * @param roomType The type of room being entered.
+     * @param player The player whose level determines the generated content's level.
+     * @return The generated enemy or item, or null for empty and wall rooms.
+     */
     public RoomContent createRoomContent(RoomType roomType, Player player)
     {
         return switch(roomType)
@@ -37,10 +44,11 @@ public class RoomModel
     private Item createChest(int level)
     {
         int newLevel = Math.max(1, level + (int)Math.round((ITEM_LEVEL_RANGE * (Math.random() - 0.5))));
-        Armour returnArmour = new Armour(ArmourMaterial.getRandomMaterial(newLevel), ArmourSlot.getRandomSlot());
-        Weapon returnWeapon = new Weapon(WeaponType.getRandomWeaponType(), newLevel);
         
-        return Math.round((float)Math.random()) == 0 ? returnArmour : returnWeapon;
+        if(Math.random() < 0.5)
+            return new Armour(ArmourMaterial.getRandomMaterial(newLevel), ArmourSlot.getRandomSlot());
+        else
+            return new Weapon(WeaponType.getRandomWeaponType(), newLevel);
     }
     
     private Enemy createEnemy(RoomType roomType, int level)

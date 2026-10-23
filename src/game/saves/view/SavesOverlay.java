@@ -37,14 +37,22 @@ public class SavesOverlay extends JPanel implements SavesViewAction, Displayable
     {
         savesPanel.removeSave(saveIndex);
     }
-    
+
+    /**
+     * Makes the overlay invisible.
+     *
+     * @return The saves overlay's JPanel instance.
+     */
     @Override
     public JPanel getDisplay()
     {
         setVisible(false);
         return this;
     }
-    
+
+    /**
+     * Makes the overlay visible and refreshes the list of saves from the database.
+     */
     @Override
     public void openDisplay()
     {

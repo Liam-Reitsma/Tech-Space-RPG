@@ -1,6 +1,10 @@
 package game.reward.controller;
 
 import game.Updatable;
+import game.frame.controller.FrameAction;
+import game.gui.popup.PopupError;
+import game.maingame.controller.GameAction;
+import game.reward.model.RewardResult;
 import game.reward.view.RewardPanelType;
 import game.entities.*;
 import game.items.Item;
@@ -10,13 +14,21 @@ import game.reward.view.RewardViewAction;
 public class RewardController implements RewardAction, Updatable
 {
     private final RewardModel rewardModel;
-    private RewardViewAction rewardViewAction;
 
+    private final FrameAction frameAction;
+    
+    private GameAction gameAction;
+    
+    private RewardViewAction rewardViewAction;
     private RewardListener rewardListener;
 
-    public RewardController(RewardModel rModel) {
+    public RewardController(RewardModel rModel, FrameAction fAction)
+    {
         rewardModel = rModel;
+        frameAction = fAction;
     }
+    
+    public void setGameAction(GameAction gAction) { gameAction = gAction;}
 
     public void setRewardViewAction(RewardViewAction rvAction)
     {
@@ -30,70 +42,114 @@ public class RewardController implements RewardAction, Updatable
 
     public void requestEnemyReward(Enemy enemy)
     {
-        rewardViewAction.displayMessage(rewardModel.applyEnemyReward(enemy));
-        requestUpdate();
-    }
-
-    @Override
-    public void requestUpdate()
-    {
-        for(StatType statType : StatType.values())
-        {
-            rewardViewAction.updateStat(statType, rewardModel.getCurrentStatPoint(statType), rewardModel.getPlannedStatPoint(statType));
-        }
-        rewardViewAction.updateRemaining(rewardModel.getRemainingStatPoint());
-        if(rewardModel.hasOfferedItem()) rewardViewAction.showRewardPanel(RewardPanelType.CHEST);
-        else if(rewardModel.hasPointsToAllocate()) rewardViewAction.showRewardPanel(RewardPanelType.STAT_POINTS);
-        else rewardViewAction.showRewardPanel(RewardPanelType.NONE);
+        RewardResult result = rewardModel.applyEnemyReward(enemy);
+        rewardViewAction.displayMessage(result.message());
+        gameAction.requestGameUpdate();
     }
 
     @Override
     public void requestTemporaryStatIncrease(StatType stat)
     {
         rewardModel.planIncrease(stat);
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
 
     @Override
     public void requestTemporaryStatDecrease(StatType stat)
     {
         rewardModel.planDecrease(stat);
-        requestUpdate();
+        gameAction.requestGameUpdate();
     }
 
     @Override
     public void requestConfirmStat()
     {
-        rewardViewAction.displayMessage(rewardModel.confirmLeveledUp());
-        requestUpdate();
+        RewardResult result = rewardModel.confirmLeveledUp();
+        if(result.hasError())
+            frameAction.requestDisplayError(PopupError.NO_STATS_INCREASED,
+                    e-> frameAction.requestClosePopup(),
+                    e-> frameAction.requestClosePopup());
+        
+        rewardViewAction.displayMessage(result.message());
+        gameAction.requestGameUpdate();
     }
 
+    /**
+     * Attempts to add the offered item to the player's inventory.
+     * If adding fails, prompts the player to discard the item or cancel.
+     * Cancelling preserves the item, while confirming discards it.
+     */
     @Override
     public void requestKeepItem()
     {
-        rewardViewAction.displayMessage(rewardModel.takeOfferedItem());
-        requestUpdate();
-        if(rewardListener != null) rewardListener.onChestDecision();
+        RewardResult result = rewardModel.takeOfferedItem();
+        if(result.hasError())
+            frameAction.requestDisplayError(PopupError.INVENTORY_FULL_ADDING,
+                    e-> frameAction.requestClosePopup(),
+                    e->
+                    {
+                        rewardModel.discardOfferedItem();
+                        frameAction.requestClosePopup();
+                        
+                        if(rewardListener != null)
+                            rewardListener.onChestDecision();
+                        
+                        gameAction.requestGameUpdate();
+                    });
+        else if(!rewardModel.hasOfferedItem() && rewardListener != null)
+            rewardListener.onChestDecision();
+        
+        rewardViewAction.displayMessage(result.message());
+        gameAction.requestGameUpdate();
     }
 
+    /**
+     * Attempts to discard the offered item and displays the resulting message.
+     * Notifies the listener that the chest decision is complete.
+     */
     @Override
     public void requestDiscardItem()
     {
-        rewardViewAction.displayMessage(rewardModel.discardOfferedItem());
-        requestUpdate();
-        if(rewardListener != null) rewardListener.onChestDecision();
+        RewardResult result = rewardModel.discardOfferedItem();
+        rewardViewAction.displayMessage(result.message());
+        
+        if(rewardListener != null)
+            rewardListener.onChestDecision();
+        gameAction.requestGameUpdate();
     }
 
     @Override
     public void requestOfferChestReward(Item item)
     {
-        rewardViewAction.displayMessage(rewardModel.offerChestItem(item));
-        requestUpdate();
+        RewardResult result = rewardModel.offerChestItem(item);
+        
+        rewardViewAction.displayMessage(result.message());
+        gameAction.requestGameUpdate();
     }
 
     @Override
     public void requestResetReward()
     {
         rewardModel.resetReward();
+    }
+
+    /**
+     * Updates the displayed stats and remaining allocation points.
+     * Displays the chest panel if an item is offered, otherwise the stat allocation
+     * panel if points are available, or no reward panel if neither applies.
+     */
+    @Override
+    public void requestUpdate()
+    {
+        for(StatType statType : StatType.values())
+            rewardViewAction.updateStat(statType, rewardModel.getCurrentStatPoint(statType), rewardModel.getPlannedStatPoint(statType));
+        
+        rewardViewAction.updateRemaining(rewardModel.getRemainingStatPoint());
+        if(rewardModel.hasOfferedItem())
+            rewardViewAction.showRewardPanel(RewardPanelType.CHEST);
+        else if(rewardModel.hasPointsToAllocate())
+            rewardViewAction.showRewardPanel(RewardPanelType.STAT_POINTS);
+        else
+            rewardViewAction.showRewardPanel(RewardPanelType.NONE);
     }
 }

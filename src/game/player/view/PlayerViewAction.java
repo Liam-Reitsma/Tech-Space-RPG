@@ -9,8 +9,9 @@ import java.util.List;
 
 public interface PlayerViewAction
 {
-    void updatePlayerStats(List<StatEntry> statEntries);
     void updateEquippedItem(EquipSlot slot, EquippableItem item);
     void updateInventory(ItemStack[] itemStacks);
+    void updatePlayerStats(List<StatEntry> statEntries);
+    
     void flashEquipmentSlot(EquipSlot incorrectSlot, EquipSlot correctSlot);
 }

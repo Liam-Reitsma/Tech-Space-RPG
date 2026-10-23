@@ -8,12 +8,6 @@ public class RoomState
     private final RoomType roomType;
     private boolean isCurrentRoom;
     
-    public RoomState(RoomTileState state)
-    {
-        roomTileState = state;
-        roomType = RoomType.EMPTY;
-    }
-    
     public RoomState(RoomType type)
     {
         roomTileState = UNSEEN;
@@ -31,8 +25,15 @@ public class RoomState
     public void setCompleted() { roomTileState = COMPLETED; }
     
     public boolean isSeen() { return roomTileState != UNSEEN; }
-    
-    public void setSeen() { roomTileState = UNVISITED; }
+
+    /**
+     * Transitions UNSEEN to UNVISITED, leaving COMPLETED, FLED and other states unchanged.
+     */
+    public void setSeen()
+    {
+        if(roomTileState == UNSEEN)
+            roomTileState = UNVISITED;
+    }
     
     public RoomTileState getRoomTileState() { return roomTileState; }
     

@@ -16,13 +16,17 @@ public class ButtonFontFit implements FontFitStrategy
         if(comp instanceof AbstractButton button)
         {
             String text = button.getText();
-            if(text == null || text.isEmpty()) return font.getSize2D();
+            if(text == null || text.isEmpty())
+                return font.getSize2D();
             
             FontMetrics fontMetrics = button.getFontMetrics(font);
             Insets inset = button.getInsets();
             
             float availableWidth = button.getWidth() - (inset.left + inset.right);
             float availableHeight = button.getHeight() - (inset.top + inset.bottom);
+            
+            if(availableWidth <= 0 || availableHeight <= 0)
+                return font.getSize2D();
             
             String result;
             float fontSize = font.getSize2D();
@@ -46,6 +50,8 @@ public class ButtonFontFit implements FontFitStrategy
                 fontSize = Math.max(fontSize - 1f, 1f);
                 fontMetrics = button.getFontMetrics(font.deriveFont(fontSize));
             } while(fontSize > 1f);
+            
+            return fontSize;
         }
         
         return font.getSize2D();

@@ -1,5 +1,6 @@
 package game.saves.controller;
 
+import game.gui.popup.PopupError;
 import game.player.model.Player;
 import game.frame.controller.FrameAction;
 import game.maingame.controller.GameAction;
@@ -30,12 +31,18 @@ public class SavesController implements SavesAction
     }
     
     public void setSavesViewAction(SavesViewAction sVAction) { savesViewAction = sVAction; }
-    
+
+    /**
+     * Retrieves all saves from the database and refreshes the displayed save list.
+     * Clears the list if no saves are found or retrieval fails.
+     */
     @Override
     public void requestOpenSavesOverlay()
     {
         Map<String, Player> saveNamePlayerMap = persistenceService.getAllSaves();
+        saveNames = new String[0];
         String[] displayData = new String[0];
+        
         if(saveNamePlayerMap != null)
         {
             saveNames = new String[saveNamePlayerMap.size()];
@@ -51,26 +58,55 @@ public class SavesController implements SavesAction
         }
         savesViewAction.updateSavesList(displayData);
     }
-    
+
+    /**
+     * Attempts to delete the selected save if the index is valid.
+     * Displays an error if deletion fails; otherwise updates the saved-game list.
+     *
+     * @param deletedIndex The index of the save to delete.
+     */
     @Override
     public void requestDeleteSave(int deletedIndex)
     {
-        if(deletedIndex >= 0 && deletedIndex < saveNames.length)
+        if(saveNames != null && deletedIndex >= 0 && deletedIndex < saveNames.length)
         {
-            persistenceService.deleteSaveGame(saveNames[deletedIndex]);
+            if(!persistenceService.deleteSaveGame(saveNames[deletedIndex]))
+            {
+                frameAction.requestDisplayError(PopupError.SAVE_DELETION_FAILED,
+                        e-> frameAction.requestClosePopup(),
+                        e -> frameAction.requestClosePopup());
+                return;
+            }
+            
             savesViewAction.removeSave(deletedIndex);
+            
+            String[] newSaveList = new String[saveNames.length - 1];
+            for(int i = 0; i < saveNames.length; i++)
+                if(i != deletedIndex)
+                    newSaveList[i++] = saveNames[i];
+            
+            saveNames = newSaveList;
         }
     }
-    
+
+    /**
+     * Attempts to load the selected save if the index is valid.
+     * Starts the game on success or displays an error popup if loading fails.
+     *
+     * @param selectedIndex The index of the save to load.
+     */
     @Override
     public void requestSelectSave(int selectedIndex)
     {
-        if(selectedIndex >= 0 && selectedIndex < saveNames.length)
+        if(saveNames != null && selectedIndex >= 0 && selectedIndex < saveNames.length)
         {
             SavedData data = persistenceService.loadSaveGame(saveNames[selectedIndex]);
             if(data != null)
                 gameAction.requestLoadGame(data);
-            //TODO show error
+            else
+                frameAction.requestDisplayError(PopupError.LOADING_FAILED,
+                        e-> frameAction.requestClosePopup(),
+                        e -> frameAction.requestClosePopup());
         }
     }
     

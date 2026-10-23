@@ -1,7 +1,5 @@
 package game.player.model;
 
-import game.items.EquipSlot;
-import game.items.EquippableItem;
 import game.maingame.model.GameModel;
 
 import java.util.ArrayList;
@@ -9,18 +7,21 @@ import java.util.List;
 
 public class PlayerModel
 {
-    private Player player;
-    
     private final GameModel gameModel;
     
     public PlayerModel(GameModel gModel)
     {
         gameModel = gModel;
     }
-    
+
+    /**
+     * Constructs a list of player statistics formatted for display, including values and tooltips.
+     *
+     * @return A list of StatEntry objects containing formatted player stats.
+     */
     public List<StatEntry> getPlayerStatEntries()
     {
-        player = gameModel.getPlayer();
+        Player player = gameModel.getPlayer();
         List<StatEntry> statEntries = new ArrayList<>();
         statEntries.add(new StatEntry("", "", ""));
         
@@ -29,8 +30,8 @@ public class PlayerModel
         statEntries.add(new StatEntry("XP", player.getXP() + "/" + player.getXpToLevelUp(), "Your current XP out of XP required to level up"));
         statEntries.add(new StatEntry("", "", ""));
         
-        statEntries.add(new StatEntry("Damage", player.attack(), "Your current damage per hit"));
-        statEntries.add(new StatEntry("Prot. Value", player.getProtectionValue(), "Your current damage reduction from each hit."));
+        statEntries.add(new StatEntry("Damage", player.calculateAttackDamage(), "Your current damage per hit"));
+        statEntries.add(new StatEntry("Prot. %", Math.round(player.getProtectionValue() * 100), "Your current damage reduction from each hit."));
         statEntries.add(new StatEntry("", "", ""));
         
         statEntries.add(new StatEntry("Stats", "", "Increasing these will give the player scaling buffs and increase your damage with that type of weapon"));
@@ -41,30 +42,20 @@ public class PlayerModel
         
         statEntries.add(new StatEntry("Buffs", "", "Your current buffs due to your stat distribution"));
         statEntries.add(new StatEntry("Max Health", Math.round(player.getMaximumHealth()), "Increases maximum available health"));
-        statEntries.add(new StatEntry("Armour Pen.", player.getArmourPenetrationS(), "Reduces enemy protection value by this amount; does not go below 0% protection value."));
-        statEntries.add(new StatEntry("Damage Amp.", player.getDamageAmplification(), "Increases your damage by this amount"));
-        statEntries.add(new StatEntry("Damage Red.", player.getDamageReduction(), "Increases your protection value by this amount"));
+        statEntries.add(new StatEntry("Armour Pen.", Math.round(player.getArmourPenetration() * 100) + "%", "Reduces enemy protection value by this amount; does not go below 0% protection value."));
+        statEntries.add(new StatEntry("Damage Amp.", Math.round((player.getDamageAmplification() - 1) * 100) + "%", "Increases your damage by this amount"));
+        statEntries.add(new StatEntry("Damage Red.", Math.round((player.getDamageReduction() - 1) * 100) + "%", "Increases your protection value by this amount"));
         
         return statEntries;
     }
     
-    public EquippableItem getEquippedItem(EquipSlot slot)
-    {
-        return gameModel.getPlayer().getInventory().getEquippedItem(slot);
-    }
-    
-    public Inventory getInventory()
+    public ReadInventory getInventory()
     {
         return gameModel.getPlayer().getInventory();
     }
     
-    public EquipSlot[] getAllEquippedSlots()
+    public Player getPlayer()
     {
-        return gameModel.getPlayer().getInventory().getAllEquippedSlots();
-    }
-    
-    public ItemStack[] getInventorySlots()
-    {
-        return gameModel.getPlayer().getInventory().getInventorySlots();
+        return gameModel.getPlayer();
     }
 }

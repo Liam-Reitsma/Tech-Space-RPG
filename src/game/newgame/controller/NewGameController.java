@@ -28,7 +28,10 @@ public class NewGameController implements NewGameAction
     }
     
     public void setNewGameViewAction(NewGameViewAction ngVAction) { newGameViewAction = ngVAction; }
-    
+
+    /**
+     * Plays the new game screen's ambient music.
+     */
     @Override
     public void requestOpenNewGameScreen()
     {

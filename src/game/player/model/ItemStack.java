@@ -1,38 +1,33 @@
 package game.player.model;
 
 import game.items.Item;
+import game.items.weapon.Weapon;
+
+import java.util.Objects;
 
 public class ItemStack
 {
-    private Item item;
     private int quantity;
+    private Item item;
     
     public ItemStack()
     {
-        item = null;
         quantity = 0;
+        item = null;
     }
     
     public ItemStack(Item newItem, int newQuantity)
     {
-        item = newItem;
-        quantity = newQuantity;
-    }
-    
-    public void setItem(Item newItem)
-    {
-        if(newItem == null)
-            return;
-        item = newItem;
-        quantity = 1;
-    }
-    
-    public void setItem(Item newItem, int newQuantity)
-    {
-        if(newItem == null || newQuantity <= 0)
-            return;
-        item = newItem;
-        quantity = newQuantity;
+        if(newQuantity <= 0 || newItem == null)
+        {
+            quantity = 0;
+            item = null;
+        }
+        else
+        {
+            quantity = newQuantity;
+            item = newItem;
+        }
     }
     
     public void addItem()
@@ -46,20 +41,53 @@ public class ItemStack
         if(item != null)
             if(quantity <= 1)
             {
-                item = null;
                 quantity = 0;
+                item = null;
             }
             else
                 quantity--;
     }
     
-    public void removeStack()
+    public void removeItemStack()
     {
-        item = null;
         quantity = 0;
+        item = null;
     }
+
+    /**
+     * Replaces the current item and resets the stack quantity to one.
+     * If the new item is null, nothing changes.
+     *
+     * @param newItem The item to place in the stack.
+     */
+    public void setItem(Item newItem)
+    {
+        if(newItem == null)
+            return;
+        quantity = 1;
+        item = newItem;
+    }
+    
+    public ItemStack copy() { return new ItemStack(item == null ? null : item.copy(), quantity); }
     
     public Item getItem() { return item; }
     
     public int getQuantity() { return quantity; }
+    
+    @Override
+    public boolean equals(Object object)
+    {
+        if(this == object)
+            return true;
+        if(!(object instanceof ItemStack otherStack))
+            return false;
+        else
+            return quantity == otherStack.quantity && Objects.equals(item, otherStack.item);
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(item, quantity);
+    }
 }

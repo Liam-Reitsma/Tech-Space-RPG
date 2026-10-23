@@ -11,7 +11,7 @@ public class Weapon extends EquippableItem
     private final WeaponType weaponType;
     private final WeaponSlot weaponSlot;
     
-    private int level;
+    private final int level;
     
     public Weapon(WeaponType type, int playerLevel)
     {
@@ -33,10 +33,20 @@ public class Weapon extends EquippableItem
     
     public WeaponType getWeaponType() { return weaponType; }
     
-    public String getImageURL() { return "resources/images/items/" + weaponType.toFileName() + ".png"; }
+    @Override
+    public String getImageURL()
+    {
+        return "resources/images/items/" + weaponType.toFileName() + ".png";
+    }
     
     @Override
     public EquipSlot getEquipSlot() { return weaponSlot; }
+    
+    @Override
+    public Weapon copy()
+    {
+        return new Weapon(weaponType, level);
+    }
     
     @Override
     public int hashCode()
@@ -47,8 +57,10 @@ public class Weapon extends EquippableItem
     @Override
     public boolean equals(Object object)
     {
-        if(object == null) return false;
-        if(!(object instanceof Weapon weapon)) return false;
+        if(this == object)
+            return true;
+        if(!(object instanceof Weapon weapon))
+            return false;
         
         return weaponType == weapon.weaponType && weaponSlot == weapon.weaponSlot && level == weapon.level;
     }

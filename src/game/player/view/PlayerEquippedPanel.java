@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class PlayerEquippedPanel extends JPanel
 {
-    private final static Image EQUIPPED_BACKGROUND = new ImageIcon("resources/images/Equipped_Screen.png").getImage();
+    private static final Image EQUIPPED_BACKGROUND = new ImageIcon("resources/images/Equipped_Screen.png").getImage();
     
     private final Map<EquipSlot, ItemSlot> equippedInventoryMap;
     
@@ -33,7 +33,6 @@ public class PlayerEquippedPanel extends JPanel
         
         for(int i = 0; i < equipSlots.length; i++)
         {
-            int index = i;
             SlotIdentity source = new SlotIdentity(null, equipSlots[i]);
             ItemSlot itemSlot = new ItemSlot(source, 0, dragViewAction,
                     (destination) -> playerAction.requestSlotReleased(source, destination));
@@ -59,6 +58,7 @@ public class PlayerEquippedPanel extends JPanel
     @Override
     public void paintComponent(Graphics g)
     {
+        super.paintComponent(g);
         g.drawImage(EQUIPPED_BACKGROUND, 0, 0, getWidth(), getHeight(), null);
     }
 }

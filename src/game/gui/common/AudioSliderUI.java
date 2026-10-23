@@ -95,8 +95,8 @@ public class AudioSliderUI extends BasicSliderUI
         
         trackRect.x += xBorderGap;
         trackRect.y += yBorderGap;
-        trackRect.height -= 2 * yBorderGap;
-        trackRect.width -= 2 * xBorderGap;
+        trackRect.height = Math.max(0, trackRect.height - 2 * yBorderGap);
+        trackRect.width = Math.max(0, trackRect.width - 2 * xBorderGap);
     }
     
     @Override
@@ -107,7 +107,7 @@ public class AudioSliderUI extends BasicSliderUI
         
         int height = thumbRect.height;
         int x = thumbRect.x;
-        int y = thumbRect.y - (height - thumbRect.height) / 2;
+        int y = thumbRect.y;
         createBoxGlow(graphics, x, y, height);
     }
     

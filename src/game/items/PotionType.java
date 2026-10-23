@@ -14,11 +14,6 @@ public enum PotionType
     }
 
     public int getHealAmount() { return healGain; }
-
-    public static PotionType getRandomPotionType()
-    {
-        return PotionType.values()[((int)(Math.random() * PotionType.values().length))];
-    }
     
     @Override
     public String toString()
@@ -34,5 +29,10 @@ public enum PotionType
     public String toFileName()
     {
         return toString().replace(" ", "_");
+    }
+    
+    public static PotionType getRandomPotionType()
+    {
+        return PotionType.values()[((int)(Math.random() * PotionType.values().length))];
     }
 }

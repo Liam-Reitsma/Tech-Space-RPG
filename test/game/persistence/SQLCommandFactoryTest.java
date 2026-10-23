@@ -139,7 +139,7 @@ public class SQLCommandFactoryTest
     }
 
     @Test
-    public void testBuildUpdateRowSQL()
+    public void testBuildUpdateCellEntrySQL()
     {
         String tableName = "STORED_WEAPONS";
         String columnName = "COUNT";

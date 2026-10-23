@@ -17,14 +17,32 @@ public class Armour extends EquippableItem
         name = armourMaterial + " " + armourSlot;
     }
 
-    public float calculateProtection() { return Math.round(armourSlot.getProtWeight() * armourMaterial.getProtValue() * 10000f) / 10000f; }
-    
-    public String getImageURL() { return "resources/images/items/" + armourMaterial.toFileName() + "_" + armourSlot.toFileName() + ".png"; }
+    /**
+     * Calculates the protection value by considering the slot's protection weight and material's protection value.
+     *
+     * @return The protection value as a decimal fraction, rounded to four decimal places.
+     */
+    public float calculateProtection()
+    {
+        return Math.round(armourSlot.getProtWeight() * armourMaterial.getProtValue() * 10000f) / 10000f;
+    }
     
     public ArmourMaterial getArmourMaterial() { return armourMaterial; }
     
     @Override
     public EquipSlot getEquipSlot() { return armourSlot; }
+    
+    @Override
+    public String getImageURL()
+    {
+        return "resources/images/items/" + armourMaterial.toFileName() + "_" + armourSlot.toFileName() + ".png";
+    }
+    
+    @Override
+    public Armour copy()
+    {
+        return new Armour(armourMaterial, armourSlot);
+    }
     
     @Override
     public int hashCode()
@@ -35,10 +53,11 @@ public class Armour extends EquippableItem
     @Override
     public boolean equals(Object object)
     {
-        if(object == null) return false;
-        if(!(object instanceof Armour armour)) return false;
+        if(this == object)
+            return true;
+        if(!(object instanceof Armour armour))
+            return false;
         
         return armourMaterial == armour.armourMaterial && armourSlot == armour.armourSlot;
     }
-    
 }

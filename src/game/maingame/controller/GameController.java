@@ -15,7 +15,6 @@ import game.player.model.Player;
 import game.frame.controller.FrameAction;
 import game.items.Item;
 import game.maingame.model.GameModel;
-import game.maingame.view.GameViewAction;
 import game.persistence.InventoryChange;
 import game.reward.controller.RewardAction;
 import game.persistence.PersistenceService;
@@ -34,6 +33,8 @@ import java.util.Map;
 
 public class GameController implements GameAction, CombatListener, RoomListener, RewardListener
 {
+    private Enemy currentEncounter;
+    
     private final AudioManager audioManager;
     private final List<Updatable> updatables;
     
@@ -44,12 +45,7 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     private final CombatAction combatAction;
     private final FrameAction frameAction;
     private final RewardAction rewardAction;
-
-    private final WorldAction worldAction; //TODO: WorldAction
-
-    private Enemy currentEncounter;
-
-    private GameViewAction gameViewAction;
+    private final WorldAction worldAction;
     
     public GameController(PersistenceService pService, GameModel gModel, CombatAction cAction, FrameAction fAction, RewardAction rAction, WorldAction wAction)
     {
@@ -65,16 +61,43 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         rewardAction = rAction;
         worldAction = wAction;
     }
-
-    public void setGameViewAction(GameViewAction gvAction) { gameViewAction = gvAction; }
     
-    @Override
-    public void requestOpenGameScreen()
+    public void addUpdatable(Updatable updatable)
     {
-        audioManager.playSound(SoundEffect.MAIN_GAME_BACKSTORY_SOUNDBITE);
-        audioManager.playMusic(MusicTrack.MAIN_GAME_AMBIANCE);
+        updatables.add(updatable);
     }
     
+    private void forceStartNewGame(Player player, Map<Point, RuntimeRoom> world)
+    {
+        if(persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world))
+            frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                    e ->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    },
+                    e->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    });
+        
+        frameAction.requestClosePopup();
+        startGame(player, world);
+    }
+    
+    @Override
+    public void requestLoadGame(SavedData savedData)
+    {
+        startGame(savedData.player(), savedData.world());
+    }
+
+    /**
+     * Generates a new world and checks if a save already exists with the same name.
+     * Displays a confirmation popup if a save already exists before overwriting it, otherwise creates the save and starts the game.
+     *
+     * @param newPlayer The new player object created for the game.
+     */
     @Override
     public void requestNewGame(Player newPlayer)
     {
@@ -90,55 +113,56 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             startGame(newPlayer, world);
         }
     }
-    
-    @Override
-    public void requestLoadGame(SavedData savedData)
-    {
-        savedData.player.setInventory(savedData.inventory);
-        savedData.player.setEquipped(savedData.equipped);
-        startGame(savedData.player, savedData.world);
-    }
-    
-    private void forceStartNewGame(Player player, Map<Point, RuntimeRoom> world)
-    {
-        persistenceService.forceCreateNewSaveGame(player.getName(), player.getName(), player.getClassType(), world);
-        frameAction.requestClosePopup();
-        startGame(player, world);
-    }
 
     private void startGame(Player player, Map<Point, RuntimeRoom> world)
     {
+        RuntimeRoom currentRoom = world.get(player.getPoint());
+        
+        if(currentRoom == null)
+            return;
+        
         gameModel.setGame(player, world);
+        currentRoom.setCurrent();
+        
         boolean isDead = player.getHealth() <= 0;
-        world.get(player.getPoint()).setCurrent();
         worldAction.requestSetMovementLocked(isDead);
         combatAction.requestResetCombat();
         currentEncounter = null;
         rewardAction.requestResetReward();
-        if(isDead) combatAction.requestDeathMessage();
-        requestOpenGameScreen();
+        
+        if(isDead)
+            combatAction.requestDeathMessage();
 
         frameAction.requestDisplay(MAIN_GAME);
 
-        gameViewAction.updateMainGameScreen();
         requestGameUpdate();
-        if(!isDead) onRoomEntered(world.get(player.getPoint()));
+        
+        if(!isDead)
+            onRoomEntered(currentRoom);
+    }
+
+    /**
+     * Plays the main game backstory soundbite and the ambient music.
+     */
+    @Override
+    public void requestOpenGameScreen()
+    {
+        audioManager.playSound(SoundEffect.MAIN_GAME_BACKSTORY_SOUNDBITE);
+        audioManager.playMusic(MusicTrack.MAIN_GAME_AMBIANCE);
     }
     
     @Override
     public void requestGameUpdate()
     {
         for(Updatable controller : updatables)
-        {
             controller.requestUpdate();
-        }
     }
 
-    public void addUpdatable(Updatable updatable)
-    {
-        updatables.add(updatable);
-    }
-
+    /**
+     * Handles the combat outcome, updating the room state and clearing the encounter.
+     *
+     * @param combatOutcome The outcome of the combat.
+     */
     @Override
     public void onCombatEnded(CombatOutcome combatOutcome)
     {
@@ -147,7 +171,18 @@ public class GameController implements GameAction, CombatListener, RoomListener,
         if(combatOutcome == CombatOutcome.LOSE)
         {
             currentEncounter = null;
-            gameModel.quickSave(room, InventoryChange.NONE, null);
+            if(!gameModel.quickSave(room, InventoryChange.NONE, null))
+                frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        },
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        });
             requestGameUpdate();
             return;
         }
@@ -158,15 +193,33 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             default -> { }
         }
         currentEncounter = null;
-        gameModel.quickSave(room, InventoryChange.NONE, null);
+        if(!gameModel.quickSave(room, InventoryChange.NONE, null)) //TODO Add item
+            frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                    e->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    },
+                    e->
+                    {
+                        frameAction.requestClosePopup();
+                        requestGameUpdate();
+                    });
         worldAction.requestSetMovementLocked(false);
         requestGameUpdate();
     }
 
+    /**
+     * Ignores completed rooms and generates content for incomplete rooms.
+     * Starts combat for enemies, offers rewards for items, and completes empty rooms.
+     *
+     * @param room The room that the player has entered.
+     */
     @Override
     public void onRoomEntered(RuntimeRoom room)
     {
-        if(room.isCompleted()) return;
+        if(room.isCompleted())
+            return;
 
         RoomContent content = roomModel.createRoomContent(room.getRoomState().getRoomType(), gameModel.getPlayer());
 
@@ -181,13 +234,36 @@ public class GameController implements GameAction, CombatListener, RoomListener,
             worldAction.requestSetMovementLocked(true);
             rewardAction.requestOfferChestReward(item);
             room.setCompleted();
-            gameModel.quickSave(room, InventoryChange.NONE, null); //TODO Add item
+            if(!gameModel.quickSave(room, InventoryChange.NONE, null)) //TODO Add item
+                frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        },
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        });
         }
         else
         {
             room.setCompleted();
-            gameModel.quickSave(room, InventoryChange.NONE, null);
+            if(!gameModel.quickSave(room, InventoryChange.NONE, null))
+                frameAction.requestDisplayError(PopupError.SAVE_FAILED,
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        },
+                        e->
+                        {
+                            frameAction.requestClosePopup();
+                            requestGameUpdate();
+                        });
         }
+        
         requestGameUpdate();
     }
 

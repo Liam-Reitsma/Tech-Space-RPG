@@ -20,7 +20,13 @@ public class WorldGenerator
         rooms = new HashMap<>();
         rng = new Random();
     }
-    
+
+    /**
+     * Clears previously generated rooms and creates an origin room with four adjacent rooms.
+     * Recursively expands from these initial rooms to generate the world.
+     *
+     * @return The generator's internal mutable map of generated rooms.
+     */
     public Map<Point, GenerationRoom> generate()
     {
         rooms.clear();
@@ -128,7 +134,14 @@ public class WorldGenerator
         
         return false;
     }
-    
+
+    /**
+     * Prevents termination until the minimum room count is reached and the room
+     * is outside the central generation area. Termination is then determined randomly.
+     *
+     * @param parent The room from which generation would continue.
+     * @return True if generation should terminate at this room; otherwise false.
+     */
     private boolean terminate(GenerationRoom parent)
     {
         if(rooms.size() < MIN_ROOM_COUNT) return false;

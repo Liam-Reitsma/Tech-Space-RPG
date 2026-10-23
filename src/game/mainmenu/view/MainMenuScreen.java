@@ -67,14 +67,22 @@ public class MainMenuScreen extends JPanel implements DisplayableScreen
         super.paintComponent(g);
         g.drawImage(MAIN_MENU_IMAGE, 0, 0, getWidth(), getHeight(), null);
     }
-    
+
+    /**
+     * Makes the main menu invisible.
+     *
+     * @return The main menu's JPanel instance.
+     */
     @Override
     public JPanel getDisplay()
     {
         setVisible(false);
         return this;
     }
-    
+
+    /**
+     * Makes the screen visible and triggers the menu's soundbite and ambient music.
+     */
     @Override
     public void openDisplay()
     {
