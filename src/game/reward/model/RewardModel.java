@@ -28,6 +28,12 @@ public class RewardModel
         statsLeveledUp = new EnumMap<>(StatType.class);
     }
 
+    /**
+     * Increases the planned stat allocation by one if unspent points are available.
+     * The player's actual stats remain unchanged until confirmation.
+     *
+     * @param stat The stat type to increase.
+     */
     public void planIncrease(StatType stat)
     {
         if(getRemainingStatPoint() <= 0)
@@ -37,6 +43,12 @@ public class RewardModel
         statsLeveledUp.put(stat, getPlannedStatPoint(stat) + 1);
     }
 
+    /**
+     * Decreases the planned stat allocation by one if an increase was previously planned.
+     * Returns the point to the unspent pool without changing the player's actual stats.
+     *
+     * @param stat The stat type whose planned allocation is decreased.
+     */
     public void planDecrease(StatType stat)
     {
         if(getPlannedStatPoint(stat) <= 0)
@@ -46,6 +58,11 @@ public class RewardModel
         unspentPoints++;
     }
 
+    /**
+     * Checks whether the player has either unspent stat points or pending stat allocations.
+     *
+     * @return True if unspent points or planned increases exist; otherwise false.
+     */
     public boolean hasPointsToAllocate()
     {
         if(unspentPoints > 0)
@@ -57,6 +74,11 @@ public class RewardModel
         return false;
     }
 
+    /**
+     * Applies the planned stat increases to the player and clears the allocations.
+     *
+     * @return A RewardResult containing the confirmation message and error status.
+     */
     public RewardResult confirmLeveledUp()
     {
         String resultMessage = "| ";
@@ -79,6 +101,13 @@ public class RewardModel
         return new RewardResult(resultMessage, false);
     }
 
+    /**
+     * Gives the player the XP and gold dropped by the enemy, and attempts to add a random potion to their inventory.
+     * Increases unspent stat points for each level gained.
+     *
+     * @param enemy The defeated enemy whose rewards are awarded.
+     * @return A RewardResult containing the reward message.
+     */
     public RewardResult applyEnemyReward(Enemy enemy)
     {
         Player player = gameModel.getPlayer();
@@ -99,6 +128,12 @@ public class RewardModel
         return new RewardResult(rewardMessage, false);
     }
 
+    /**
+     * Offers the player an item from a chest without immediately adding it to their inventory.
+     *
+     * @param item The item being offered to the player.
+     * @return A RewardResult containing the item's description.
+     */
     public RewardResult offerChestItem(Item item)
     {
         offeredItem = item;
@@ -117,6 +152,12 @@ public class RewardModel
         return offeredItem != null;
     }
 
+    /**
+     * Attempts to add the offered item to the player's inventory.
+     * Clears the offered item on success, but preserves it if adding fails.
+     *
+     * @return A RewardResult describing the outcome, with an error if adding fails.
+     */
     public RewardResult takeOfferedItem()
     {
         if(offeredItem == null)
