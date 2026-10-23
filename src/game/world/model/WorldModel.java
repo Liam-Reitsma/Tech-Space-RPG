@@ -100,7 +100,14 @@ public class WorldModel
         
         return directions.toArray(new Direction[0]);
     }
-    
+
+    /**
+     * Converts the world into a 2D array and marks previously unseen rooms within the player's viewing range as seen.
+     *
+     * @param world The map containing the world's rooms.
+     * @param playerPoint The player's current position.
+     * @return A two-dimensional array of rooms representing the world.
+     */
     public RuntimeRoom[][] updateWorldInfo(Map<Point, RuntimeRoom> world, Point playerPoint)
     {
         RuntimeRoom[][] roomMap = new RuntimeRoom[MAX_RANGE * 2 + 1][MAX_RANGE * 2 + 1];
