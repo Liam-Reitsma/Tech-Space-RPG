@@ -21,7 +21,14 @@ public class RoomModel
     {
     
     }
-    
+
+    /**
+     * Creates an enemy or chest item based on the room type and player's level.
+     *
+     * @param roomType The type of room being entered.
+     * @param player The player whose level determines the generated content's level.
+     * @return The generated enemy or item, or null for empty and wall rooms.
+     */
     public RoomContent createRoomContent(RoomType roomType, Player player)
     {
         return switch(roomType)
