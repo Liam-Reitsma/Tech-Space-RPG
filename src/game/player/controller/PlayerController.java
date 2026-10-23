@@ -56,20 +56,7 @@ public class PlayerController implements PlayerAction, Updatable
         
         if(destination == null)
         {
-            if(source.inventorySlot() != null)
-            {
-                ItemStack itemStack = playerModel.getInventory().getItemStack(source.inventorySlot());
-                
-                if(itemStack.getItem() != null)
-                    requestDiscard(itemStack);
-            }
-            else
-            {
-                EquippableItem equippableItem = playerModel.getInventory().getEquippedItem(source.equipSlot());
-                
-                if(equippableItem != null)
-                    requestDiscard(equippableItem);
-            }
+            handleDiscard(source);
             return;
         }
         
@@ -79,83 +66,116 @@ public class PlayerController implements PlayerAction, Updatable
         if(isFromInventory)
         {
             if(isToEquip)
-            {
-                InventoryResult result = playerModel.getPlayer().equipItem(source.inventorySlot(), destination.equipSlot());
-                switch(result)
-                {
-                    case SUCCESS -> {}
-                    case INVALID_SLOT ->
-                    {
-                        if(playerModel.getInventory().getItemStack(source.inventorySlot()).getItem() instanceof EquippableItem item)
-                            playerViewAction.flashEquipmentSlot(destination.equipSlot(), item.getEquipSlot());
-                    }
-                    case INVALID_ITEM ->
-                    {
-                        for(EquipSlot slot : playerModel.getInventory().getAllEquippedSlots())
-                            playerViewAction.flashEquipmentSlot(slot, null);
-                    }
-                    case INVENTORY_FULL ->
-                    {
-                        frameAction.requestDisplayError(PopupError.INVENTORY_FULL_EQUIPPING,
-                                e->
-                                {
-                                    gameAction.requestGameUpdate();
-                                    frameAction.requestClosePopup();
-                                },
-                                e ->
-                                {
-                                    playerModel.getPlayer().equipItemDiscardingEquipped(source.inventorySlot(), destination.equipSlot());
-                                    gameAction.requestGameUpdate();
-                                    frameAction.requestClosePopup();
-                                });
-                    }
-                    default ->
-                    {
-                        LOGGER.warning("Unexpected inventory result when equipping item: " + result);
-                    }
-                }
-            }
+                handleEquip(source, destination);
             else
-                playerModel.getPlayer().swapItems(source.inventorySlot(), destination.inventorySlot());
+                handleInventorySwap(source, destination);
         }
         else
         {
             if(isToEquip)
-            {
-                playerViewAction.flashEquipmentSlot(source.equipSlot(), null);
-                playerViewAction.flashEquipmentSlot(destination.equipSlot(), null );
-            }
+                handleEquipmentSwap(source, destination);
             else
-            {
-                InventoryResult result = playerModel.getPlayer().unequipItem(source.equipSlot(), destination.inventorySlot());
-                switch(result)
-                {
-                    case SUCCESS -> {}
-                    case INVENTORY_FULL ->
-                    {
-                        frameAction.requestDisplayError(PopupError.INVENTORY_FULL_UNEQUIPPING,
-                                e->
-                                {
-                                    gameAction.requestGameUpdate();
-                                    frameAction.requestClosePopup();
-                                },
-                                e ->
-                                {
-                                    playerModel.getPlayer().unequipItemDiscardingInventory(source.equipSlot(), destination.inventorySlot());
-                                    gameAction.requestGameUpdate();
-                                    frameAction.requestClosePopup();
-                                });
-                    }
-                    default ->
-                    {
-                        LOGGER.warning("Unexpected inventory result when unequipping item: " + result);
-                        playerViewAction.flashEquipmentSlot(source.equipSlot(), null);
-                    }
-                }
-            }
+                handleUnequip(source, destination);
         }
         
         gameAction.requestGameUpdate();
+    }
+    
+    private void handleDiscard(SlotIdentity source)
+    {
+        if(source.inventorySlot() != null)
+        {
+            ItemStack itemStack = playerModel.getInventory().getItemStack(source.inventorySlot());
+            
+            if(itemStack.getItem() != null)
+                requestDiscard(itemStack);
+        }
+        else
+        {
+            EquippableItem equippableItem = playerModel.getInventory().getEquippedItem(source.equipSlot());
+            
+            if(equippableItem != null)
+                requestDiscard(equippableItem);
+        }
+        return;
+    }
+    
+    private void handleEquip(SlotIdentity source, SlotIdentity destination)
+    {
+        InventoryResult result = playerModel.getPlayer().equipItem(source.inventorySlot(), destination.equipSlot());
+        switch(result)
+        {
+            case SUCCESS -> {}
+            case INVALID_SLOT ->
+            {
+                if(playerModel.getInventory().getItemStack(source.inventorySlot()).getItem() instanceof EquippableItem item)
+                    playerViewAction.flashEquipmentSlot(destination.equipSlot(), item.getEquipSlot());
+            }
+            case INVALID_ITEM ->
+            {
+                for(EquipSlot slot : playerModel.getInventory().getAllEquippedSlots())
+                    playerViewAction.flashEquipmentSlot(slot, null);
+            }
+            case INVENTORY_FULL ->
+            {
+                frameAction.requestDisplayError(PopupError.INVENTORY_FULL_EQUIPPING,
+                        e->
+                        {
+                            gameAction.requestGameUpdate();
+                            frameAction.requestClosePopup();
+                        },
+                        e ->
+                        {
+                            playerModel.getPlayer().equipItemDiscardingEquipped(source.inventorySlot(), destination.equipSlot());
+                            gameAction.requestGameUpdate();
+                            frameAction.requestClosePopup();
+                        });
+            }
+            default ->
+            {
+                LOGGER.warning("Unexpected inventory result when equipping item: " + result);
+            }
+        }
+    }
+    
+    private void handleUnequip(SlotIdentity source, SlotIdentity destination)
+    {
+        InventoryResult result = playerModel.getPlayer().unequipItem(source.equipSlot(), destination.inventorySlot());
+        switch(result)
+        {
+            case SUCCESS -> {}
+            case INVENTORY_FULL ->
+            {
+                frameAction.requestDisplayError(PopupError.INVENTORY_FULL_UNEQUIPPING,
+                        e->
+                        {
+                            gameAction.requestGameUpdate();
+                            frameAction.requestClosePopup();
+                        },
+                        e ->
+                        {
+                            playerModel.getPlayer().unequipItemDiscardingInventory(source.equipSlot(), destination.inventorySlot());
+                            gameAction.requestGameUpdate();
+                            frameAction.requestClosePopup();
+                        });
+            }
+            default ->
+            {
+                LOGGER.warning("Unexpected inventory result when unequipping item: " + result);
+                playerViewAction.flashEquipmentSlot(source.equipSlot(), null);
+            }
+        }
+    }
+    
+    private void handleInventorySwap(SlotIdentity source, SlotIdentity destination)
+    {
+        playerModel.getPlayer().swapItems(source.inventorySlot(), destination.inventorySlot());
+    }
+    
+    private void handleEquipmentSwap(SlotIdentity source, SlotIdentity destination)
+    {
+        playerViewAction.flashEquipmentSlot(source.equipSlot(), null);
+        playerViewAction.flashEquipmentSlot(destination.equipSlot(), null );
     }
     
     private void requestDiscard(ItemStack itemStack)
