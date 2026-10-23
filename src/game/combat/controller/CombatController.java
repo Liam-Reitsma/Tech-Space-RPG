@@ -121,7 +121,13 @@ public class CombatController implements CombatAction, Updatable
                 Load another save or start a new game.
                 """);
     }
-
+    
+    @Override
+    public void requestDisplayMessage(String message)
+    {
+        combatViewAction.displayMessage(message);
+    }
+    
     /**
      * Displays the combat message and notifies the listener if combat has ended.
      *

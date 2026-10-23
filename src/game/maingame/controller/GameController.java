@@ -218,6 +218,8 @@ public class GameController implements GameAction, CombatListener, RoomListener,
     @Override
     public void onRoomEntered(RuntimeRoom room)
     {
+        combatAction.requestDisplayMessage(room.getRoomState().getRoomType().getRoomFlavourText());
+        
         if(room.isCompleted())
             return;
 
